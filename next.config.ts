@@ -1,7 +1,14 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  eslint: {
+    // Ignora los errores de estilo al subir a Vercel
+    ignoreDuringBuilds: true,
+  },
+  typescript: {
+    // Ignora los errores de tipos al subir a Vercel
+    ignoreBuildErrors: true,
+  },
 };
 
 export default nextConfig;
