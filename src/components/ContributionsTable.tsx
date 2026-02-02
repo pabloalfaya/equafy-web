@@ -46,6 +46,7 @@ export function ContributionsTable({
         return;
       }
     } else {
+      // Fallback por si no hubiera ID (casos raros)
       const { error } = await supabase
         .from("contributions")
         .delete()
@@ -80,11 +81,15 @@ export function ContributionsTable({
   return (
     <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
       <div className="overflow-x-auto">
-        <table className="w-full min-w-[500px]">
+        <table className="w-full min-w-[600px]">
           <thead>
             <tr className="border-b border-slate-200 bg-slate-50/80">
               <th className="px-6 py-4 text-left text-sm font-semibold text-slate-700">
-                Contribuidor
+                Socio
+              </th>
+              {/* --- NUEVA COLUMNA DE CONCEPTO --- */}
+              <th className="px-6 py-4 text-left text-sm font-semibold text-slate-700">
+                Concepto
               </th>
               <th className="px-6 py-4 text-left text-sm font-semibold text-slate-700">
                 Tipo
@@ -114,6 +119,7 @@ export function ContributionsTable({
                   : "0";
               const rowKey = c.id ?? `${c.contributor_name}-${c.type}-${c.amount}`;
               const isDeleting = deletingId === c.id;
+              
               return (
                 <tr
                   key={rowKey}
@@ -122,6 +128,17 @@ export function ContributionsTable({
                   <td className="px-6 py-4 font-medium text-slate-800">
                     {c.contributor_name}
                   </td>
+                  
+                  {/* --- NUEVA CELDA DE CONCEPTO --- */}
+                  <td className="px-6 py-4 text-slate-600">
+                    {/* Si no hay concepto, mostramos un guión gris flojito */}
+                    {c.concept ? (
+                      c.concept
+                    ) : (
+                      <span className="text-slate-400 italic">--</span>
+                    )}
+                  </td>
+
                   <td className="px-6 py-4 text-slate-600">
                     {TYPE_LABELS[c.type] ?? c.type}
                   </td>
@@ -158,7 +175,8 @@ export function ContributionsTable({
           </tbody>
           <tfoot>
             <tr className="border-t-2 border-slate-200 bg-slate-50 font-semibold">
-              <td colSpan={4} className="px-6 py-4 text-slate-700">
+              {/* Ajustamos colSpan a 5 para que cubra Socio, Concepto, Tipo, Importe y Mult. */}
+              <td colSpan={5} className="px-6 py-4 text-slate-700">
                 Total
               </td>
               <td className="px-6 py-4 text-right text-slate-800">

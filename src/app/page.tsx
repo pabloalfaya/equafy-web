@@ -91,6 +91,35 @@ export default function DashboardPage() {
       .then(({ data }) => setContributions(data ?? []));
   }, [selectedProject?.id]);
 
+  // --- MAGIA DE AGRUPACIÓN ---
+  // Esto crea una lista "falsa" donde sumamos las cantidades de los socios repetidos
+  // solo para visualizarlos juntos en el gráfico.
+  const groupedContributionsForChart = contributions.reduce((acc, curr) => {
+    // Buscamos si ya tenemos a este socio en la lista acumulada
+    const existingIndex = acc.findIndex(
+      (c) => c.contributor_name === curr.contributor_name
+    );
+
+    if (existingIndex >= 0) {
+      // Si el socio ya existe, le sumamos la cantidad actual a la que ya tenía
+      const existing = acc[existingIndex];
+      const updatedContribution = {
+        ...existing,
+        amount: existing.amount + curr.amount,
+        // Si usas valor ajustado al riesgo, también lo sumamos
+        risk_adjusted_value:
+          (existing.risk_adjusted_value || 0) + (curr.risk_adjusted_value || 0),
+      };
+      // Reemplazamos el socio antiguo con el actualizado (sumado)
+      const newAcc = [...acc];
+      newAcc[existingIndex] = updatedContribution;
+      return newAcc;
+    } else {
+      // Si es la primera vez que vemos a este socio, lo añadimos tal cual
+      return [...acc, { ...curr }];
+    }
+  }, [] as Contribution[]);
+
   if (loading) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-slate-50">
@@ -181,18 +210,21 @@ export default function DashboardPage() {
                 </h3>
                 {contributions.length > 0 && (
                   <span className="rounded-full bg-emerald-50 px-3 py-1 text-sm font-medium text-emerald-fintech">
-                    {contributions.length} aportación
-                    {contributions.length !== 1 ? "es" : ""}
+                    {/* Mostramos el número real de entradas, no de socios */}
+                    {contributions.length} entrada
+                    {contributions.length !== 1 ? "s" : ""}
                   </span>
                 )}
               </div>
-              <EquityPieChart contributions={contributions} />
+              {/* AQUÍ ESTÁ EL CAMBIO: Pasamos los datos AGRUPADOS al gráfico */}
+              <EquityPieChart contributions={groupedContributionsForChart} />
             </div>
 
             <div>
               <h3 className="mb-4 text-lg font-semibold text-slate-800">
                 Resumen de Aportaciones
               </h3>
+              {/* A la tabla le pasamos los datos NORMALES (sin agrupar) */}
               <ContributionsTable
                 contributions={contributions}
                 onDelete={handleContributionDeleted}

@@ -27,6 +27,7 @@ export function AddContributionModal({
   onSuccess,
 }: AddContributionModalProps) {
   const [contributorName, setContributorName] = useState("");
+  const [concept, setConcept] = useState(""); // <--- NUEVO ESTADO PARA EL CONCEPTO
   const [type, setType] = useState<ContributionType>("cash");
   const [amount, setAmount] = useState("");
   const [loading, setLoading] = useState(false);
@@ -79,16 +80,10 @@ export function AddContributionModal({
 
     const riskAdjusted = numAmount * multiplier;
 
-    const insertPayload: {
-      project_id: string;
-      contributor_name: string;
-      type: ContributionType;
-      amount: number;
-      risk_multiplier: number;
-      risk_adjusted_value: number;
-    } = {
+    const insertPayload = {
       project_id: pid,
       contributor_name: contributorName.trim(),
+      concept: concept.trim(), // <--- GUARDAMOS EL CONCEPTO EN LA BASE DE DATOS
       type,
       amount: numAmount,
       risk_multiplier: multiplier,
@@ -97,23 +92,24 @@ export function AddContributionModal({
 
     try {
       const supabase = createClient();
-      const { error: insertError } = await supabase
+      const { data, error: insertError } = await supabase
         .from("contributions")
-        .insert(insertPayload);
+        .insert(insertPayload)
+        .select()
+        .single();
 
       if (insertError) throw insertError;
 
       setContributorName("");
+      setConcept(""); // <--- LIMPIAMOS EL CAMPO
       setType("cash");
       setAmount("");
-      onSuccess({
-        project_id: pid,
-        contributor_name: contributorName.trim(),
-        type,
-        amount: numAmount,
-        risk_multiplier: multiplier,
-        risk_adjusted_value: riskAdjusted,
-      });
+      
+      // Devolvemos el objeto completo que nos da Supabase
+      if (data) {
+        onSuccess(data as Contribution);
+      }
+      
       onClose();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Error al guardar");
@@ -147,19 +143,39 @@ export function AddContributionModal({
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-5">
+          {/* CAMPO DE NOMBRE */}
           <div>
             <label
               htmlFor="contributor"
               className="mb-1.5 block text-sm font-medium text-slate-700"
             >
-              Nombre del contribuidor
+              Socio
             </label>
             <input
               id="contributor"
               type="text"
               value={contributorName}
               onChange={(e) => setContributorName(e.target.value)}
-              placeholder="Ej: María García"
+              placeholder="Ej: Pablo"
+              className="w-full rounded-lg border border-slate-200 bg-slate-50/50 px-4 py-2.5 text-slate-800 placeholder-slate-400 transition focus:border-emerald-fintech focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-fintech/20"
+              required
+            />
+          </div>
+
+          {/* --- NUEVO CAMPO DE CONCEPTO --- */}
+          <div>
+            <label
+              htmlFor="concept"
+              className="mb-1.5 block text-sm font-medium text-slate-700"
+            >
+              Concepto (Descripción)
+            </label>
+            <input
+              id="concept"
+              type="text"
+              value={concept}
+              onChange={(e) => setConcept(e.target.value)}
+              placeholder="Ej: Desarrollo Web, Capital Inicial..."
               className="w-full rounded-lg border border-slate-200 bg-slate-50/50 px-4 py-2.5 text-slate-800 placeholder-slate-400 transition focus:border-emerald-fintech focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-fintech/20"
               required
             />
