@@ -1,15 +1,15 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  eslint: {
-    // Ignora los errores de estilo al subir a Vercel
-    ignoreDuringBuilds: true,
-  },
+  /* Le decimos a Vercel que si encuentra algún error pequeño de TypeScript 
+     (tipos de datos), haga la vista gorda y publique la web igual.
+  */
   typescript: {
-    // Ignora los errores de tipos al subir a Vercel
     ignoreBuildErrors: true,
   },
+  /* IMPORTANTE: Hemos quitado la parte de 'eslint' que daba error 
+     porque ya no se permite aquí.
+  */
 };
 
 export default nextConfig;
-// Cambio para Vercel
