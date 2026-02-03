@@ -55,12 +55,12 @@ export default function WhatIsEquilyPage() {
         </div>
       </nav>
 
-      {/* --- SECCIÓN PRINCIPAL (HERO) --- */}
+      {/* --- SECCIÓN PRINCIPAL (HERO 2 COLUMNAS) --- */}
       <main className="relative z-10 pt-40 pb-20">
         <div className="mx-auto max-w-7xl px-6">
           <div className="grid lg:grid-cols-2 gap-16 items-center">
             
-            {/* Lado Izquierdo: Texto */}
+            {/* Lado Izquierdo: Texto (Con los nuevos textos) */}
             <div className="relative z-10">
               <div className="inline-flex items-center gap-2 rounded-full bg-emerald-50 border border-emerald-100 px-3 py-1 text-xs font-bold text-emerald-700 mb-6">
                 <span className="flex h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
@@ -71,25 +71,13 @@ export default function WhatIsEquilyPage() {
                 What is <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 to-teal-500">Equily?</span>
               </h1>
               
-              <p className="text-xl text-slate-500 leading-relaxed font-medium mb-8 max-w-lg">
-                Fair equity, powered by data. Equily empowers founders with a dynamic algorithm 
-                that distributes company ownership based on <strong className="text-slate-700">actual contributions</strong>, not just promises.
+              <p className="text-xl text-slate-600 leading-relaxed font-medium mb-6">
+                Equily merges capital (Equity) with justice (Fairly). Through a dynamic algorithm, we calculate each partner's share of the company based on everyone's real contributions: from investment and working hours to knowledge and resources. We transform collective effort into a transparent and balanced distribution of ownership.
               </p>
-              
-              <div className="space-y-4 mb-10">
-                {[
-                  "Track contributions in real-time",
-                  "Mathematical fairness algorithm",
-                  "Investor-ready reports"
-                ].map((item, i) => (
-                  <div key={i} className="flex items-center gap-3">
-                    <div className="flex-shrink-0 w-6 h-6 rounded-full bg-emerald-100 flex items-center justify-center">
-                      <CheckCircle2 className="text-emerald-600 h-4 w-4" />
-                    </div>
-                    <span className="text-slate-700 font-bold text-lg">{item}</span>
-                  </div>
-                ))}
-              </div>
+
+              <p className="text-lg text-slate-500 leading-relaxed font-medium mb-10">
+                The engine behind this calculation operates through a system of customizable multipliers. This allows a specific weight to be assigned to each contribution, multiplying its value according to the chosen adjustments, ensuring that every contribution is valued exactly as the team needs.
+              </p>
 
               <div className="flex gap-4">
                  <Link href="/dashboard" className="px-8 py-4 rounded-xl bg-slate-900 text-white font-bold hover:bg-slate-800 hover:-translate-y-1 transition-all shadow-xl shadow-slate-200">
@@ -102,18 +90,17 @@ export default function WhatIsEquilyPage() {
               </div>
             </div>
 
-            {/* Lado Derecho: IMAGEN PREMIUM */}
-            <div className="relative">
-               {/* Decoración de fondo imagen */}
-              <div className="absolute inset-0 bg-gradient-to-tr from-emerald-500/10 to-blue-500/10 rounded-[40px] blur-3xl -z-10"></div>
+            {/* Lado Derecho: IMAGEN LIMPIA (Sin recuadro exterior) */}
+            <div className="relative flex items-center justify-center">
+               {/* Decoración de fondo sutil detrás de la imagen */}
+              <div className="absolute inset-0 bg-gradient-to-tr from-emerald-500/5 to-blue-500/5 rounded-full blur-3xl -z-10"></div>
               
-              <div className="relative rounded-[32px] overflow-hidden border border-slate-200/60 bg-white/50 backdrop-blur-sm shadow-2xl shadow-slate-200/50 p-4 transform hover:scale-[1.02] transition-transform duration-500">
-                <img 
-                  src="/what-is-equily-hero.png" 
-                  alt="Equily Dynamic Equity Illustration" 
-                  className="w-full h-auto object-contain rounded-2xl" 
-                />
-              </div>
+              {/* Imagen limpia, sin bordes ni contenedores pesados */}
+              <img 
+                src="/what-is-equily-hero.png" 
+                alt="Equily Dynamic Equity Illustration" 
+                className="w-full h-auto object-contain drop-shadow-xl hover:scale-[1.02] transition-transform duration-500" 
+              />
             </div>
           </div>
         </div>
