@@ -1,6 +1,8 @@
 import Link from "next/link";
-// CORRECCIÓN: Volvemos a lucide-react para que la página funcione
-import { ShieldCheck, PieChart, Users, PlayCircle, Globe, Mail, Lock, Twitter, Linkedin, ArrowRight } from "lucide-react";
+import { 
+  ShieldCheck, PieChart, Users, PlayCircle, Globe, Mail, Lock, Twitter, Linkedin, ArrowRight,
+  Sliders, Zap, Briefcase, Scale, AlertTriangle, Settings
+} from "lucide-react";
 
 export default function LandingPage() {
   return (
@@ -17,7 +19,6 @@ export default function LandingPage() {
         <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-2">
           <div className="flex items-center gap-10">
             <Link href="/">
-              {/* Logo en tamaño grande y nítido */}
               <img src="/logo.png" alt="Equily Logo" className="h-32 w-auto object-contain cursor-pointer transition-transform hover:scale-105" />
             </Link>
             <div className="hidden md:flex items-center gap-8">
@@ -27,7 +28,6 @@ export default function LandingPage() {
               <Link href="/how-it-works" className="text-sm font-bold text-slate-600 hover:text-emerald-600 transition">
                 How Work Equily?
               </Link>
-              {/* Enlaces solicitados en el Navbar */}
               <Link href="/pricing" className="text-sm font-bold text-slate-600 hover:text-emerald-600 transition">
                 Pricing
               </Link>
@@ -70,7 +70,7 @@ export default function LandingPage() {
         </div>
       </header>
 
-      {/* --- CAP TABLE LIVE STATUS --- */}
+      {/* --- CAP TABLE LIVE STATUS (MANTENIDO) --- */}
       <section className="py-20 relative z-10">
         <div className="mx-auto max-w-6xl px-6">
           <div className="rounded-[40px] border border-slate-800 bg-slate-950 p-10 shadow-[0_50px_100px_-20px_rgba(0,0,0,0.4)] text-white relative overflow-hidden">
@@ -131,23 +131,144 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* --- CTA SECTION --- */}
-      <section className="py-24 relative z-10">
-        <div className="mx-auto max-w-6xl px-6">
-          <div className="relative rounded-[60px] bg-slate-900 p-16 lg:p-24 overflow-hidden border border-slate-800 text-center shadow-2xl">
-            <div className="absolute inset-0 bg-gradient-to-br from-emerald-600/20 to-blue-600/20"></div>
-            <div className="relative z-10">
-              <h2 className="text-5xl lg:text-7xl font-black text-white mb-8 tracking-tight">
-                Start Slicing The Pie <br />
-                <span className="text-emerald-400">fairly today</span>
-              </h2>
-              <p className="text-xl text-slate-300 mb-12 max-w-2xl mx-auto font-medium leading-relaxed">
-                Join thousands of smart founders who choose to stop guessing and start splitting equity with precision.
-              </p>
-              <Link href="/dashboard" className="inline-flex items-center justify-center rounded-2xl bg-white px-12 py-6 text-xl font-black text-slate-900 shadow-2xl transition hover:scale-105 active:scale-95">
-                Create My Project Now
+      {/* --- NUEVA SECCIÓN: CHOOSE YOUR FRAMEWORK (Sustituye al CTA antiguo) --- */}
+      <section className="py-24 relative z-10 bg-slate-900 text-white">
+        {/* Fondo oscuro para separar visualmente */}
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-emerald-900/20 via-slate-900 to-slate-900"></div>
+        <div className="mx-auto max-w-7xl px-6 relative">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl lg:text-5xl font-black tracking-tight mb-4">Choose your Equity Framework</h2>
+            <p className="text-slate-400 text-lg font-medium">Select the mathematical logic that will govern your startup's cap table.</p>
+          </div>
+
+          <div className="grid lg:grid-cols-3 gap-8 items-start">
+            
+            {/* --- CARD 1: CUSTOM MODEL (IZQUIERDA) --- */}
+            <div className="bg-slate-950 border border-slate-800 rounded-3xl p-8 hover:border-slate-600 transition-colors shadow-2xl relative group h-full">
+              <div className="text-center mb-8 pb-8 border-b border-slate-800">
+                <div className="bg-slate-900 w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4 text-slate-400 group-hover:text-white transition-colors">
+                  <Sliders className="h-8 w-8" />
+                </div>
+                <h3 className="text-2xl font-black">Custom Model</h3>
+                <p className="text-slate-500 text-sm font-bold mt-2">For total control</p>
+              </div>
+              
+              <div className="space-y-6">
+                <div className="flex items-start gap-4">
+                   <div className="bg-slate-900 p-2 rounded-lg"><Settings className="h-5 w-5 text-slate-400" /></div>
+                   <div>
+                     <p className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-1">Multipliers</p>
+                     <p className="font-bold text-white">Fully Editable</p>
+                   </div>
+                </div>
+                <div className="flex items-start gap-4">
+                   <div className="bg-slate-900 p-2 rounded-lg"><PieChart className="h-5 w-5 text-slate-400" /></div>
+                   <div>
+                     <p className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-1">Configuration</p>
+                     <p className="font-bold text-white">Manual Setup</p>
+                   </div>
+                </div>
+                {/* Risk Logic Toggle añadido aquí como pediste */}
+                <div className="flex items-center justify-between bg-slate-900/50 p-4 rounded-xl border border-slate-800">
+                   <div className="flex items-center gap-3">
+                     <Zap className="h-5 w-5 text-yellow-500" />
+                     <span className="font-bold text-sm text-slate-300">Risk Logic</span>
+                   </div>
+                   <div className="w-10 h-5 bg-slate-700 rounded-full relative cursor-not-allowed opacity-50">
+                      <div className="absolute left-1 top-1 bg-slate-400 w-3 h-3 rounded-full"></div>
+                   </div>
+                </div>
+              </div>
+              <button className="w-full mt-8 py-4 rounded-xl border border-slate-700 text-slate-300 font-bold hover:bg-slate-800 hover:text-white transition-all">
+                Configure from scratch
+              </button>
+            </div>
+
+            {/* --- CARD 2: JUST SPLIT MODEL (CENTRO - DESTACADO) --- */}
+            <div className="bg-slate-900 border-2 border-emerald-500 rounded-3xl p-8 shadow-[0_0_50px_-10px_rgba(16,185,129,0.3)] relative transform lg:-translate-y-6 z-10 h-full">
+              <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-emerald-500 text-white px-4 py-1 rounded-full text-xs font-black tracking-widest uppercase shadow-lg">
+                Recommended
+              </div>
+              <div className="text-center mb-8 pb-8 border-b border-slate-800/50">
+                <div className="bg-emerald-500/10 w-20 h-20 rounded-2xl flex items-center justify-center mx-auto mb-4 text-emerald-500">
+                  <ShieldCheck className="h-10 w-10" />
+                </div>
+                <h3 className="text-3xl font-black text-white">Just Split Model</h3>
+                <p className="text-emerald-400 text-sm font-bold mt-2">Industry Standard</p>
+              </div>
+              
+              <div className="space-y-6">
+                <div className="flex items-start gap-4">
+                   <div className="bg-emerald-500/10 p-2 rounded-lg"><Zap className="h-6 w-6 text-emerald-500" /></div>
+                   <div>
+                     <p className="text-xs font-bold text-emerald-500/60 uppercase tracking-widest mb-1">Capital (Cash)</p>
+                     <p className="font-black text-2xl text-white">x4 Multiplier</p>
+                   </div>
+                </div>
+                <div className="flex items-start gap-4">
+                   <div className="bg-blue-500/10 p-2 rounded-lg"><Briefcase className="h-6 w-6 text-blue-500" /></div>
+                   <div>
+                     <p className="text-xs font-bold text-blue-500/60 uppercase tracking-widest mb-1">Work & Contribution</p>
+                     <p className="font-bold text-white text-lg leading-tight">x2 Multiplier</p>
+                     {/* Texto específico solicitado */}
+                     <p className="text-xs text-slate-400 mt-1 font-medium">Work y aportaciones tangibles e intangibles</p>
+                   </div>
+                </div>
+                <div className="flex items-center justify-between bg-emerald-500/10 p-4 rounded-xl border border-emerald-500/20">
+                   <div className="flex items-center gap-3">
+                     <PieChart className="h-5 w-5 text-emerald-500" />
+                     <span className="font-bold text-sm text-white">Risk Logic (Logarithmic)</span>
+                   </div>
+                   <div className="w-10 h-5 bg-emerald-600 rounded-full relative cursor-pointer">
+                      <div className="absolute right-1 top-1 bg-white w-3 h-3 rounded-full shadow-sm"></div>
+                   </div>
+                </div>
+              </div>
+              <Link href="/dashboard" className="block w-full mt-8 py-5 rounded-xl bg-emerald-600 text-white font-black text-center text-lg shadow-lg hover:bg-emerald-500 hover:scale-[1.02] transition-all">
+                Use Standard Model
               </Link>
             </div>
+
+            {/* --- CARD 3: FLAT MODEL (DERECHA) --- */}
+            <div className="bg-slate-950 border border-slate-800 rounded-3xl p-8 hover:border-purple-500/50 transition-colors shadow-2xl group h-full">
+              <div className="text-center mb-8 pb-8 border-b border-slate-800">
+                <div className="bg-purple-500/10 w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4 text-purple-500 group-hover:text-purple-400 transition-colors">
+                  <Scale className="h-8 w-8" />
+                </div>
+                <h3 className="text-2xl font-black">Flat Model</h3>
+                <p className="text-purple-500 text-sm font-bold mt-2">Fixed Split</p>
+              </div>
+              
+              <div className="space-y-6">
+                <div className="flex items-start gap-4">
+                   <div className="bg-purple-500/10 p-2 rounded-lg"><Users className="h-5 w-5 text-purple-500" /></div>
+                   <div>
+                     <p className="text-xs font-bold text-purple-500/60 uppercase tracking-widest mb-1">Capital & Work</p>
+                     <p className="font-bold text-white">x1 Multiplier (Equal)</p>
+                   </div>
+                </div>
+                <div className="flex items-start gap-4">
+                   <div className="bg-purple-500/10 p-2 rounded-lg"><Globe className="h-5 w-5 text-purple-500" /></div>
+                   <div>
+                     <p className="text-xs font-bold text-purple-500/60 uppercase tracking-widest mb-1">Best For</p>
+                     <p className="font-bold text-white">Service Agencies</p>
+                   </div>
+                </div>
+                
+                {/* Warning Box */}
+                <div className="bg-red-500/10 border border-red-500/20 p-4 rounded-xl flex gap-3 items-start">
+                  <AlertTriangle className="h-5 w-5 text-red-500 shrink-0 mt-0.5" />
+                  <p className="text-xs text-red-200 font-medium leading-relaxed">
+                    <strong className="text-red-400 block mb-1">Caution:</strong>
+                    Discourages cash investment as it treats liquid capital equal to time.
+                  </p>
+                </div>
+              </div>
+              <button className="w-full mt-8 py-4 rounded-xl border border-slate-700 text-slate-300 font-bold hover:bg-slate-800 hover:text-white transition-all">
+                Use Flat Model
+              </button>
+            </div>
+
           </div>
         </div>
       </section>
