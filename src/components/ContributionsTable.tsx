@@ -6,10 +6,10 @@ import { createClient } from "@/utils/supabase/client";
 import type { Contribution } from "@/types/database";
 
 const TYPE_LABELS: Record<string, string> = {
-  cash: "Efectivo",
-  labor: "Trabajo",
-  ip: "Propiedad Intelectual",
-  assets: "Activos",
+  cash: "Cash",
+  labor: "Labor",
+  ip: "IP",
+  assets: "Assets",
 };
 
 interface ContributionsTableProps {
@@ -28,7 +28,7 @@ export function ContributionsTable({
   );
 
   const handleDelete = async (c: Contribution) => {
-    if (!window.confirm("¿Estás seguro?")) return;
+    if (!window.confirm("Are you sure you want to delete this?")) return;
 
     const supabase = createClient();
     const id = c.id;
@@ -42,11 +42,10 @@ export function ContributionsTable({
 
       setDeletingId(null);
       if (error) {
-        alert("Error al eliminar: " + error.message);
+        alert("Error deleting: " + error.message);
         return;
       }
     } else {
-      // Fallback por si no hubiera ID (casos raros)
       const { error } = await supabase
         .from("contributions")
         .delete()
@@ -58,7 +57,7 @@ export function ContributionsTable({
         .eq("risk_adjusted_value", c.risk_adjusted_value);
 
       if (error) {
-        alert("Error al eliminar: " + error.message);
+        alert("Error deleting: " + error.message);
         return;
       }
     }
@@ -70,9 +69,9 @@ export function ContributionsTable({
     return (
       <div className="rounded-2xl border border-slate-200 bg-white p-12 text-center shadow-sm">
         <PieChartIcon className="mx-auto mb-3 h-14 w-14 text-slate-300" />
-        <p className="text-slate-500">No hay aportaciones registradas</p>
+        <p className="text-slate-500">No contributions recorded yet</p>
         <p className="mt-1 text-sm text-slate-400">
-          Añade la primera con el botón de arriba
+          Add your first one using the button above
         </p>
       </div>
     );
@@ -85,29 +84,28 @@ export function ContributionsTable({
           <thead>
             <tr className="border-b border-slate-200 bg-slate-50/80">
               <th className="px-6 py-4 text-left text-sm font-semibold text-slate-700">
-                Socio
-              </th>
-              {/* --- NUEVA COLUMNA DE CONCEPTO --- */}
-              <th className="px-6 py-4 text-left text-sm font-semibold text-slate-700">
-                Concepto
+                Contributor
               </th>
               <th className="px-6 py-4 text-left text-sm font-semibold text-slate-700">
-                Tipo
+                Concept
+              </th>
+              <th className="px-6 py-4 text-left text-sm font-semibold text-slate-700">
+                Type
               </th>
               <th className="px-6 py-4 text-right text-sm font-semibold text-slate-700">
-                Importe
+                Amount
               </th>
               <th className="px-6 py-4 text-right text-sm font-semibold text-slate-700">
-                Multiplicador
+                Multiplier
               </th>
               <th className="px-6 py-4 text-right text-sm font-semibold text-slate-700">
-                Valor ajustado
+                Risk Adj. Value
               </th>
               <th className="px-6 py-4 text-right text-sm font-semibold text-slate-700">
                 % Equity
               </th>
               <th className="px-6 py-4 text-center text-sm font-semibold text-slate-700">
-                Acciones
+                Actions
               </th>
             </tr>
           </thead>
@@ -128,22 +126,18 @@ export function ContributionsTable({
                   <td className="px-6 py-4 font-medium text-slate-800">
                     {c.contributor_name}
                   </td>
-                  
-                  {/* --- NUEVA CELDA DE CONCEPTO --- */}
                   <td className="px-6 py-4 text-slate-600">
-                    {/* Si no hay concepto, mostramos un guión gris flojito */}
                     {c.concept ? (
                       c.concept
                     ) : (
                       <span className="text-slate-400 italic">--</span>
                     )}
                   </td>
-
                   <td className="px-6 py-4 text-slate-600">
                     {TYPE_LABELS[c.type] ?? c.type}
                   </td>
                   <td className="px-6 py-4 text-right text-slate-600">
-                    {Number(c.amount).toLocaleString("es-ES", {
+                    {Number(c.amount).toLocaleString("en-US", {
                       minimumFractionDigits: 2,
                     })}
                   </td>
@@ -151,7 +145,7 @@ export function ContributionsTable({
                     x{c.risk_multiplier}
                   </td>
                   <td className="px-6 py-4 text-right font-medium text-slate-800">
-                    {Number(c.risk_adjusted_value).toLocaleString("es-ES", {
+                    {Number(c.risk_adjusted_value).toLocaleString("en-US", {
                       minimumFractionDigits: 2,
                     })}
                   </td>
@@ -164,7 +158,7 @@ export function ContributionsTable({
                       onClick={() => handleDelete(c)}
                       disabled={isDeleting}
                       className="inline-flex items-center justify-center rounded-lg p-2 text-red-600 transition hover:bg-red-50 hover:text-red-700 disabled:opacity-50"
-                      aria-label="Eliminar"
+                      aria-label="Delete"
                     >
                       <Trash2 className="h-5 w-5" />
                     </button>
@@ -175,12 +169,11 @@ export function ContributionsTable({
           </tbody>
           <tfoot>
             <tr className="border-t-2 border-slate-200 bg-slate-50 font-semibold">
-              {/* Ajustamos colSpan a 5 para que cubra Socio, Concepto, Tipo, Importe y Mult. */}
               <td colSpan={5} className="px-6 py-4 text-slate-700">
                 Total
               </td>
               <td className="px-6 py-4 text-right text-slate-800">
-                {total.toLocaleString("es-ES", {
+                {total.toLocaleString("en-US", {
                   minimumFractionDigits: 2,
                 })}
               </td>

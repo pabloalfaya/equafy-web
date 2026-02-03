@@ -7,10 +7,10 @@ import type { ContributionType, Contribution } from "@/types/database";
 import { DEFAULT_MULTIPLIERS } from "@/types/database";
 
 const CONTRIBUTION_LABELS: Record<ContributionType, string> = {
-  cash: "Efectivo",
-  labor: "Trabajo",
-  ip: "Propiedad Intelectual",
-  assets: "Activos",
+  cash: "Cash",
+  labor: "Labor / Work",
+  ip: "Intellectual Property",
+  assets: "Assets / Equipment",
 };
 
 interface AddContributionModalProps {
@@ -27,7 +27,7 @@ export function AddContributionModal({
   onSuccess,
 }: AddContributionModalProps) {
   const [contributorName, setContributorName] = useState("");
-  const [concept, setConcept] = useState(""); // <--- NUEVO ESTADO PARA EL CONCEPTO
+  const [concept, setConcept] = useState("");
   const [type, setType] = useState<ContributionType>("cash");
   const [amount, setAmount] = useState("");
   const [loading, setLoading] = useState(false);
@@ -64,7 +64,7 @@ export function AddContributionModal({
     e.preventDefault();
     const pid = resolvedProjectId ?? projectId;
     if (!pid) {
-      setError("No se encontró el proyecto Equily");
+      setError("Project ID not found");
       return;
     }
 
@@ -73,7 +73,7 @@ export function AddContributionModal({
 
     const numAmount = parseFloat(amount);
     if (isNaN(numAmount) || numAmount <= 0) {
-      setError("Introduce un importe válido");
+      setError("Please enter a valid amount");
       setLoading(false);
       return;
     }
@@ -83,7 +83,7 @@ export function AddContributionModal({
     const insertPayload = {
       project_id: pid,
       contributor_name: contributorName.trim(),
-      concept: concept.trim(), // <--- GUARDAMOS EL CONCEPTO EN LA BASE DE DATOS
+      concept: concept.trim(),
       type,
       amount: numAmount,
       risk_multiplier: multiplier,
@@ -101,18 +101,17 @@ export function AddContributionModal({
       if (insertError) throw insertError;
 
       setContributorName("");
-      setConcept(""); // <--- LIMPIAMOS EL CAMPO
+      setConcept("");
       setType("cash");
       setAmount("");
       
-      // Devolvemos el objeto completo que nos da Supabase
       if (data) {
         onSuccess(data as Contribution);
       }
       
       onClose();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Error al guardar");
+      setError(err instanceof Error ? err.message : "Error saving contribution");
     } finally {
       setLoading(false);
     }
@@ -130,52 +129,50 @@ export function AddContributionModal({
       <div className="relative z-10 w-full max-w-md rounded-2xl bg-white p-6 shadow-2xl ring-1 ring-slate-200/50">
         <div className="mb-6 flex items-center justify-between">
           <h2 className="text-xl font-semibold text-slate-800">
-            Añadir Aportación
+            Add Contribution
           </h2>
           <button
             type="button"
             onClick={onClose}
             className="rounded-lg p-2 text-slate-400 transition hover:bg-slate-100 hover:text-slate-600"
-            aria-label="Cerrar"
+            aria-label="Close"
           >
             <X className="h-5 w-5" />
           </button>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-5">
-          {/* CAMPO DE NOMBRE */}
           <div>
             <label
               htmlFor="contributor"
               className="mb-1.5 block text-sm font-medium text-slate-700"
             >
-              Socio
+              Contributor Name
             </label>
             <input
               id="contributor"
               type="text"
               value={contributorName}
               onChange={(e) => setContributorName(e.target.value)}
-              placeholder="Ej: Pablo"
+              placeholder="e.g. John Doe"
               className="w-full rounded-lg border border-slate-200 bg-slate-50/50 px-4 py-2.5 text-slate-800 placeholder-slate-400 transition focus:border-emerald-fintech focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-fintech/20"
               required
             />
           </div>
 
-          {/* --- NUEVO CAMPO DE CONCEPTO --- */}
           <div>
             <label
               htmlFor="concept"
               className="mb-1.5 block text-sm font-medium text-slate-700"
             >
-              Concepto (Descripción)
+              Concept (Description)
             </label>
             <input
               id="concept"
               type="text"
               value={concept}
               onChange={(e) => setConcept(e.target.value)}
-              placeholder="Ej: Desarrollo Web, Capital Inicial..."
+              placeholder="e.g. Initial Capital, Web Development..."
               className="w-full rounded-lg border border-slate-200 bg-slate-50/50 px-4 py-2.5 text-slate-800 placeholder-slate-400 transition focus:border-emerald-fintech focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-fintech/20"
               required
             />
@@ -186,7 +183,7 @@ export function AddContributionModal({
               htmlFor="type"
               className="mb-1.5 block text-sm font-medium text-slate-700"
             >
-              Tipo de aportación
+              Contribution Type
             </label>
             <select
               id="type"
@@ -209,7 +206,7 @@ export function AddContributionModal({
               htmlFor="amount"
               className="mb-1.5 block text-sm font-medium text-slate-700"
             >
-              Importe base
+              Base Amount (Value)
             </label>
             <input
               id="amount"
@@ -227,7 +224,7 @@ export function AddContributionModal({
           <div className="rounded-xl bg-slate-100/80 p-4">
             <p className="text-sm text-slate-600">
               <span className="font-medium text-slate-700">
-                Valor ajustado por riesgo:
+                Risk Adjusted Value:
               </span>{" "}
               {riskAdjustedValue} <span className="text-slate-500">(x{multiplier})</span>
             </p>
@@ -245,14 +242,14 @@ export function AddContributionModal({
               onClick={onClose}
               className="flex-1 rounded-lg border border-slate-200 bg-white px-4 py-2.5 font-medium text-slate-600 transition hover:bg-slate-50"
             >
-              Cancelar
+              Cancel
             </button>
             <button
               type="submit"
               disabled={loading || !resolvedProjectId}
               className="flex-1 rounded-lg bg-emerald-fintech px-4 py-2.5 font-medium text-white shadow-sm transition hover:bg-emerald-fintech-dark disabled:opacity-50"
             >
-              {loading ? "Guardando…" : "Añadir"}
+              {loading ? "Saving..." : "Add Contribution"}
             </button>
           </div>
         </form>

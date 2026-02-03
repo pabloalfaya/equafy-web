@@ -20,13 +20,13 @@ export default function LandingPage() {
               href="/dashboard"
               className="text-sm font-medium text-slate-600 hover:text-slate-900 transition"
             >
-              Iniciar Sesión
+              Log in
             </Link>
             <Link
               href="/dashboard"
               className="rounded-lg bg-slate-900 px-4 py-2 text-sm font-medium text-white transition hover:bg-slate-800"
             >
-              Empezar ahora
+              Get Started
             </Link>
           </div>
         </div>
@@ -37,20 +37,18 @@ export default function LandingPage() {
         <section className="relative overflow-hidden pt-16 pb-24 lg:pt-32">
           <div className="mx-auto max-w-6xl px-6 text-center">
             <h1 className="mx-auto mb-6 max-w-3xl text-4xl font-extrabold tracking-tight text-slate-900 sm:text-6xl">
-              Gestiona el <span className="text-emerald-600">Equity</span> de tu
-              startup sin complicaciones
+              Manage your Startup&apos;s <span className="text-emerald-600">Equity</span> without the headache
             </h1>
             <p className="mx-auto mb-10 max-w-2xl text-lg text-slate-600">
-              Olvídate de las hojas de cálculo desordenadas. Registra aportaciones
-              de dinero, trabajo y activos, y visualiza el reparto de acciones en
-              tiempo real.
+              Forget messy spreadsheets. Track cash, labor, and asset contributions, 
+              and visualize your equity split in real-time.
             </p>
             <div className="flex flex-col justify-center gap-4 sm:flex-row">
               <Link
                 href="/dashboard"
                 className="inline-flex items-center justify-center rounded-xl bg-emerald-600 px-8 py-4 text-lg font-semibold text-white shadow-lg transition hover:bg-emerald-700 hover:shadow-emerald-600/20"
               >
-                Crear mi proyecto gratis
+                Create my project for free
               </Link>
             </div>
           </div>
@@ -66,10 +64,10 @@ export default function LandingPage() {
                   <PieChart className="h-6 w-6" />
                 </div>
                 <h3 className="mb-2 text-xl font-bold text-slate-900">
-                  Visualización Clara
+                  Clear Visualization
                 </h3>
                 <p className="text-slate-600">
-                  Gráficos dinámicos que se actualizan automáticamente con cada nueva aportación.
+                  Dynamic charts that update automatically with every new contribution.
                 </p>
               </div>
               {/* Feature 2 */}
@@ -78,10 +76,10 @@ export default function LandingPage() {
                   <Users className="h-6 w-6" />
                 </div>
                 <h3 className="mb-2 text-xl font-bold text-slate-900">
-                  Slicing Pie
+                  Fair Split Logic
                 </h3>
                 <p className="text-slate-600">
-                  Calcula el valor ajustado por riesgo del trabajo y el dinero para un reparto justo.
+                  Calculate risk-adjusted value for labor and cash to ensure a fair equity distribution.
                 </p>
               </div>
               {/* Feature 3 */}
@@ -90,10 +88,10 @@ export default function LandingPage() {
                   <ShieldCheck className="h-6 w-6" />
                 </div>
                 <h3 className="mb-2 text-xl font-bold text-slate-900">
-                  Registro Seguro
+                  Secure Record
                 </h3>
                 <p className="text-slate-600">
-                  Mantén un histórico inmutable de quién aportó qué y cuándo lo hizo.
+                  Keep an immutable history of who contributed what and when.
                 </p>
               </div>
             </div>
@@ -105,7 +103,7 @@ export default function LandingPage() {
       <footer className="border-t border-slate-100 bg-white py-12">
         <div className="mx-auto max-w-6xl px-6 text-center">
           <p className="text-sm text-slate-500">
-            © 2024 Equily. Hecho para fundadores.
+            © 2026 Equily. Built for founders.
           </p>
         </div>
       </footer>
