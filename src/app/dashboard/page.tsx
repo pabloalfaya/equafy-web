@@ -139,7 +139,6 @@ export default function DashboardPage() {
         <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-2">
           <div className="flex items-center gap-8">
             <Link href="/" className="relative group">
-               {/* LOGO GRANDE */}
                <img src="/logo.png" alt="Equily Logo" className="h-28 w-auto object-contain transition-transform duration-300 group-hover:scale-105" />
             </Link>
             
@@ -180,7 +179,6 @@ export default function DashboardPage() {
           
           {!selectedProject ? (
             <div className="flex flex-col items-center justify-center rounded-[32px] border border-slate-200 bg-white/60 backdrop-blur-sm p-20 text-center shadow-xl">
-              {/* ... (Sin cambios en el estado vacío) ... */}
               <div className="bg-slate-50 p-6 rounded-full mb-6">
                 <Layers className="h-12 w-12 text-slate-300" />
               </div>
@@ -222,9 +220,7 @@ export default function DashboardPage() {
                 </button>
               </div>
 
-              {/* --- ESTRUCTURA VÉTICAL: TABLA ARRIBA, GRÁFICO ABAJO --- */}
-              
-              {/* SECCIÓN 1: TABLA (Ancho completo) */}
+              {/* SECCIÓN 1: TABLA (Arriba) */}
               <div className="mb-8 bg-white/70 backdrop-blur-xl border border-white/60 rounded-[32px] p-8 shadow-xl shadow-slate-200/50 overflow-hidden flex flex-col">
                   <div className="flex items-center gap-3 mb-6">
                         <div className="p-2 bg-blue-50 rounded-lg">
@@ -241,7 +237,7 @@ export default function DashboardPage() {
                   </div>
               </div>
 
-              {/* SECCIÓN 2: GRÁFICO CIRCULAR (Ancho completo, Altura fija grande) */}
+              {/* SECCIÓN 2: GRÁFICO CIRCULAR (Abajo, Altura fija 500px) */}
               <div className="bg-white/70 backdrop-blur-xl border border-white/60 rounded-[32px] p-8 shadow-xl shadow-slate-200/50 flex flex-col">
                   <div className="flex items-center justify-between mb-8">
                     <div className="flex items-center gap-3">
@@ -250,24 +246,11 @@ export default function DashboardPage() {
                         </div>
                         <h3 className="font-bold text-slate-900 text-xl">Equity Distribution</h3>
                     </div>
-                    {contributions.length > 0 && (
-                      <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-bold text-slate-500">
-                        {contributions.length} entries
-                      </span>
-                    )}
                   </div>
                   
-                  {/* Contenedor del gráfico con ALTURA FIJA GRANDE para forzar el círculo */}
-                  <div className="w-full h-[500px] flex items-center justify-center relative">
-                      {groupedContributionsForChart.length > 0 ? (
-                        // NOTA: Pásame el código de EquityPieChart.tsx para arreglar los colores.
-                        <EquityPieChart contributions={groupedContributionsForChart} />
-                      ) : (
-                        <div className="text-center">
-                          <div className="w-32 h-32 rounded-full border-4 border-slate-100 mx-auto mb-4 border-dashed"></div>
-                          <p className="text-slate-400 text-sm font-medium">No data to display</p>
-                        </div>
-                      )}
+                  {/* AQUÍ ESTÁ LA SOLUCIÓN: Altura fija de 500px */}
+                  <div className="w-full h-[500px]">
+                      <EquityPieChart contributions={groupedContributionsForChart} />
                   </div>
               </div>
             </>
