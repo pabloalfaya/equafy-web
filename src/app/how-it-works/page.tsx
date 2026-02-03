@@ -11,17 +11,35 @@ export default function HowItWorksPage() {
         <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-emerald-100/30 blur-[120px] rounded-full"></div>
       </div>
 
-      {/* --- NAVBAR --- */}
+      {/* --- NAVBAR UNIFICADO Y LOGO GRANDE (h-32) --- */}
       <nav className="border-b border-slate-200/60 bg-white/70 backdrop-blur-xl sticky top-0 z-50">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-2">
           <div className="flex items-center gap-10">
             <Link href="/">
-              <img src="/logo.png" alt="Equily Logo" className="h-20 w-auto object-contain cursor-pointer" />
+              {/* Logo ampliado a h-32 para consistencia total */}
+              <img src="/logo.png" alt="Equily Logo" className="h-32 w-auto object-contain cursor-pointer transition-transform hover:scale-105" />
             </Link>
+            <div className="hidden md:flex items-center gap-8">
+              <Link href="/what-is-equily" className="text-sm font-bold text-slate-600 hover:text-emerald-600 transition">
+                What is Equily?
+              </Link>
+              <Link href="/how-it-works" className="text-sm font-bold text-slate-600 hover:text-emerald-600 transition">
+                How Work Equily?
+              </Link>
+              <Link href="/pricing" className="text-sm font-bold text-slate-600 hover:text-emerald-600 transition">
+                Pricing
+              </Link>
+              <Link href="/contact" className="text-sm font-bold text-slate-600 hover:text-emerald-600 transition">
+                Contact
+              </Link>
+            </div>
           </div>
           <div className="flex items-center gap-4">
             <Link href="/dashboard" className="text-sm font-bold text-slate-600 hover:text-slate-900 transition">Log in</Link>
-            <Link href="/dashboard" className="rounded-full bg-slate-900 px-6 py-2.5 text-sm font-bold text-white transition hover:bg-slate-800 shadow-lg">Start Free</Link>
+            <Link href="/dashboard" className="text-sm font-bold text-slate-600 hover:text-emerald-600 transition">
+              Sign Up
+            </Link>
+            <Link href="/dashboard" className="rounded-full bg-slate-900 px-6 py-2.5 text-sm font-bold text-white transition hover:bg-slate-800 shadow-lg shadow-slate-200">Start Free</Link>
           </div>
         </div>
       </nav>
@@ -95,10 +113,13 @@ export default function HowItWorksPage() {
         </div>
       </main>
 
-      {/* --- FOOTER --- */}
+      {/* --- FOOTER UNIFICADO --- */}
       <footer className="bg-white pt-24 pb-12 border-t border-slate-200 relative z-10 mt-20">
         <div className="mx-auto max-w-7xl px-6 text-center">
-            <Link href="/"><img src="/logo.png" alt="Equily" className="h-12 mx-auto mb-8 opacity-40 grayscale hover:grayscale-0 transition-all" /></Link>
+            <Link href="/">
+              {/* Logo en footer también ampliado para consistencia */}
+              <img src="/logo.png" alt="Equily" className="h-20 mx-auto mb-8 opacity-40 grayscale hover:grayscale-0 transition-all" />
+            </Link>
             <p className="text-slate-400 font-black text-sm mb-8 uppercase tracking-widest">© 2026 Equily. Modern tools for modern founders.</p>
             <div className="flex justify-center gap-10">
               <Twitter className="h-6 w-6 text-slate-300 hover:text-slate-900 cursor-pointer transition-colors" />

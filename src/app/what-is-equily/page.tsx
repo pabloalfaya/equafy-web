@@ -10,17 +10,35 @@ export default function WhatIsEquilyPage() {
         <div className="absolute inset-0 opacity-[0.2]" style={{ backgroundImage: 'radial-gradient(#059669 0.8px, transparent 0.8px)', backgroundSize: '32px 32px' }}></div>
       </div>
 
-      {/* --- NAVBAR --- */}
+      {/* --- NAVBAR UNIFICADO Y LOGO GRANDE --- */}
       <nav className="border-b border-slate-200/60 bg-white/70 backdrop-blur-xl sticky top-0 z-50">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-2">
           <div className="flex items-center gap-10">
             <Link href="/">
-              <img src="/logo.png" alt="Equily Logo" className="h-20 w-auto object-contain cursor-pointer" />
+              {/* Logo ampliado a h-32 para consistencia con Landing */}
+              <img src="/logo.png" alt="Equily Logo" className="h-32 w-auto object-contain cursor-pointer transition-transform hover:scale-105" />
             </Link>
+            <div className="hidden md:flex items-center gap-8">
+              <Link href="/what-is-equily" className="text-sm font-bold text-slate-600 hover:text-emerald-600 transition">
+                What is Equily?
+              </Link>
+              <Link href="/how-it-works" className="text-sm font-bold text-slate-600 hover:text-emerald-600 transition">
+                How Work Equily?
+              </Link>
+              <Link href="/pricing" className="text-sm font-bold text-slate-600 hover:text-emerald-600 transition">
+                Pricing
+              </Link>
+              <Link href="/contact" className="text-sm font-bold text-slate-600 hover:text-emerald-600 transition">
+                Contact
+              </Link>
+            </div>
           </div>
-          <div className="flex items-center gap-4 font-bold">
-             <Link href="/dashboard" className="text-sm text-slate-600 hover:text-slate-900 transition">Log in</Link>
-             <Link href="/dashboard" className="rounded-full bg-slate-900 px-6 py-2.5 text-sm text-white transition hover:bg-slate-800 shadow-lg">Start Free</Link>
+          <div className="flex items-center gap-4">
+            <Link href="/dashboard" className="text-sm font-bold text-slate-600 hover:text-slate-900">Log in</Link>
+            <Link href="/dashboard" className="text-sm font-bold text-slate-600 hover:text-emerald-600 transition">
+              Sign Up
+            </Link>
+            <Link href="/dashboard" className="rounded-full bg-slate-900 px-6 py-2.5 text-sm font-bold text-white transition hover:bg-slate-800 shadow-lg shadow-slate-200">Start Free</Link>
           </div>
         </div>
       </nav>
@@ -54,17 +72,15 @@ export default function WhatIsEquilyPage() {
               </div>
             </div>
 
-            {/* Lado Derecho: TU IMAGEN (Sin bordes ni recuadros) */}
+            {/* Lado Derecho: IMAGEN LIMPIA */}
             <div className="relative flex items-center justify-center">
-              {/* Hemos quitado el rounded-40, overflow-hidden y shadow-2xl del div padre */}
               <div className="relative w-full max-w-[500px] flex items-center justify-center">
                 <img 
                   src="/what-is-equily-hero.png" 
                   alt="Equily Dynamic Equity Illustration" 
-                  className="w-full h-auto object-contain" // Cambiado a object-contain para no cortar la imagen
+                  className="w-full h-auto object-contain" 
                 />
               </div>
-              {/* Resplandor decorativo sutil detrás para dar profundidad sin recuadros */}
               <div className="absolute inset-0 -z-10 bg-emerald-500/5 blur-[120px] rounded-full"></div>
             </div>
           </div>
@@ -74,7 +90,6 @@ export default function WhatIsEquilyPage() {
         <section className="mt-40 bg-slate-900 py-32 border-y border-slate-800 relative">
           <div className="absolute inset-0 opacity-10 bg-[radial-gradient(#10b981_1px,transparent_1px)] [background-size:20px_20px]"></div>
           <div className="mx-auto max-w-6xl px-6 text-center relative z-10">
-            {/* Título cambiado de "Process flow" a "How it works" */}
             <h2 className="text-4xl font-black text-white mb-20 uppercase tracking-[0.2em] border-b-4 border-emerald-500 inline-block pb-2">How it works</h2>
             
             <div className="grid md:grid-cols-3 gap-12 text-left">
@@ -96,10 +111,12 @@ export default function WhatIsEquilyPage() {
         </section>
       </main>
 
-      {/* --- FOOTER --- */}
+      {/* --- FOOTER UNIFICADO --- */}
       <footer className="bg-white pt-24 pb-12 border-t border-slate-200 relative z-10">
         <div className="mx-auto max-w-7xl px-6 text-center">
-            <Link href="/"><img src="/logo.png" alt="Equily" className="h-12 mx-auto mb-8 opacity-40 grayscale hover:grayscale-0 transition-all" /></Link>
+            <Link href="/">
+              <img src="/logo.png" alt="Equily" className="h-20 mx-auto mb-8 opacity-40 grayscale hover:grayscale-0 transition-all" />
+            </Link>
             <p className="text-slate-400 font-black text-sm mb-8 uppercase tracking-widest">© 2026 Equily. Modern tools for founders.</p>
             <div className="flex justify-center gap-10">
               <Twitter className="h-6 w-6 text-slate-300 hover:text-slate-900 cursor-pointer transition-colors" />

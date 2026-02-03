@@ -1,4 +1,5 @@
 import Link from "next/link";
+// CORRECCIÓN: Volvemos a lucide-react para que la página funcione
 import { ShieldCheck, PieChart, Users, PlayCircle, Globe, Mail, Lock, Twitter, Linkedin, ArrowRight } from "lucide-react";
 
 export default function LandingPage() {
@@ -15,22 +16,31 @@ export default function LandingPage() {
       <nav className="border-b border-slate-200/60 bg-white/70 backdrop-blur-xl sticky top-0 z-50">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-2">
           <div className="flex items-center gap-10">
-            {/* Logo con link a Home */}
             <Link href="/">
-              <img src="/logo.png" alt="Equily Logo" className="h-20 w-auto object-contain cursor-pointer" />
+              {/* Logo en tamaño grande y nítido */}
+              <img src="/logo.png" alt="Equily Logo" className="h-32 w-auto object-contain cursor-pointer transition-transform hover:scale-105" />
             </Link>
             <div className="hidden md:flex items-center gap-8">
-              {/* ENLACES REDIRECCIONADOS CORRECTAMENTE */}
               <Link href="/what-is-equily" className="text-sm font-bold text-slate-600 hover:text-emerald-600 transition">
                 What is Equily?
               </Link>
               <Link href="/how-it-works" className="text-sm font-bold text-slate-600 hover:text-emerald-600 transition">
                 How Work Equily?
               </Link>
+              {/* Enlaces solicitados en el Navbar */}
+              <Link href="/pricing" className="text-sm font-bold text-slate-600 hover:text-emerald-600 transition">
+                Pricing
+              </Link>
+              <Link href="/contact" className="text-sm font-bold text-slate-600 hover:text-emerald-600 transition">
+                Contact
+              </Link>
             </div>
           </div>
           <div className="flex items-center gap-4">
             <Link href="/dashboard" className="text-sm font-bold text-slate-600 hover:text-slate-900">Log in</Link>
+            <Link href="/dashboard" className="text-sm font-bold text-slate-600 hover:text-emerald-600 transition">
+              Sign Up
+            </Link>
             <Link href="/dashboard" className="rounded-full bg-slate-900 px-6 py-2.5 text-sm font-bold text-white transition hover:bg-slate-800 shadow-lg shadow-slate-200">Start Free</Link>
           </div>
         </div>
@@ -101,7 +111,6 @@ export default function LandingPage() {
                 ))}
               </div>
 
-              {/* GRÁFICO DE TARTA SVG */}
               <div className="relative flex items-center justify-center p-12 bg-white/[0.02] rounded-[40px] border border-white/5 backdrop-blur-md">
                 <div className="relative h-64 w-64">
                   <svg viewBox="0 0 36 36" className="h-full w-full transform -rotate-90">
@@ -143,12 +152,12 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* --- FOOTER COMPLETO --- */}
+      {/* --- FOOTER --- */}
       <footer className="bg-white pt-24 pb-12 border-t border-slate-200 relative z-10">
         <div className="mx-auto max-w-7xl px-6">
           <div className="grid grid-cols-2 md:grid-cols-5 gap-12 mb-20">
             <div className="col-span-2">
-              <img src="/logo.png" alt="Equily Logo" className="h-14 w-auto mb-6" />
+              <img src="/logo.png" alt="Equily Logo" className="h-20 w-auto mb-6 transition-transform hover:scale-105" />
               <p className="text-slate-500 font-bold max-w-xs leading-relaxed">
                 Modern tools for modern founders. Calculate, track, and manage equity with data-driven precision.
               </p>
