@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { Plus, TrendingUp, LayoutDashboard, LogOut, ChevronDown, PieChart, Layers } from "lucide-react";
+import { Plus, TrendingUp, LayoutDashboard, ChevronDown, PieChart, Layers } from "lucide-react";
 import { createClient } from "@/utils/supabase/client";
 import { EquityPieChart } from "@/components/EquityPieChart";
 import { ContributionsTable } from "@/components/ContributionsTable";
@@ -222,9 +222,28 @@ export default function DashboardPage() {
 
               <div className="grid lg:grid-cols-3 gap-8">
                 
-                {/* COLUMNA IZQUIERDA: GRÁFICO (1/3 ancho en desktop) */}
+                {/* COLUMNA IZQUIERDA: TABLA (2/3 ancho en desktop) */}
+                <div className="lg:col-span-2">
+                   <div className="bg-white/70 backdrop-blur-xl border border-white/60 rounded-[32px] p-8 shadow-xl shadow-slate-200/50 h-full overflow-hidden flex flex-col">
+                      <div className="flex items-center gap-3 mb-8">
+                            <div className="p-2 bg-blue-50 rounded-lg">
+                                <TrendingUp className="h-5 w-5 text-blue-600" />
+                            </div>
+                            <h3 className="font-bold text-slate-900">Contribution Log</h3>
+                      </div>
+                      
+                      <div className="overflow-x-auto flex-grow">
+                        <ContributionsTable
+                            contributions={contributions}
+                            onDelete={handleContributionDeleted}
+                        />
+                      </div>
+                   </div>
+                </div>
+
+                {/* COLUMNA DERECHA: GRÁFICO CIRCULAR (1/3 ancho en desktop) */}
                 <div className="lg:col-span-1">
-                   <div className="bg-white/70 backdrop-blur-xl border border-white/60 rounded-[32px] p-8 shadow-xl shadow-slate-200/50 h-full">
+                   <div className="bg-white/70 backdrop-blur-xl border border-white/60 rounded-[32px] p-8 shadow-xl shadow-slate-200/50 h-full flex flex-col">
                       <div className="flex items-center justify-between mb-8">
                         <div className="flex items-center gap-3">
                             <div className="p-2 bg-emerald-50 rounded-lg">
@@ -239,28 +258,13 @@ export default function DashboardPage() {
                         )}
                       </div>
                       
-                      {/* Contenedor del gráfico */}
-                      <div className="flex items-center justify-center min-h-[300px]">
-                         <EquityPieChart contributions={groupedContributionsForChart} />
-                      </div>
-                   </div>
-                </div>
-
-                {/* COLUMNA DERECHA: TABLA (2/3 ancho en desktop) */}
-                <div className="lg:col-span-2">
-                   <div className="bg-white/70 backdrop-blur-xl border border-white/60 rounded-[32px] p-8 shadow-xl shadow-slate-200/50 h-full overflow-hidden">
-                      <div className="flex items-center gap-3 mb-8">
-                            <div className="p-2 bg-blue-50 rounded-lg">
-                                <TrendingUp className="h-5 w-5 text-blue-600" />
-                            </div>
-                            <h3 className="font-bold text-slate-900">Contribution Log</h3>
-                      </div>
-                      
-                      <div className="overflow-x-auto">
-                        <ContributionsTable
-                            contributions={contributions}
-                            onDelete={handleContributionDeleted}
-                        />
+                      {/* Contenedor del gráfico corregido para centrar y dar altura */}
+                      <div className="flex-grow flex items-center justify-center min-h-[300px]">
+                         {groupedContributionsForChart.length > 0 ? (
+                           <EquityPieChart contributions={groupedContributionsForChart} />
+                         ) : (
+                           <p className="text-slate-400 text-sm font-medium">No data to display</p>
+                         )}
                       </div>
                    </div>
                 </div>
@@ -271,7 +275,6 @@ export default function DashboardPage() {
         </div>
       </main>
 
-      {/* Modal mantiene su lógica interna, solo se invoca */}
       <AddContributionModal
         isOpen={modalOpen}
         onClose={() => setModalOpen(false)}
