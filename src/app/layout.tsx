@@ -10,6 +10,10 @@ const inter = Inter({
 export const metadata: Metadata = {
   title: "Equily - Equity Split Calculator",
   description: "Divide el equity de tu startup de forma justa",
+  // Añadimos la referencia al logo que subiste a public
+  icons: {
+    icon: "/favicon.ico",
+  },
 };
 
 export default function RootLayout({
