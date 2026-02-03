@@ -1,17 +1,18 @@
 import Link from "next/link";
-import { ShieldCheck, PieChart, Users } from "lucide-react";
+import { ShieldCheck, PieChart, Users, TrendingUp } from "lucide-react";
 
 export default function LandingPage() {
   return (
     <div className="min-h-screen bg-white">
       {/* --- NAVBAR --- */}
       <nav className="border-b border-slate-100 bg-white/80 backdrop-blur-md sticky top-0 z-50">
-        <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
-          <div className="flex items-center gap-2">
+        <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-2"> {/* He reducido py-4 a py-2 porque el logo ya es alto */}
+          <div className="flex items-center">
+            {/* LOGO EL DOBLE DE GRANDE (h-32) */}
             <img 
               src="/logo.png" 
               alt="Equily Logo" 
-              className="h-16 w-auto object-contain" 
+              className="h-32 w-auto object-contain" 
             />
           </div>
           <div className="flex items-center gap-4">
