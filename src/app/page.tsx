@@ -8,17 +8,25 @@ export default function LandingPage() {
       {/* --- FONDO CON TEXTURA TECNOLÓGICA --- */}
       <div className="absolute inset-0 z-0 pointer-events-none">
         <div className="absolute inset-0 opacity-[0.2]" style={{ backgroundImage: 'radial-gradient(#059669 0.8px, transparent 0.8px)', backgroundSize: '32px 32px' }}></div>
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[600px] bg-[radial-gradient(circle_at_center,_var(--tw-gradient-from)_0%,_transparent_70%)] from-emerald-100/40 to-transparent"></div>
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[800px] bg-[radial-gradient(circle_at_center,_var(--tw-gradient-from)_0%,_transparent_70%)] from-emerald-100/40 to-transparent"></div>
       </div>
 
       {/* --- NAVBAR --- */}
       <nav className="border-b border-slate-200/60 bg-white/70 backdrop-blur-xl sticky top-0 z-50">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-2">
           <div className="flex items-center gap-10">
-            <img src="/logo.png" alt="Equily Logo" className="h-20 w-auto object-contain" />
+            {/* Logo con link a Home */}
+            <Link href="/">
+              <img src="/logo.png" alt="Equily Logo" className="h-20 w-auto object-contain cursor-pointer" />
+            </Link>
             <div className="hidden md:flex items-center gap-8">
-              <Link href="/what-is-equily" className="text-sm font-bold text-slate-600 hover:text-emerald-600 transition">What is Equily?</Link>
-              <Link href="/how-it-works" className="text-sm font-bold text-slate-600 hover:text-emerald-600 transition">How it works?</Link>
+              {/* ENLACES REDIRECCIONADOS CORRECTAMENTE */}
+              <Link href="/what-is-equily" className="text-sm font-bold text-slate-600 hover:text-emerald-600 transition">
+                What is Equily?
+              </Link>
+              <Link href="/how-it-works" className="text-sm font-bold text-slate-600 hover:text-emerald-600 transition">
+                How Work Equily?
+              </Link>
             </div>
           </div>
           <div className="flex items-center gap-4">
@@ -52,7 +60,7 @@ export default function LandingPage() {
         </div>
       </header>
 
-      {/* --- CAP TABLE LIVE STATUS (Gráfico de Tarta Corregido) --- */}
+      {/* --- CAP TABLE LIVE STATUS --- */}
       <section className="py-20 relative z-10">
         <div className="mx-auto max-w-6xl px-6">
           <div className="rounded-[40px] border border-slate-800 bg-slate-950 p-10 shadow-[0_50px_100px_-20px_rgba(0,0,0,0.4)] text-white relative overflow-hidden">
@@ -70,7 +78,6 @@ export default function LandingPage() {
             </div>
             
             <div className="grid lg:grid-cols-2 gap-20 items-center">
-              {/* Lista con Avatares */}
               <div className="space-y-8">
                 {[
                   { name: "Alex (CEO)", type: "Time & IP", risk: "x4", ownership: "45.0%", img: "https://i.pravatar.cc/150?u=alex", color: "text-emerald-500" },
@@ -94,17 +101,13 @@ export default function LandingPage() {
                 ))}
               </div>
 
-              {/* GRÁFICO DE TARTA (SVG REAL) */}
+              {/* GRÁFICO DE TARTA SVG */}
               <div className="relative flex items-center justify-center p-12 bg-white/[0.02] rounded-[40px] border border-white/5 backdrop-blur-md">
                 <div className="relative h-64 w-64">
                   <svg viewBox="0 0 36 36" className="h-full w-full transform -rotate-90">
-                    {/* Founder Alex (45%) */}
                     <circle cx="18" cy="18" r="16" fill="transparent" stroke="#10b981" strokeWidth="3.8" strokeDasharray="45 100" />
-                    {/* Ben (30%) */}
                     <circle cx="18" cy="18" r="16" fill="transparent" stroke="#3b82f6" strokeWidth="3.8" strokeDasharray="30 100" strokeDashoffset="-45" />
-                    {/* VC Fund (18.75%) */}
                     <circle cx="18" cy="18" r="16" fill="transparent" stroke="#f97316" strokeWidth="3.8" strokeDasharray="18.75 100" strokeDashoffset="-75" />
-                    {/* Sarah (6.25%) */}
                     <circle cx="18" cy="18" r="16" fill="transparent" stroke="#a855f7" strokeWidth="3.8" strokeDasharray="6.25 100" strokeDashoffset="-93.75" />
                   </svg>
                   <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
@@ -150,7 +153,6 @@ export default function LandingPage() {
                 Modern tools for modern founders. Calculate, track, and manage equity with data-driven precision.
               </p>
             </div>
-            {/* Columnas del Footer */}
             <div>
               <h4 className="font-black text-slate-900 mb-6 uppercase text-xs tracking-widest">Product</h4>
               <ul className="space-y-4 text-sm font-bold text-slate-500">
