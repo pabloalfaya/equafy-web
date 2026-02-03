@@ -139,7 +139,8 @@ export default function DashboardPage() {
         <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-2">
           <div className="flex items-center gap-8">
             <Link href="/" className="relative group">
-               <img src="/logo.png" alt="Equily Logo" className="h-20 w-auto object-contain transition-transform duration-300 group-hover:scale-105" />
+               {/* LOGO ACTUALIZADO: h-28 para consistencia con Landing */}
+               <img src="/logo.png" alt="Equily Logo" className="h-28 w-auto object-contain transition-transform duration-300 group-hover:scale-105" />
             </Link>
             
             {/* Project Selector (Styled) */}
@@ -222,7 +223,7 @@ export default function DashboardPage() {
 
               <div className="grid lg:grid-cols-3 gap-8">
                 
-                {/* COLUMNA IZQUIERDA: TABLA (2/3 ancho en desktop) */}
+                {/* COLUMNA IZQUIERDA: TABLA (2/3 ancho) */}
                 <div className="lg:col-span-2">
                    <div className="bg-white/70 backdrop-blur-xl border border-white/60 rounded-[32px] p-8 shadow-xl shadow-slate-200/50 h-full overflow-hidden flex flex-col">
                       <div className="flex items-center gap-3 mb-8">
@@ -241,7 +242,7 @@ export default function DashboardPage() {
                    </div>
                 </div>
 
-                {/* COLUMNA DERECHA: GRÁFICO CIRCULAR (1/3 ancho en desktop) */}
+                {/* COLUMNA DERECHA: GRÁFICO CIRCULAR (1/3 ancho) */}
                 <div className="lg:col-span-1">
                    <div className="bg-white/70 backdrop-blur-xl border border-white/60 rounded-[32px] p-8 shadow-xl shadow-slate-200/50 h-full flex flex-col">
                       <div className="flex items-center justify-between mb-8">
@@ -258,12 +259,15 @@ export default function DashboardPage() {
                         )}
                       </div>
                       
-                      {/* Contenedor del gráfico corregido para centrar y dar altura */}
-                      <div className="flex-grow flex items-center justify-center min-h-[300px]">
+                      {/* Contenedor del gráfico corregido con ancho y alto forzados */}
+                      <div className="w-full h-[300px] flex items-center justify-center">
                          {groupedContributionsForChart.length > 0 ? (
                            <EquityPieChart contributions={groupedContributionsForChart} />
                          ) : (
-                           <p className="text-slate-400 text-sm font-medium">No data to display</p>
+                           <div className="text-center">
+                             <div className="w-32 h-32 rounded-full border-4 border-slate-100 mx-auto mb-4 border-dashed"></div>
+                             <p className="text-slate-400 text-sm font-medium">No data to display</p>
+                           </div>
                          )}
                       </div>
                    </div>
