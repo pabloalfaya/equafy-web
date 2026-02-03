@@ -8,12 +8,12 @@ export default function LandingPage() {
       <nav className="border-b border-slate-100 bg-white/80 backdrop-blur-md sticky top-0 z-50">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
           <div className="flex items-center gap-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-600 text-white">
-              <TrendingUp className="h-5 w-5" />
-            </div>
-            <span className="text-xl font-bold tracking-tight text-slate-900">
-              Equily
-            </span>
+            {/* LOGO NUEVO: Grande (h-16) y sin texto al lado */}
+            <img 
+              src="/logo.png" 
+              alt="Equily Logo" 
+              className="h-16 w-auto object-contain" 
+            />
           </div>
           <div className="flex items-center gap-4">
             <Link
