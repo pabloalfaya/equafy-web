@@ -2,26 +2,25 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
 export function middleware(req: NextRequest) {
-  // 1. Si estamos en tu ordenador (localhost), NO pedir contraseña para que trabajes cómodo
+  // 1. Si estamos en desarrollo (localhost), pasamos
   if (process.env.NODE_ENV === 'development') {
     return NextResponse.next();
   }
 
-  // 2. Comprobar si el usuario ha puesto la contraseña
+  // 2. Comprobar la contraseña Basic Auth
   const basicAuth = req.headers.get("authorization");
 
   if (basicAuth) {
     const authValue = basicAuth.split(" ")[1];
     const [user, pwd] = atob(authValue).split(":");
 
-    // --- TUS CREDENCIALES ---
-    // Puedes cambiar "admin" y "equily" por lo que quieras
+    // TUS CREDENCIALES
     if (user === "admin" && pwd === "equily") {
       return NextResponse.next();
     }
   }
 
-  // 3. Si no tiene contraseña, le mostramos la ventanita de bloqueo
+  // 3. Si falla, mostramos el bloqueo
   return new NextResponse("Área Restringida: Solo personal de Equily", {
     status: 401,
     headers: {
@@ -30,7 +29,8 @@ export function middleware(req: NextRequest) {
   });
 }
 
-// Esto evita que bloquee las imágenes o archivos internos, solo bloquea la web visible
+// --- AQUÍ ESTÁ EL CAMBIO CLAVE ---
 export const config = {
-  matcher: ["/((?!api|_next/static|_next/image|favicon.ico).*)"],
+  // Ahora el candado SOLO salta si la ruta empieza por "/dashboard"
+  matcher: ["/dashboard/:path*"],
 };

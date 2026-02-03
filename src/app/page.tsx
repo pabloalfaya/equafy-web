@@ -1,245 +1,114 @@
-"use client";
+import Link from "next/link";
+import { TrendingUp, ShieldCheck, PieChart, Users } from "lucide-react";
 
-import { useEffect, useState } from "react";
-import { Plus, TrendingUp } from "lucide-react";
-import { createClient } from "@/utils/supabase/client";
-import { EquityPieChart } from "@/components/EquityPieChart";
-import { ContributionsTable } from "@/components/ContributionsTable";
-import { AddContributionModal } from "@/components/AddContributionModal";
-import type { Project, Contribution } from "@/types/database";
-
-export default function DashboardPage() {
-  const [projects, setProjects] = useState<Project[]>([]);
-  const [selectedProject, setSelectedProject] = useState<Project | null>(null);
-  const [contributions, setContributions] = useState<Contribution[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [modalOpen, setModalOpen] = useState(false);
-  const [fetchError, setFetchError] = useState<string | null>(null);
-
-  const fetchData = async () => {
-    const supabase = createClient();
-    setFetchError(null);
-
-    const { data: projectsData, error: projectsError } = await supabase
-      .from("projects")
-      .select("*")
-      .order("created_at", { ascending: false });
-
-    if (projectsError) {
-      setFetchError(projectsError.message);
-      setProjects([]);
-      setSelectedProject(null);
-      setContributions([]);
-      setLoading(false);
-      return;
-    }
-
-    setProjects(projectsData ?? []);
-
-    const project = projectsData?.[0] ?? null;
-    setSelectedProject(project);
-
-    if (project) {
-      const { data: contributionsData, error: contributionsError } =
-        await supabase
-          .from("contributions")
-          .select("*")
-          .eq("project_id", project.id)
-          .order("created_at", { ascending: true });
-
-      if (contributionsError) {
-        setFetchError(contributionsError.message);
-      }
-      setContributions(contributionsData ?? []);
-    } else {
-      setContributions([]);
-    }
-
-    setLoading(false);
-  };
-
-  const handleContributionAdded = (newContribution: Contribution) => {
-    setContributions((prev) => [...prev, newContribution]);
-  };
-
-  const handleContributionDeleted = (contribution: Contribution) => {
-    setContributions((prev) =>
-      prev.filter((c) => {
-        if (c.id && contribution.id) return c.id !== contribution.id;
-        return !(
-          c.contributor_name === contribution.contributor_name &&
-          c.type === contribution.type &&
-          c.amount === contribution.amount
-        );
-      })
-    );
-  };
-
-  useEffect(() => {
-    fetchData();
-  }, []);
-
-  useEffect(() => {
-    if (!selectedProject) return;
-
-    const supabase = createClient();
-    supabase
-      .from("contributions")
-      .select("*")
-      .eq("project_id", selectedProject.id)
-      .order("created_at", { ascending: true })
-      .then(({ data }) => setContributions(data ?? []));
-  }, [selectedProject?.id]);
-
-  // --- MAGIA DE AGRUPACIÓN ---
-  // Esto crea una lista "falsa" donde sumamos las cantidades de los socios repetidos
-  // solo para visualizarlos juntos en el gráfico.
-  const groupedContributionsForChart = contributions.reduce((acc, curr) => {
-    // Buscamos si ya tenemos a este socio en la lista acumulada
-    const existingIndex = acc.findIndex(
-      (c) => c.contributor_name === curr.contributor_name
-    );
-
-    if (existingIndex >= 0) {
-      // Si el socio ya existe, le sumamos la cantidad actual a la que ya tenía
-      const existing = acc[existingIndex];
-      const updatedContribution = {
-        ...existing,
-        amount: existing.amount + curr.amount,
-        // Si usas valor ajustado al riesgo, también lo sumamos
-        risk_adjusted_value:
-          (existing.risk_adjusted_value || 0) + (curr.risk_adjusted_value || 0),
-      };
-      // Reemplazamos el socio antiguo con el actualizado (sumado)
-      const newAcc = [...acc];
-      newAcc[existingIndex] = updatedContribution;
-      return newAcc;
-    } else {
-      // Si es la primera vez que vemos a este socio, lo añadimos tal cual
-      return [...acc, { ...curr }];
-    }
-  }, [] as Contribution[]);
-
-  if (loading) {
-    return (
-      <div className="flex min-h-screen items-center justify-center bg-slate-50">
-        <div className="text-center">
-          <div className="mb-4 h-12 w-12 animate-spin rounded-full border-2 border-emerald-fintech border-t-transparent" />
-          <p className="text-slate-600">Cargando Equily…</p>
-        </div>
-      </div>
-    );
-  }
-
+export default function LandingPage() {
   return (
-    <div className="min-h-screen bg-slate-50">
-      <header className="border-b border-slate-200/80 bg-white shadow-sm">
+    <div className="min-h-screen bg-white">
+      {/* --- NAVBAR --- */}
+      <nav className="border-b border-slate-100 bg-white/80 backdrop-blur-md sticky top-0 z-50">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
           <div className="flex items-center gap-2">
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-emerald-fintech text-white">
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-600 text-white">
               <TrendingUp className="h-5 w-5" />
             </div>
-            <h1 className="text-xl font-bold tracking-tight text-slate-800">
+            <span className="text-xl font-bold tracking-tight text-slate-900">
               Equily
-            </h1>
+            </span>
           </div>
-          {projects.length > 1 && (
-            <select
-              value={selectedProject?.id ?? ""}
-              onChange={(e) => {
-                const p = projects.find((x) => x.id === e.target.value);
-                setSelectedProject(p ?? null);
-              }}
-              className="rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm text-slate-700 shadow-sm transition focus:border-emerald-fintech focus:outline-none focus:ring-2 focus:ring-emerald-fintech/20"
+          <div className="flex items-center gap-4">
+            <Link
+              href="/dashboard"
+              className="text-sm font-medium text-slate-600 hover:text-slate-900 transition"
             >
-              {projects.map((p) => (
-                <option key={p.id} value={p.id}>
-                  {p.name}
-                </option>
-              ))}
-            </select>
-          )}
-        </div>
-      </header>
-
-      <main className="mx-auto max-w-6xl px-6 py-10">
-        {!selectedProject ? (
-          <div className="rounded-2xl border border-slate-200 bg-white p-16 text-center shadow-sm">
-            {fetchError ? (
-              <>
-                <p className="mb-2 font-medium text-red-600">
-                  Error al cargar proyectos
-                </p>
-                <p className="mb-4 text-sm text-slate-600">{fetchError}</p>
-                <p className="text-xs text-slate-500">
-                  Si usas RLS en Supabase, añade una política que permita SELECT
-                  en la tabla &quot;projects&quot;.
-                </p>
-              </>
-            ) : (
-              <p className="text-slate-600">
-                No hay proyectos. Crea uno en Supabase para empezar.
-              </p>
-            )}
+              Iniciar Sesión
+            </Link>
+            <Link
+              href="/dashboard"
+              className="rounded-lg bg-slate-900 px-4 py-2 text-sm font-medium text-white transition hover:bg-slate-800"
+            >
+              Empezar ahora
+            </Link>
           </div>
-        ) : (
-          <>
-            <div className="mb-10 flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
-              <div>
-                <h2 className="text-2xl font-bold text-slate-800">
-                  {selectedProject.name}
-                </h2>
-                <p className="mt-1 text-sm text-slate-500">
-                  Distribución de equity por aportaciones
+        </div>
+      </nav>
+
+      {/* --- HERO SECTION --- */}
+      <main>
+        <section className="relative overflow-hidden pt-16 pb-24 lg:pt-32">
+          <div className="mx-auto max-w-6xl px-6 text-center">
+            <h1 className="mx-auto mb-6 max-w-3xl text-4xl font-extrabold tracking-tight text-slate-900 sm:text-6xl">
+              Gestiona el <span className="text-emerald-600">Equity</span> de tu
+              startup sin complicaciones
+            </h1>
+            <p className="mx-auto mb-10 max-w-2xl text-lg text-slate-600">
+              Olvídate de las hojas de cálculo desordenadas. Registra aportaciones
+              de dinero, trabajo y activos, y visualiza el reparto de acciones en
+              tiempo real.
+            </p>
+            <div className="flex flex-col justify-center gap-4 sm:flex-row">
+              <Link
+                href="/dashboard"
+                className="inline-flex items-center justify-center rounded-xl bg-emerald-600 px-8 py-4 text-lg font-semibold text-white shadow-lg transition hover:bg-emerald-700 hover:shadow-emerald-600/20"
+              >
+                Crear mi proyecto gratis
+              </Link>
+            </div>
+          </div>
+        </section>
+
+        {/* --- FEATURES --- */}
+        <section className="bg-slate-50 py-24">
+          <div className="mx-auto max-w-6xl px-6">
+            <div className="grid gap-12 md:grid-cols-3">
+              {/* Feature 1 */}
+              <div className="rounded-2xl bg-white p-8 shadow-sm border border-slate-100">
+                <div className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-xl bg-blue-50 text-blue-600">
+                  <PieChart className="h-6 w-6" />
+                </div>
+                <h3 className="mb-2 text-xl font-bold text-slate-900">
+                  Visualización Clara
+                </h3>
+                <p className="text-slate-600">
+                  Gráficos dinámicos que se actualizan automáticamente con cada nueva aportación.
                 </p>
               </div>
-              <button
-                type="button"
-                onClick={() => setModalOpen(true)}
-                className="inline-flex items-center gap-2 rounded-xl bg-emerald-fintech px-5 py-3 font-medium text-white shadow-md transition hover:bg-emerald-fintech-dark hover:shadow-lg"
-              >
-                <Plus className="h-5 w-5" />
-                Añadir Aportación
-              </button>
-            </div>
-
-            <div className="mb-10">
-              <div className="mb-4 flex items-center justify-between">
-                <h3 className="text-lg font-semibold text-slate-800">
-                  Distribución del Equity
+              {/* Feature 2 */}
+              <div className="rounded-2xl bg-white p-8 shadow-sm border border-slate-100">
+                <div className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-xl bg-purple-50 text-purple-600">
+                  <Users className="h-6 w-6" />
+                </div>
+                <h3 className="mb-2 text-xl font-bold text-slate-900">
+                  Slicing Pie
                 </h3>
-                {contributions.length > 0 && (
-                  <span className="rounded-full bg-emerald-50 px-3 py-1 text-sm font-medium text-emerald-fintech">
-                    {/* Mostramos el número real de entradas, no de socios */}
-                    {contributions.length} entrada
-                    {contributions.length !== 1 ? "s" : ""}
-                  </span>
-                )}
+                <p className="text-slate-600">
+                  Calcula el valor ajustado por riesgo del trabajo y el dinero para un reparto justo.
+                </p>
               </div>
-              {/* AQUÍ ESTÁ EL CAMBIO: Pasamos los datos AGRUPADOS al gráfico */}
-              <EquityPieChart contributions={groupedContributionsForChart} />
+              {/* Feature 3 */}
+              <div className="rounded-2xl bg-white p-8 shadow-sm border border-slate-100">
+                <div className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600">
+                  <ShieldCheck className="h-6 w-6" />
+                </div>
+                <h3 className="mb-2 text-xl font-bold text-slate-900">
+                  Registro Seguro
+                </h3>
+                <p className="text-slate-600">
+                  Mantén un histórico inmutable de quién aportó qué y cuándo lo hizo.
+                </p>
+              </div>
             </div>
-
-            <div>
-              <h3 className="mb-4 text-lg font-semibold text-slate-800">
-                Resumen de Aportaciones
-              </h3>
-              {/* A la tabla le pasamos los datos NORMALES (sin agrupar) */}
-              <ContributionsTable
-                contributions={contributions}
-                onDelete={handleContributionDeleted}
-              />
-            </div>
-          </>
-        )}
+          </div>
+        </section>
       </main>
 
-      <AddContributionModal
-        isOpen={modalOpen}
-        onClose={() => setModalOpen(false)}
-        projectId={selectedProject?.id ?? null}
-        onSuccess={handleContributionAdded}
-      />
+      {/* --- FOOTER --- */}
+      <footer className="border-t border-slate-100 bg-white py-12">
+        <div className="mx-auto max-w-6xl px-6 text-center">
+          <p className="text-sm text-slate-500">
+            © 2024 Equily. Hecho para fundadores.
+          </p>
+        </div>
+      </footer>
     </div>
   );
 }
