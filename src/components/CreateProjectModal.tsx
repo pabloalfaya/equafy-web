@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { createClient } from "@/utils/supabase/client";
-import { Loader2, FolderPlus } from "lucide-react"; // Corregido: lucide-react es el paquete correcto
+import { Loader2, FolderPlus } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 export function CreateProjectModal() {
@@ -20,11 +20,10 @@ export function CreateProjectModal() {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Session not found");
 
-      // Enviamos todos los campos necesarios según la estructura de tu tabla en Supabase
+      // Ajustado: Eliminamos 'status' para evitar el error de columna inexistente
       const { error } = await supabase.from("projects").insert({
         name: name,
         owner_id: user.id,
-        status: "active",
         model_type: "JUST_SPLIT",
         mult_cash: 4.0,
         mult_labor: 2.0,
@@ -41,8 +40,8 @@ export function CreateProjectModal() {
       router.refresh(); 
       
     } catch (error: any) {
-      console.error("Error:", error);
-      // El alert mostrará el mensaje técnico real si Supabase rechaza algo
+      console.error("Error technical details:", error);
+      // El alert ahora mostrará el error real si persiste algún problema
       alert("Error: " + (error.message || "Could not create project"));
     } finally {
       setLoading(false);
