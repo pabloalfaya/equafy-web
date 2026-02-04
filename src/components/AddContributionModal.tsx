@@ -16,8 +16,8 @@ interface AddContributionModalProps {
 
 export function AddContributionModal({ isOpen, onClose, projectId, onSuccess, members, onAddMemberClick }: AddContributionModalProps) {
   const [contributorId, setContributorId] = useState("");
-  const [description, setDescription] = useState(""); // CAMBIO: de 'concept' a 'description'
-  const [type, setType] = useState("CASH"); // CAMBIO: ahora en MAYÚSCULAS
+  const [description, setDescription] = useState(""); // CAMBIADO: de 'concept' a 'description'
+  const [type, setType] = useState("CASH"); // CAMBIADO: ahora por defecto en MAYÚSCULAS
   const [amount, setAmount] = useState("");
   const [project, setProject] = useState<Project | null>(null);
   const [loading, setLoading] = useState(false);
@@ -46,7 +46,7 @@ export function AddContributionModal({ isOpen, onClose, projectId, onSuccess, me
 
   if (!isOpen) return null;
 
-  // Mapeo de multiplicadores según el modelo en DB
+  // Mapeo de multiplicadores usando las claves en MAYÚSCULAS
   const currentMultiplier = project ? {
     CASH: project.mult_cash,
     WORK: project.mult_work,
@@ -64,14 +64,14 @@ export function AddContributionModal({ isOpen, onClose, projectId, onSuccess, me
     setLoading(true);
     const selectedMember = members.find(m => m.id === contributorId);
 
-    // CAMBIO CLAVE: Ahora enviamos 'description' y 'contribution_type' con los nombres exactos de la DB
+    // SINCRONIZACIÓN CON LA BASE DE DATOS:
     const { data, error } = await supabase
       .from("contributions")
       .insert([{
         project_id: projectId,
         contributor_name: selectedMember?.name || "Unknown",
-        description: description, // Enviamos como description
-        contribution_type: type,   // Enviamos como contribution_type
+        description: description,      // Nombre correcto de la columna
+        contribution_type: type,        // Nombre correcto de la columna
         amount: parseFloat(amount),
         multiplier: currentMultiplier,
         risk_adjusted_value: parseFloat(riskAdjustedValue)
@@ -93,13 +93,13 @@ export function AddContributionModal({ isOpen, onClose, projectId, onSuccess, me
 
   return (
     <div className="fixed inset-0 z-[110] flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4">
-      <div className="w-full max-w-md overflow-hidden rounded-[24px] bg-white shadow-2xl animate-in fade-in zoom-in duration-200">
-        <div className="border-b border-slate-100 bg-slate-50/50 px-6 py-5 flex justify-between items-center">
+      <div className="w-full max-w-md overflow-hidden rounded-[32px] bg-white shadow-2xl animate-in fade-in zoom-in duration-200">
+        <div className="border-b border-slate-100 bg-slate-50/50 px-8 py-6 flex justify-between items-center">
           <h3 className="font-black text-slate-800 text-lg uppercase tracking-tight">Add Contribution</h3>
           <button onClick={onClose}><X className="h-5 w-5 text-slate-400 hover:text-slate-600" /></button>
         </div>
         
-        <form onSubmit={handleSubmit} className="p-8 space-y-5 font-sans">
+        <form onSubmit={handleSubmit} className="p-8 space-y-6 font-sans">
           <div>
             <label className="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">Contributor</label>
             {members.length === 0 ? (
@@ -127,7 +127,7 @@ export function AddContributionModal({ isOpen, onClose, projectId, onSuccess, me
             <input 
               type="text" 
               required 
-              placeholder="e.g. Initial Capital or Landing Design" 
+              placeholder="e.g. Website Design or Server Costs" 
               value={description} 
               onChange={(e) => setDescription(e.target.value)}
               className="w-full rounded-xl border border-slate-200 px-4 py-3 text-slate-700 focus:border-emerald-500 outline-none bg-slate-50 font-medium italic" 
@@ -172,11 +172,11 @@ export function AddContributionModal({ isOpen, onClose, projectId, onSuccess, me
           </div>
 
           <div className="flex justify-end gap-3 pt-4">
-            <button type="button" onClick={onClose} className="rounded-xl px-5 py-3 text-sm font-bold text-slate-400 hover:text-slate-600 transition-colors uppercase tracking-widest">Cancel</button>
+            <button type="button" onClick={onClose} className="rounded-xl px-6 py-3 text-sm font-bold text-slate-400 hover:text-slate-600 transition-colors uppercase tracking-widest">Cancel</button>
             <button 
               type="submit" 
               disabled={loading || members.length === 0} 
-              className="rounded-xl bg-slate-900 px-8 py-3 text-sm font-black text-white hover:bg-slate-800 disabled:opacity-50 transition-all shadow-xl uppercase tracking-[0.2em]"
+              className="rounded-xl bg-slate-900 px-10 py-3 text-sm font-black text-white hover:bg-slate-800 disabled:opacity-50 transition-all shadow-xl uppercase tracking-[0.2em]"
             >
               {loading ? "Adding..." : "Add Contribution"}
             </button>
