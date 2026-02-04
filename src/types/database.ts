@@ -1,16 +1,17 @@
-export type ContributionType = "cash" | "labor" | "ip" | "assets";
-export type ProjectModel = "JUST_SPLIT" | "FLAT" | "CUSTOM"; // Añadido para los 3 modelos
+export type ContributionType = "cash" | "work" | "tangible" | "intangible" | "others";
+export type ProjectModel = "JUST_SPLIT" | "FLAT" | "CUSTOM";
 
 export interface Project {
   id: string;
   name: string;
-  owner_id: string; // Importante para la seguridad RLS
-  model_type: ProjectModel; // Usamos el tipo específico
+  owner_id: string;
+  model_type: ProjectModel;
   mult_cash: number;
-  mult_labor: number;
-  mult_ip: number;
-  mult_assets: number;
-  use_log_risk: boolean; // Para el futuro interruptor
+  mult_work: number;       // Renombrado de mult_labor
+  mult_tangible: number;   // Renombrado de mult_assets
+  mult_intangible: number; // Renombrado de mult_ip
+  mult_others: number;     // Nueva categoría
+  use_log_risk: boolean;
   current_valuation: number;
   created_at?: string;
 }
@@ -26,10 +27,11 @@ export interface Contribution {
   created_at?: string;
 }
 
-// Estos son los valores por defecto del modelo "Just Split"
+// Valores por defecto para el modelo "Just Split" con los nuevos nombres
 export const DEFAULT_MULTIPLIERS: Record<ContributionType, number> = {
   cash: 4,
-  labor: 2,
-  ip: 2,
-  assets: 1,
+  work: 2,
+  intangible: 2,
+  tangible: 1,
+  others: 1,
 };
