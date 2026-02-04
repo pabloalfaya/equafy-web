@@ -8,14 +8,14 @@ export default function LandingPage() {
   return (
     <div className="min-h-screen bg-[#F8FAFC] font-sans text-slate-900 selection:bg-emerald-100 selection:text-emerald-900 overflow-x-hidden">
       
-      {/* --- BACKGROUND AMBIENTAL (Se mantiene igual) --- */}
+      {/* --- BACKGROUND AMBIENTAL --- */}
       <div className="fixed inset-0 z-0 pointer-events-none">
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[600px] bg-emerald-400/20 blur-[120px] rounded-full opacity-50 mix-blend-multiply"></div>
         <div className="absolute bottom-0 right-0 w-[800px] h-[600px] bg-blue-400/10 blur-[120px] rounded-full opacity-40 mix-blend-multiply"></div>
         <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]"></div>
       </div>
 
-      {/* --- NAVBAR (Se mantiene igual) --- */}
+      {/* --- NAVBAR --- */}
       <nav className="fixed top-0 inset-x-0 z-50 border-b border-white/50 bg-white/60 backdrop-blur-xl transition-all duration-300">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-3">
           <div className="flex items-center gap-8">
@@ -39,13 +39,14 @@ export default function LandingPage() {
             </div>
           </div>
           <div className="flex items-center gap-4">
-            <Link href="/dashboard" className="hidden md:block text-sm font-bold text-slate-600 hover:text-slate-900 transition-colors">
+            {/* ENLACES CONECTADOS AL LOGIN */}
+            <Link href="/login" className="hidden md:block text-sm font-bold text-slate-600 hover:text-slate-900 transition-colors">
               Log in
             </Link>
-            <Link href="/dashboard" className="hidden md:block text-sm font-bold text-slate-600 hover:text-emerald-600 transition-colors">
+            <Link href="/login" className="hidden md:block text-sm font-bold text-slate-600 hover:text-emerald-600 transition-colors">
               Sign Up
             </Link>
-            <Link href="/dashboard" className="relative group">
+            <Link href="/login" className="relative group">
                <div className="absolute -inset-0.5 bg-gradient-to-r from-emerald-500 to-emerald-400 rounded-full blur opacity-60 group-hover:opacity-100 transition duration-200"></div>
                <div className="relative flex items-center bg-slate-900 rounded-full px-6 py-2.5 leading-none">
                  <span className="text-sm font-bold text-white group-hover:text-emerald-50 transition duration-200">Start Free</span>
@@ -56,7 +57,7 @@ export default function LandingPage() {
         </div>
       </nav>
 
-      {/* --- HERO SECTION (Se mantiene igual) --- */}
+      {/* --- HERO SECTION --- */}
       <header className="relative pt-36 pb-10 z-10">
         <div className="mx-auto max-w-5xl px-6 text-center">
           <h1 className="text-6xl md:text-8xl font-bold tracking-tighter text-slate-900 mb-4 leading-[1.1] md:leading-[1.1]">
@@ -68,7 +69,8 @@ export default function LandingPage() {
             <span className="block mt-2 text-slate-400 text-base">Trustless. Dynamic. Fair.</span>
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Link href="/dashboard" className="h-14 px-8 rounded-2xl bg-slate-900 text-white font-bold text-lg flex items-center justify-center shadow-xl shadow-slate-200 hover:bg-slate-800 hover:-translate-y-1 transition-all duration-300">
+            {/* ENLACE CONECTADO AL LOGIN */}
+            <Link href="/login" className="h-14 px-8 rounded-2xl bg-slate-900 text-white font-bold text-lg flex items-center justify-center shadow-xl shadow-slate-200 hover:bg-slate-800 hover:-translate-y-1 transition-all duration-300">
               Start Splitting Free
             </Link>
             <button className="h-14 px-8 rounded-2xl bg-white border border-slate-200 text-slate-700 font-bold text-lg flex items-center justify-center gap-2 hover:bg-slate-50 hover:border-slate-300 transition-all duration-300 group">
@@ -80,12 +82,11 @@ export default function LandingPage() {
       </header>
 
       {/* --- DASHBOARD PREVIEW SECTION --- */}
-      <section className="pb-24 relative z-10 px-4"> {/* Aumentado un poco el padding bottom */}
+      <section className="pb-24 relative z-10 px-4">
         <div className="mx-auto max-w-6xl relative">
           
           {/* Contenedor tipo Ventana de App */}
           <div className="relative z-20 rounded-[32px] border border-slate-200/60 bg-white/80 backdrop-blur-2xl shadow-[0_40px_80px_-20px_rgba(0,0,0,0.1)] overflow-hidden ring-1 ring-slate-900/5">
-            {/* ... (Contenido del dashboard se mantiene igual) ... */}
             <div className="h-12 border-b border-slate-100 flex items-center px-6 gap-2 bg-slate-50/50">
               <div className="w-3 h-3 rounded-full bg-red-400/80"></div>
               <div className="w-3 h-3 rounded-full bg-amber-400/80"></div>
@@ -158,22 +159,16 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* --- NUEVA TRANSICIÓN ORGÁNICA --- */}
-      {/* En lugar de un puente lineal, usamos elementos con mucho 'blur' 
-          que se superponen entre las secciones para crear profundidad.
-      */}
+      {/* --- TRANSICIÓN --- */}
       <div className="relative z-0">
-        {/* Capa de "niebla" oscura que sube desde la sección inferior */}
         <div className="absolute -top-64 left-0 right-0 h-[500px] bg-gradient-to-b from-transparent via-[#0B0F19]/60 to-[#0B0F19] blur-3xl pointer-events-none"></div>
-        {/* Luz ambiental sutil para mezclar */}
         <div className="absolute -top-40 left-1/2 -translate-x-1/2 w-3/4 h-[400px] bg-emerald-900/20 blur-[100px] rounded-full pointer-events-none mix-blend-soft-light"></div>
       </div>
 
 
-      {/* --- FRAMEWORK SELECTION (DARK MODE SECTION) --- */}
+      {/* --- FRAMEWORK SELECTION --- */}
       <section className="relative z-10 bg-[#0B0F19] text-white pt-20 pb-32">
             
-            {/* Decoración de fondo oscuro */}
             <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-emerald-900/20 via-[#0B0F19] to-[#0B0F19] pointer-events-none"></div>
             
             <div className="mx-auto max-w-7xl relative px-6">
@@ -204,7 +199,6 @@ export default function LandingPage() {
                     <div className="flex items-center gap-3 text-slate-300 font-medium">
                       <CheckCircle2 className="w-5 h-5 text-slate-500" /> Manual Configuration
                     </div>
-                    {/* Risk Logic Widget */}
                     <div className="mt-6 bg-white/5 rounded-xl p-4 border border-white/5 flex items-center justify-between">
                       <div className="flex items-center gap-2">
                         <Zap className="w-4 h-4 text-amber-400" />
@@ -213,9 +207,12 @@ export default function LandingPage() {
                       <div className="h-2 w-8 bg-slate-700 rounded-full"></div>
                     </div>
                   </div>
-                  <button className="w-full py-4 rounded-xl border border-white/10 text-white font-bold hover:bg-white hover:text-slate-900 transition-all">
-                    Configure Manually
-                  </button>
+                  {/* BOTÓN CONECTADO A LOGIN */}
+                  <Link href="/login" className="w-full">
+                    <button className="w-full py-4 rounded-xl border border-white/10 text-white font-bold hover:bg-white hover:text-slate-900 transition-all">
+                        Configure Manually
+                    </button>
+                  </Link>
                 </div>
 
                 {/* --- JUST SPLIT MODEL (RECOMMENDED) --- */}
@@ -245,8 +242,7 @@ export default function LandingPage() {
                         <p className="text-xs text-blue-200/60 mt-2 font-medium">Tangible and intangible contributions</p>
                     </div>
                     
-                     {/* Risk Logic Widget Active */}
-                     <div className="bg-white/5 rounded-xl p-4 border border-emerald-500/30 flex items-center justify-between">
+                      <div className="bg-white/5 rounded-xl p-4 border border-emerald-500/30 flex items-center justify-between">
                       <div className="flex items-center gap-2">
                         <PieChart className="w-4 h-4 text-emerald-400" />
                         <span className="text-sm font-bold text-white">Logarithmic Risk</span>
@@ -256,7 +252,8 @@ export default function LandingPage() {
                       </div>
                     </div>
                   </div>
-                  <Link href="/dashboard" className="w-full py-4 rounded-xl bg-emerald-500 text-white font-bold hover:bg-emerald-400 hover:scale-[1.02] shadow-lg shadow-emerald-900/20 text-center transition-all">
+                  {/* BOTÓN CONECTADO A LOGIN */}
+                  <Link href="/login" className="w-full py-4 rounded-xl bg-emerald-500 text-white font-bold hover:bg-emerald-400 hover:scale-[1.02] shadow-lg shadow-emerald-900/20 text-center transition-all">
                     Use Standard Model
                   </Link>
                 </div>
@@ -271,7 +268,7 @@ export default function LandingPage() {
                     <p className="text-purple-400 text-sm font-medium">Simple fixed split.</p>
                   </div>
                   <div className="space-y-4 mb-8 flex-grow">
-                     <div className="flex items-center gap-3 text-slate-300 font-medium">
+                      <div className="flex items-center gap-3 text-slate-300 font-medium">
                       <CheckCircle2 className="w-5 h-5 text-slate-500" /> Equal Multipliers (x1)
                     </div>
                     <div className="flex items-center gap-3 text-slate-300 font-medium">
@@ -288,19 +285,21 @@ export default function LandingPage() {
                         </p>
                     </div>
                   </div>
-                  <button className="w-full py-4 rounded-xl border border-white/10 text-white font-bold hover:bg-white hover:text-slate-900 transition-all">
-                    Use Flat Model
-                  </button>
+                  {/* BOTÓN CONECTADO A LOGIN */}
+                  <Link href="/login" className="w-full">
+                    <button className="w-full py-4 rounded-xl border border-white/10 text-white font-bold hover:bg-white hover:text-slate-900 transition-all">
+                        Use Flat Model
+                    </button>
+                  </Link>
                 </div>
 
               </div>
             </div>
       </section>
 
-      {/* --- FOOTER (Se mantiene igual) --- */}
+      {/* --- FOOTER --- */}
       <footer className="bg-white border-t border-slate-200 relative z-10">
         <div className="mx-auto max-w-7xl px-6 pt-20 pb-10">
-          {/* ... (Contenido del footer igual) ... */}
           <div className="grid grid-cols-2 md:grid-cols-5 gap-12 mb-16">
             <div className="col-span-2">
               <Link href="/" className="inline-block">

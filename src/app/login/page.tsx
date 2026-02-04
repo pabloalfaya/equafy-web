@@ -1,0 +1,135 @@
+"use client";
+
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { createClient } from "@/utils/supabase/client";
+import { Loader2, Lock, Mail, ArrowLeft } from "lucide-react";
+import Link from "next/link";
+
+export default function LoginPage() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [isSignUp, setIsSignUp] = useState(false);
+  const [message, setMessage] = useState<{ text: string; type: 'error' | 'success' } | null>(null);
+  
+  const router = useRouter();
+  const supabase = createClient();
+
+  const handleAuth = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    setMessage(null);
+
+    try {
+      if (isSignUp) {
+        // --- MODO REGISTRO ---
+        const { error } = await supabase.auth.signUp({
+          email,
+          password,
+          options: { 
+            // Esto asegura que tras confirmar email vuelvan a la web (si tienes confirmación activada)
+            emailRedirectTo: `${window.location.origin}/auth/callback` 
+          },
+        });
+        if (error) throw error;
+        setMessage({ text: "¡Cuenta creada! Revisa tu email para confirmar.", type: 'success' });
+      } else {
+        // --- MODO LOGIN ---
+        const { error } = await supabase.auth.signInWithPassword({
+          email,
+          password,
+        });
+        if (error) throw error;
+        
+        // Si todo va bien, vamos al dashboard
+        router.push("/dashboard");
+        router.refresh();
+      }
+    } catch (error: any) {
+      setMessage({ text: error.message, type: 'error' });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="flex min-h-screen items-center justify-center bg-[#F8FAFC] px-4 font-sans">
+      <div className="w-full max-w-md space-y-8 rounded-3xl bg-white p-10 shadow-xl border border-slate-100">
+        
+        {/* Botón para volver atrás */}
+        <Link href="/" className="inline-flex items-center text-sm text-slate-400 hover:text-slate-600 mb-4 transition-colors">
+          <ArrowLeft className="mr-1 h-4 w-4" /> Back to Home
+        </Link>
+        
+        <div className="text-center">
+          <img src="/logo.png" alt="Equily" className="mx-auto h-16 w-auto mb-4 object-contain" />
+          <h2 className="text-3xl font-black text-slate-900">
+            {isSignUp ? "Create Account" : "Welcome Back"}
+          </h2>
+          <p className="mt-2 text-slate-500">
+            {isSignUp ? "Start managing equity properly." : "Enter your details to access."}
+          </p>
+        </div>
+
+        {/* Mensajes de error o éxito */}
+        {message && (
+          <div className={`p-4 rounded-xl text-sm font-bold flex items-center justify-center ${message.type === 'error' ? 'bg-red-50 text-red-600 border border-red-100' : 'bg-emerald-50 text-emerald-600 border border-emerald-100'}`}>
+            {message.text}
+          </div>
+        )}
+
+        <form className="mt-8 space-y-5" onSubmit={handleAuth}>
+          <div>
+            <label className="block text-sm font-bold text-slate-700 mb-1">Email</label>
+            <div className="relative">
+              <Mail className="absolute left-3 top-3 h-5 w-5 text-slate-400" />
+              <input
+                type="email"
+                required
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="block w-full rounded-xl border border-slate-200 py-3 pl-10 pr-3 text-slate-900 placeholder:text-slate-400 focus:border-emerald-500 focus:outline-none focus:ring-4 focus:ring-emerald-500/10 transition-all"
+                placeholder="founder@startup.com"
+              />
+            </div>
+          </div>
+
+          <div>
+            <label className="block text-sm font-bold text-slate-700 mb-1">Password</label>
+            <div className="relative">
+              <Lock className="absolute left-3 top-3 h-5 w-5 text-slate-400" />
+              <input
+                type="password"
+                required
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="block w-full rounded-xl border border-slate-200 py-3 pl-10 pr-3 text-slate-900 placeholder:text-slate-400 focus:border-emerald-500 focus:outline-none focus:ring-4 focus:ring-emerald-500/10 transition-all"
+                placeholder="••••••••"
+              />
+            </div>
+          </div>
+
+          <button
+            type="submit"
+            disabled={loading}
+            className="group relative flex w-full justify-center rounded-xl bg-slate-900 py-3.5 px-4 text-sm font-bold text-white hover:bg-slate-800 disabled:opacity-70 transition-all shadow-lg hover:shadow-xl hover:-translate-y-0.5"
+          >
+            {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
+            {isSignUp ? "Create Free Account" : "Sign In"}
+          </button>
+        </form>
+
+        <div className="text-center mt-6 pt-6 border-t border-slate-50">
+          <button
+            type="button"
+            onClick={() => { setIsSignUp(!isSignUp); setMessage(null); }}
+            className="text-sm font-bold text-emerald-600 hover:text-emerald-500 hover:underline transition-all"
+          >
+            {isSignUp ? "Already have an account? Sign In" : "New to Equily? Create Account"}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
