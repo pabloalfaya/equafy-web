@@ -20,7 +20,6 @@ export default function DashboardPage() {
   const [members, setMembers] = useState<Member[]>([]); 
   const [loading, setLoading] = useState(true);
   
-  // Modales
   const [modalOpen, setModalOpen] = useState(false);
   const [memberModalOpen, setMemberModalOpen] = useState(false);
   const [fetchError, setFetchError] = useState<string | null>(null);
@@ -29,7 +28,6 @@ export default function DashboardPage() {
     const supabase = createClient();
     setFetchError(null);
 
-    // 1. Cargar Proyectos
     const { data: projectsData, error: projectsError } = await supabase
       .from("projects")
       .select("*")
@@ -46,7 +44,6 @@ export default function DashboardPage() {
     setSelectedProject(project);
 
     if (project) {
-      // 2. Cargar Aportaciones
       const { data: contributionsData } = await supabase
         .from("contributions")
         .select("*")
@@ -55,7 +52,6 @@ export default function DashboardPage() {
       
       setContributions(contributionsData ?? []);
 
-      // 3. Cargar Miembros del Equipo
       const { data: membersData } = await supabase
         .from("project_members")
         .select("id, name")
@@ -119,7 +115,6 @@ export default function DashboardPage() {
 
   return (
     <div className="min-h-screen bg-[#F8FAFC] font-sans text-slate-900 overflow-x-hidden">
-       {/* --- BACKGROUND AMBIENTAL --- */}
        <div className="fixed inset-0 z-0 pointer-events-none">
         <div className="absolute top-0 left-0 w-[600px] h-[600px] bg-emerald-400/5 blur-[100px] rounded-full mix-blend-multiply"></div>
         <div className="absolute bottom-0 right-0 w-[600px] h-[600px] bg-blue-400/5 blur-[100px] rounded-full mix-blend-multiply"></div>
@@ -146,15 +141,17 @@ export default function DashboardPage() {
       <main className="relative z-10 pt-32 pb-20 px-6">
         <div className="mx-auto max-w-7xl">
           {!selectedProject ? (
-            <div className="flex flex-col items-center justify-center py-20 bg-white/70 backdrop-blur-xl border border-white/60 rounded-[32px] shadow-xl text-center px-6">
-               <div className="w-20 h-20 bg-slate-50 rounded-3xl flex items-center justify-center mb-6">
-                 <FolderPlus className="w-10 h-10 text-slate-300" />
-               </div>
-               <h2 className="text-3xl font-black text-slate-900 mb-2">No projects found</h2>
-               <p className="text-slate-500 font-medium max-w-sm mb-4">
-                 You don't have any projects yet. Create one to start managing equity fairly.
-               </p>
-               <CreateProjectModal />
+            /* CORRECCIÓN: Eliminado el backdrop-blur que atrapaba al modal y añadido margen superior */
+            <div className="mt-12 flex flex-col items-center justify-center py-20 bg-white border border-slate-100 rounded-[32px] shadow-xl text-center px-6 max-w-4xl mx-auto">
+                <div className="w-20 h-20 bg-slate-50 rounded-3xl flex items-center justify-center mb-6">
+                  <FolderPlus className="w-10 h-10 text-slate-300" />
+                </div>
+                <h2 className="text-3xl font-black text-slate-900 mb-2">No projects found</h2>
+                <p className="text-slate-500 font-medium max-w-sm mb-4">
+                  You don't have any projects yet. Create one to start managing equity fairly.
+                </p>
+                {/* Al estar en una caja blanca sólida sin filtros, el modal ahora se verá limpio */}
+                <CreateProjectModal />
             </div>
           ) : (
             <>
@@ -192,7 +189,7 @@ export default function DashboardPage() {
                         <div className="p-2 bg-emerald-50 rounded-lg"><PieChart className="h-5 w-5 text-emerald-600" /></div>
                         <h3 className="font-bold text-slate-900 text-xl">Equity Distribution</h3>
                   </div>
-                  <div className="w-full h-[500px]"><EquityPieChart contributions={groupedContributionsForChart} /></div>
+                  <div className="w-full h-auto min-h-[500px]"><EquityPieChart contributions={groupedContributionsForChart} /></div>
               </div>
             </>
           )}
