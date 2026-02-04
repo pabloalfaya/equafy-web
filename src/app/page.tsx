@@ -169,11 +169,9 @@ export default function LandingPage() {
           
           <div className="mx-auto max-w-7xl relative px-6">
             <div className="text-center mb-20 max-w-3xl mx-auto">
-              {/* CAMBIO: Añadido py-2 para que las 'Y' no se corten */}
               <h2 className="text-4xl md:text-5xl font-bold tracking-tight mb-6 bg-clip-text text-transparent bg-gradient-to-b from-white to-white/60 py-2">
                 Choose your Equity Framework
               </h2>
-              {/* CAMBIO: 'startup' por 'company' */}
               <p className="text-slate-400 text-lg font-medium leading-relaxed">
                 Every company is different. Select the mathematical logic that fits your stage, from bootstrap to Series A.
               </p>
@@ -205,9 +203,10 @@ export default function LandingPage() {
                     <div className="h-2 w-8 bg-slate-700 rounded-full"></div>
                   </div>
                 </div>
-                <Link href="/login" className="w-full">
+                {/* ENLACE A SECCIÓN ESPECÍFICA */}
+                <Link href="/models#custom" className="w-full">
                   <button className="w-full py-4 rounded-xl border border-white/10 text-white font-bold hover:bg-white hover:text-slate-900 transition-all">
-                      Configure Manually
+                      Learn about Custom Logic
                   </button>
                 </Link>
               </div>
@@ -249,8 +248,11 @@ export default function LandingPage() {
                     </div>
                   </div>
                 </div>
-                <Link href="/login" className="w-full py-4 rounded-xl bg-emerald-500 text-white font-bold hover:bg-emerald-400 hover:scale-[1.02] shadow-lg shadow-emerald-900/20 text-center transition-all">
-                  Use Standard Model
+                {/* ENLACE A SECCIÓN ESPECÍFICA */}
+                <Link href="/models#standard" className="w-full">
+                  <button className="w-full py-4 rounded-xl bg-emerald-500 text-white font-bold hover:bg-emerald-400 hover:scale-[1.02] shadow-lg shadow-emerald-900/20 text-center transition-all">
+                    View Standard Model
+                  </button>
                 </Link>
               </div>
 
@@ -281,9 +283,10 @@ export default function LandingPage() {
                       </p>
                   </div>
                 </div>
-                <Link href="/login" className="w-full">
+                {/* ENLACE A SECCIÓN ESPECÍFICA */}
+                <Link href="/models#flat" className="w-full">
                   <button className="w-full py-4 rounded-xl border border-white/10 text-white font-bold hover:bg-white hover:text-slate-900 transition-all">
-                      Use Flat Model
+                      View Flat Model
                   </button>
                 </Link>
               </div>
