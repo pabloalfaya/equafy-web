@@ -1,15 +1,27 @@
-import { type NextRequest } from "next/server";
+// src/middleware.ts
+import { type NextRequest, NextResponse } from "next/server";
 import { updateSession } from "@/utils/supabase/middleware";
 
 export async function middleware(request: NextRequest) {
+  const { pathname } = request.nextUrl;
+
+  // 1. Definimos las rutas que DEBEN ser públicas
+  const isPublicRoute = 
+    pathname === "/" || 
+    pathname.startsWith("/login") || 
+    pathname.startsWith("/models");
+
+  // 2. Si es pública, dejamos que Next.js maneje la petición normalmente
+  if (isPublicRoute) {
+    return NextResponse.next();
+  }
+
+  // 3. Para el resto de rutas (dashboard, etc.), ejecutamos la protección de sesión
   return await updateSession(request);
 }
 
 export const config = {
   matcher: [
-    /*
-     * Protege todas las rutas EXCEPTO archivos estáticos e imágenes
-     */
     "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
   ],
 };
