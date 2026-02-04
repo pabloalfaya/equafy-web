@@ -35,16 +35,24 @@ export const updateSession = async (request: NextRequest) => {
     data: { user },
   } = await supabase.auth.getUser();
 
-  // Si NO hay usuario y NO estás en login/home, te manda fuera
-  if (
-    !user &&
-    !request.nextUrl.pathname.startsWith("/login") &&
-    !request.nextUrl.pathname.startsWith("/auth") &&
-    request.nextUrl.pathname !== "/"
-  ) {
-    const url = request.nextUrl.clone();
-    url.pathname = "/login";
-    return NextResponse.redirect(url);
+  // --- LÓGICA DE PROTECCIÓN ---
+  // Si NO hay usuario logueado...
+  if (!user) {
+    // ... y NO estás intentando ir a una de estas páginas públicas:
+    if (
+      !request.nextUrl.pathname.startsWith("/login") && // Página de entrar
+      !request.nextUrl.pathname.startsWith("/auth") &&  // Rutas internas de auth
+      request.nextUrl.pathname !== "/" &&               // La Home
+      !request.nextUrl.pathname.startsWith("/what-is-equily") && // PÚBLICA
+      !request.nextUrl.pathname.startsWith("/how-it-works") &&   // PÚBLICA
+      !request.nextUrl.pathname.startsWith("/pricing") &&        // PÚBLICA
+      !request.nextUrl.pathname.startsWith("/contact")           // PÚBLICA
+    ) {
+      // ENTONCES: Te mando al login (porque intentas entrar al dashboard u otro sitio privado)
+      const url = request.nextUrl.clone();
+      url.pathname = "/login";
+      return NextResponse.redirect(url);
+    }
   }
 
   return response;
