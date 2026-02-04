@@ -15,7 +15,7 @@ const COLORS = [
 ];
 
 export function EquityPieChart({ contributions }: { contributions: any[] }) {
-  // 1. Calcular el valor TOTAL de la empresa (Suma de todos los risk_adjusted_value)
+  // 1. Calcular el valor TOTAL de la empresa
   const totalValue = contributions.reduce((sum, c) => sum + (c.risk_adjusted_value || 0), 0);
 
   // 2. Preparar los datos añadiendo el campo "percent"
@@ -45,7 +45,7 @@ export function EquityPieChart({ contributions }: { contributions: any[] }) {
     );
   }
 
-  // 3. Diseño de la Leyenda Personalizada (Nombre + Porcentaje)
+  // 3. Diseño de la Leyenda Personalizada
   const renderLegend = (props: any) => {
     const { payload } = props;
     
@@ -96,8 +96,21 @@ export function EquityPieChart({ contributions }: { contributions: any[] }) {
           ))}
         </Pie>
         
+        {/* --- TEXTO CENTRAL (SIN EURO) --- */}
+        <text x="50%" y="45%" textAnchor="middle" dominantBaseline="middle">
+          {/* Línea 1: Título pequeño */}
+          <tspan x="50%" dy="-10" fontSize="14" fill="#64748b" fontWeight="500">
+            Total Value
+          </tspan>
+          {/* Línea 2: Valor grande (SIN símbolo €) */}
+          <tspan x="50%" dy="28" fontSize="28" fontWeight="800" fill="#0f172a">
+            {totalValue.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
+          </tspan>
+        </text>
+        {/* -------------------------------- */}
+
         <Tooltip 
-          formatter={(value: number) => [`€${value.toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0})}`, "Value"]}
+          formatter={(value: number) => [`${value.toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0})}`, "Value"]}
           contentStyle={{ 
             borderRadius: "16px", 
             border: "1px solid #E2E8F0", 
