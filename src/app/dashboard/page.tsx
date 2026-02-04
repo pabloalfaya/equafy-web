@@ -141,16 +141,15 @@ export default function DashboardPage() {
       <main className="relative z-10 pt-32 pb-20 px-6">
         <div className="mx-auto max-w-7xl">
           {!selectedProject ? (
-            /* CORRECCIÓN: Eliminado el backdrop-blur que atrapaba al modal y añadido margen superior */
-            <div className="mt-12 flex flex-col items-center justify-center py-20 bg-white border border-slate-100 rounded-[32px] shadow-xl text-center px-6 max-w-4xl mx-auto">
-                <div className="w-20 h-20 bg-slate-50 rounded-3xl flex items-center justify-center mb-6">
+            /* CAMBIOS: mt-20 para más espacio superior, border-slate-200 y shadow-2xl para máximo contraste */
+            <div className="mt-20 flex flex-col items-center justify-center py-20 bg-white border border-slate-200 rounded-[32px] shadow-2xl text-center px-6 max-w-4xl mx-auto transition-all">
+                <div className="w-20 h-20 bg-slate-50 rounded-3xl flex items-center justify-center mb-6 shadow-inner">
                   <FolderPlus className="w-10 h-10 text-slate-300" />
                 </div>
                 <h2 className="text-3xl font-black text-slate-900 mb-2">No projects found</h2>
-                <p className="text-slate-500 font-medium max-w-sm mb-4">
+                <p className="text-slate-500 font-medium max-w-sm mb-8">
                   You don't have any projects yet. Create one to start managing equity fairly.
                 </p>
-                {/* Al estar en una caja blanca sólida sin filtros, el modal ahora se verá limpio */}
                 <CreateProjectModal />
             </div>
           ) : (
