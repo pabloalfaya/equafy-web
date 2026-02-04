@@ -29,7 +29,7 @@ export function EquityPieChart({ contributions }: EquityPieChartProps) {
     return acc;
   }, []);
 
-  // 2. Calculamos el total global para sacar los porcentajes
+  // 2. Calculamos el total global para los porcentajes y el centro del gráfico
   const totalValue = data.reduce((sum, item) => sum + item.value, 0);
 
   return (
@@ -38,7 +38,7 @@ export function EquityPieChart({ contributions }: EquityPieChartProps) {
         Equity Distribution
       </h3>
       
-      <div className="h-[300px] w-full">
+      <div className="h-[300px] w-full relative">
         <ResponsiveContainer width="100%" height="100%">
           <PieChart>
             <Pie
@@ -54,6 +54,17 @@ export function EquityPieChart({ contributions }: EquityPieChartProps) {
                 <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} stroke="none" />
               ))}
             </Pie>
+            
+            {/* NUEVO: Texto central para el total de puntos */}
+            <text x="50%" y="50%" textAnchor="middle" dominantBaseline="middle">
+              <tspan x="50%" dy="-0.5em" className="text-2xl font-black fill-slate-900">
+                {totalValue.toLocaleString(undefined, { maximumFractionDigits: 0 })}
+              </tspan>
+              <tspan x="50%" dy="1.5em" className="text-[10px] font-black fill-slate-400 uppercase tracking-widest">
+                Total Points
+              </tspan>
+            </text>
+
             <Tooltip 
               formatter={(value: number) => [`${value.toFixed(2)} pts`, "Value"]}
               contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)' }}
