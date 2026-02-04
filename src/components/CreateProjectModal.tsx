@@ -110,48 +110,64 @@ export function CreateProjectModal() {
                   </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
-                    {/* CUSTOM */}
+                    
+                    {/* CUSTOM - Siempre muestra los controles */}
                     <div 
                       onClick={() => setSelectedModel('CUSTOM')}
-                      className={`relative p-8 rounded-[32px] border-2 transition-all cursor-pointer flex flex-col min-h-[440px] ${selectedModel === 'CUSTOM' ? 'border-blue-500 bg-blue-500/10' : 'border-slate-800 bg-slate-900/50 hover:border-slate-700'}`}
+                      className={`relative p-8 rounded-[32px] border-2 transition-all cursor-pointer flex flex-col min-h-[460px] ${selectedModel === 'CUSTOM' ? 'border-blue-500 bg-blue-500/10' : 'border-slate-800 bg-slate-900/50 hover:border-slate-700'}`}
                     >
                       <div className="w-10 h-10 bg-slate-800 rounded-xl flex items-center justify-center mb-6"><Settings className="text-white w-5 h-5" /></div>
                       <h3 className="text-xl font-black mb-2 text-white">Custom</h3>
                       <p className="text-slate-300 text-xs font-medium mb-6 italic">Total manual control.</p>
                       
-                      {selectedModel === 'CUSTOM' && (
-                        <div className="space-y-2 mt-auto animate-in fade-in" onClick={(e) => e.stopPropagation()}>
-                          {Object.entries(customMults).map(([key, val]) => (
-                            <div key={key} className="flex items-center justify-between bg-black/40 p-2.5 rounded-xl border border-slate-700">
-                              <span className="text-[10px] font-black text-white uppercase">{key}</span>
-                              <input 
-                                type="number" step="0.5" value={val}
-                                onChange={(e) => setCustomMults({...customMults, [key]: parseFloat(e.target.value) || 1})}
-                                className="w-12 bg-transparent text-right font-black text-blue-400 outline-none text-base"
-                              />
-                            </div>
-                          ))}
-                        </div>
-                      )}
+                      <div className="space-y-2 mt-auto" onClick={(e) => e.stopPropagation()}>
+                        {Object.entries(customMults).map(([key, val]) => (
+                          <div key={key} className="flex items-center justify-between bg-black/40 p-2.5 rounded-xl border border-slate-700">
+                            <span className="text-[10px] font-black text-white uppercase">{key}</span>
+                            <input 
+                              type="number" step="0.5" value={val}
+                              onChange={(e) => setCustomMults({...customMults, [key]: parseFloat(e.target.value) || 1})}
+                              className="w-12 bg-transparent text-right font-black text-blue-400 outline-none text-base"
+                            />
+                          </div>
+                        ))}
+                      </div>
                     </div>
 
-                    {/* JUST SPLIT */}
+                    {/* JUST SPLIT - Con desglose completo de 5 multiplicadores */}
                     <div 
                       onClick={() => setSelectedModel('JUST_SPLIT')}
-                      className={`relative p-8 rounded-[32px] border-2 transition-all cursor-pointer flex flex-col min-h-[440px] ${selectedModel === 'JUST_SPLIT' ? 'border-emerald-500 bg-emerald-500/10' : 'border-slate-800 bg-slate-900/50 hover:border-slate-700'}`}
+                      className={`relative p-8 rounded-[32px] border-2 transition-all cursor-pointer flex flex-col min-h-[460px] ${selectedModel === 'JUST_SPLIT' ? 'border-emerald-500 bg-emerald-500/10' : 'border-slate-800 bg-slate-900/50 hover:border-slate-700'}`}
                     >
                       <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-emerald-500 text-[#0B0F1A] text-[10px] font-black px-4 py-1 rounded-full uppercase shadow-xl">Best Choice</div>
                       <div className="w-10 h-10 bg-emerald-500/20 rounded-xl flex items-center justify-center mb-6"><ShieldCheck className="text-emerald-400 w-5 h-5" /></div>
-                      <h3 className="text-xl font-black mb-2 text-white">Just Split</h3>
+                      <h3 className="text-xl font-black mb-2 text-white">Just Split Model</h3>
                       <p className="text-emerald-400 text-xs font-bold mb-6 italic underline">Recommended</p>
                       
-                      <div className="space-y-3 mt-auto mb-4">
-                        <div className="flex justify-between items-center bg-black/40 p-3 rounded-xl border border-white/10">
-                            <span className="text-[10px] font-black text-emerald-400 uppercase">Cash x4</span>
-                            <span className="text-[10px] font-black text-blue-400 uppercase">Work x2</span>
+                      <div className="space-y-2 mt-auto mb-4">
+                        <div className="grid grid-cols-2 gap-2">
+                          <div className="bg-black/40 p-2.5 rounded-xl border border-white/10 text-center">
+                              <span className="block text-[9px] font-black text-emerald-400 uppercase mb-1">Cash</span>
+                              <span className="font-black text-white text-lg">x4</span>
+                          </div>
+                          <div className="bg-black/40 p-2.5 rounded-xl border border-white/10 text-center">
+                              <span className="block text-[9px] font-black text-blue-400 uppercase mb-1">Work</span>
+                              <span className="font-black text-white text-lg">x2</span>
+                          </div>
                         </div>
-                        <div className="flex justify-between items-center bg-black/40 p-3 rounded-xl border border-white/10">
-                            <span className="text-[9px] font-black text-slate-300 uppercase">Tang/Intang/Other x2</span>
+                        <div className="grid grid-cols-3 gap-2">
+                          <div className="bg-black/40 p-2 rounded-xl border border-white/10 text-center">
+                            <span className="block text-[8px] font-black text-slate-400 uppercase">Tang.</span>
+                            <span className="font-black text-white text-sm">x2</span>
+                          </div>
+                          <div className="bg-black/40 p-2 rounded-xl border border-white/10 text-center">
+                            <span className="block text-[8px] font-black text-slate-400 uppercase">Intan.</span>
+                            <span className="font-black text-white text-sm">x2</span>
+                          </div>
+                          <div className="bg-black/40 p-2 rounded-xl border border-white/10 text-center">
+                            <span className="block text-[8px] font-black text-slate-400 uppercase">Other</span>
+                            <span className="font-black text-white text-sm">x2</span>
+                          </div>
                         </div>
                       </div>
 
@@ -161,16 +177,33 @@ export function CreateProjectModal() {
                       </div>
                     </div>
 
-                    {/* FLAT */}
+                    {/* FLAT - Rediseñado para mostrar multiplicadores x1 */}
                     <div 
                       onClick={() => setSelectedModel('FLAT')}
-                      className={`relative p-8 rounded-[32px] border-2 transition-all cursor-pointer flex flex-col min-h-[440px] ${selectedModel === 'FLAT' ? 'border-purple-500 bg-purple-500/10' : 'border-slate-800 bg-slate-900/50 hover:border-slate-700'}`}
+                      className={`relative p-8 rounded-[32px] border-2 transition-all cursor-pointer flex flex-col min-h-[460px] ${selectedModel === 'FLAT' ? 'border-purple-500 bg-purple-500/10' : 'border-slate-800 bg-slate-900/50 hover:border-slate-700'}`}
                     >
                       <div className="w-10 h-10 bg-purple-500/20 rounded-xl flex items-center justify-center mb-6"><Scale className="text-purple-400 w-5 h-5" /></div>
                       <h3 className="text-xl font-black mb-2 text-white">Flat</h3>
                       <p className="text-purple-300 text-xs font-bold mb-8 italic underline">Equal split (x1).</p>
-                      <div className="mt-auto bg-black/40 p-8 rounded-[24px] border border-white/10 text-center">
-                        <span className="text-[12px] font-black text-purple-400 uppercase tracking-widest italic">All Multipliers x1</span>
+                      
+                      <div className="space-y-2 mt-auto">
+                        <div className="grid grid-cols-2 gap-2">
+                          <div className="bg-black/40 p-2.5 rounded-xl border border-white/10 text-center">
+                            <span className="block text-[9px] font-black text-purple-300 uppercase mb-1">Cash</span>
+                            <span className="font-black text-white text-lg">x1</span>
+                          </div>
+                          <div className="bg-black/40 p-2.5 rounded-xl border border-white/10 text-center">
+                            <span className="block text-[9px] font-black text-purple-300 uppercase mb-1">Work</span>
+                            <span className="font-black text-white text-lg">x1</span>
+                          </div>
+                        </div>
+                        <div className="bg-black/40 p-2.5 rounded-xl border border-white/10 text-center">
+                            <span className="block text-[9px] font-black text-slate-400 uppercase mb-1">Others</span>
+                            <span className="font-black text-white text-lg">x1</span>
+                        </div>
+                        <div className="py-2 text-center">
+                          <span className="text-[10px] font-black text-purple-400 uppercase tracking-widest italic">All values equal x1</span>
+                        </div>
                       </div>
                     </div>
                   </div>
