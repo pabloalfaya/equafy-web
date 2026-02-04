@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { Plus, TrendingUp, LayoutDashboard, ChevronDown, PieChart, Users, Layers } from "lucide-react";
+import { Plus, TrendingUp, LayoutDashboard, PieChart, Users, Layers } from "lucide-react";
 import { createClient } from "@/utils/supabase/client";
 import { EquityPieChart } from "@/components/EquityPieChart";
 import { ContributionsTable } from "@/components/ContributionsTable";
@@ -171,12 +171,15 @@ export default function DashboardPage() {
                 </div>
               </div>
 
+              {/* AQUÍ ESTÁ EL CAMBIO: max-h-[500px] overflow-y-auto */}
               <div className="mb-8 bg-white/70 backdrop-blur-xl border border-white/60 rounded-[32px] p-8 shadow-xl flex flex-col">
                   <div className="flex items-center gap-3 mb-6">
                         <div className="p-2 bg-blue-50 rounded-lg"><TrendingUp className="h-5 w-5 text-blue-600" /></div>
                         <h3 className="font-bold text-slate-900 text-xl">Contribution Log</h3>
                   </div>
-                  <div className="overflow-x-auto"><ContributionsTable contributions={contributions} onDelete={handleContributionDeleted} /></div>
+                  <div className="overflow-x-auto max-h-[500px] overflow-y-auto pr-2 custom-scrollbar">
+                    <ContributionsTable contributions={contributions} onDelete={handleContributionDeleted} />
+                  </div>
               </div>
 
               <div className="bg-white/70 backdrop-blur-xl border border-white/60 rounded-[32px] p-8 shadow-xl flex flex-col">
