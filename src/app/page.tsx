@@ -1,5 +1,3 @@
-// src/app/page.tsx
-
 import Link from "next/link";
 import { 
   ShieldCheck, PieChart, Users, PlayCircle, Globe, Mail, Lock, Twitter, Linkedin, ArrowRight,
@@ -61,7 +59,8 @@ export default function LandingPage() {
       {/* --- HERO SECTION --- */}
       <header className="relative pt-36 pb-10 z-10">
         <div className="mx-auto max-w-5xl px-6 text-center">
-          <h1 className="text-6xl md:text-8xl font-bold tracking-tighter text-slate-900 mb-4 leading-[1.1] md:leading-[1.1]">
+          {/* El py-2 aquí asegura que letras como la 'y' no se corten al usar bg-clip-text */}
+          <h1 className="text-6xl md:text-8xl font-bold tracking-tighter text-slate-900 mb-4 leading-[1.1] md:leading-[1.1] py-2">
             Equity that <br className="hidden md:block" />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 to-teal-500">evolves with you.</span>
           </h1>
@@ -161,17 +160,15 @@ export default function LandingPage() {
         <div className="absolute -top-40 left-1/2 -translate-x-1/2 w-3/4 h-[400px] bg-emerald-900/20 blur-[100px] rounded-full pointer-events-none mix-blend-soft-light"></div>
       </div>
 
-
       {/* --- FRAMEWORK SELECTION --- */}
       <section className="relative z-10 bg-[#0B0F19] text-white pt-20 pb-32">
-          
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-emerald-900/20 via-[#0B0F19] to-[#0B0F19] pointer-events-none"></div>
-          
           <div className="mx-auto max-w-7xl relative px-6">
             <div className="text-center mb-20 max-w-3xl mx-auto">
               <h2 className="text-4xl md:text-5xl font-bold tracking-tight mb-6 bg-clip-text text-transparent bg-gradient-to-b from-white to-white/60 py-2">
                 Choose your Equity Framework
               </h2>
+              {/* CAMBIO: 'startup' por 'company' [cite: 2026-02-03] */}
               <p className="text-slate-400 text-lg font-medium leading-relaxed">
                 Every company is different. Select the mathematical logic that fits your stage, from bootstrap to Series A.
               </p>
@@ -203,7 +200,6 @@ export default function LandingPage() {
                     <div className="h-2 w-8 bg-slate-700 rounded-full"></div>
                   </div>
                 </div>
-                {/* ENLACE A SECCIÓN ESPECÍFICA */}
                 <Link href="/models#custom" className="w-full">
                   <button className="w-full py-4 rounded-xl border border-white/10 text-white font-bold hover:bg-white hover:text-slate-900 transition-all">
                       Learn about Custom Logic
@@ -211,7 +207,7 @@ export default function LandingPage() {
                 </Link>
               </div>
 
-              {/* --- JUST SPLIT MODEL (RECOMMENDED) --- */}
+              {/* --- JUST SPLIT MODEL --- */}
               <div className="relative bg-emerald-900/10 border border-emerald-500/50 rounded-[32px] p-8 transition-all duration-300 shadow-[0_0_80px_-20px_rgba(16,185,129,0.2)] h-full flex flex-col transform lg:-translate-y-4 z-20">
                 <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-emerald-500 text-white px-4 py-1.5 rounded-full text-[10px] font-black tracking-widest uppercase shadow-lg border border-emerald-400">
                   Recommended
@@ -248,7 +244,6 @@ export default function LandingPage() {
                     </div>
                   </div>
                 </div>
-                {/* ENLACE A SECCIÓN ESPECÍFICA */}
                 <Link href="/models#standard" className="w-full">
                   <button className="w-full py-4 rounded-xl bg-emerald-500 text-white font-bold hover:bg-emerald-400 hover:scale-[1.02] shadow-lg shadow-emerald-900/20 text-center transition-all">
                     View Standard Model
@@ -283,7 +278,6 @@ export default function LandingPage() {
                       </p>
                   </div>
                 </div>
-                {/* ENLACE A SECCIÓN ESPECÍFICA */}
                 <Link href="/models#flat" className="w-full">
                   <button className="w-full py-4 rounded-xl border border-white/10 text-white font-bold hover:bg-white hover:text-slate-900 transition-all">
                       View Flat Model
@@ -311,7 +305,7 @@ export default function LandingPage() {
               <h4 className="font-bold text-slate-900 mb-6 text-sm">Product</h4>
               <ul className="space-y-4 text-sm font-medium text-slate-500">
                 <li><Link href="#" className="hover:text-emerald-600 transition-colors">Calculator</Link></li>
-                <li><Link href="#" className="hover:text-emerald-600 transition-colors">Equity Models</Link></li>
+                <li><Link href="/models" className="hover:text-emerald-600 transition-colors">Equity Models</Link></li>
                 <li><Link href="#" className="hover:text-emerald-600 transition-colors">Cap Table</Link></li>
               </ul>
             </div>
