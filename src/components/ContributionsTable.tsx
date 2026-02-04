@@ -21,6 +21,8 @@ export function ContributionsTable({ contributions, onDelete }: any) {
             <th className="px-6 py-4 border-b border-slate-100">Member</th>
             <th className="px-6 py-4 border-b border-slate-100">Type</th>
             <th className="px-6 py-4 border-b border-slate-100">Description</th>
+            {/* NUEVO ENCABEZADO: DATE */}
+            <th className="px-6 py-4 border-b border-slate-100">Date</th>
             <th className="px-6 py-4 border-b border-slate-100 text-right">Value (Pts)</th>
             <th className="px-6 py-4 border-b border-slate-100 text-right">Equity %</th>
             <th className="px-6 py-4 border-b border-slate-100 text-center">Actions</th>
@@ -30,9 +32,13 @@ export function ContributionsTable({ contributions, onDelete }: any) {
           {contributions.map((c: any) => {
             const percentage = totalPoints > 0 ? ((Number(c.risk_adjusted_value) / totalPoints) * 100).toFixed(1) : "0.0";
             
-            // BUSCAMOS EN LOS CAMPOS REALES DE TU DB
             const displayDesc = c.concept || c.description || "—";
             const displayType = (c.type || c.contribution_type || "OTHER").toUpperCase();
+
+            // Formateo de fecha: 04 Feb 2026 [cite: 2026-02-04]
+            const displayDate = c.date 
+              ? new Date(c.date).toLocaleDateString('es-ES', { day: '2-digit', month: 'short', year: 'numeric' })
+              : "—";
 
             let pillClass = "bg-slate-50 text-slate-500 border-slate-200";
             if (displayType === 'CASH') pillClass = "bg-emerald-50 text-emerald-600 border-emerald-100";
@@ -50,6 +56,10 @@ export function ContributionsTable({ contributions, onDelete }: any) {
                 </td>
                 <td className="px-6 py-5 text-sm font-medium text-slate-500 max-w-[200px] truncate">
                   {displayDesc}
+                </td>
+                {/* NUEVA CELDA: FECHA */}
+                <td className="px-6 py-5 text-[11px] font-black text-slate-400 uppercase tracking-tight">
+                  {displayDate}
                 </td>
                 <td className="px-6 py-5 text-right font-black font-mono">{Number(c.risk_adjusted_value).toLocaleString(undefined, { minimumFractionDigits: 2 })}</td>
                 <td className="px-6 py-5 text-right font-black text-emerald-600 font-mono">{percentage}%</td>

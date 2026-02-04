@@ -7,9 +7,11 @@ import { Project } from "@/types/database";
 
 export function AddContributionModal({ isOpen, onClose, projectId, onSuccess, members, onAddMemberClick }: any) {
   const [contributorId, setContributorId] = useState("");
-  const [concept, setConcept] = useState(""); // Volvemos a 'concept'
+  const [concept, setConcept] = useState("");
   const [type, setType] = useState("CASH");
   const [amount, setAmount] = useState("");
+  // NUEVO: Estado para la fecha, inicializado en 'hoy' [cite: 2026-02-04]
+  const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
   const [project, setProject] = useState<Project | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -41,17 +43,18 @@ export function AddContributionModal({ isOpen, onClose, projectId, onSuccess, me
     setLoading(true);
     const selectedMember = members.find((m: any) => m.id === contributorId);
 
-    // USAMOS LOS NOMBRES QUE TU BASE DE DATOS REALMENTE TIENE
+    // INSERCIÓN: Incluimos el campo 'date'
     const { data, error } = await supabase
       .from("contributions")
       .insert([{
         project_id: projectId,
         contributor_name: selectedMember?.name || "Unknown",
-        concept: concept, // Nombre real en tu DB
-        type: type,       // Nombre real en tu DB
+        concept: concept,
+        type: type,
         amount: parseFloat(amount),
         multiplier: currentMultiplier,
-        risk_adjusted_value: parseFloat(riskAdjustedValue)
+        risk_adjusted_value: parseFloat(riskAdjustedValue),
+        date: date // Guardamos la fecha seleccionada
       }])
       .select()
       .single();
@@ -63,6 +66,8 @@ export function AddContributionModal({ isOpen, onClose, projectId, onSuccess, me
     } else if (data) {
       setConcept("");
       setAmount("");
+      // Reseteamos a la fecha actual para la siguiente entrada
+      setDate(new Date().toISOString().split('T')[0]); 
       onSuccess(data);
       onClose();
     }
@@ -77,11 +82,24 @@ export function AddContributionModal({ isOpen, onClose, projectId, onSuccess, me
         </div>
         
         <form onSubmit={handleSubmit} className="p-8 space-y-6">
-          <div>
-            <label className="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">Contributor</label>
-            <select value={contributorId} onChange={(e) => setContributorId(e.target.value)} className="w-full rounded-xl border border-slate-200 px-4 py-3 bg-slate-50 font-bold outline-none">
-              {members.map((m: any) => <option key={m.id} value={m.id}>{m.name}</option>)}
-            </select>
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">Contributor</label>
+              <select value={contributorId} onChange={(e) => setContributorId(e.target.value)} className="w-full rounded-xl border border-slate-200 px-4 py-3 bg-slate-50 font-bold outline-none">
+                {members.map((m: any) => <option key={m.id} value={m.id}>{m.name}</option>)}
+              </select>
+            </div>
+            {/* NUEVO: Selector de Fecha */}
+            <div>
+              <label className="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">Date</label>
+              <input 
+                type="date" 
+                required
+                value={date} 
+                onChange={(e) => setDate(e.target.value)} 
+                className="w-full rounded-xl border border-slate-200 px-4 py-3 bg-slate-50 font-bold outline-none text-slate-600" 
+              />
+            </div>
           </div>
 
           <div>
@@ -93,7 +111,6 @@ export function AddContributionModal({ isOpen, onClose, projectId, onSuccess, me
             <div>
               <label className="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">Type</label>
               <select value={type} onChange={(e) => setType(e.target.value)} className="w-full rounded-xl border border-slate-200 px-4 py-3 bg-slate-50 font-black text-xs uppercase outline-none">
-                {/* AHORA SALEN LOS MULTIPLICADORES */}
                 <option value="CASH">Cash (x{project?.mult_cash || 4})</option>
                 <option value="WORK">Work (x{project?.mult_work || 2})</option>
                 <option value="TANGIBLE">Tangible (x{project?.mult_tangible || 1})</option>
