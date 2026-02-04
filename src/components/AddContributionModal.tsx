@@ -7,7 +7,7 @@ import { Project } from "@/types/database";
 
 export function AddContributionModal({ isOpen, onClose, projectId, onSuccess, members, onAddMemberClick }: any) {
   const [contributorId, setContributorId] = useState("");
-  const [text, setText] = useState(""); // Usamos 'text' internamente para evitar confusiones
+  const [concept, setConcept] = useState(""); // Volvemos a 'concept'
   const [type, setType] = useState("CASH");
   const [amount, setAmount] = useState("");
   const [project, setProject] = useState<Project | null>(null);
@@ -41,15 +41,14 @@ export function AddContributionModal({ isOpen, onClose, projectId, onSuccess, me
     setLoading(true);
     const selectedMember = members.find((m: any) => m.id === contributorId);
 
-    // ENVIAMOS AMBOS NOMBRES (description y concept) PARA ASEGURAR COMPATIBILIDAD
+    // USAMOS LOS NOMBRES QUE TU BASE DE DATOS REALMENTE TIENE
     const { data, error } = await supabase
       .from("contributions")
       .insert([{
         project_id: projectId,
         contributor_name: selectedMember?.name || "Unknown",
-        description: text,      // Intentamos con description
-        concept: text,          // Intentamos con concept (por si acaso)
-        contribution_type: type, 
+        concept: concept, // Nombre real en tu DB
+        type: type,       // Nombre real en tu DB
         amount: parseFloat(amount),
         multiplier: currentMultiplier,
         risk_adjusted_value: parseFloat(riskAdjustedValue)
@@ -62,7 +61,7 @@ export function AddContributionModal({ isOpen, onClose, projectId, onSuccess, me
     if (error) {
       alert("Error: " + error.message);
     } else if (data) {
-      setText("");
+      setConcept("");
       setAmount("");
       onSuccess(data);
       onClose();
@@ -71,7 +70,7 @@ export function AddContributionModal({ isOpen, onClose, projectId, onSuccess, me
 
   return (
     <div className="fixed inset-0 z-[110] flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4">
-      <div className="w-full max-w-md overflow-hidden rounded-[32px] bg-white shadow-2xl animate-in fade-in zoom-in duration-200">
+      <div className="w-full max-w-md overflow-hidden rounded-[32px] bg-white shadow-2xl animate-in fade-in zoom-in duration-200 font-sans">
         <div className="border-b border-slate-100 bg-slate-50/50 px-8 py-6 flex justify-between items-center">
           <h3 className="font-black text-slate-800 text-lg uppercase tracking-tight">Add Contribution</h3>
           <button onClick={onClose}><X className="h-5 w-5 text-slate-400 hover:text-slate-600" /></button>
@@ -87,18 +86,19 @@ export function AddContributionModal({ isOpen, onClose, projectId, onSuccess, me
 
           <div>
             <label className="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">Description / Concept</label>
-            <input type="text" required placeholder="Describe what you did..." value={text} onChange={(e) => setText(e.target.value)} className="w-full rounded-xl border border-slate-200 px-4 py-3 bg-slate-50 italic outline-none" />
+            <input type="text" required placeholder="e.g. Server costs" value={concept} onChange={(e) => setConcept(e.target.value)} className="w-full rounded-xl border border-slate-200 px-4 py-3 bg-slate-50 italic outline-none" />
           </div>
 
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">Type</label>
               <select value={type} onChange={(e) => setType(e.target.value)} className="w-full rounded-xl border border-slate-200 px-4 py-3 bg-slate-50 font-black text-xs uppercase outline-none">
-                <option value="CASH">Cash</option>
-                <option value="WORK">Work</option>
-                <option value="TANGIBLE">Tangible</option>
-                <option value="INTANGIBLE">Intangible</option>
-                <option value="OTHERS">Others</option>
+                {/* AHORA SALEN LOS MULTIPLICADORES */}
+                <option value="CASH">Cash (x{project?.mult_cash || 4})</option>
+                <option value="WORK">Work (x{project?.mult_work || 2})</option>
+                <option value="TANGIBLE">Tangible (x{project?.mult_tangible || 1})</option>
+                <option value="INTANGIBLE">Intangible (x{project?.mult_intangible || 2})</option>
+                <option value="OTHERS">Others (x{project?.mult_others || 1})</option>
               </select>
             </div>
             <div>
