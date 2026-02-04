@@ -10,7 +10,6 @@ export function AddContributionModal({ isOpen, onClose, projectId, onSuccess, me
   const [concept, setConcept] = useState("");
   const [type, setType] = useState("CASH");
   const [amount, setAmount] = useState("");
-  // NUEVO: Estado para la fecha, inicializado en 'hoy' [cite: 2026-02-04]
   const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
   const [project, setProject] = useState<Project | null>(null);
   const [loading, setLoading] = useState(false);
@@ -43,7 +42,6 @@ export function AddContributionModal({ isOpen, onClose, projectId, onSuccess, me
     setLoading(true);
     const selectedMember = members.find((m: any) => m.id === contributorId);
 
-    // INSERCIÓN: Incluimos el campo 'date'
     const { data, error } = await supabase
       .from("contributions")
       .insert([{
@@ -54,7 +52,7 @@ export function AddContributionModal({ isOpen, onClose, projectId, onSuccess, me
         amount: parseFloat(amount),
         multiplier: currentMultiplier,
         risk_adjusted_value: parseFloat(riskAdjustedValue),
-        date: date // Guardamos la fecha seleccionada
+        date: date
       }])
       .select()
       .single();
@@ -66,8 +64,7 @@ export function AddContributionModal({ isOpen, onClose, projectId, onSuccess, me
     } else if (data) {
       setConcept("");
       setAmount("");
-      // Reseteamos a la fecha actual para la siguiente entrada
-      setDate(new Date().toISOString().split('T')[0]); 
+      setDate(new Date().toISOString().split('T')[0]);
       onSuccess(data);
       onClose();
     }
@@ -89,7 +86,6 @@ export function AddContributionModal({ isOpen, onClose, projectId, onSuccess, me
                 {members.map((m: any) => <option key={m.id} value={m.id}>{m.name}</option>)}
               </select>
             </div>
-            {/* NUEVO: Selector de Fecha */}
             <div>
               <label className="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">Date</label>
               <input 
@@ -104,7 +100,8 @@ export function AddContributionModal({ isOpen, onClose, projectId, onSuccess, me
 
           <div>
             <label className="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">Description / Concept</label>
-            <input type="text" required placeholder="e.g. Server costs" value={concept} onChange={(e) => setConcept(e.target.value)} className="w-full rounded-xl border border-slate-200 px-4 py-3 bg-slate-50 italic outline-none" />
+            {/* FIX: Quitado 'italic' y añadido 'font-bold' para consistencia */}
+            <input type="text" required placeholder="e.g. Server costs" value={concept} onChange={(e) => setConcept(e.target.value)} className="w-full rounded-xl border border-slate-200 px-4 py-3 bg-slate-50 font-bold outline-none" />
           </div>
 
           <div className="grid grid-cols-2 gap-4">
@@ -119,7 +116,8 @@ export function AddContributionModal({ isOpen, onClose, projectId, onSuccess, me
               </select>
             </div>
             <div>
-              <label className="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">Amount (€)</label>
+              {/* FIX: Cambiado '€' por 'Monetary Units' */}
+              <label className="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">Amount (Monetary Units)</label>
               <input type="number" required placeholder="0.00" value={amount} onChange={(e) => setAmount(e.target.value)} className="w-full rounded-xl border border-slate-200 px-4 py-3 bg-slate-50 font-black outline-none" />
             </div>
           </div>
