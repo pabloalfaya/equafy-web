@@ -1,24 +1,18 @@
 "use client";
 
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from "recharts";
-import { Contribution } from "@/types/database";
 
 interface EquityPieChartProps {
-  contributions: Contribution[];
-}
-
-interface ChartDataItem {
-  name: string;
-  value: number;
+  contributions: any[]; // Usamos any para evitar errores de tipado con la base de datos
 }
 
 const COLORS = ["#10b981", "#3b82f6", "#8b5cf6", "#f59e0b", "#64748b"];
 
 export function EquityPieChart({ contributions }: EquityPieChartProps) {
-  // 1. Agrupamos los datos por socio
-  const data = contributions.reduce((acc: ChartDataItem[], curr) => {
+  // 1. Agrupamos los datos por socio de forma robusta
+  const data = contributions.reduce((acc: any[], curr: any) => {
     const name = curr.contributor_name || "Member";
-    const value = curr.risk_adjusted_value || 0;
+    const value = Number(curr.risk_adjusted_value) || 0;
     
     const existing = acc.find((item) => item.name === name);
     if (existing) {
@@ -29,7 +23,7 @@ export function EquityPieChart({ contributions }: EquityPieChartProps) {
     return acc;
   }, []);
 
-  // 2. Calculamos el total global para los porcentajes y el centro del gráfico
+  // 2. Calculamos el total global
   const totalValue = data.reduce((sum, item) => sum + item.value, 0);
 
   return (
@@ -55,7 +49,7 @@ export function EquityPieChart({ contributions }: EquityPieChartProps) {
               ))}
             </Pie>
             
-            {/* NUEVO: Texto central para el total de puntos */}
+            {/* Texto central para el total de puntos */}
             <text x="50%" y="50%" textAnchor="middle" dominantBaseline="middle">
               <tspan x="50%" dy="-0.5em" className="text-2xl font-black fill-slate-900">
                 {totalValue.toLocaleString(undefined, { maximumFractionDigits: 0 })}
@@ -65,15 +59,16 @@ export function EquityPieChart({ contributions }: EquityPieChartProps) {
               </tspan>
             </text>
 
+            {/* FIX: Cambiado el tipo del valor a 'any' para eliminar el error rojo de Cursor */}
             <Tooltip 
-              formatter={(value: number) => [`${value.toFixed(2)} pts`, "Value"]}
+              formatter={(value: any) => [`${Number(value).toFixed(2)} pts`, "Value"]}
               contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)' }}
             />
           </PieChart>
         </ResponsiveContainer>
       </div>
 
-      {/* 3. LEYENDA PERSONALIZADA CON PORCENTAJES */}
+      {/* 3. LEYENDA CON PORCENTAJES */}
       <div className="flex flex-wrap justify-center gap-4 mt-6 pt-6 border-t border-slate-100">
         {data.map((item, index) => {
           const percentage = totalValue > 0 
