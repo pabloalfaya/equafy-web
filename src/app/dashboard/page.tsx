@@ -2,12 +2,13 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { Plus, TrendingUp, LayoutDashboard, PieChart, Users, Layers } from "lucide-react";
+import { Plus, TrendingUp, LayoutDashboard, PieChart, Users, Layers, FolderPlus } from "lucide-react";
 import { createClient } from "@/utils/supabase/client";
 import { EquityPieChart } from "@/components/EquityPieChart";
 import { ContributionsTable } from "@/components/ContributionsTable";
 import { AddContributionModal } from "@/components/AddContributionModal";
 import { AddMemberModal } from "@/components/AddMemberModal";
+import { CreateProjectModal } from "@/components/CreateProjectModal";
 import type { Project, Contribution } from "@/types/database";
 
 type Member = { id: string; name: string };
@@ -145,10 +146,15 @@ export default function DashboardPage() {
       <main className="relative z-10 pt-32 pb-20 px-6">
         <div className="mx-auto max-w-7xl">
           {!selectedProject ? (
-            <div className="text-center p-20 bg-white rounded-[32px] shadow-xl">
-               <Layers className="h-12 w-12 text-slate-300 mx-auto mb-4" />
-               <h2 className="text-2xl font-bold">No projects found</h2>
-               <p className="text-slate-500">Create a project in Supabase to start.</p>
+            <div className="flex flex-col items-center justify-center py-20 bg-white/70 backdrop-blur-xl border border-white/60 rounded-[32px] shadow-xl text-center px-6">
+               <div className="w-20 h-20 bg-slate-50 rounded-3xl flex items-center justify-center mb-6">
+                 <FolderPlus className="w-10 h-10 text-slate-300" />
+               </div>
+               <h2 className="text-3xl font-black text-slate-900 mb-2">No projects found</h2>
+               <p className="text-slate-500 font-medium max-w-sm mb-4">
+                 You don't have any projects yet. Create one to start managing equity fairly.
+               </p>
+               <CreateProjectModal />
             </div>
           ) : (
             <>
@@ -171,7 +177,6 @@ export default function DashboardPage() {
                 </div>
               </div>
 
-              {/* AQUÍ ESTÁ EL CAMBIO: max-h-[500px] overflow-y-auto */}
               <div className="mb-8 bg-white/70 backdrop-blur-xl border border-white/60 rounded-[32px] p-8 shadow-xl flex flex-col">
                   <div className="flex items-center gap-3 mb-6">
                         <div className="p-2 bg-blue-50 rounded-lg"><TrendingUp className="h-5 w-5 text-blue-600" /></div>
