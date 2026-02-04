@@ -34,7 +34,7 @@ export default function LandingPage() {
               {[
                 { name: "What is Equily?", href: "/what-is-equily" },
                 { name: "How does Equily work?", href: "/how-it-works" },
-                { name: "Pricing", href: "/pricing" }
+                { name: "Pricing", href: "/pricing" } // Redirección confirmada a /pricing
               ].map((item) => (
                 <Link key={item.name} href={item.href} className="px-5 py-2 text-sm font-bold text-slate-600 hover:text-slate-900 hover:bg-white rounded-full transition-all duration-200">
                   {item.name}
@@ -198,7 +198,6 @@ export default function LandingPage() {
                     <CheckCircle2 className="w-5 h-5 text-slate-500" /> Manual Configuration
                   </div>
                   
-                  {/* Interruptor Logarithmic Risk interactivo */}
                   <div className={`mt-6 rounded-xl p-4 border flex items-center justify-between transition-colors ${customRisk ? 'border-emerald-500/30 bg-white/5' : 'border-white/5 bg-transparent'}`}>
                     <div className="flex items-center gap-2">
                       <PieChart className={`w-4 h-4 transition-colors ${customRisk ? 'text-emerald-400' : 'text-slate-500'}`} />
@@ -246,7 +245,6 @@ export default function LandingPage() {
                       <p className="text-xs text-blue-200/60 mt-2 font-medium">Tangible and intangible contributions</p>
                   </div>
                   
-                  {/* Interruptor Logarithmic Risk interactivo */}
                   <div className={`rounded-xl p-4 border flex items-center justify-between transition-colors ${standardRisk ? 'border-emerald-500/30 bg-white/5' : 'border-white/5 bg-transparent'}`}>
                     <div className="flex items-center gap-2">
                       <PieChart className={`w-4 h-4 transition-colors ${standardRisk ? 'text-emerald-400' : 'text-slate-500'}`} />
@@ -321,8 +319,9 @@ export default function LandingPage() {
               <h4 className="font-bold text-slate-900 mb-6 text-sm">Product</h4>
               <ul className="space-y-4 text-sm font-medium text-slate-500">
                 <li><Link href="#" className="hover:text-emerald-600 transition-colors">Calculator</Link></li>
+                {/* ENLACE DE PRICING AÑADIDO AL PIE DE PÁGINA */}
+                <li><Link href="/pricing" className="hover:text-emerald-600 transition-colors">Pricing</Link></li>
                 <li><Link href="/models" className="hover:text-emerald-600 transition-colors">Equity Models</Link></li>
-                <li><Link href="#" className="hover:text-emerald-600 transition-colors">Cap Table</Link></li>
               </ul>
             </div>
             <div>

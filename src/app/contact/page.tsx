@@ -12,6 +12,13 @@ export default function ContactPage() {
   
   const supabase = createClient();
 
+  // Definimos los enlaces de navegación de forma explícita para evitar errores de ruta
+  const navItems = [
+    { name: "What is Equily?", href: "/what-is-equily" },
+    { name: "How does Equily work?", href: "/how-it-works" },
+    { name: "Pricing", href: "/pricing" }
+  ];
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -51,12 +58,18 @@ export default function ContactPage() {
               <img src="/logo.png" alt="Equily Logo" className="relative h-28 w-auto object-contain transition-transform duration-300 group-hover:scale-105" />
             </Link>
             <div className="hidden lg:flex items-center gap-1 bg-slate-100/50 p-1 rounded-full border border-slate-200/50 backdrop-blur-md">
-              {["What is Equily?", "How does Equily work?", "Pricing"].map((name) => (
-                <Link key={name} href={`/${name.toLowerCase().replace(/ /g, '-')}`} className="px-5 py-2 text-sm font-bold text-slate-600 hover:text-slate-900 hover:bg-white rounded-full transition-all">
-                  {name}
+              {navItems.map((item) => (
+                <Link 
+                  key={item.name} 
+                  href={item.href} 
+                  className="px-5 py-2 text-sm font-bold text-slate-600 hover:text-slate-900 hover:bg-white rounded-full transition-all"
+                >
+                  {item.name}
                 </Link>
               ))}
-              <Link href="/contact" className="px-5 py-2 text-sm font-bold text-emerald-600 bg-white rounded-full transition-all">Contact</Link>
+              <Link href="/contact" className="px-5 py-2 text-sm font-bold text-emerald-600 bg-white shadow-sm rounded-full transition-all">
+                Contact
+              </Link>
             </div>
           </div>
           <div className="flex items-center gap-4">
