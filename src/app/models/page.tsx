@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { 
   ShieldCheck, Sliders, Scale, CheckCircle2, AlertTriangle, 
-  Zap, ArrowRight, TrendingUp, PlayCircle 
+  Zap, ArrowRight, TrendingUp, Briefcase 
 } from "lucide-react";
 
 export default function ModelsPage() {
@@ -20,7 +20,8 @@ export default function ModelsPage() {
         <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-3">
           <div className="flex items-center gap-8">
             <Link href="/" className="relative group">
-              <img src="/logo.png" alt="Equily Logo" className="relative h-28 w-auto object-contain" />
+              <div className="absolute -inset-2 bg-gradient-to-r from-emerald-500/20 to-blue-500/20 rounded-lg blur opacity-0 group-hover:opacity-100 transition duration-500"></div>
+              <img src="/logo.png" alt="Equily Logo" className="relative h-28 w-auto object-contain transition-transform duration-300 group-hover:scale-105" />
             </Link>
             <div className="hidden lg:flex items-center gap-1 bg-slate-100/50 p-1 rounded-full border border-slate-200/50 backdrop-blur-md">
               {[
@@ -38,19 +39,24 @@ export default function ModelsPage() {
             </div>
           </div>
           <div className="flex items-center gap-4">
-            <Link href="/login" className="hidden md:block text-sm font-bold text-slate-600 hover:text-slate-900">Log in</Link>
+            <Link href="/login" className="hidden md:block text-sm font-bold text-slate-600 hover:text-slate-900 transition-colors">
+              Log in
+            </Link>
+            <Link href="/login" className="hidden md:block text-sm font-bold text-slate-600 hover:text-emerald-600 transition-colors">
+              Sign Up
+            </Link>
             <Link href="/login" className="relative group">
-               <div className="absolute -inset-0.5 bg-gradient-to-r from-emerald-500 to-emerald-400 rounded-full blur opacity-60"></div>
+               <div className="absolute -inset-0.5 bg-gradient-to-r from-emerald-500 to-emerald-400 rounded-full blur opacity-60 group-hover:opacity-100 transition duration-200"></div>
                <div className="relative flex items-center bg-slate-900 rounded-full px-6 py-2.5 leading-none">
-                 <span className="text-sm font-bold text-white">Start Free</span>
-                 <ArrowRight className="w-4 h-4 text-emerald-400 ml-2" />
+                 <span className="text-sm font-bold text-white group-hover:text-emerald-50 transition duration-200">Start Free</span>
+                 <ArrowRight className="w-4 h-4 text-emerald-400 ml-2 group-hover:translate-x-1 transition-transform" />
                </div>
             </Link>
           </div>
         </div>
       </nav>
 
-      <main className="relative z-10 pt-48 pb-32 px-6 max-w-5xl mx-auto space-y-40">
+      <main className="relative z-10 pt-48 pb-32 px-6 max-w-5xl mx-auto space-y-48">
         
         {/* --- 1. JUST SPLIT MODEL --- */}
         <section id="standard" className="scroll-mt-48">
@@ -59,7 +65,7 @@ export default function ModelsPage() {
               <ShieldCheck className="w-12 h-12" />
             </div>
             <div>
-              <span className="text-[10px] font-black text-emerald-600 uppercase tracking-[0.3em] mb-2 block">The Core Model</span>
+              <span className="text-[10px] font-black text-emerald-600 uppercase tracking-[0.3em] mb-2 block">Core Model</span>
               <h1 className="text-5xl md:text-6xl font-black tracking-tighter">Just Split Model</h1>
             </div>
           </div>
@@ -67,48 +73,47 @@ export default function ModelsPage() {
           <div className="grid lg:grid-cols-5 gap-12 items-start">
             <div className="lg:col-span-3 space-y-8">
               <p className="text-2xl text-slate-600 font-medium leading-relaxed">
-                Designed to protect those who take on greater risk and effort using our risk-weighted algorithm.
+                Protects those who take on greater risk and effort using our dynamic weighting algorithm.
               </p>
               
               <div className="space-y-4">
                 <div className="bg-white/80 backdrop-blur-md p-8 rounded-[40px] border border-slate-200 shadow-xl shadow-slate-200/50">
                   <h4 className="font-black text-emerald-600 uppercase text-xs tracking-widest mb-4 flex items-center gap-2">
-                    <Zap className="w-4 h-4" /> Cash (Out-of-pocket): x4
+                    <Zap className="w-4 h-4" /> Cash (Out-of-pocket): x4 Multiplier
                   </h4>
                   <p className="text-slate-600 leading-relaxed font-medium">
-                    Liquid money is the scarcest resource and carries the risk of immediate total loss. The x4 multiplier rewards the partner who loses the opportunity cost of that capital to sustain the company's survival.
+                    Liquid money is the scarcest resource. The x4 multiplier rewards the direct financial risk and opportunity cost of capital used to sustain the company's survival.
                   </p>
                 </div>
 
                 <div className="bg-white/80 backdrop-blur-md p-8 rounded-[40px] border border-slate-200 shadow-xl shadow-slate-200/50">
                   <h4 className="font-black text-blue-600 uppercase text-xs tracking-widest mb-4 flex items-center gap-2">
-                    <Briefcase className="w-4 h-4" /> Work & IP: x2
+                    <Briefcase className="w-4 h-4" /> Work, Tangibles & Intangibles: x2 Multiplier
                   </h4>
+                  {/* ACTUALIZADO: Incluye tangibles e intangibles con x2 */}
                   <p className="text-slate-600 leading-relaxed font-medium">
-                    Recognizes that partners are "risking" their time and potential by not charging a market salary. We give double the value of a simple commercial exchange.
+                    Recognizes the "potential" risk of time, equipment (tangibles), or knowledge (intangibles). Partners aren't charging market salaries, so we give double value to these essential contributions.
                   </p>
                 </div>
               </div>
             </div>
 
             <div className="lg:col-span-2">
-              <div className="sticky top-48 bg-slate-900 rounded-[48px] p-10 text-white shadow-2xl overflow-hidden group">
-                <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/10 blur-3xl rounded-full"></div>
-                <h4 className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-8">Dynamic Algorithm</h4>
-                
+              <div className="sticky top-48 bg-slate-900 rounded-[48px] p-10 text-white shadow-2xl overflow-hidden">
+                <h4 className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-8">Algorithm Features</h4>
                 <div className="space-y-6">
                   <div className="flex items-center justify-between p-5 bg-white/5 rounded-[24px] border border-white/10">
                     <div className="flex items-center gap-3">
                       <TrendingUp className="w-5 h-5 text-emerald-400" />
                       <span className="font-bold text-sm">Logarithmic Risk</span>
                     </div>
-                    {/* TOGGLE VISUAL */}
+                    {/* TOGGLE VISUAL ENCENDIDO */}
                     <div className="w-12 h-6 bg-emerald-500 rounded-full relative shadow-inner">
                       <div className="absolute right-1 top-1 w-4 h-4 bg-white rounded-full shadow-md"></div>
                     </div>
                   </div>
                   <p className="text-xs text-slate-400 leading-relaxed font-medium">
-                    This model balances liquid capital risk vs potential risk mathematically.
+                    Balances liquid capital risk vs potential risk mathematically.
                   </p>
                 </div>
               </div>
@@ -128,12 +133,12 @@ export default function ModelsPage() {
           <div className="bg-white/70 backdrop-blur-md border border-slate-200 rounded-[56px] p-12 shadow-2xl flex flex-col md:flex-row gap-12 items-center">
             <div className="flex-grow space-y-6">
               <p className="text-2xl text-slate-600 font-medium leading-relaxed">
-                Total freedom for teams with their own rules. Use our engine but define your own multipliers.
+                Total freedom for teams with their own rules. Start with our template and define your own multipliers for each category.
               </p>
               <div className="grid grid-cols-2 gap-4">
                 {[
-                  "Fully defined multipliers", "Technical specialized weight", 
-                  "Manual logic adjustment", "Flexible IP Valuation"
+                  "User-defined multipliers", "Manual logic integration", 
+                  "Specialized asset weight", "Flexible dynamic updates"
                 ].map((f, i) => (
                   <div key={i} className="flex items-center gap-2 text-sm font-bold text-slate-500">
                     <CheckCircle2 className="w-4 h-4 text-emerald-500" /> {f}
@@ -144,12 +149,13 @@ export default function ModelsPage() {
             <div className="w-full md:w-80 shrink-0">
                <div className="bg-slate-50 p-8 rounded-[40px] border border-slate-100 space-y-4">
                   <div className="flex items-center justify-between">
-                    <span className="text-xs font-black uppercase text-slate-400">Algorithmic Risk</span>
+                    <span className="text-xs font-black uppercase text-slate-400">Logarithmic Risk</span>
+                    {/* TOGGLE VISUAL APAGADO */}
                     <div className="w-12 h-6 bg-slate-200 rounded-full relative">
                       <div className="absolute left-1 top-1 w-4 h-4 bg-white rounded-full shadow-sm"></div>
                     </div>
                   </div>
-                  <p className="text-[10px] text-slate-400 font-bold italic">Toggle dynamic balance even in custom setups.</p>
+                  <p className="text-[10px] text-slate-400 font-bold italic leading-relaxed">Toggle the algorithmic logic even in custom setups.</p>
                </div>
             </div>
           </div>
@@ -166,22 +172,22 @@ export default function ModelsPage() {
           
           <div className="bg-white/70 backdrop-blur-md border border-slate-200 rounded-[56px] p-12 shadow-2xl">
             <p className="text-2xl text-slate-600 font-medium leading-relaxed mb-10">
-              The "Unit for Unit" structure. Absolute equality without risk weighting.
+              Linear "Unit for Unit" structure. Absolute equality where one unit of value equals exactly one unit of ownership.
             </p>
             
             <div className="grid md:grid-cols-2 gap-8">
               <div className="bg-slate-50 p-8 rounded-[40px] border border-slate-100">
-                <h4 className="font-black text-purple-600 uppercase text-[10px] tracking-widest mb-4">How it works</h4>
+                <h4 className="font-black text-purple-600 uppercase text-[10px] tracking-widest mb-4">Philosophy</h4>
                 <p className="text-sm text-slate-500 font-medium leading-relaxed">
-                  Every contribution is multiplied by 1. If a partner contributes 100 units of cash and another 100 units of work, both receive the exact same company share.
+                  No distinction based on the source of value. If one partner contributes 100 units in cash and another 100 in work, they receive identical company shares.
                 </p>
               </div>
               <div className="bg-red-50 p-8 rounded-[40px] border border-red-100 flex gap-4 items-start">
                 <AlertTriangle className="w-6 h-6 text-red-500 shrink-0 mt-1" />
                 <div>
-                  <h4 className="font-black text-red-600 uppercase text-[10px] tracking-widest mb-2">Philosophical Risk</h4>
+                  <h4 className="font-black text-red-600 uppercase text-[10px] tracking-widest mb-2">Investment Warning</h4>
                   <p className="text-sm text-red-700/70 font-bold leading-relaxed">
-                    This model discourages cash investment as it treats liquid capital equal to time. Partners with capital might seek higher-return opportunities elsewhere.
+                    Discourages cash investment as it treats liquid capital equal to time. Partners with capital might seek higher-return opportunities elsewhere.
                   </p>
                 </div>
               </div>
@@ -191,29 +197,16 @@ export default function ModelsPage() {
 
       </main>
 
-      {/* --- FOOTER (CONCORDANCIA TOTAL CON HOME) --- */}
-      <footer className="bg-white border-t border-slate-200 relative z-10">
-        <div className="mx-auto max-w-7xl px-6 py-20">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-6 text-slate-400 font-bold text-[10px] uppercase tracking-widest">
-            <p>© 2026 Equily. Built for modern co-founders.</p>
-            <div className="flex gap-8">
-              <Link href="#" className="hover:text-slate-900 transition-colors">Documentation</Link>
-              <Link href="#" className="hover:text-slate-900 transition-colors">Security</Link>
-              <Link href="#" className="hover:text-slate-900 transition-colors">Contact</Link>
-            </div>
+      {/* --- FOOTER COHERENTE --- */}
+      <footer className="bg-white border-t border-slate-200 relative z-10 py-20">
+        <div className="mx-auto max-w-7xl px-6 flex flex-col md:flex-row justify-between items-center gap-6 text-slate-400 font-bold text-[10px] uppercase tracking-widest">
+          <p>© 2026 Equily. Built for co-founders.</p>
+          <div className="flex gap-8">
+            <Link href="/contact" className="hover:text-slate-900 transition-colors">Contact</Link>
+            <Link href="/pricing" className="hover:text-slate-900 transition-colors">Pricing</Link>
           </div>
         </div>
       </footer>
     </div>
-  );
-}
-
-// Icono auxiliar (Briefcase)
-function Briefcase(props: any) {
-  return (
-    <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-      <rect x="2" y="7" width="20" height="14" rx="2" ry="2" />
-      <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
-    </svg>
   );
 }
