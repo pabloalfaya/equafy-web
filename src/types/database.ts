@@ -7,27 +7,27 @@ export interface Project {
   owner_id: string;
   model_type: ProjectModel;
   mult_cash: number;
-  mult_work: number;       // Renombrado de mult_labor
-  mult_tangible: number;   // Renombrado de mult_assets
-  mult_intangible: number; // Renombrado de mult_ip
-  mult_others: number;     // Nueva categoría
+  mult_work: number;
+  mult_tangible: number;
+  mult_intangible: number;
+  mult_others: number;
   use_log_risk: boolean;
   current_valuation: number;
   created_at?: string;
 }
 
 export interface Contribution {
-  id?: string;
+  id: string;
   project_id: string;
   contributor_name: string;
   type: ContributionType;
+  concept?: string;
   amount: number;
-  risk_multiplier: number;
+  multiplier: number;
   risk_adjusted_value: number;
   created_at?: string;
 }
 
-// Valores por defecto para el modelo "Just Split" con los nuevos nombres
 export const DEFAULT_MULTIPLIERS: Record<ContributionType, number> = {
   cash: 4,
   work: 2,
