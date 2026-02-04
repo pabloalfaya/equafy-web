@@ -2,20 +2,29 @@
 
 import { Trash2 } from "lucide-react";
 import { createClient } from "@/utils/supabase/client";
-import { Contribution } from "@/types/database";
+
+// DEFINIMOS LA INTERFAZ AQUÍ PARA EVITAR ERRORES DE CURSOR
+interface TableContribution {
+  id: string;
+  contributor_name: string;
+  contribution_type: string; // Este es el campo que Cursor no encontraba
+  description: string;       // Este también
+  risk_adjusted_value: number;
+  created_at?: string;
+}
 
 interface ContributionsTableProps {
-  contributions: Contribution[];
-  onDelete: (contribution: Contribution) => void;
+  contributions: TableContribution[];
+  onDelete: (contribution: TableContribution) => void;
 }
 
 export function ContributionsTable({ contributions, onDelete }: ContributionsTableProps) {
   const supabase = createClient();
 
-  // 1. Cálculo del total de puntos para evitar errores de división por cero
+  // Cálculo del total para los porcentajes
   const totalPoints = contributions.reduce((sum, c) => sum + (c.risk_adjusted_value || 0), 0);
 
-  const handleDelete = async (c: Contribution) => {
+  const handleDelete = async (c: TableContribution) => {
     if (!confirm("Are you sure you want to delete this contribution?")) return;
     try {
       const { error } = await supabase.from("contributions").delete().eq("id", c.id);
@@ -49,12 +58,11 @@ export function ContributionsTable({ contributions, onDelete }: ContributionsTab
         </thead>
         <tbody className="divide-y divide-slate-100">
           {contributions.map((c) => {
-            // 2. Calculamos el porcentaje individual dentro del map para evitar errores
             const percentage = totalPoints > 0 
               ? ((c.risk_adjusted_value / totalPoints) * 100).toFixed(1) 
               : "0.0";
             
-            // 3. Definimos estilos de etiquetas
+            // Colores por tipo de aportación
             let typeStyles = "bg-slate-100 text-slate-500 border-slate-200";
             if (c.contribution_type === 'CASH') typeStyles = "bg-emerald-50 text-emerald-600 border-emerald-100";
             if (c.contribution_type === 'WORK') typeStyles = "bg-blue-50 text-blue-600 border-blue-100";
