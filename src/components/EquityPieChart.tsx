@@ -16,9 +16,9 @@ interface ChartDataItem {
 const COLORS = ["#10b981", "#3b82f6", "#8b5cf6", "#f59e0b", "#64748b"];
 
 export function EquityPieChart({ contributions }: EquityPieChartProps) {
-  // Forzamos el tipado a ChartDataItem[] para que reconozca 'name' y 'value'
+  // Agrupamos los datos por socio con tipado explícito para evitar errores de Cursor
   const data = contributions.reduce((acc: ChartDataItem[], curr) => {
-    const name = curr.contributor_name || "Socio";
+    const name = curr.contributor_name || "Member";
     const value = curr.risk_adjusted_value || 0;
     
     const existing = acc.find((item) => item.name === name);
@@ -32,8 +32,9 @@ export function EquityPieChart({ contributions }: EquityPieChartProps) {
 
   return (
     <div className="h-[400px] w-full rounded-2xl border border-slate-200 bg-white p-6 shadow-sm font-sans">
+      {/* Título actualizado a inglés profesional [cite: 2026-02-03] */}
       <h3 className="mb-6 text-[10px] font-black text-slate-500 uppercase tracking-widest text-center">
-        Reparto de la empresa
+        Equity Distribution
       </h3>
       <ResponsiveContainer width="100%" height="100%">
         <PieChart>
@@ -51,7 +52,7 @@ export function EquityPieChart({ contributions }: EquityPieChartProps) {
             ))}
           </Pie>
           <Tooltip 
-            formatter={(value: number) => [`${value.toFixed(2)} pts`, "Parte"]}
+            formatter={(value: number) => [`${value.toFixed(2)} pts`, "Total Value"]}
             contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)' }}
           />
           <Legend verticalAlign="bottom" height={36} iconType="circle" wrapperStyle={{ paddingTop: '20px' }} />

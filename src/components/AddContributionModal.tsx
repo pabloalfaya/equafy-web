@@ -24,7 +24,7 @@ export function AddContributionModal({ isOpen, onClose, projectId, onSuccess, me
 
   const supabase = createClient();
 
-  // Cargamos los multiplicadores del proyecto actual para aplicar el modelo correcto
+  // Load project multipliers to apply the correct risk model [cite: 2026-02-03]
   useEffect(() => {
     async function loadProjectConfig() {
       if (projectId && isOpen) {
@@ -47,7 +47,7 @@ export function AddContributionModal({ isOpen, onClose, projectId, onSuccess, me
 
   if (!isOpen) return null;
 
-  // Calculamos el multiplicador basado en el modelo guardado en la DB
+  // Calculate multiplier based on the model saved in DB [cite: 2026-02-03]
   const currentMultiplier = project ? {
     cash: project.mult_cash,
     work: project.mult_work,
@@ -94,14 +94,14 @@ export function AddContributionModal({ isOpen, onClose, projectId, onSuccess, me
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 backdrop-blur-sm p-4">
       <div className="w-full max-w-md overflow-hidden rounded-2xl bg-white shadow-2xl">
-        <div className="border-b border-slate-100 bg-slate-50/50 px-6 py-4 flex justify-between items-center">
-          <h3 className="font-bold text-slate-800 text-lg">Add Contribution</h3>
+        <div className="border-b border-slate-100 bg-slate-50/50 px-6 py-4 flex justify-between items-center font-sans">
+          <h3 className="font-black text-slate-800 text-lg uppercase tracking-tight">Add Contribution</h3>
           <button onClick={onClose}><X className="h-5 w-5 text-slate-400 hover:text-slate-600" /></button>
         </div>
         
-        <form onSubmit={handleSubmit} className="p-6 space-y-4">
+        <form onSubmit={handleSubmit} className="p-6 space-y-4 font-sans">
           <div>
-            <label className="block text-sm font-bold text-slate-700 mb-1">Contributor</label>
+            <label className="block text-[10px] font-black uppercase tracking-widest text-slate-500 mb-1">Contributor</label>
             {members.length === 0 ? (
                <button type="button" onClick={onAddMemberClick} className="w-full rounded-lg border-2 border-dashed border-emerald-300 bg-emerald-50 px-4 py-2 text-sm font-bold text-emerald-700 hover:bg-emerald-100 transition-colors">
                  + Add your first Team Member
@@ -111,7 +111,7 @@ export function AddContributionModal({ isOpen, onClose, projectId, onSuccess, me
                 <select 
                   value={contributorId} 
                   onChange={(e) => setContributorId(e.target.value)}
-                  className="flex-grow rounded-lg border border-slate-200 px-4 py-2 text-slate-700 focus:border-emerald-500 focus:outline-none bg-white"
+                  className="flex-grow rounded-lg border border-slate-200 px-4 py-2 text-slate-700 focus:border-emerald-500 focus:outline-none bg-white font-bold"
                 >
                   {members.map(m => (
                     <option key={m.id} value={m.id}>{m.name}</option>
@@ -125,41 +125,47 @@ export function AddContributionModal({ isOpen, onClose, projectId, onSuccess, me
           </div>
 
           <div>
-            <label className="block text-sm font-bold text-slate-700 mb-1">Concept</label>
+            <label className="block text-[10px] font-black uppercase tracking-widest text-slate-500 mb-1">Concept</label>
             <input type="text" required placeholder="e.g. Server Costs" value={concept} onChange={(e) => setConcept(e.target.value)}
-              className="w-full rounded-lg border border-slate-200 px-4 py-2 text-slate-700 focus:border-emerald-500 focus:outline-none" />
+              className="w-full rounded-lg border border-slate-200 px-4 py-2 text-slate-700 focus:border-emerald-500 focus:outline-none italic" />
           </div>
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-bold text-slate-700 mb-1">Type</label>
+              <label className="block text-[10px] font-black uppercase tracking-widest text-slate-500 mb-1">Type</label>
               <select 
                 value={type} 
                 onChange={(e) => setType(e.target.value as ContributionType)} 
-                className="w-full rounded-lg border border-slate-200 px-4 py-2 text-slate-700 focus:border-emerald-500 focus:outline-none bg-white"
+                className="w-full rounded-lg border border-slate-200 px-4 py-2 text-slate-700 focus:border-emerald-500 focus:outline-none bg-white font-bold"
               >
                 <option value="cash">Cash (x{project?.mult_cash || 4})</option>
                 <option value="work">Work (x{project?.mult_work || 2})</option>
-                <option value="tangible">Tangible Cont. (x{project?.mult_tangible || 1})</option>
-                <option value="intangible">Intangible Cont. (x{project?.mult_intangible || 2})</option>
+                <option value="tangible">Tangible (x{project?.mult_tangible || 1})</option>
+                <option value="intangible">Intangible (x{project?.mult_intangible || 2})</option>
                 <option value="others">Others (x{project?.mult_others || 1})</option>
               </select>
             </div>
             <div>
-              <label className="block text-sm font-bold text-slate-700 mb-1">Amount (€)</label>
+              <label className="block text-[10px] font-black uppercase tracking-widest text-slate-500 mb-1">Amount (€)</label>
               <input type="number" required placeholder="0.00" value={amount} onChange={(e) => setAmount(e.target.value)}
-                className="w-full rounded-lg border border-slate-200 px-4 py-2 text-slate-700 focus:border-emerald-500 focus:outline-none" />
+                className="w-full rounded-lg border border-slate-200 px-4 py-2 text-slate-700 focus:border-emerald-500 focus:outline-none font-bold tabular-nums" />
             </div>
           </div>
 
-          <div className="rounded-xl bg-emerald-50 p-4 flex justify-between items-center border border-emerald-100">
-            <span className="text-sm font-bold text-emerald-700 uppercase tracking-tight">Parte de la empresa:</span>
-            <span className="text-xl font-black text-emerald-900">{riskAdjustedValue}</span>
+          <div className="rounded-xl bg-emerald-50 p-4 border border-emerald-100 mt-2">
+            <div className="flex items-center justify-between">
+              <span className="text-[10px] font-black uppercase tracking-widest text-emerald-800">
+                Total Value of the Contribution
+              </span>
+              <span className="text-xl font-black text-emerald-900 tabular-nums">
+                {Number(riskAdjustedValue).toLocaleString("de-DE", { minimumFractionDigits: 2 })}
+              </span>
+            </div>
           </div>
 
           <div className="flex justify-end gap-3 pt-2">
             <button type="button" onClick={onClose} className="rounded-lg px-4 py-2 text-sm font-bold text-slate-600 hover:bg-slate-100 transition-colors">Cancel</button>
-            <button type="submit" disabled={loading || members.length === 0} className="rounded-lg bg-slate-900 px-6 py-2 text-sm font-bold text-white hover:bg-slate-800 disabled:opacity-50 transition-all shadow-md">
+            <button type="submit" disabled={loading || members.length === 0} className="rounded-lg bg-slate-900 px-6 py-2 text-sm font-black text-white hover:bg-slate-800 disabled:opacity-50 transition-all shadow-md uppercase tracking-widest">
               {loading ? "Adding..." : "Add Contribution"}
             </button>
           </div>
