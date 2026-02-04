@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { createClient } from "@/utils/supabase/client";
-import { Loader2, FolderPlus } from "lucide-center";
+import { Loader2, FolderPlus } from "lucide-react"; // Corregido: lucide-react es el paquete correcto
 import { useRouter } from "next/navigation";
 
 export function CreateProjectModal() {
@@ -20,7 +20,7 @@ export function CreateProjectModal() {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Session not found");
 
-      // Enviamos todos los campos necesarios según tu base de datos
+      // Enviamos todos los campos necesarios según la estructura de tu tabla en Supabase
       const { error } = await supabase.from("projects").insert({
         name: name,
         owner_id: user.id,
@@ -42,7 +42,7 @@ export function CreateProjectModal() {
       
     } catch (error: any) {
       console.error("Error:", error);
-      // Ahora el alert te dirá el error exacto si algo falla
+      // El alert mostrará el mensaje técnico real si Supabase rechaza algo
       alert("Error: " + (error.message || "Could not create project"));
     } finally {
       setLoading(false);
