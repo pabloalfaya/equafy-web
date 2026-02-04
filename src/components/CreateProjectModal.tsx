@@ -8,7 +8,7 @@ import { ProjectModel } from "@/types/database";
 
 export function CreateProjectModal() {
   const [isOpen, setIsOpen] = useState(false);
-  const [step, setStep] = useState(1); // Paso 1: Nombre, Paso 2: Modelo
+  const [step, setStep] = useState(1); 
   const [name, setName] = useState("");
   const [selectedModel, setSelectedModel] = useState<ProjectModel>("JUST_SPLIT");
   const [loading, setLoading] = useState(false);
@@ -23,11 +23,11 @@ export function CreateProjectModal() {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Session not found");
 
-      // Configuramos los multiplicadores según la selección del usuario
+      // Configuramos los multiplicadores con los NUEVOS nombres profesionales [cite: 2026-02-03]
       const modelConfigs = {
-        JUST_SPLIT: { cash: 4.0, labor: 2.0 },
-        FLAT: { cash: 1.0, labor: 1.0 },
-        CUSTOM: { cash: 4.0, labor: 2.0 }
+        JUST_SPLIT: { cash: 4.0, work: 2.0, intangible: 2.0, tangible: 1.0, others: 1.0 },
+        FLAT: { cash: 1.0, work: 1.0, intangible: 1.0, tangible: 1.0, others: 1.0 },
+        CUSTOM: { cash: 4.0, work: 2.0, intangible: 2.0, tangible: 1.0, others: 1.0 }
       };
 
       const { error } = await supabase.from("projects").insert({
@@ -35,10 +35,11 @@ export function CreateProjectModal() {
         owner_id: user.id,
         model_type: selectedModel,
         mult_cash: modelConfigs[selectedModel].cash,
-        mult_labor: modelConfigs[selectedModel].labor,
-        mult_ip: 2.0,
-        mult_assets: 1.0,
-        use_log_risk: false, // Logarithmic Risk desactivado por ahora
+        mult_work: modelConfigs[selectedModel].work,
+        mult_tangible: modelConfigs[selectedModel].tangible,
+        mult_intangible: modelConfigs[selectedModel].intangible,
+        mult_others: modelConfigs[selectedModel].others,
+        use_log_risk: false, 
         current_valuation: 0
       });
 
@@ -67,13 +68,12 @@ export function CreateProjectModal() {
       </button>
 
       {isOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#0B0F1A]/90 backdrop-blur-md p-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#0B0F1A]/90 backdrop-blur-md p-4 text-white">
           <div className="w-full max-w-4xl bg-[#111827] border border-slate-800 rounded-[32px] p-8 shadow-2xl animate-in fade-in zoom-in duration-200">
             
             {step === 1 ? (
-              /* PASO 1: NOMBRE DEL PROYECTO */
               <div className="max-w-md mx-auto py-10">
-                <h2 className="text-3xl font-black text-white mb-2 text-center">Project Name</h2>
+                <h2 className="text-3xl font-black mb-2 text-center">Project Name</h2>
                 <p className="text-slate-400 mb-8 text-center font-medium">Give your new project a clear name.</p>
                 
                 <input
@@ -99,10 +99,9 @@ export function CreateProjectModal() {
                 </div>
               </div>
             ) : (
-              /* PASO 2: SELECCIÓN DE MODELO */
               <div className="animate-in slide-in-from-right-4 duration-300">
                 <div className="text-center mb-10">
-                  <h2 className="text-4xl font-black text-white mb-2">Choose your model</h2>
+                  <h2 className="text-4xl font-black mb-2">Choose your model</h2>
                   <p className="text-slate-400 font-medium">Select the logic for your equity distribution.</p>
                 </div>
 
@@ -113,11 +112,10 @@ export function CreateProjectModal() {
                     className={`relative p-6 rounded-3xl border-2 transition-all cursor-pointer ${selectedModel === 'CUSTOM' ? 'border-slate-600 bg-slate-800/40' : 'border-slate-800 hover:border-slate-700 bg-slate-900/50'}`}
                   >
                     <div className="w-10 h-10 bg-slate-800 rounded-xl flex items-center justify-center mb-6"><Settings className="text-slate-400 w-5 h-5" /></div>
-                    <h3 className="text-xl font-black text-white mb-2">Custom Model</h3>
+                    <h3 className="text-xl font-black mb-2">Custom Model</h3>
                     <p className="text-slate-500 text-sm font-medium mb-6">Total control for complex setups.</p>
                     <ul className="space-y-3 text-slate-400 text-xs font-bold">
                       <li className="flex items-center gap-2"><ShieldCheck className="w-4 h-4 text-slate-600" /> Fully Editable Multipliers</li>
-                      <li className="flex items-center gap-2"><ShieldCheck className="w-4 h-4 text-slate-600" /> Manual Configuration</li>
                     </ul>
                   </div>
 
@@ -128,16 +126,16 @@ export function CreateProjectModal() {
                   >
                     <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-emerald-500 text-[#0B0F1A] text-[10px] font-black px-3 py-1 rounded-full uppercase">Recommended</div>
                     <div className="w-10 h-10 bg-emerald-500/20 rounded-xl flex items-center justify-center mb-6"><ShieldCheck className="text-emerald-500 w-5 h-5" /></div>
-                    <h3 className="text-xl font-black text-white mb-2">Just Split Model</h3>
+                    <h3 className="text-xl font-black mb-2">Just Split Model</h3>
                     <p className="text-emerald-500 text-sm font-bold mb-6">The Industry Standard</p>
                     <div className="space-y-2 mb-6">
                       <div className="flex justify-between items-center bg-black/20 p-3 rounded-xl border border-white/5">
-                        <span className="text-[10px] font-black text-emerald-500 uppercase">Capital (Cash)</span>
-                        <span className="text-white font-black text-lg">x4</span>
+                        <span className="text-[10px] font-black text-emerald-500 uppercase tracking-tighter">Capital (Cash)</span>
+                        <span className="font-black text-lg text-white">x4</span>
                       </div>
                       <div className="flex justify-between items-center bg-black/20 p-3 rounded-xl border border-white/5">
-                        <span className="text-[10px] font-black text-blue-400 uppercase">Work & IP</span>
-                        <span className="text-white font-black text-lg">x2</span>
+                        <span className="text-[10px] font-black text-blue-400 uppercase tracking-tighter">Work & IP</span>
+                        <span className="font-black text-lg text-white">x2</span>
                       </div>
                     </div>
                   </div>
@@ -148,11 +146,10 @@ export function CreateProjectModal() {
                     className={`relative p-6 rounded-3xl border-2 transition-all cursor-pointer ${selectedModel === 'FLAT' ? 'border-purple-500 bg-purple-500/5' : 'border-slate-800 hover:border-slate-700 bg-slate-900/50'}`}
                   >
                     <div className="w-10 h-10 bg-purple-500/20 rounded-xl flex items-center justify-center mb-6"><Scale className="text-purple-400 w-5 h-5" /></div>
-                    <h3 className="text-xl font-black text-white mb-2">Flat Model</h3>
+                    <h3 className="text-xl font-black mb-2">Flat Model</h3>
                     <p className="text-purple-400 text-sm font-bold mb-6 italic underline">Simple fixed split.</p>
                     <ul className="space-y-3 text-slate-400 text-xs font-bold">
                       <li className="flex items-center gap-2"><ShieldCheck className="w-4 h-4 text-purple-600" /> Equal Multipliers (x1)</li>
-                      <li className="flex items-center gap-2"><ShieldCheck className="w-4 h-4 text-purple-600" /> Good for Service Agencies</li>
                     </ul>
                   </div>
                 </div>
