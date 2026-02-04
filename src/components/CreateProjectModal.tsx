@@ -71,18 +71,21 @@ export function CreateProjectModal() {
       </button>
 
       {isOpen && (
-        <div className="fixed inset-0 z-[100] flex items-start justify-center bg-[#0B0F1A]/95 backdrop-blur-md pt-32 px-4">
+        /* Mantengo el pt-48 exterior que te gustó para bajar todo el modal */
+        <div className="fixed inset-0 z-[100] flex items-start justify-center bg-[#0B0F1A]/95 backdrop-blur-md pt-48 px-4 overflow-y-auto pb-20">
           <div className="relative w-full max-w-6xl bg-[#111827] border border-slate-800 rounded-[32px] shadow-2xl flex flex-col animate-in fade-in zoom-in duration-200">
             
-            <button onClick={() => setIsOpen(false)} className="absolute right-6 top-6 text-white/50 hover:text-white transition-colors">
+            <button onClick={() => setIsOpen(false)} className="absolute right-6 top-6 text-white/50 hover:text-white transition-colors z-10">
               <X className="w-6 h-6" />
             </button>
 
-            <div className="p-8 md:p-12">
+            {/* CAMBIO CLAVE AQUÍ: Aumentado el padding superior interno (pt-16 y md:pt-24) */}
+            <div className="px-8 pb-8 pt-16 md:px-12 md:pb-12 md:pt-24">
               {step === 1 ? (
-                <div className="max-w-md mx-auto py-6 text-center text-white">
+                /* --- STEP 1: NAME --- */
+                <div className="max-w-md mx-auto text-center text-white">
                   <span className="text-emerald-400 font-black uppercase tracking-widest text-[10px] mb-4 block">New Project</span>
-                  <h2 className="text-3xl font-black mb-4">Project Name</h2>
+                  <h2 className="text-4xl font-black mb-4">Project Name</h2>
                   <p className="text-slate-300 mb-10 font-medium">Define the name of your new venture.</p>
                   
                   <input
@@ -91,18 +94,19 @@ export function CreateProjectModal() {
                     placeholder="e.g. Equily SaaS..."
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    className="w-full bg-slate-800/50 border border-slate-700 rounded-2xl p-4 mb-10 focus:border-emerald-500 outline-none transition-all font-bold text-white text-xl text-center placeholder:text-slate-600"
+                    className="w-full bg-slate-800/50 border border-slate-700 rounded-2xl p-5 mb-10 focus:border-emerald-500 outline-none transition-all font-bold text-white text-2xl text-center placeholder:text-slate-600"
                   />
 
                   <button 
                     disabled={!name.trim()}
                     onClick={() => setStep(2)}
-                    className="w-full max-w-xs mx-auto bg-emerald-500 hover:bg-emerald-400 disabled:opacity-50 text-[#0B0F1A] py-4 rounded-2xl font-black text-lg flex items-center justify-center gap-2 transition-all"
+                    className="w-full max-w-xs mx-auto bg-emerald-500 hover:bg-emerald-400 disabled:opacity-50 text-[#0B0F1A] py-5 rounded-2xl font-black text-xl flex items-center justify-center gap-2 transition-all shadow-xl"
                   >
-                    Select Model <ChevronRight className="w-5 h-5" />
+                    Select Model <ChevronRight className="w-6 h-6" />
                   </button>
                 </div>
               ) : (
+                /* --- STEP 2: MODEL SELECTION --- */
                 <div className="animate-in slide-in-from-right-4 duration-300">
                   <div className="text-center mb-10 text-white">
                     <h2 className="text-3xl font-black mb-2">Choose your logic</h2>
@@ -111,10 +115,10 @@ export function CreateProjectModal() {
 
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
                     
-                    {/* CUSTOM - Siempre muestra los controles */}
+                    {/* CUSTOM */}
                     <div 
                       onClick={() => setSelectedModel('CUSTOM')}
-                      className={`relative p-8 rounded-[32px] border-2 transition-all cursor-pointer flex flex-col min-h-[460px] ${selectedModel === 'CUSTOM' ? 'border-blue-500 bg-blue-500/10' : 'border-slate-800 bg-slate-900/50 hover:border-slate-700'}`}
+                      className={`relative p-8 rounded-[32px] border-2 transition-all cursor-pointer flex flex-col min-h-[480px] ${selectedModel === 'CUSTOM' ? 'border-blue-500 bg-blue-500/10' : 'border-slate-800 bg-slate-900/50 hover:border-slate-700'}`}
                     >
                       <div className="w-10 h-10 bg-slate-800 rounded-xl flex items-center justify-center mb-6"><Settings className="text-white w-5 h-5" /></div>
                       <h3 className="text-xl font-black mb-2 text-white">Custom</h3>
@@ -123,7 +127,7 @@ export function CreateProjectModal() {
                       <div className="space-y-2 mt-auto" onClick={(e) => e.stopPropagation()}>
                         {Object.entries(customMults).map(([key, val]) => (
                           <div key={key} className="flex items-center justify-between bg-black/40 p-2.5 rounded-xl border border-slate-700">
-                            <span className="text-[10px] font-black text-white uppercase">{key}</span>
+                            <span className="text-[10px] font-black text-white uppercase tracking-wider">{key}</span>
                             <input 
                               type="number" step="0.5" value={val}
                               onChange={(e) => setCustomMults({...customMults, [key]: parseFloat(e.target.value) || 1})}
@@ -134,10 +138,10 @@ export function CreateProjectModal() {
                       </div>
                     </div>
 
-                    {/* JUST SPLIT - Con desglose completo de 5 multiplicadores */}
+                    {/* JUST SPLIT MODEL */}
                     <div 
                       onClick={() => setSelectedModel('JUST_SPLIT')}
-                      className={`relative p-8 rounded-[32px] border-2 transition-all cursor-pointer flex flex-col min-h-[460px] ${selectedModel === 'JUST_SPLIT' ? 'border-emerald-500 bg-emerald-500/10' : 'border-slate-800 bg-slate-900/50 hover:border-slate-700'}`}
+                      className={`relative p-8 rounded-[32px] border-2 transition-all cursor-pointer flex flex-col min-h-[480px] ${selectedModel === 'JUST_SPLIT' ? 'border-emerald-500 bg-emerald-500/10' : 'border-slate-800 bg-slate-900/50 hover:border-slate-700'}`}
                     >
                       <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-emerald-500 text-[#0B0F1A] text-[10px] font-black px-4 py-1 rounded-full uppercase shadow-xl">Best Choice</div>
                       <div className="w-10 h-10 bg-emerald-500/20 rounded-xl flex items-center justify-center mb-6"><ShieldCheck className="text-emerald-400 w-5 h-5" /></div>
@@ -156,18 +160,12 @@ export function CreateProjectModal() {
                           </div>
                         </div>
                         <div className="grid grid-cols-3 gap-2">
-                          <div className="bg-black/40 p-2 rounded-xl border border-white/10 text-center">
-                            <span className="block text-[8px] font-black text-slate-400 uppercase">Tang.</span>
-                            <span className="font-black text-white text-sm">x2</span>
-                          </div>
-                          <div className="bg-black/40 p-2 rounded-xl border border-white/10 text-center">
-                            <span className="block text-[8px] font-black text-slate-400 uppercase">Intan.</span>
-                            <span className="font-black text-white text-sm">x2</span>
-                          </div>
-                          <div className="bg-black/40 p-2 rounded-xl border border-white/10 text-center">
-                            <span className="block text-[8px] font-black text-slate-400 uppercase">Other</span>
-                            <span className="font-black text-white text-sm">x2</span>
-                          </div>
+                          {['Tang.', 'Intan.', 'Other'].map(cat => (
+                            <div key={cat} className="bg-black/40 p-2 rounded-xl border border-white/10 text-center">
+                              <span className="block text-[8px] font-black text-slate-400 uppercase">{cat}</span>
+                              <span className="font-black text-white text-sm">x2</span>
+                            </div>
+                          ))}
                         </div>
                       </div>
 
@@ -177,32 +175,32 @@ export function CreateProjectModal() {
                       </div>
                     </div>
 
-                    {/* FLAT - Rediseñado para mostrar multiplicadores x1 */}
+                    {/* FLAT MODEL */}
                     <div 
                       onClick={() => setSelectedModel('FLAT')}
-                      className={`relative p-8 rounded-[32px] border-2 transition-all cursor-pointer flex flex-col min-h-[460px] ${selectedModel === 'FLAT' ? 'border-purple-500 bg-purple-500/10' : 'border-slate-800 bg-slate-900/50 hover:border-slate-700'}`}
+                      className={`relative p-8 rounded-[32px] border-2 transition-all cursor-pointer flex flex-col min-h-[480px] ${selectedModel === 'FLAT' ? 'border-purple-500 bg-purple-500/10' : 'border-slate-800 bg-slate-900/50 hover:border-slate-700'}`}
                     >
                       <div className="w-10 h-10 bg-purple-500/20 rounded-xl flex items-center justify-center mb-6"><Scale className="text-purple-400 w-5 h-5" /></div>
-                      <h3 className="text-xl font-black mb-2 text-white">Flat</h3>
-                      <p className="text-purple-300 text-xs font-bold mb-8 italic underline">Equal split (x1).</p>
+                      <h3 className="text-xl font-black mb-2 text-white">Flat Model</h3>
+                      <p className="text-purple-300 text-xs font-bold mb-8 italic underline">Simple fixed split.</p>
                       
                       <div className="space-y-2 mt-auto">
                         <div className="grid grid-cols-2 gap-2">
-                          <div className="bg-black/40 p-2.5 rounded-xl border border-white/10 text-center">
+                          <div className="bg-black/40 p-2.5 rounded-xl border border-white/10 text-center opacity-80">
                             <span className="block text-[9px] font-black text-purple-300 uppercase mb-1">Cash</span>
                             <span className="font-black text-white text-lg">x1</span>
                           </div>
-                          <div className="bg-black/40 p-2.5 rounded-xl border border-white/10 text-center">
+                          <div className="bg-black/40 p-2.5 rounded-xl border border-white/10 text-center opacity-80">
                             <span className="block text-[9px] font-black text-purple-300 uppercase mb-1">Work</span>
                             <span className="font-black text-white text-lg">x1</span>
                           </div>
                         </div>
-                        <div className="bg-black/40 p-2.5 rounded-xl border border-white/10 text-center">
-                            <span className="block text-[9px] font-black text-slate-400 uppercase mb-1">Others</span>
+                        <div className="bg-black/40 p-3 rounded-xl border border-white/10 text-center opacity-80">
+                            <span className="block text-[9px] font-black text-slate-400 uppercase mb-1">Others (Tang/Intang)</span>
                             <span className="font-black text-white text-lg">x1</span>
                         </div>
                         <div className="py-2 text-center">
-                          <span className="text-[10px] font-black text-purple-400 uppercase tracking-widest italic">All values equal x1</span>
+                          <span className="text-[10px] font-black text-purple-400 uppercase tracking-widest italic opacity-60">All values equal x1</span>
                         </div>
                       </div>
                     </div>
