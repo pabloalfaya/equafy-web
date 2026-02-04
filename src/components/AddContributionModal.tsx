@@ -5,19 +5,10 @@ import { X } from "lucide-react";
 import { createClient } from "@/utils/supabase/client";
 import { Project } from "@/types/database";
 
-interface AddContributionModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  projectId: string | null;
-  onSuccess: (contribution: any) => void;
-  members: { id: string; name: string }[]; 
-  onAddMemberClick: () => void;
-}
-
-export function AddContributionModal({ isOpen, onClose, projectId, onSuccess, members, onAddMemberClick }: AddContributionModalProps) {
+export function AddContributionModal({ isOpen, onClose, projectId, onSuccess, members, onAddMemberClick }: any) {
   const [contributorId, setContributorId] = useState("");
-  const [description, setDescription] = useState(""); // CAMBIADO: de 'concept' a 'description'
-  const [type, setType] = useState("CASH"); // CAMBIADO: ahora por defecto en MAYÚSCULAS
+  const [text, setText] = useState(""); // Usamos 'text' internamente para evitar confusiones
+  const [type, setType] = useState("CASH");
   const [amount, setAmount] = useState("");
   const [project, setProject] = useState<Project | null>(null);
   const [loading, setLoading] = useState(false);
@@ -27,11 +18,7 @@ export function AddContributionModal({ isOpen, onClose, projectId, onSuccess, me
   useEffect(() => {
     async function loadProjectConfig() {
       if (projectId && isOpen) {
-        const { data } = await supabase
-          .from("projects")
-          .select("*")
-          .eq("id", projectId)
-          .single();
+        const { data } = await supabase.from("projects").select("*").eq("id", projectId).single();
         if (data) setProject(data);
       }
     }
@@ -39,22 +26,12 @@ export function AddContributionModal({ isOpen, onClose, projectId, onSuccess, me
   }, [projectId, isOpen, supabase]);
 
   useEffect(() => {
-    if (members.length > 0 && !contributorId) {
-      setContributorId(members[0].id);
-    }
+    if (members.length > 0 && !contributorId) setContributorId(members[0].id);
   }, [members, isOpen, contributorId]);
 
   if (!isOpen) return null;
 
-  // Mapeo de multiplicadores usando las claves en MAYÚSCULAS
-  const currentMultiplier = project ? {
-    CASH: project.mult_cash,
-    WORK: project.mult_work,
-    TANGIBLE: project.mult_tangible,
-    INTANGIBLE: project.mult_intangible,
-    OTHERS: project.mult_others
-  }[type] : 1;
-
+  const currentMultiplier = project ? (project as any)[`mult_${type.toLowerCase()}`] || 1 : 1;
   const riskAdjustedValue = (parseFloat(amount || "0") * (Number(currentMultiplier) || 1)).toFixed(2);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -62,16 +39,17 @@ export function AddContributionModal({ isOpen, onClose, projectId, onSuccess, me
     if (!projectId || !contributorId) return;
 
     setLoading(true);
-    const selectedMember = members.find(m => m.id === contributorId);
+    const selectedMember = members.find((m: any) => m.id === contributorId);
 
-    // SINCRONIZACIÓN CON LA BASE DE DATOS:
+    // ENVIAMOS AMBOS NOMBRES (description y concept) PARA ASEGURAR COMPATIBILIDAD
     const { data, error } = await supabase
       .from("contributions")
       .insert([{
         project_id: projectId,
         contributor_name: selectedMember?.name || "Unknown",
-        description: description,      // Nombre correcto de la columna
-        contribution_type: type,        // Nombre correcto de la columna
+        description: text,      // Intentamos con description
+        concept: text,          // Intentamos con concept (por si acaso)
+        contribution_type: type, 
         amount: parseFloat(amount),
         multiplier: currentMultiplier,
         risk_adjusted_value: parseFloat(riskAdjustedValue)
@@ -84,7 +62,7 @@ export function AddContributionModal({ isOpen, onClose, projectId, onSuccess, me
     if (error) {
       alert("Error: " + error.message);
     } else if (data) {
-      setDescription("");
+      setText("");
       setAmount("");
       onSuccess(data);
       onClose();
@@ -99,88 +77,44 @@ export function AddContributionModal({ isOpen, onClose, projectId, onSuccess, me
           <button onClick={onClose}><X className="h-5 w-5 text-slate-400 hover:text-slate-600" /></button>
         </div>
         
-        <form onSubmit={handleSubmit} className="p-8 space-y-6 font-sans">
+        <form onSubmit={handleSubmit} className="p-8 space-y-6">
           <div>
             <label className="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">Contributor</label>
-            {members.length === 0 ? (
-               <button type="button" onClick={onAddMemberClick} className="w-full rounded-xl border-2 border-dashed border-emerald-300 bg-emerald-50 px-4 py-3 text-sm font-bold text-emerald-700 hover:bg-emerald-100 transition-colors">
-                 + Add your first Team Member
-               </button>
-            ) : (
-              <div className="flex gap-2">
-                <select 
-                  value={contributorId} 
-                  onChange={(e) => setContributorId(e.target.value)}
-                  className="flex-grow rounded-xl border border-slate-200 px-4 py-3 text-slate-700 focus:border-emerald-500 outline-none bg-slate-50 font-bold"
-                >
-                  {members.map(m => (
-                    <option key={m.id} value={m.id}>{m.name}</option>
-                  ))}
-                </select>
-                <button type="button" onClick={onAddMemberClick} className="px-4 py-3 rounded-xl bg-slate-100 text-slate-600 hover:bg-slate-200 font-bold">+</button>
-              </div>
-            )}
+            <select value={contributorId} onChange={(e) => setContributorId(e.target.value)} className="w-full rounded-xl border border-slate-200 px-4 py-3 bg-slate-50 font-bold outline-none">
+              {members.map((m: any) => <option key={m.id} value={m.id}>{m.name}</option>)}
+            </select>
           </div>
 
           <div>
-            <label className="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">Description</label>
-            <input 
-              type="text" 
-              required 
-              placeholder="e.g. Website Design or Server Costs" 
-              value={description} 
-              onChange={(e) => setDescription(e.target.value)}
-              className="w-full rounded-xl border border-slate-200 px-4 py-3 text-slate-700 focus:border-emerald-500 outline-none bg-slate-50 font-medium italic" 
-            />
+            <label className="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">Description / Concept</label>
+            <input type="text" required placeholder="Describe what you did..." value={text} onChange={(e) => setText(e.target.value)} className="w-full rounded-xl border border-slate-200 px-4 py-3 bg-slate-50 italic outline-none" />
           </div>
 
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">Type</label>
-              <select 
-                value={type} 
-                onChange={(e) => setType(e.target.value)} 
-                className="w-full rounded-xl border border-slate-200 px-4 py-3 text-slate-700 focus:border-emerald-500 outline-none bg-slate-50 font-black text-xs uppercase"
-              >
-                <option value="CASH">Cash (x{project?.mult_cash || 4})</option>
-                <option value="WORK">Work (x{project?.mult_work || 2})</option>
-                <option value="TANGIBLE">Tangible (x{project?.mult_tangible || 1})</option>
-                <option value="INTANGIBLE">Intangible (x{project?.mult_intangible || 2})</option>
-                <option value="OTHERS">Others (x{project?.mult_others || 1})</option>
+              <select value={type} onChange={(e) => setType(e.target.value)} className="w-full rounded-xl border border-slate-200 px-4 py-3 bg-slate-50 font-black text-xs uppercase outline-none">
+                <option value="CASH">Cash</option>
+                <option value="WORK">Work</option>
+                <option value="TANGIBLE">Tangible</option>
+                <option value="INTANGIBLE">Intangible</option>
+                <option value="OTHERS">Others</option>
               </select>
             </div>
             <div>
               <label className="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">Amount (€)</label>
-              <input 
-                type="number" 
-                required 
-                placeholder="0.00" 
-                value={amount} 
-                onChange={(e) => setAmount(e.target.value)}
-                className="w-full rounded-xl border border-slate-200 px-4 py-3 text-slate-700 focus:border-emerald-500 outline-none bg-slate-50 font-black tabular-nums" 
-              />
+              <input type="number" required placeholder="0.00" value={amount} onChange={(e) => setAmount(e.target.value)} className="w-full rounded-xl border border-slate-200 px-4 py-3 bg-slate-50 font-black outline-none" />
             </div>
           </div>
 
-          <div className="rounded-2xl bg-emerald-500/10 p-5 border border-emerald-500/20">
-            <div className="flex items-center justify-between">
-              <span className="text-[10px] font-black uppercase tracking-widest text-emerald-700">Value in Points</span>
-              <span className="text-2xl font-black text-emerald-600 tabular-nums">
-                {Number(riskAdjustedValue).toLocaleString(undefined, { minimumFractionDigits: 2 })}
-              </span>
-            </div>
+          <div className="rounded-2xl bg-emerald-500/10 p-5 border border-emerald-500/20 flex items-center justify-between">
+            <span className="text-[10px] font-black uppercase tracking-widest text-emerald-700">Value in Pts</span>
+            <span className="text-2xl font-black text-emerald-600">{Number(riskAdjustedValue).toLocaleString()}</span>
           </div>
 
-          <div className="flex justify-end gap-3 pt-4">
-            <button type="button" onClick={onClose} className="rounded-xl px-6 py-3 text-sm font-bold text-slate-400 hover:text-slate-600 transition-colors uppercase tracking-widest">Cancel</button>
-            <button 
-              type="submit" 
-              disabled={loading || members.length === 0} 
-              className="rounded-xl bg-slate-900 px-10 py-3 text-sm font-black text-white hover:bg-slate-800 disabled:opacity-50 transition-all shadow-xl uppercase tracking-[0.2em]"
-            >
-              {loading ? "Adding..." : "Add Contribution"}
-            </button>
-          </div>
+          <button type="submit" disabled={loading} className="w-full rounded-xl bg-slate-900 py-4 text-sm font-black text-white hover:bg-slate-800 transition-all shadow-xl uppercase tracking-widest">
+            {loading ? "Saving..." : "Add Contribution"}
+          </button>
         </form>
       </div>
     </div>
