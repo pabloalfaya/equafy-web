@@ -1,3 +1,5 @@
+// src/app/page.tsx
+
 import Link from "next/link";
 import { 
   ShieldCheck, PieChart, Users, PlayCircle, Globe, Mail, Lock, Twitter, Linkedin, ArrowRight,
@@ -39,7 +41,6 @@ export default function LandingPage() {
             </div>
           </div>
           <div className="flex items-center gap-4">
-            {/* ENLACES CONECTADOS AL LOGIN */}
             <Link href="/login" className="hidden md:block text-sm font-bold text-slate-600 hover:text-slate-900 transition-colors">
               Log in
             </Link>
@@ -69,7 +70,6 @@ export default function LandingPage() {
             <span className="block mt-2 text-slate-400 text-base">Trustless. Dynamic. Fair.</span>
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            {/* ENLACE CONECTADO AL LOGIN */}
             <Link href="/login" className="h-14 px-8 rounded-2xl bg-slate-900 text-white font-bold text-lg flex items-center justify-center shadow-xl shadow-slate-200 hover:bg-slate-800 hover:-translate-y-1 transition-all duration-300">
               Start Splitting Free
             </Link>
@@ -84,8 +84,6 @@ export default function LandingPage() {
       {/* --- DASHBOARD PREVIEW SECTION --- */}
       <section className="pb-24 relative z-10 px-4">
         <div className="mx-auto max-w-6xl relative">
-          
-          {/* Contenedor tipo Ventana de App */}
           <div className="relative z-20 rounded-[32px] border border-slate-200/60 bg-white/80 backdrop-blur-2xl shadow-[0_40px_80px_-20px_rgba(0,0,0,0.1)] overflow-hidden ring-1 ring-slate-900/5">
             <div className="h-12 border-b border-slate-100 flex items-center px-6 gap-2 bg-slate-50/50">
               <div className="w-3 h-3 rounded-full bg-red-400/80"></div>
@@ -99,7 +97,6 @@ export default function LandingPage() {
 
             <div className="p-8 md:p-12">
               <div className="grid lg:grid-cols-2 gap-16 items-center">
-                {/* Lado Izquierdo: Lista de Socios */}
                 <div className="space-y-6">
                   <div className="mb-8">
                     <h2 className="text-2xl font-bold tracking-tight text-slate-900">Cap Table Status</h2>
@@ -133,7 +130,6 @@ export default function LandingPage() {
                     ))}
                   </div>
                 </div>
-                {/* Lado Derecho: Gráfico */}
                 <div className="relative flex items-center justify-center py-8">
                   <div className="relative h-72 w-72">
                     <svg viewBox="0 0 36 36" className="h-full w-full transform -rotate-90 drop-shadow-2xl">
@@ -168,133 +164,132 @@ export default function LandingPage() {
 
       {/* --- FRAMEWORK SELECTION --- */}
       <section className="relative z-10 bg-[#0B0F19] text-white pt-20 pb-32">
-            
-            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-emerald-900/20 via-[#0B0F19] to-[#0B0F19] pointer-events-none"></div>
-            
-            <div className="mx-auto max-w-7xl relative px-6">
-              <div className="text-center mb-20 max-w-3xl mx-auto">
-                <h2 className="text-4xl md:text-5xl font-bold tracking-tight mb-6 bg-clip-text text-transparent bg-gradient-to-b from-white to-white/60">
-                  Choose your Equity Framework
-                </h2>
-                <p className="text-slate-400 text-lg font-medium leading-relaxed">
-                  Every startup is different. Select the mathematical logic that fits your stage, from bootstrap to Series A.
-                </p>
-              </div>
-
-              <div className="grid lg:grid-cols-3 gap-6 items-start">
-                
-                {/* --- CUSTOM MODEL --- */}
-                <div className="bg-white/[0.03] border border-white/10 rounded-[32px] p-8 hover:bg-white/[0.05] transition-all duration-300 group h-full flex flex-col">
-                  <div className="mb-8">
-                    <div className="w-12 h-12 rounded-2xl bg-slate-800 flex items-center justify-center mb-6 group-hover:bg-slate-700 transition-colors">
-                      <Sliders className="w-6 h-6 text-slate-300" />
-                    </div>
-                    <h3 className="text-2xl font-bold text-white mb-2">Custom Model</h3>
-                    <p className="text-slate-400 text-sm font-medium">Total control for complex setups.</p>
-                  </div>
-                  <div className="space-y-4 mb-8 flex-grow">
-                    <div className="flex items-center gap-3 text-slate-300 font-medium">
-                      <CheckCircle2 className="w-5 h-5 text-slate-500" /> Fully Editable Multipliers
-                    </div>
-                    <div className="flex items-center gap-3 text-slate-300 font-medium">
-                      <CheckCircle2 className="w-5 h-5 text-slate-500" /> Manual Configuration
-                    </div>
-                    <div className="mt-6 bg-white/5 rounded-xl p-4 border border-white/5 flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <Zap className="w-4 h-4 text-amber-400" />
-                        <span className="text-sm font-bold text-slate-300">Risk Logic</span>
-                      </div>
-                      <div className="h-2 w-8 bg-slate-700 rounded-full"></div>
-                    </div>
-                  </div>
-                  {/* BOTÓN CONECTADO A LOGIN */}
-                  <Link href="/login" className="w-full">
-                    <button className="w-full py-4 rounded-xl border border-white/10 text-white font-bold hover:bg-white hover:text-slate-900 transition-all">
-                        Configure Manually
-                    </button>
-                  </Link>
-                </div>
-
-                {/* --- JUST SPLIT MODEL (RECOMMENDED) --- */}
-                <div className="relative bg-emerald-900/10 border border-emerald-500/50 rounded-[32px] p-8 transition-all duration-300 shadow-[0_0_80px_-20px_rgba(16,185,129,0.2)] h-full flex flex-col transform lg:-translate-y-4 z-20">
-                  <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-emerald-500 text-white px-4 py-1.5 rounded-full text-[10px] font-black tracking-widest uppercase shadow-lg border border-emerald-400">
-                    Recommended
-                  </div>
-                  <div className="mb-8">
-                    <div className="w-12 h-12 rounded-2xl bg-emerald-500 flex items-center justify-center mb-6 shadow-lg shadow-emerald-500/30">
-                      <ShieldCheck className="w-6 h-6 text-white" />
-                    </div>
-                    <h3 className="text-2xl font-bold text-white mb-2">Just Split Model</h3>
-                    <p className="text-emerald-400 text-sm font-bold">The Industry Standard</p>
-                  </div>
-                  <div className="space-y-6 mb-8 flex-grow">
-                    <div className="bg-emerald-500/10 border border-emerald-500/20 rounded-2xl p-4">
-                        <div className="flex justify-between items-center mb-1">
-                            <span className="text-xs font-bold text-emerald-400 uppercase tracking-widest">Capital (Cash)</span>
-                            <span className="text-xl font-bold text-white">x4</span>
-                        </div>
-                    </div>
-                    <div className="bg-blue-500/10 border border-blue-500/20 rounded-2xl p-4">
-                        <div className="flex justify-between items-center mb-1">
-                            <span className="text-xs font-bold text-blue-400 uppercase tracking-widest">Work & IP</span>
-                            <span className="text-xl font-bold text-white">x2</span>
-                        </div>
-                        <p className="text-xs text-blue-200/60 mt-2 font-medium">Tangible and intangible contributions</p>
-                    </div>
-                    
-                      <div className="bg-white/5 rounded-xl p-4 border border-emerald-500/30 flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <PieChart className="w-4 h-4 text-emerald-400" />
-                        <span className="text-sm font-bold text-white">Logarithmic Risk</span>
-                      </div>
-                      <div className="w-8 h-4 bg-emerald-500 rounded-full relative">
-                        <div className="absolute right-0.5 top-0.5 w-3 h-3 bg-white rounded-full"></div>
-                      </div>
-                    </div>
-                  </div>
-                  {/* BOTÓN CONECTADO A LOGIN */}
-                  <Link href="/login" className="w-full py-4 rounded-xl bg-emerald-500 text-white font-bold hover:bg-emerald-400 hover:scale-[1.02] shadow-lg shadow-emerald-900/20 text-center transition-all">
-                    Use Standard Model
-                  </Link>
-                </div>
-
-                {/* --- FLAT MODEL --- */}
-                <div className="bg-white/[0.03] border border-white/10 rounded-[32px] p-8 hover:bg-white/[0.05] transition-all duration-300 group h-full flex flex-col">
-                  <div className="mb-8">
-                    <div className="w-12 h-12 rounded-2xl bg-slate-800 flex items-center justify-center mb-6 group-hover:bg-purple-900/30 transition-colors">
-                      <Scale className="w-6 h-6 text-purple-400" />
-                    </div>
-                    <h3 className="text-2xl font-bold text-white mb-2">Flat Model</h3>
-                    <p className="text-purple-400 text-sm font-medium">Simple fixed split.</p>
-                  </div>
-                  <div className="space-y-4 mb-8 flex-grow">
-                      <div className="flex items-center gap-3 text-slate-300 font-medium">
-                      <CheckCircle2 className="w-5 h-5 text-slate-500" /> Equal Multipliers (x1)
-                    </div>
-                    <div className="flex items-center gap-3 text-slate-300 font-medium">
-                      <CheckCircle2 className="w-5 h-5 text-slate-500" /> Good for Service Agencies
-                    </div>
-                    
-                    <div className="mt-4 p-4 rounded-xl bg-red-500/10 border border-red-500/20">
-                        <div className="flex gap-2 text-red-400 mb-1">
-                            <AlertTriangle className="w-4 h-4" />
-                            <span className="text-xs font-bold uppercase">Caution</span>
-                        </div>
-                        <p className="text-xs text-red-200/70 leading-relaxed">
-                            Discourages cash investment as it treats liquid capital equal to time.
-                        </p>
-                    </div>
-                  </div>
-                  {/* BOTÓN CONECTADO A LOGIN */}
-                  <Link href="/login" className="w-full">
-                    <button className="w-full py-4 rounded-xl border border-white/10 text-white font-bold hover:bg-white hover:text-slate-900 transition-all">
-                        Use Flat Model
-                    </button>
-                  </Link>
-                </div>
-
-              </div>
+          
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-emerald-900/20 via-[#0B0F19] to-[#0B0F19] pointer-events-none"></div>
+          
+          <div className="mx-auto max-w-7xl relative px-6">
+            <div className="text-center mb-20 max-w-3xl mx-auto">
+              {/* CAMBIO: Añadido py-2 para que las 'Y' no se corten */}
+              <h2 className="text-4xl md:text-5xl font-bold tracking-tight mb-6 bg-clip-text text-transparent bg-gradient-to-b from-white to-white/60 py-2">
+                Choose your Equity Framework
+              </h2>
+              {/* CAMBIO: 'startup' por 'company' */}
+              <p className="text-slate-400 text-lg font-medium leading-relaxed">
+                Every company is different. Select the mathematical logic that fits your stage, from bootstrap to Series A.
+              </p>
             </div>
+
+            <div className="grid lg:grid-cols-3 gap-6 items-start">
+              
+              {/* --- CUSTOM MODEL --- */}
+              <div className="bg-white/[0.03] border border-white/10 rounded-[32px] p-8 hover:bg-white/[0.05] transition-all duration-300 group h-full flex flex-col">
+                <div className="mb-8">
+                  <div className="w-12 h-12 rounded-2xl bg-slate-800 flex items-center justify-center mb-6 group-hover:bg-slate-700 transition-colors">
+                    <Sliders className="w-6 h-6 text-slate-300" />
+                  </div>
+                  <h3 className="text-2xl font-bold text-white mb-2">Custom Model</h3>
+                  <p className="text-slate-400 text-sm font-medium">Total control for complex setups.</p>
+                </div>
+                <div className="space-y-4 mb-8 flex-grow">
+                  <div className="flex items-center gap-3 text-slate-300 font-medium">
+                    <CheckCircle2 className="w-5 h-5 text-slate-500" /> Fully Editable Multipliers
+                  </div>
+                  <div className="flex items-center gap-3 text-slate-300 font-medium">
+                    <CheckCircle2 className="w-5 h-5 text-slate-500" /> Manual Configuration
+                  </div>
+                  <div className="mt-6 bg-white/5 rounded-xl p-4 border border-white/5 flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <Zap className="w-4 h-4 text-amber-400" />
+                      <span className="text-sm font-bold text-slate-300">Risk Logic</span>
+                    </div>
+                    <div className="h-2 w-8 bg-slate-700 rounded-full"></div>
+                  </div>
+                </div>
+                <Link href="/login" className="w-full">
+                  <button className="w-full py-4 rounded-xl border border-white/10 text-white font-bold hover:bg-white hover:text-slate-900 transition-all">
+                      Configure Manually
+                  </button>
+                </Link>
+              </div>
+
+              {/* --- JUST SPLIT MODEL (RECOMMENDED) --- */}
+              <div className="relative bg-emerald-900/10 border border-emerald-500/50 rounded-[32px] p-8 transition-all duration-300 shadow-[0_0_80px_-20px_rgba(16,185,129,0.2)] h-full flex flex-col transform lg:-translate-y-4 z-20">
+                <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-emerald-500 text-white px-4 py-1.5 rounded-full text-[10px] font-black tracking-widest uppercase shadow-lg border border-emerald-400">
+                  Recommended
+                </div>
+                <div className="mb-8">
+                  <div className="w-12 h-12 rounded-2xl bg-emerald-500 flex items-center justify-center mb-6 shadow-lg shadow-emerald-500/30">
+                    <ShieldCheck className="w-6 h-6 text-white" />
+                  </div>
+                  <h3 className="text-2xl font-bold text-white mb-2">Just Split Model</h3>
+                  <p className="text-emerald-400 text-sm font-bold">The Industry Standard</p>
+                </div>
+                <div className="space-y-6 mb-8 flex-grow">
+                  <div className="bg-emerald-500/10 border border-emerald-500/20 rounded-2xl p-4">
+                      <div className="flex justify-between items-center mb-1">
+                          <span className="text-xs font-bold text-emerald-400 uppercase tracking-widest">Capital (Cash)</span>
+                          <span className="text-xl font-bold text-white">x4</span>
+                      </div>
+                  </div>
+                  <div className="bg-blue-500/10 border border-blue-500/20 rounded-2xl p-4">
+                      <div className="flex justify-between items-center mb-1">
+                          <span className="text-xs font-bold text-blue-400 uppercase tracking-widest">Work & IP</span>
+                          <span className="text-xl font-bold text-white">x2</span>
+                      </div>
+                      <p className="text-xs text-blue-200/60 mt-2 font-medium">Tangible and intangible contributions</p>
+                  </div>
+                  
+                    <div className="bg-white/5 rounded-xl p-4 border border-emerald-500/30 flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <PieChart className="w-4 h-4 text-emerald-400" />
+                      <span className="text-sm font-bold text-white">Logarithmic Risk</span>
+                    </div>
+                    <div className="w-8 h-4 bg-emerald-500 rounded-full relative">
+                      <div className="absolute right-0.5 top-0.5 w-3 h-3 bg-white rounded-full"></div>
+                    </div>
+                  </div>
+                </div>
+                <Link href="/login" className="w-full py-4 rounded-xl bg-emerald-500 text-white font-bold hover:bg-emerald-400 hover:scale-[1.02] shadow-lg shadow-emerald-900/20 text-center transition-all">
+                  Use Standard Model
+                </Link>
+              </div>
+
+              {/* --- FLAT MODEL --- */}
+              <div className="bg-white/[0.03] border border-white/10 rounded-[32px] p-8 hover:bg-white/[0.05] transition-all duration-300 group h-full flex flex-col">
+                <div className="mb-8">
+                  <div className="w-12 h-12 rounded-2xl bg-slate-800 flex items-center justify-center mb-6 group-hover:bg-purple-900/30 transition-colors">
+                    <Scale className="w-6 h-6 text-purple-400" />
+                  </div>
+                  <h3 className="text-2xl font-bold text-white mb-2">Flat Model</h3>
+                  <p className="text-purple-400 text-sm font-medium">Simple fixed split.</p>
+                </div>
+                <div className="space-y-4 mb-8 flex-grow">
+                    <div className="flex items-center gap-3 text-slate-300 font-medium">
+                    <CheckCircle2 className="w-5 h-5 text-slate-500" /> Equal Multipliers (x1)
+                  </div>
+                  <div className="flex items-center gap-3 text-slate-300 font-medium">
+                    <CheckCircle2 className="w-5 h-5 text-slate-500" /> Good for Service Agencies
+                  </div>
+                  
+                  <div className="mt-4 p-4 rounded-xl bg-red-500/10 border border-red-500/20">
+                      <div className="flex gap-2 text-red-400 mb-1">
+                          <AlertTriangle className="w-4 h-4" />
+                          <span className="text-xs font-bold uppercase">Caution</span>
+                      </div>
+                      <p className="text-xs text-red-200/70 leading-relaxed">
+                          Discourages cash investment as it treats liquid capital equal to time.
+                      </p>
+                  </div>
+                </div>
+                <Link href="/login" className="w-full">
+                  <button className="w-full py-4 rounded-xl border border-white/10 text-white font-bold hover:bg-white hover:text-slate-900 transition-all">
+                      Use Flat Model
+                  </button>
+                </Link>
+              </div>
+
+            </div>
+          </div>
       </section>
 
       {/* --- FOOTER --- */}
