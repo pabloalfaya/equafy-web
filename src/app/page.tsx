@@ -1,10 +1,17 @@
+"use client"; // Añadido para permitir que los interruptores funcionen [cite: 2026-02-04]
+
+import { useState } from "react";
 import Link from "next/link";
 import { 
-  ShieldCheck, PieChart, Users, PlayCircle, Globe, Mail, Lock, Twitter, Linkedin, ArrowRight,
-  Sliders, Zap, Briefcase, Scale, AlertTriangle, Settings, CheckCircle2, TrendingUp
+  ShieldCheck, PieChart, PlayCircle, Mail, Twitter, Linkedin, ArrowRight,
+  Sliders, Zap, Scale, AlertTriangle, CheckCircle2, TrendingUp
 } from "lucide-react";
 
 export default function LandingPage() {
+  // Estados para los interruptores decorativos
+  const [standardRisk, setStandardRisk] = useState(true);
+  const [customRisk, setCustomRisk] = useState(false);
+
   return (
     <div className="min-h-screen bg-[#F8FAFC] font-sans text-slate-900 selection:bg-emerald-100 selection:text-emerald-900 overflow-x-hidden">
       
@@ -59,7 +66,6 @@ export default function LandingPage() {
       {/* --- HERO SECTION --- */}
       <header className="relative pt-36 pb-10 z-10">
         <div className="mx-auto max-w-5xl px-6 text-center">
-          {/* El py-2 aquí asegura que letras como la 'y' no se corten al usar bg-clip-text */}
           <h1 className="text-6xl md:text-8xl font-bold tracking-tighter text-slate-900 mb-4 leading-[1.1] md:leading-[1.1] py-2">
             Equity that <br className="hidden md:block" />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 to-teal-500">evolves with you.</span>
@@ -168,7 +174,6 @@ export default function LandingPage() {
               <h2 className="text-4xl md:text-5xl font-bold tracking-tight mb-6 bg-clip-text text-transparent bg-gradient-to-b from-white to-white/60 py-2">
                 Choose your Equity Framework
               </h2>
-              {/* CAMBIO: 'startup' por 'company' [cite: 2026-02-03] */}
               <p className="text-slate-400 text-lg font-medium leading-relaxed">
                 Every company is different. Select the mathematical logic that fits your stage, from bootstrap to Series A.
               </p>
@@ -192,17 +197,24 @@ export default function LandingPage() {
                   <div className="flex items-center gap-3 text-slate-300 font-medium">
                     <CheckCircle2 className="w-5 h-5 text-slate-500" /> Manual Configuration
                   </div>
-                  <div className="mt-6 bg-white/5 rounded-xl p-4 border border-white/5 flex items-center justify-between">
+                  
+                  {/* Interruptor Logarithmic Risk interactivo */}
+                  <div className={`mt-6 rounded-xl p-4 border flex items-center justify-between transition-colors ${customRisk ? 'border-emerald-500/30 bg-white/5' : 'border-white/5 bg-transparent'}`}>
                     <div className="flex items-center gap-2">
-                      <Zap className="w-4 h-4 text-amber-400" />
-                      <span className="text-sm font-bold text-slate-300">Risk Logic</span>
+                      <PieChart className={`w-4 h-4 transition-colors ${customRisk ? 'text-emerald-400' : 'text-slate-500'}`} />
+                      <span className={`text-sm font-bold transition-colors ${customRisk ? 'text-white' : 'text-slate-400'}`}>Logarithmic Risk</span>
                     </div>
-                    <div className="h-2 w-8 bg-slate-700 rounded-full"></div>
+                    <button 
+                      onClick={() => setCustomRisk(!customRisk)}
+                      className={`w-8 h-4 rounded-full relative transition-colors ${customRisk ? 'bg-emerald-500' : 'bg-slate-700'}`}
+                    >
+                      <div className={`absolute top-0.5 w-3 h-3 bg-white rounded-full transition-all ${customRisk ? 'right-0.5' : 'left-0.5'}`}></div>
+                    </button>
                   </div>
                 </div>
                 <Link href="/models#custom" className="w-full">
-                  <button className="w-full py-4 rounded-xl border border-white/10 text-white font-bold hover:bg-white hover:text-slate-900 transition-all">
-                      Learn about Custom Logic
+                  <button className="w-full py-4 rounded-xl border border-white/10 text-white font-bold hover:bg-white hover:text-slate-900 transition-all uppercase text-[11px] tracking-widest">
+                      Know more about Custom Model
                   </button>
                 </Link>
               </div>
@@ -234,19 +246,23 @@ export default function LandingPage() {
                       <p className="text-xs text-blue-200/60 mt-2 font-medium">Tangible and intangible contributions</p>
                   </div>
                   
-                    <div className="bg-white/5 rounded-xl p-4 border border-emerald-500/30 flex items-center justify-between">
+                  {/* Interruptor Logarithmic Risk interactivo */}
+                  <div className={`rounded-xl p-4 border flex items-center justify-between transition-colors ${standardRisk ? 'border-emerald-500/30 bg-white/5' : 'border-white/5 bg-transparent'}`}>
                     <div className="flex items-center gap-2">
-                      <PieChart className="w-4 h-4 text-emerald-400" />
-                      <span className="text-sm font-bold text-white">Logarithmic Risk</span>
+                      <PieChart className={`w-4 h-4 transition-colors ${standardRisk ? 'text-emerald-400' : 'text-slate-500'}`} />
+                      <span className={`text-sm font-bold transition-colors ${standardRisk ? 'text-white' : 'text-slate-400'}`}>Logarithmic Risk</span>
                     </div>
-                    <div className="w-8 h-4 bg-emerald-500 rounded-full relative">
-                      <div className="absolute right-0.5 top-0.5 w-3 h-3 bg-white rounded-full"></div>
-                    </div>
+                    <button 
+                      onClick={() => setStandardRisk(!standardRisk)}
+                      className={`w-8 h-4 rounded-full relative transition-colors ${standardRisk ? 'bg-emerald-500' : 'bg-slate-700'}`}
+                    >
+                      <div className={`absolute top-0.5 w-3 h-3 bg-white rounded-full transition-all ${standardRisk ? 'right-0.5' : 'left-0.5'}`}></div>
+                    </button>
                   </div>
                 </div>
                 <Link href="/models#standard" className="w-full">
-                  <button className="w-full py-4 rounded-xl bg-emerald-500 text-white font-bold hover:bg-emerald-400 hover:scale-[1.02] shadow-lg shadow-emerald-900/20 text-center transition-all">
-                    View Standard Model
+                  <button className="w-full py-4 rounded-xl bg-emerald-500 text-white font-bold hover:bg-emerald-400 hover:scale-[1.02] shadow-lg shadow-emerald-900/20 text-center transition-all uppercase text-[11px] tracking-widest">
+                    Know more about Just Split Model
                   </button>
                 </Link>
               </div>
@@ -279,8 +295,8 @@ export default function LandingPage() {
                   </div>
                 </div>
                 <Link href="/models#flat" className="w-full">
-                  <button className="w-full py-4 rounded-xl border border-white/10 text-white font-bold hover:bg-white hover:text-slate-900 transition-all">
-                      View Flat Model
+                  <button className="w-full py-4 rounded-xl border border-white/10 text-white font-bold hover:bg-white hover:text-slate-900 transition-all uppercase text-[11px] tracking-widest">
+                      Know more about Flat Model
                   </button>
                 </Link>
               </div>
