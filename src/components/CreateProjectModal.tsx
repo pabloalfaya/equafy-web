@@ -20,7 +20,7 @@ export function CreateProjectModal() {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Session not found");
 
-      // Ajustado: Eliminamos 'status' para evitar el error de columna inexistente
+      // Insertamos el proyecto sin la columna 'status' que no existe
       const { error } = await supabase.from("projects").insert({
         name: name,
         owner_id: user.id,
@@ -35,13 +35,15 @@ export function CreateProjectModal() {
 
       if (error) throw error;
 
+      // --- CAMBIO CLAVE AQUÍ ---
       setIsOpen(false);
       setName("");
-      router.refresh(); 
+      
+      // Forzamos la recarga total para que el Dashboard vea el nuevo proyecto
+      window.location.reload(); 
       
     } catch (error: any) {
-      console.error("Error technical details:", error);
-      // El alert ahora mostrará el error real si persiste algún problema
+      console.error("Error:", error);
       alert("Error: " + (error.message || "Could not create project"));
     } finally {
       setLoading(false);
@@ -74,10 +76,7 @@ export function CreateProjectModal() {
             />
 
             <div className="flex gap-3">
-              <button 
-                onClick={() => setIsOpen(false)} 
-                className="flex-1 py-3 font-bold text-slate-500 hover:bg-slate-50 rounded-xl"
-              >
+              <button onClick={() => setIsOpen(false)} className="flex-1 py-3 font-bold text-slate-500 hover:bg-slate-50 rounded-xl">
                 Cancel
               </button>
               <button 
