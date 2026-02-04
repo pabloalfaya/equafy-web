@@ -1,8 +1,8 @@
 "use client";
 
-import { Contribution } from "@/types/database";
 import { Trash2 } from "lucide-react";
 import { createClient } from "@/utils/supabase/client";
+import { Contribution } from "@/types/database";
 
 interface ContributionsTableProps {
   contributions: Contribution[];
@@ -12,48 +12,50 @@ interface ContributionsTableProps {
 export function ContributionsTable({ contributions, onDelete }: ContributionsTableProps) {
   const supabase = createClient();
 
-  // Cálculo del total de puntos para los porcentajes
+  // 1. Cálculo del total de puntos para evitar errores de división por cero
   const totalPoints = contributions.reduce((sum, c) => sum + (c.risk_adjusted_value || 0), 0);
 
-  const handleDelete = async (contribution: Contribution) => {
+  const handleDelete = async (c: Contribution) => {
     if (!confirm("Are you sure you want to delete this contribution?")) return;
     try {
-      const { error } = await supabase.from("contributions").delete().eq("id", contribution.id);
+      const { error } = await supabase.from("contributions").delete().eq("id", c.id);
       if (error) throw error;
-      onDelete(contribution);
+      onDelete(c);
     } catch (error: any) {
       alert("Error: " + error.message);
     }
   };
 
-  if (contributions.length === 0) {
+  if (!contributions || contributions.length === 0) {
     return (
-      <div className="text-center py-10 text-slate-500 font-medium">
-        No contributions yet. Add one to see it here.
+      <div className="text-center py-12 text-slate-400 font-medium bg-slate-50/50 rounded-2xl border border-dashed border-slate-200">
+        No contributions recorded yet.
       </div>
     );
   }
 
   return (
-    <div className="overflow-x-auto">
+    <div className="w-full overflow-hidden">
       <table className="w-full text-left text-slate-900 border-separate border-spacing-0">
         <thead className="text-[10px] font-black text-slate-400 uppercase tracking-widest bg-slate-50/50 sticky top-0 z-10">
           <tr>
-            {/* Cabeceras en Inglés */}
-            <th className="px-6 py-4 border-b border-slate-100">MEMBER</th>
-            <th className="px-6 py-4 border-b border-slate-100">TYPE</th>
-            <th className="px-6 py-4 border-b border-slate-100">DESCRIPTION</th>
-            <th className="px-6 py-4 border-b border-slate-100 text-right">VALUE (PTS)</th>
-            <th className="px-6 py-4 border-b border-slate-100 text-right">EQUITY %</th>
-            <th className="px-6 py-4 border-b border-slate-100 text-center">ACTIONS</th>
+            <th className="px-6 py-4 border-b border-slate-100">Member</th>
+            <th className="px-6 py-4 border-b border-slate-100">Type</th>
+            <th className="px-6 py-4 border-b border-slate-100">Description</th>
+            <th className="px-6 py-4 border-b border-slate-100 text-right">Value (Pts)</th>
+            <th className="px-6 py-4 border-b border-slate-100 text-right">Equity %</th>
+            <th className="px-6 py-4 border-b border-slate-100 text-center">Actions</th>
           </tr>
         </thead>
         <tbody className="divide-y divide-slate-100">
           {contributions.map((c) => {
-            const percentage = totalPoints > 0 ? ((c.risk_adjusted_value / totalPoints) * 100).toFixed(1) : "0";
+            // 2. Calculamos el porcentaje individual dentro del map para evitar errores
+            const percentage = totalPoints > 0 
+              ? ((c.risk_adjusted_value / totalPoints) * 100).toFixed(1) 
+              : "0.0";
             
-            // Estilos para las etiquetas de tipo
-            let typeStyles = "bg-slate-100 text-slate-600 border-slate-200";
+            // 3. Definimos estilos de etiquetas
+            let typeStyles = "bg-slate-100 text-slate-500 border-slate-200";
             if (c.contribution_type === 'CASH') typeStyles = "bg-emerald-50 text-emerald-600 border-emerald-100";
             if (c.contribution_type === 'WORK') typeStyles = "bg-blue-50 text-blue-600 border-blue-100";
             if (c.contribution_type === 'INTANGIBLE') typeStyles = "bg-purple-50 text-purple-600 border-purple-100";
@@ -61,24 +63,21 @@ export function ContributionsTable({ contributions, onDelete }: ContributionsTab
 
             return (
               <tr key={c.id} className="hover:bg-slate-50/50 transition-colors group">
-                <td className="px-6 py-5 font-bold text-slate-900 uppercase truncate max-w-[150px]">
+                <td className="px-6 py-5 font-bold text-slate-900 uppercase tracking-tight">
                   {c.contributor_name}
                 </td>
                 <td className="px-6 py-5">
-                  {/* Restaurado: El texto dentro de la etiqueta ahora es visible */}
-                  <span className={`px-2 py-1 rounded text-[9px] font-black uppercase border ${typeStyles}`}>
-                    {c.contribution_type}
+                  <span className={`px-2 py-1 rounded-[6px] text-[9px] font-black uppercase border ${typeStyles}`}>
+                    {c.contribution_type || 'OTHER'}
                   </span>
                 </td>
-                <td className="px-6 py-5 text-sm font-medium text-slate-500 max-w-xs truncate">
-                  {/* Restaurado: Descripción visible */}
+                <td className="px-6 py-5 text-sm font-medium text-slate-500 max-w-[200px] truncate">
                   {c.description || "—"}
                 </td>
                 <td className="px-6 py-5 text-right font-black text-slate-900 font-mono">
-                  {c.risk_adjusted_value?.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                  {c.risk_adjusted_value?.toLocaleString(undefined, { minimumFractionDigits: 2 })}
                 </td>
                 <td className="px-6 py-5 text-right font-black text-emerald-600 font-mono">
-                  {/* Restaurado: Porcentaje de Equity */}
                   {percentage}%
                 </td>
                 <td className="px-6 py-5 text-center">
