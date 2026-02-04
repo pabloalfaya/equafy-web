@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { createClient } from "@/utils/supabase/client";
-import { Loader2, FolderPlus } from "lucide-react";
+import { Loader2, FolderPlus } from "lucide-center";
 import { useRouter } from "next/navigation";
 
 export function CreateProjectModal() {
@@ -20,10 +20,18 @@ export function CreateProjectModal() {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Session not found");
 
+      // Enviamos todos los campos necesarios según tu base de datos
       const { error } = await supabase.from("projects").insert({
         name: name,
         owner_id: user.id,
-        status: "active"
+        status: "active",
+        model_type: "JUST_SPLIT",
+        mult_cash: 4.0,
+        mult_labor: 2.0,
+        mult_ip: 2.0,
+        mult_assets: 1.0,
+        use_log_risk: false,
+        current_valuation: 0
       });
 
       if (error) throw error;
@@ -32,9 +40,10 @@ export function CreateProjectModal() {
       setName("");
       router.refresh(); 
       
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error:", error);
-      alert("Could not create the project");
+      // Ahora el alert te dirá el error exacto si algo falla
+      alert("Error: " + (error.message || "Could not create project"));
     } finally {
       setLoading(false);
     }
@@ -62,11 +71,14 @@ export function CreateProjectModal() {
               placeholder="Ex: Project Alpha..."
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="w-full rounded-xl border border-slate-200 p-3 mb-6 focus:border-emerald-500 outline-none transition-all font-medium"
+              className="w-full rounded-xl border border-slate-200 p-3 mb-6 focus:border-emerald-500 outline-none transition-all font-medium text-slate-900"
             />
 
             <div className="flex gap-3">
-              <button onClick={() => setIsOpen(false)} className="flex-1 py-3 font-bold text-slate-500 hover:bg-slate-50 rounded-xl">
+              <button 
+                onClick={() => setIsOpen(false)} 
+                className="flex-1 py-3 font-bold text-slate-500 hover:bg-slate-50 rounded-xl"
+              >
                 Cancel
               </button>
               <button 
@@ -74,7 +86,7 @@ export function CreateProjectModal() {
                 disabled={loading || !name.trim()}
                 className="flex-1 bg-slate-900 text-white py-3 rounded-xl font-bold hover:bg-slate-800 disabled:opacity-50 flex justify-center items-center"
               >
-                {loading ? <Loader2 className="animate-spin" /> : "Create Project"}
+                {loading ? <Loader2 className="animate-spin w-5 h-5" /> : "Create Project"}
               </button>
             </div>
           </div>
