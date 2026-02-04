@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { Plus, TrendingUp, LayoutDashboard, PieChart, Users, Layers, FolderPlus } from "lucide-react";
+import { Plus, TrendingUp, LayoutDashboard, PieChart, Users, FolderPlus } from "lucide-react";
 import { createClient } from "@/utils/supabase/client";
 import { EquityPieChart } from "@/components/EquityPieChart";
 import { ContributionsTable } from "@/components/ContributionsTable";
@@ -133,7 +133,7 @@ export default function DashboardPage() {
                   </select>
               </div>
             )}
-             <div className="h-8 w-8 rounded-full bg-gradient-to-tr from-emerald-500 to-blue-500 flex items-center justify-center text-white font-bold text-xs">JD</div>
+            {/* ELIMINADO: Avatar JD */}
           </div>
         </div>
       </nav>
@@ -141,7 +141,6 @@ export default function DashboardPage() {
       <main className="relative z-10 pt-32 pb-20 px-6">
         <div className="mx-auto max-w-7xl">
           {!selectedProject ? (
-            /* CAMBIOS: mt-20 para más espacio superior, border-slate-200 y shadow-2xl para máximo contraste */
             <div className="mt-20 flex flex-col items-center justify-center py-20 bg-white border border-slate-200 rounded-[32px] shadow-2xl text-center px-6 max-w-4xl mx-auto transition-all">
                 <div className="w-20 h-20 bg-slate-50 rounded-3xl flex items-center justify-center mb-6 shadow-inner">
                   <FolderPlus className="w-10 h-10 text-slate-300" />
