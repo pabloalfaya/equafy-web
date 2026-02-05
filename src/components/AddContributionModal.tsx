@@ -15,22 +15,32 @@ export function AddContributionModal({ isOpen, onClose, projectId, projectConfig
 
   const supabase = createClient();
 
-  // LÓGICA DE MULTIPLICADORES INTELIGENTES
-  useEffect(() => {
-    if (!projectConfig) return;
-
+  // --- FUNCIÓN PARA CALCULAR MULTIPLICADOR SEGÚN EL TIPO ---
+  const getMultiplierForType = (t: string) => {
+    if (!projectConfig) return 1;
     const model = projectConfig.equity_model;
 
-    if (model === 'flat') {
-      setMultiplier(1);
-    } else if (model === 'just_split') {
-      if (type === 'CASH') setMultiplier(4);
-      else if (type === 'WORK' || type === 'INTANGIBLE') setMultiplier(2);
-      else setMultiplier(1);
-    } else if (model === 'custom') {
-      const customMult = projectConfig[`mult_${type.toLowerCase()}`] || 1;
-      setMultiplier(customMult);
+    if (model === 'flat') return 1;
+    
+    if (model === 'just_split') {
+      if (t === 'CASH') return 4;
+      // Corregido: Tangible e Intangible ahora son x2 junto con Work
+      if (['WORK', 'TANGIBLE', 'INTANGIBLE'].includes(t)) return 2;
+      return 1; // Otros
     }
+    
+    if (model === 'custom') {
+      // Busca el valor personalizado guardado en la base de datos
+      const key = `mult_${t.toLowerCase().split(' / ')[0]}`; // Maneja "WORK / TIME"
+      return projectConfig[key] || 1;
+    }
+    
+    return 1;
+  };
+
+  // Actualiza el multiplicador activo cuando cambia el tipo seleccionado
+  useEffect(() => {
+    setMultiplier(getMultiplierForType(type));
   }, [type, projectConfig, isOpen]);
 
   useEffect(() => {
@@ -79,7 +89,6 @@ export function AddContributionModal({ isOpen, onClose, projectId, projectConfig
     <div className="fixed inset-0 z-[110] flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4">
       <div className="w-full max-w-md overflow-hidden rounded-[32px] bg-white shadow-2xl animate-in fade-in zoom-in duration-200 font-sans">
         
-        {/* Cabecera con el modelo actual */}
         <div className="border-b border-slate-100 bg-slate-50/50 px-8 py-6 flex justify-between items-center">
           <div>
             <h3 className="font-black text-slate-800 text-lg uppercase tracking-tight">Add Contribution</h3>
@@ -99,7 +108,7 @@ export function AddContributionModal({ isOpen, onClose, projectId, projectConfig
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">Contributor</label>
-              <select value={contributorId} onChange={(e) => setContributorId(e.target.value)} className="w-full rounded-xl border border-slate-200 px-4 py-3 bg-slate-50 font-bold outline-none cursor-pointer">
+              <select value={contributorId} onChange={(e) => setContributorId(e.target.value)} className="w-full rounded-xl border border-slate-200 px-4 py-3 bg-slate-50 font-bold outline-none cursor-pointer appearance-none">
                 {members.map((m: any) => <option key={m.id} value={m.id}>{m.name}</option>)}
               </select>
             </div>
@@ -119,14 +128,14 @@ export function AddContributionModal({ isOpen, onClose, projectId, projectConfig
               <label className="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">Type</label>
               <div className="relative">
                 <select value={type} onChange={(e) => setType(e.target.value)} className="w-full rounded-xl border border-slate-200 px-4 py-3 bg-slate-50 font-black text-xs uppercase outline-none cursor-pointer appearance-none">
-                  <option value="CASH">Cash</option>
-                  <option value="WORK">Work / Time</option>
-                  <option value="TANGIBLE">Tangible</option>
-                  <option value="INTANGIBLE">Intangible</option>
-                  <option value="OTHERS">Others</option>
+                  <option value="CASH">Cash (x{getMultiplierForType('CASH')})</option>
+                  <option value="WORK">Work / Time (x{getMultiplierForType('WORK')})</option>
+                  <option value="TANGIBLE">Tangible (x{getMultiplierForType('TANGIBLE')})</option>
+                  <option value="INTANGIBLE">Intangible (x{getMultiplierForType('INTANGIBLE')})</option>
+                  <option value="OTHERS">Others (x{getMultiplierForType('OTHERS')})</option>
                 </select>
                 <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
-                  {type === 'CASH' ? <Coins className="w-4 h-4" /> : <Briefcase className="w-4 h-4" />}
+                  <Zap className="w-4 h-4" />
                 </div>
               </div>
             </div>
@@ -136,8 +145,7 @@ export function AddContributionModal({ isOpen, onClose, projectId, projectConfig
             </div>
           </div>
 
-          {/* Resumen del Valor de Riesgo */}
-          <div className="rounded-2xl bg-slate-900 p-6 text-white shadow-xl shadow-slate-200">
+          <div className="rounded-2xl bg-slate-900 p-6 text-white shadow-xl">
             <div className="flex items-center justify-between mb-3 opacity-60">
               <span className="text-[10px] font-black uppercase tracking-[0.2em] flex items-center gap-2">
                 Multiplier <Info className="w-3 h-3" />
