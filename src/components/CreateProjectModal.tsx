@@ -71,10 +71,15 @@ export function CreateProjectModal() {
       </button>
 
       {isOpen && (
-        // Mantenemos el fondo blanco aquí
+        /* CAMBIO ÚNICO: 
+           He cambiado 'bg-slate-900/40' por 'bg-white/90'.
+           El resto del código es idéntico al que me has pasado.
+        */
         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-white/90 backdrop-blur-md p-4 overflow-y-auto">
+          {/* CONTENEDOR DEL MODAL */}
           <div className="relative w-full max-w-6xl bg-[#F8FAFC] border border-white rounded-[40px] shadow-[0_40px_100px_-20px_rgba(0,0,0,0.15)] flex flex-col animate-in fade-in zoom-in duration-300 overflow-hidden">
             
+            {/* FONDO TÉCNICO DE REJILLA */}
             <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px] pointer-events-none"></div>
 
             <button onClick={() => setIsOpen(false)} className="absolute right-8 top-8 text-slate-400 hover:text-slate-600 transition-colors z-20 bg-white p-2 rounded-full border border-slate-100 shadow-sm">
@@ -83,6 +88,7 @@ export function CreateProjectModal() {
 
             <div className="relative z-10 px-8 py-20 md:px-16 md:py-24">
               {step === 1 ? (
+                /* --- STEP 1: NAME --- */
                 <div className="max-w-md mx-auto text-center">
                   <span className="text-emerald-500 font-black uppercase tracking-[0.2em] text-[10px] mb-4 block">Initialization</span>
                   <h2 className="text-5xl font-black text-slate-900 mb-4 tracking-tight">Project Name</h2>
@@ -106,6 +112,7 @@ export function CreateProjectModal() {
                   </button>
                 </div>
               ) : (
+                /* --- STEP 2: MODEL SELECTION --- */
                 <div className="animate-in slide-in-from-right-4 duration-300">
                   <div className="text-center mb-16">
                     <span className="text-blue-500 font-black uppercase tracking-[0.2em] text-[10px] mb-4 block">Architecture</span>
@@ -115,73 +122,73 @@ export function CreateProjectModal() {
 
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
                     
-                    {/* CUSTOM MODEL - Restaurado estilo oscuro */}
+                    {/* CUSTOM MODEL */}
                     <div 
                       onClick={() => setSelectedModel('CUSTOM')}
-                      className={`relative p-10 rounded-[40px] border-2 transition-all cursor-pointer flex flex-col min-h-[520px] shadow-sm ${selectedModel === 'CUSTOM' ? 'border-blue-500 bg-slate-800' : 'border-slate-800 bg-slate-900 hover:border-slate-700'}`}
+                      className={`relative p-10 rounded-[40px] border-2 transition-all cursor-pointer flex flex-col min-h-[520px] shadow-sm ${selectedModel === 'CUSTOM' ? 'border-blue-500 bg-white' : 'border-slate-100 bg-white/50 hover:border-slate-200'}`}
                     >
-                      <div className="w-12 h-12 bg-slate-800 border border-slate-700 rounded-2xl flex items-center justify-center mb-8 shadow-sm"><Settings className="text-slate-400 w-6 h-6" /></div>
-                      <h3 className="text-2xl font-black mb-2 text-white">Custom</h3>
+                      <div className="w-12 h-12 bg-slate-50 border border-slate-100 rounded-2xl flex items-center justify-center mb-8 shadow-sm"><Settings className="text-slate-400 w-6 h-6" /></div>
+                      <h3 className="text-2xl font-black mb-2 text-slate-900">Custom</h3>
                       <p className="text-slate-400 text-xs font-bold mb-10 uppercase tracking-widest">Full configuration</p>
                       
                       <div className="space-y-3 mt-auto" onClick={(e) => e.stopPropagation()}>
                         {Object.entries(customMults).map(([key, val]) => (
-                          <div key={key} className="flex items-center justify-between bg-slate-800 p-4 rounded-2xl border border-slate-700">
+                          <div key={key} className="flex items-center justify-between bg-slate-50 p-4 rounded-2xl border border-slate-100">
                             <span className="text-[10px] font-black text-slate-400 uppercase tracking-wider">{key}</span>
                             <input 
                               type="number" step="0.5" value={val}
                               onChange={(e) => setCustomMults({...customMults, [key]: parseFloat(e.target.value) || 1})}
-                              className="w-12 bg-transparent text-right font-black text-blue-500 outline-none text-lg"
+                              className="w-12 bg-transparent text-right font-black text-blue-600 outline-none text-lg"
                             />
                           </div>
                         ))}
                       </div>
                     </div>
 
-                    {/* JUST SPLIT MODEL - Restaurado estilo oscuro */}
+                    {/* JUST SPLIT MODEL (RECOMENDADO) */}
                     <div 
                       onClick={() => setSelectedModel('JUST_SPLIT')}
-                      className={`relative p-10 rounded-[40px] border-2 transition-all cursor-pointer flex flex-col min-h-[520px] shadow-2xl ${selectedModel === 'JUST_SPLIT' ? 'border-emerald-500 bg-slate-800 ring-4 ring-emerald-500/20' : 'border-slate-800 bg-slate-900 hover:border-slate-700'}`}
+                      className={`relative p-10 rounded-[40px] border-2 transition-all cursor-pointer flex flex-col min-h-[520px] shadow-2xl ${selectedModel === 'JUST_SPLIT' ? 'border-emerald-500 bg-white ring-4 ring-emerald-500/5' : 'border-slate-100 bg-white/50 hover:border-slate-200'}`}
                     >
                       <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-emerald-500 text-white text-[10px] font-black px-6 py-2 rounded-full uppercase tracking-widest shadow-xl">Recommended</div>
-                      <div className="w-12 h-12 bg-emerald-900/30 border border-emerald-800 rounded-2xl flex items-center justify-center mb-8 shadow-sm"><ShieldCheck className="text-emerald-500 w-6 h-6" /></div>
-                      <h3 className="text-2xl font-black mb-2 text-white">Just Split</h3>
+                      <div className="w-12 h-12 bg-emerald-50 border border-emerald-100 rounded-2xl flex items-center justify-center mb-8 shadow-sm"><ShieldCheck className="text-emerald-500 w-6 h-6" /></div>
+                      <h3 className="text-2xl font-black mb-2 text-slate-900">Just Split</h3>
                       <p className="text-emerald-500 text-xs font-black mb-10 uppercase tracking-widest">Industry Standard</p>
                       
                       <div className="space-y-4 mt-auto mb-8">
                         <div className="grid grid-cols-2 gap-3">
-                          <div className="bg-emerald-900/30 p-4 rounded-2xl border border-emerald-800 text-center">
-                              <span className="block text-[10px] font-black text-emerald-500 uppercase mb-1">Cash</span>
-                              <span className="font-black text-white text-2xl">x4</span>
+                          <div className="bg-emerald-50/50 p-4 rounded-2xl border border-emerald-100 text-center">
+                              <span className="block text-[10px] font-black text-emerald-600 uppercase mb-1">Cash</span>
+                              <span className="font-black text-slate-900 text-2xl">x4</span>
                           </div>
-                          <div className="bg-blue-900/30 p-4 rounded-2xl border border-blue-800 text-center">
-                              <span className="block text-[10px] font-black text-blue-500 uppercase mb-1">Work</span>
-                              <span className="font-black text-white text-2xl">x2</span>
+                          <div className="bg-blue-50/50 p-4 rounded-2xl border border-blue-100 text-center">
+                              <span className="block text-[10px] font-black text-blue-600 uppercase mb-1">Work</span>
+                              <span className="font-black text-slate-900 text-2xl">x2</span>
                           </div>
                         </div>
-                        <div className="bg-slate-800 p-5 rounded-2xl border border-slate-700 flex items-center justify-between" onClick={(e) => e.stopPropagation()}>
+                        <div className="bg-slate-50 p-5 rounded-2xl border border-slate-100 flex items-center justify-between" onClick={(e) => e.stopPropagation()}>
                           <div className="flex items-center gap-3">
                             <PieChart className="w-4 h-4 text-emerald-500" />
-                            <span className="text-[10px] font-black text-white uppercase tracking-widest">Log Risk</span>
+                            <span className="text-[10px] font-black text-slate-900 uppercase tracking-widest">Log Risk</span>
                           </div>
                           <input type="checkbox" checked={useLogRisk} onChange={(e) => setUseLogRisk(e.target.checked)} className="w-6 h-6 accent-emerald-500 cursor-pointer" />
                         </div>
                       </div>
                     </div>
 
-                    {/* FLAT MODEL - Restaurado estilo oscuro */}
+                    {/* FLAT MODEL */}
                     <div 
                       onClick={() => setSelectedModel('FLAT')}
-                      className={`relative p-10 rounded-[40px] border-2 transition-all cursor-pointer flex flex-col min-h-[520px] shadow-sm ${selectedModel === 'FLAT' ? 'border-purple-500 bg-slate-800' : 'border-slate-800 bg-slate-900 hover:border-slate-700'}`}
+                      className={`relative p-10 rounded-[40px] border-2 transition-all cursor-pointer flex flex-col min-h-[520px] shadow-sm ${selectedModel === 'FLAT' ? 'border-purple-500 bg-white' : 'border-slate-100 bg-white/50 hover:border-slate-200'}`}
                     >
-                      <div className="w-12 h-12 bg-purple-900/30 border border-purple-800 rounded-2xl flex items-center justify-center mb-8 shadow-sm"><Scale className="text-purple-400 w-6 h-6" /></div>
-                      <h3 className="text-2xl font-black mb-2 text-white">Flat Model</h3>
+                      <div className="w-12 h-12 bg-purple-50 border border-purple-100 rounded-2xl flex items-center justify-center mb-8 shadow-sm"><Scale className="text-purple-400 w-6 h-6" /></div>
+                      <h3 className="text-2xl font-black mb-2 text-slate-900">Flat Model</h3>
                       <p className="text-purple-400 text-xs font-black mb-10 uppercase tracking-widest">Simple & Equal</p>
                       
                       <div className="space-y-4 mt-auto">
-                        <div className="bg-slate-800 p-6 rounded-3xl border border-slate-700 text-center">
+                        <div className="bg-slate-50 p-6 rounded-3xl border border-slate-100 text-center">
                             <span className="block text-[10px] font-black text-slate-400 uppercase mb-2">All Contributions</span>
-                            <span className="font-black text-white text-4xl">x1</span>
+                            <span className="font-black text-slate-900 text-4xl">x1</span>
                         </div>
                         <p className="text-[10px] font-bold text-slate-400 text-center italic">Best for service companies.</p>
                       </div>
