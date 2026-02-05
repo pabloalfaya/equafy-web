@@ -1,7 +1,33 @@
+"use client";
+
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
-import { Zap, Calculator, Scale, FileCheck, Twitter, Linkedin, Mail, ArrowRight, CheckCircle2 } from "lucide-react";
+import { Zap, Calculator, Scale, FileCheck, Twitter, Linkedin, Mail, ArrowRight, CheckCircle2, PlayCircle } from "lucide-react";
 
 export default function HowItWorksPage() {
+  // --- LÓGICA DEL NAVBAR ESCONDIDIZO ---
+  const [isNavVisible, setIsNavVisible] = useState(true);
+  const lastScrollY = useRef(0);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+      
+      if (currentScrollY < 50) {
+        setIsNavVisible(true);
+      } else if (currentScrollY > lastScrollY.current) {
+        setIsNavVisible(false);
+      } else {
+        setIsNavVisible(true);
+      }
+
+      lastScrollY.current = currentScrollY;
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
   return (
     <div className="min-h-screen bg-[#F8FAFC] font-sans text-slate-900 selection:bg-emerald-100 selection:text-emerald-900 overflow-x-hidden">
       
@@ -9,12 +35,15 @@ export default function HowItWorksPage() {
       <div className="fixed inset-0 z-0 pointer-events-none">
         <div className="absolute top-0 right-1/4 w-[800px] h-[800px] bg-blue-400/10 blur-[120px] rounded-full opacity-50 mix-blend-multiply"></div>
         <div className="absolute bottom-0 left-1/4 w-[800px] h-[800px] bg-emerald-400/10 blur-[120px] rounded-full opacity-40 mix-blend-multiply"></div>
-        {/* Rejilla técnica sutil */}
         <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]"></div>
       </div>
 
-      {/* --- NAVBAR PREMIUM UNIFICADO --- */}
-      <nav className="fixed top-0 inset-x-0 z-50 border-b border-white/50 bg-white/60 backdrop-blur-xl transition-all duration-300">
+      {/* --- NAVBAR DINÁMICO --- */}
+      <nav 
+        className={`fixed top-0 inset-x-0 z-50 border-b border-white/50 bg-white/60 backdrop-blur-xl transition-transform duration-300 ease-in-out ${
+          isNavVisible ? 'translate-y-0' : '-translate-y-full'
+        }`}
+      >
         <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-3">
           <div className="flex items-center gap-8">
             <Link href="/" className="relative group">
@@ -38,13 +67,13 @@ export default function HowItWorksPage() {
           </div>
           
           <div className="flex items-center gap-4">
-            <Link href="/dashboard" className="hidden md:block text-sm font-bold text-slate-600 hover:text-slate-900 transition-colors">
+            <Link href="/login" className="hidden md:block text-sm font-bold text-slate-600 hover:text-slate-900 transition-colors">
               Log in
             </Link>
-            <Link href="/dashboard" className="hidden md:block text-sm font-bold text-slate-600 hover:text-emerald-600 transition-colors">
+            <Link href="/login?view=signup" className="hidden md:block text-sm font-bold text-slate-600 hover:text-emerald-600 transition-colors">
               Sign Up
             </Link>
-            <Link href="/dashboard" className="relative group">
+            <Link href="/login?view=signup" className="relative group">
                <div className="absolute -inset-0.5 bg-gradient-to-r from-emerald-500 to-emerald-400 rounded-full blur opacity-60 group-hover:opacity-100 transition duration-200"></div>
                <div className="relative flex items-center bg-slate-900 rounded-full px-6 py-2.5 leading-none">
                  <span className="text-sm font-bold text-white group-hover:text-emerald-50 transition duration-200">Start Free</span>

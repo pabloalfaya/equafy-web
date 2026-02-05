@@ -1,15 +1,43 @@
 "use client";
 
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { CheckCircle2, ArrowRight, Zap, ShieldCheck, Globe, Users, MessageSquare } from "lucide-react";
 
 export default function PricingPage() {
-  // Definimos los enlaces de forma explícita para evitar errores de ruta
   const navItems = [
     { name: "What is Equily?", href: "/what-is-equily" },
     { name: "How does Equily work?", href: "/how-it-works" },
     { name: "Pricing", href: "/pricing" }
   ];
+
+  // --- LÓGICA DEL NAVBAR ESCONDIDIZO ---
+  const [isNavVisible, setIsNavVisible] = useState(true);
+  const lastScrollY = useRef(0);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+      
+      // Si estamos arriba del todo (menos de 50px), mostrar siempre
+      if (currentScrollY < 50) {
+        setIsNavVisible(true);
+      } 
+      // Si bajamos (current > last) -> ESCONDER
+      else if (currentScrollY > lastScrollY.current) {
+        setIsNavVisible(false);
+      } 
+      // Si subimos (current < last) -> MOSTRAR
+      else {
+        setIsNavVisible(true);
+      }
+
+      lastScrollY.current = currentScrollY;
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   return (
     <div className="min-h-screen bg-[#F8FAFC] font-sans text-slate-900 selection:bg-emerald-100 selection:text-emerald-900 overflow-x-hidden">
@@ -20,8 +48,12 @@ export default function PricingPage() {
         <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]"></div>
       </div>
 
-      {/* --- NAVBAR REPARADO --- */}
-      <nav className="fixed top-0 inset-x-0 z-50 border-b border-white/50 bg-white/60 backdrop-blur-xl transition-all duration-300">
+      {/* --- NAVBAR DINÁMICO --- */}
+      <nav 
+        className={`fixed top-0 inset-x-0 z-50 border-b border-white/50 bg-white/60 backdrop-blur-xl transition-transform duration-300 ease-in-out ${
+          isNavVisible ? 'translate-y-0' : '-translate-y-full'
+        }`}
+      >
         <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-3">
           <div className="flex items-center gap-8">
             <Link href="/" className="relative group">
@@ -40,15 +72,15 @@ export default function PricingPage() {
               <Link href="/contact" className="px-5 py-2 text-sm font-bold text-slate-600 hover:text-emerald-600 transition-all">Contact</Link>
             </div>
           </div>
+          
           <div className="flex items-center gap-4">
             <Link href="/login" className="hidden md:block text-sm font-bold text-slate-600 hover:text-slate-900 transition-colors">
               Log in
             </Link>
-            {/* BOTÓN REPARADO: SIGN UP */}
-            <Link href="/login" className="hidden md:block text-sm font-bold text-slate-600 hover:text-emerald-600 transition-colors">
+            <Link href="/login?view=signup" className="hidden md:block text-sm font-bold text-slate-600 hover:text-emerald-600 transition-colors">
               Sign Up
             </Link>
-            <Link href="/login" className="relative group">
+            <Link href="/login?view=signup" className="relative group">
                <div className="absolute -inset-0.5 bg-gradient-to-r from-emerald-500 to-emerald-400 rounded-full blur opacity-60 group-hover:opacity-100 transition duration-200"></div>
                <div className="relative flex items-center bg-slate-900 rounded-full px-6 py-2.5 leading-none">
                  <span className="text-sm font-bold text-white group-hover:text-emerald-50 transition duration-200">Start Free</span>
@@ -90,7 +122,7 @@ export default function PricingPage() {
                 </li>
               ))}
             </ul>
-            <Link href="/login" className="block text-center py-4 rounded-2xl border border-slate-200 font-black text-sm uppercase tracking-widest hover:bg-slate-50 transition-all">
+            <Link href="/login?view=signup" className="block text-center py-4 rounded-2xl border border-slate-200 font-black text-sm uppercase tracking-widest hover:bg-slate-50 transition-all">
               Get Started
             </Link>
           </div>
@@ -114,7 +146,7 @@ export default function PricingPage() {
                 </li>
               ))}
             </ul>
-            <Link href="/login" className="block text-center py-4 rounded-2xl bg-emerald-500 text-white font-black text-sm uppercase tracking-widest hover:bg-emerald-400 transition-all shadow-lg shadow-emerald-500/20">
+            <Link href="/login?view=signup" className="block text-center py-4 rounded-2xl bg-emerald-500 text-white font-black text-sm uppercase tracking-widest hover:bg-emerald-400 transition-all shadow-lg shadow-emerald-500/20">
               Start Scaling
             </Link>
           </div>
