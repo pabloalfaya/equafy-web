@@ -14,12 +14,12 @@ import type { Project, Contribution } from "@/types/database";
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 
-// Definimos un tipo flexible para que no de error si faltan campos en los tipos oficiales
+// Definimos un tipo flexible
 type ExtendedContribution = Contribution & {
   date?: string;
-  concept?: string;     // La columna real de la descripción
-  multiplier?: number;  // A veces se llama multiplier
-  risk_multiplier?: number; // A veces risk_multiplier
+  concept?: string;     
+  multiplier?: number;  
+  risk_multiplier?: number; 
   [key: string]: any;
 };
 
@@ -96,24 +96,40 @@ export default function DashboardPage() {
     const doc = new jsPDF();
     const projectName = selectedProject?.name || "Project Report";
 
-    // 1. CABECERA (Verde Emerald)
-    doc.setFillColor(16, 185, 129); 
-    doc.rect(0, 0, 210, 20, 'F'); 
-    
-    doc.setTextColor(255, 255, 255);
-    doc.setFontSize(16);
-    doc.setFont("helvetica", "bold");
-    doc.text("EQUILY REPORT", 14, 13);
+    // --- PALETA DE COLORES (CONFIGURACIÓN) ---
+    // Puedes cambiar estos números RGB a tu gusto:
+    const headerBg = [15, 23, 42];      // Azul Oscuro (Slate 900) - Para la barra superior
+    const table1Header = [16, 185, 129]; // Verde (Emerald 500) - Para la tabla de Equity
+    const table2Header = [59, 130, 246]; // Azul (Blue 500) - Para la tabla de Logs
+    // -----------------------------------------
 
-    doc.setTextColor(15, 23, 42); 
+    // 1. CABECERA
+    // Usamos spread syntax (...) para pasar los colores RGB
+    doc.setFillColor(headerBg[0], headerBg[1], headerBg[2]); 
+    doc.rect(0, 0, 210, 30, 'F'); // Hacemos la barra un poco más alta
+    
+    // Logo Texto
+    doc.setTextColor(255, 255, 255);
     doc.setFontSize(22);
-    doc.text(projectName, 14, 35);
+    doc.setFont("helvetica", "bold");
+    doc.text("EQUILY", 14, 18);
+    
+    doc.setFontSize(10);
+    doc.setFont("helvetica", "normal");
+    doc.text("Dynamic Equity Split Report", 14, 24);
+
+    // Título del Proyecto
+    doc.setTextColor(15, 23, 42); 
+    doc.setFontSize(26);
+    doc.setFont("helvetica", "bold");
+    doc.text(projectName, 14, 50);
     
     doc.setFontSize(10);
     doc.setTextColor(100, 116, 139);
-    doc.text(`Generated on: ${new Date().toLocaleDateString()}`, 14, 42);
+    doc.setFont("helvetica", "normal");
+    doc.text(`Generated on: ${new Date().toLocaleDateString()}`, 14, 56);
 
-    // 2. CÁLCULO DE EQUITY (Usando risk_adjusted_value)
+    // 2. CÁLCULO DE EQUITY
     const totalRiskValue = contributions.reduce((sum, c) => sum + (c.risk_adjusted_value || 0), 0);
     
     const memberRows = members.map(m => {
@@ -130,37 +146,39 @@ export default function DashboardPage() {
     });
 
     // TABLA 1: EQUITY DISTRIBUTION
-    doc.setFontSize(12);
+    doc.setFontSize(14);
+    doc.setFont("helvetica", "bold");
     doc.setTextColor(15, 23, 42);
-    doc.text("Equity Distribution", 14, 55);
+    doc.text("Equity Distribution", 14, 75);
 
     autoTable(doc, {
-      startY: 60,
+      startY: 80,
       head: [['Member', 'Role', 'Risk Value', 'Equity %']],
       body: memberRows,
       theme: 'grid',
-      headStyles: { fillColor: [16, 185, 129], textColor: 255, fontStyle: 'bold' },
-      styles: { fontSize: 10, cellPadding: 3 },
-      alternateRowStyles: { fillColor: [248, 250, 252] }
+      // Color Verde para esta tabla
+      headStyles: { 
+        fillColor: [table1Header[0], table1Header[1], table1Header[2]], 
+        textColor: 255, 
+        fontStyle: 'bold',
+        halign: 'left'
+      },
+      styles: { fontSize: 11, cellPadding: 4 },
+      alternateRowStyles: { fillColor: [241, 245, 249] } // Slate 100
     });
 
-    // 3. PREPARACIÓN TABLA 2: APORTACIONES
-    const finalY = (doc as any).lastAutoTable.finalY || 60;
+    // 3. PREPARACIÓN TABLA 2
+    const finalY = (doc as any).lastAutoTable.finalY || 80;
     
-    doc.setFontSize(12);
+    doc.setFontSize(14);
     doc.setTextColor(15, 23, 42);
-    doc.text("Contribution Log", 14, finalY + 15);
+    doc.text("Contribution Log", 14, finalY + 20);
 
     const contributionRows = contributions.map(c => {
-      // A. FECHA (Prioridad: 'date' manual > 'created_at' sistema)
       const rawDate = c.date || c.created_at;
       const displayDate = rawDate ? new Date(rawDate).toLocaleDateString() : "-";
-
-      // B. DESCRIPCIÓN (Usamos 'concept' que es lo que sale en tu BD)
       const descriptionText = c.concept || "-"; 
 
-      // C. CATEGORÍA (Calculada según el multiplicador)
-      // Buscamos el multiplicador en cualquiera de los dos campos posibles
       const riskVal = c.multiplier || c.risk_multiplier || 1;
       
       let category = "Others";
@@ -170,8 +188,8 @@ export default function DashboardPage() {
       return [
         displayDate,
         c.contributor_name,
-        category,        // Columna CATEGORY (Cash, Work, Others)
-        descriptionText, // Columna DESCRIPTION (Concepto de la BD)
+        category,
+        descriptionText,
         c.amount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
         (c.risk_adjusted_value || 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })
       ];
@@ -179,12 +197,17 @@ export default function DashboardPage() {
 
     // TABLA 2: CONTRIBUTION LOG
     autoTable(doc, {
-      startY: finalY + 20,
+      startY: finalY + 25,
       head: [['Date', 'Contributor', 'Category', 'Description', 'Value', 'Risk Adj. Value']],
       body: contributionRows,
       theme: 'striped',
-      headStyles: { fillColor: [15, 23, 42], textColor: 255 },
-      styles: { fontSize: 9, cellPadding: 2 },
+      // Color Azul para esta tabla
+      headStyles: { 
+        fillColor: [table2Header[0], table2Header[1], table2Header[2]], 
+        textColor: 255,
+        fontStyle: 'bold'
+      },
+      styles: { fontSize: 9, cellPadding: 3 },
     });
 
     // 4. PIE DE PÁGINA
