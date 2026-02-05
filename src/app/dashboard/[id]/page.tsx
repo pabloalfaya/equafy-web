@@ -14,7 +14,12 @@ import type { Project, Contribution } from "@/types/database";
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 
-// Tipo flexible para manejar los diferentes multiplicadores de riesgo
+// --- SOLUCIÓN AL ERROR DE TYPESCRIPT ---
+// Extendemos el tipo Project para que acepte la nueva columna equity_model
+type ExtendedProject = Project & {
+  equity_model?: string;
+};
+
 type ExtendedContribution = Contribution & {
   date?: string;
   concept?: string;     
@@ -30,7 +35,8 @@ export default function ProjectDashboardPage() {
   const projectId = params.id as string;
   const router = useRouter();
 
-  const [project, setProject] = useState<Project | null>(null);
+  // Usamos ExtendedProject en lugar de Project
+  const [project, setProject] = useState<ExtendedProject | null>(null);
   const [contributions, setContributions] = useState<ExtendedContribution[]>([]);
   const [members, setMembers] = useState<Member[]>([]); 
   const [loading, setLoading] = useState(true);
@@ -38,13 +44,11 @@ export default function ProjectDashboardPage() {
   const [modalOpen, setModalOpen] = useState(false);
   const [memberModalOpen, setMemberModalOpen] = useState(false);
 
-  // --- CARGA DE DATOS ---
   const fetchData = async () => {
     if (!projectId) return;
     const supabase = createClient();
     setLoading(true);
 
-    // 1. Obtener datos del Proyecto (Incluye el modelo de equity)
     const { data: projectData, error: projectError } = await supabase
       .from("projects")
       .select("*")
@@ -55,9 +59,8 @@ export default function ProjectDashboardPage() {
       router.push("/dashboard"); 
       return;
     }
-    setProject(projectData);
+    setProject(projectData as ExtendedProject); // Forzamos el tipo extendido aquí
 
-    // 2. Obtener historial de contribuciones
     const { data: contributionsData } = await supabase
       .from("contributions")
       .select("*")
@@ -66,7 +69,6 @@ export default function ProjectDashboardPage() {
     
     setContributions(contributionsData as ExtendedContribution[] ?? []);
 
-    // 3. Obtener lista de miembros (socios)
     const { data: membersData } = await supabase
       .from("project_members")
       .select("id, name, role")
@@ -94,23 +96,19 @@ export default function ProjectDashboardPage() {
     setContributions((prev) => prev.filter((c) => c.id !== contribution.id));
   };
 
-  // --- EXPORTACIÓN DE DATOS ---
   const generatePDF = () => {
     if (!project) return;
     const doc = new jsPDF();
     const projectName = project.name || "Project Report";
-
     const headerBg = [15, 23, 42];      
     const table1Header = [16, 185, 129]; 
 
     doc.setFillColor(headerBg[0], headerBg[1], headerBg[2]); 
     doc.rect(0, 0, 210, 30, 'F'); 
-    
     doc.setTextColor(255, 255, 255);
     doc.setFontSize(22);
     doc.setFont("helvetica", "bold");
     doc.text("EQUILY", 14, 18);
-    
     doc.setTextColor(15, 23, 42); 
     doc.setFontSize(26);
     doc.text(projectName, 14, 50);
@@ -139,16 +137,11 @@ export default function ProjectDashboardPage() {
     fetchData(); 
   }, [projectId]);
 
-  // Agrupación para la visualización de la tarta
   const groupedContributionsForChart = contributions.reduce((acc, curr) => {
     const existingIndex = acc.findIndex((c) => c.contributor_name === curr.contributor_name);
     if (existingIndex >= 0) {
       const existing = acc[existingIndex];
-      const updated = { 
-        ...existing, 
-        amount: existing.amount + curr.amount, 
-        risk_adjusted_value: (existing.risk_adjusted_value || 0) + (curr.risk_adjusted_value || 0) 
-      };
+      const updated = { ...existing, amount: existing.amount + curr.amount, risk_adjusted_value: (existing.risk_adjusted_value || 0) + (curr.risk_adjusted_value || 0) };
       const newAcc = [...acc];
       newAcc[existingIndex] = updated;
       return newAcc;
@@ -169,7 +162,6 @@ export default function ProjectDashboardPage() {
 
   return (
     <div className="min-h-screen bg-[#F8FAFC] font-sans text-slate-900 overflow-x-hidden">
-       {/* Background Ambiental */}
        <div className="fixed inset-0 z-0 pointer-events-none">
         <div className="absolute top-0 left-0 w-[600px] h-[600px] bg-emerald-400/5 blur-[100px] rounded-full mix-blend-multiply"></div>
         <div className="absolute bottom-0 right-0 w-[600px] h-[600px] bg-blue-400/5 blur-[100px] rounded-full mix-blend-multiply"></div>
@@ -216,7 +208,6 @@ export default function ProjectDashboardPage() {
             </div>
 
             <div className="grid lg:grid-cols-3 gap-8">
-                {/* Tabla de registros */}
                 <div className="lg:col-span-2 bg-white/70 backdrop-blur-xl border border-white/60 rounded-[32px] p-8 shadow-xl flex flex-col">
                     <div className="flex items-center gap-3 mb-6">
                         <div className="p-2 bg-blue-50 rounded-lg"><TrendingUp className="h-5 w-5 text-blue-600" /></div>
@@ -227,7 +218,6 @@ export default function ProjectDashboardPage() {
                     </div>
                 </div>
 
-                {/* Gráfica de reparto */}
                 <div className="bg-white/70 backdrop-blur-xl border border-white/60 rounded-[32px] p-8 shadow-xl flex flex-col h-fit sticky top-32">
                     <div className="flex items-center gap-3 mb-8">
                         <div className="p-2 bg-emerald-50 rounded-lg"><PieChart className="h-5 w-5 text-emerald-600" /></div>
@@ -246,12 +236,11 @@ export default function ProjectDashboardPage() {
         </div>
       </main>
 
-      {/* MODALES */}
       <AddContributionModal
         isOpen={modalOpen}
         onClose={() => setModalOpen(false)}
         projectId={projectId}
-        projectConfig={project} // <--- PASAMOS EL PROYECTO AQUÍ
+        projectConfig={project} 
         onSuccess={handleContributionAdded}
         members={members}
         onAddMemberClick={() => { setModalOpen(false); setMemberModalOpen(true); }}

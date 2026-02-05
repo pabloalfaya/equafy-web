@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { X, Info } from "lucide-react";
+import { X, Info, Coins, Briefcase, Zap } from "lucide-react";
 import { createClient } from "@/utils/supabase/client";
 
 export function AddContributionModal({ isOpen, onClose, projectId, projectConfig, onSuccess, members }: any) {
@@ -24,12 +24,10 @@ export function AddContributionModal({ isOpen, onClose, projectId, projectConfig
     if (model === 'flat') {
       setMultiplier(1);
     } else if (model === 'just_split') {
-      // Reglas estándar de Just Split
       if (type === 'CASH') setMultiplier(4);
       else if (type === 'WORK' || type === 'INTANGIBLE') setMultiplier(2);
       else setMultiplier(1);
     } else if (model === 'custom') {
-      // Si es custom, usamos los valores guardados en el proyecto o 1 por defecto
       const customMult = projectConfig[`mult_${type.toLowerCase()}`] || 1;
       setMultiplier(customMult);
     }
@@ -41,7 +39,6 @@ export function AddContributionModal({ isOpen, onClose, projectId, projectConfig
 
   if (!isOpen) return null;
 
-  // Cálculo de la parte de la empresa (Puntos de riesgo)
   const riskAdjustedValue = (parseFloat(amount || "0") * multiplier).toFixed(2);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -73,7 +70,6 @@ export function AddContributionModal({ isOpen, onClose, projectId, projectConfig
     } else if (data) {
       setConcept("");
       setAmount("");
-      setMultiplier(1);
       onSuccess(data);
       onClose();
     }
@@ -82,21 +78,28 @@ export function AddContributionModal({ isOpen, onClose, projectId, projectConfig
   return (
     <div className="fixed inset-0 z-[110] flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4">
       <div className="w-full max-w-md overflow-hidden rounded-[32px] bg-white shadow-2xl animate-in fade-in zoom-in duration-200 font-sans">
+        
+        {/* Cabecera con el modelo actual */}
         <div className="border-b border-slate-100 bg-slate-50/50 px-8 py-6 flex justify-between items-center">
           <div>
             <h3 className="font-black text-slate-800 text-lg uppercase tracking-tight">Add Contribution</h3>
-            <p className="text-[10px] font-bold text-emerald-600 uppercase tracking-widest mt-1">
-              Model: {projectConfig?.equity_model?.replace('_', ' ') || 'standard'}
-            </p>
+            <div className="flex items-center gap-2 mt-1">
+              <Zap className="w-3 h-3 text-emerald-500" />
+              <p className="text-[10px] font-bold text-emerald-600 uppercase tracking-widest">
+                Model: {projectConfig?.equity_model?.replace('_', ' ') || 'standard'}
+              </p>
+            </div>
           </div>
-          <button onClick={onClose}><X className="h-5 w-5 text-slate-400 hover:text-slate-600" /></button>
+          <button onClick={onClose} className="p-2 hover:bg-slate-100 rounded-full transition-colors">
+            <X className="h-5 w-5 text-slate-400" />
+          </button>
         </div>
         
         <form onSubmit={handleSubmit} className="p-8 space-y-6">
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">Contributor</label>
-              <select value={contributorId} onChange={(e) => setContributorId(e.target.value)} className="w-full rounded-xl border border-slate-200 px-4 py-3 bg-slate-50 font-bold outline-none appearance-none">
+              <select value={contributorId} onChange={(e) => setContributorId(e.target.value)} className="w-full rounded-xl border border-slate-200 px-4 py-3 bg-slate-50 font-bold outline-none cursor-pointer">
                 {members.map((m: any) => <option key={m.id} value={m.id}>{m.name}</option>)}
               </select>
             </div>
@@ -107,42 +110,51 @@ export function AddContributionModal({ isOpen, onClose, projectId, projectConfig
           </div>
 
           <div>
-            <label className="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">Description / Concept</label>
-            <input type="text" required placeholder="e.g. Server costs or UX Design" value={concept} onChange={(e) => setConcept(e.target.value)} className="w-full rounded-xl border border-slate-200 px-4 py-3 bg-slate-50 font-bold outline-none" />
+            <label className="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">Concept</label>
+            <input type="text" required placeholder="e.g. Marketing Campaign or Coding" value={concept} onChange={(e) => setConcept(e.target.value)} className="w-full rounded-xl border border-slate-200 px-4 py-3 bg-slate-50 font-bold outline-none placeholder:text-slate-300" />
           </div>
 
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">Type</label>
-              <select value={type} onChange={(e) => setType(e.target.value)} className="w-full rounded-xl border border-slate-200 px-4 py-3 bg-slate-50 font-black text-xs uppercase outline-none appearance-none">
-                <option value="CASH">Cash</option>
-                <option value="WORK">Work / Time</option>
-                <option value="TANGIBLE">Tangible Asset</option>
-                <option value="INTANGIBLE">Intangible / IP</option>
-                <option value="OTHERS">Others</option>
-              </select>
+              <div className="relative">
+                <select value={type} onChange={(e) => setType(e.target.value)} className="w-full rounded-xl border border-slate-200 px-4 py-3 bg-slate-50 font-black text-xs uppercase outline-none cursor-pointer appearance-none">
+                  <option value="CASH">Cash</option>
+                  <option value="WORK">Work / Time</option>
+                  <option value="TANGIBLE">Tangible</option>
+                  <option value="INTANGIBLE">Intangible</option>
+                  <option value="OTHERS">Others</option>
+                </select>
+                <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
+                  {type === 'CASH' ? <Coins className="w-4 h-4" /> : <Briefcase className="w-4 h-4" />}
+                </div>
+              </div>
             </div>
             <div>
-              <label className="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">Value (Units)</label>
+              <label className="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">Amount</label>
               <input type="number" required placeholder="0.00" value={amount} onChange={(e) => setAmount(e.target.value)} className="w-full rounded-xl border border-slate-200 px-4 py-3 bg-slate-50 font-black outline-none" />
             </div>
           </div>
 
-          <div className="rounded-2xl bg-emerald-500/10 p-5 border border-emerald-500/20">
-            <div className="flex items-center justify-between mb-2">
-                <span className="text-[10px] font-black uppercase tracking-widest text-emerald-700 flex items-center gap-1">
-                    Risk Multiplier <Info className="w-3 h-3" />
-                </span>
-                <span className="font-black text-emerald-600 text-sm">x{multiplier}</span>
+          {/* Resumen del Valor de Riesgo */}
+          <div className="rounded-2xl bg-slate-900 p-6 text-white shadow-xl shadow-slate-200">
+            <div className="flex items-center justify-between mb-3 opacity-60">
+              <span className="text-[10px] font-black uppercase tracking-[0.2em] flex items-center gap-2">
+                Multiplier <Info className="w-3 h-3" />
+              </span>
+              <span className="font-black text-sm">x{multiplier}</span>
             </div>
             <div className="flex items-center justify-between">
-                <span className="text-[10px] font-black uppercase tracking-widest text-emerald-700">Calculated Points</span>
-                <span className="text-2xl font-black text-emerald-600">{Number(riskAdjustedValue).toLocaleString()}</span>
+              <span className="text-[10px] font-black uppercase tracking-[0.2em] opacity-60">Equity Points</span>
+              <div className="text-right">
+                <span className="text-3xl font-black text-emerald-400">{Number(riskAdjustedValue).toLocaleString()}</span>
+                <p className="text-[8px] font-bold text-slate-400 mt-1 uppercase">Adjusted for risk</p>
+              </div>
             </div>
           </div>
 
-          <button type="submit" disabled={loading} className="w-full rounded-xl bg-slate-900 py-4 text-sm font-black text-white hover:bg-slate-800 transition-all shadow-xl uppercase tracking-widest active:scale-95">
-            {loading ? "Processing..." : "Log Contribution"}
+          <button type="submit" disabled={loading} className="w-full rounded-2xl bg-emerald-500 py-5 text-sm font-black text-white hover:bg-emerald-600 transition-all shadow-lg shadow-emerald-100 uppercase tracking-widest active:scale-[0.98]">
+            {loading ? "Saving to ledger..." : "Confirm Contribution"}
           </button>
         </form>
       </div>
