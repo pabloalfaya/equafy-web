@@ -71,11 +71,7 @@ export function CreateProjectModal() {
       </button>
 
       {isOpen && (
-        /* CAMBIO ÚNICO: 
-           He cambiado 'bg-slate-900/40' por 'bg-white/90'.
-           El resto del código es idéntico al que me has pasado.
-        */
-        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-white/90 backdrop-blur-md p-4 overflow-y-auto">
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/40 backdrop-blur-md p-4 overflow-y-auto">
           {/* CONTENEDOR DEL MODAL */}
           <div className="relative w-full max-w-6xl bg-[#F8FAFC] border border-white rounded-[40px] shadow-[0_40px_100px_-20px_rgba(0,0,0,0.15)] flex flex-col animate-in fade-in zoom-in duration-300 overflow-hidden">
             
