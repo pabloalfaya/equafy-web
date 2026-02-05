@@ -143,16 +143,22 @@ export default function DashboardPage() {
     doc.setTextColor(15, 23, 42);
     doc.text("Contribution Log", 14, finalY + 15);
 
-    const contributionRows = contributions.map(c => [
-      // CORRECCIÓN 1: Aseguramos que created_at no sea undefined
-      new Date(c.created_at || new Date().toISOString()).toLocaleDateString(),
-      c.contributor_name,
-      c.type,
-      // CORRECCIÓN 2: Forzamos el tipo 'any' para leer 'description' aunque TS no lo vea
-      (c as any).description || "-",
-      c.amount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
-      (c.risk_adjusted_value || 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })
-    ]);
+    const contributionRows = contributions.map(c => {
+      // LOGICA CORREGIDA PARA LA FECHA:
+      // 1. Intentamos leer c.date (la fecha seleccionada manualmente)
+      // 2. Si no existe, usamos c.created_at (fecha de sistema)
+      const rawDate = (c as any).date || c.created_at;
+      const displayDate = rawDate ? new Date(rawDate).toLocaleDateString() : "-";
+
+      return [
+        displayDate,
+        c.contributor_name,
+        c.type,
+        (c as any).description || "-",
+        c.amount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
+        (c.risk_adjusted_value || 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+      ];
+    });
 
     autoTable(doc, {
       startY: finalY + 20,
@@ -258,6 +264,7 @@ export default function DashboardPage() {
                   <p className="mt-2 text-slate-500 font-medium">Risk-adjusted equity tracking.</p>
                 </div>
                 <div className="flex gap-3">
+                  {/* BOTÓN DE PDF */}
                   <button 
                     onClick={generatePDF}
                     className="inline-flex items-center gap-2 rounded-xl bg-white border border-slate-200 px-5 py-3 font-bold text-slate-700 shadow-sm hover:bg-slate-50 transition-all hover:-translate-y-0.5"
