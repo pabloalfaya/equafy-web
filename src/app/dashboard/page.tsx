@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { Plus, TrendingUp, LayoutDashboard, PieChart, Users, FolderPlus } from "lucide-react";
+import { Plus, TrendingUp, LayoutDashboard, PieChart, Users, FolderPlus, Download } from "lucide-react";
 import { createClient } from "@/utils/supabase/client";
 import { EquityPieChart } from "@/components/EquityPieChart";
 import { ContributionsTable } from "@/components/ContributionsTable";
@@ -11,7 +11,12 @@ import { AddMemberModal } from "@/components/AddMemberModal";
 import { CreateProjectModal } from "@/components/CreateProjectModal";
 import type { Project, Contribution } from "@/types/database";
 
-type Member = { id: string; name: string };
+// Importaciones para el PDF
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
+
+// Actualizamos el tipo para incluir el rol
+type Member = { id: string; name: string; role?: string };
 
 export default function DashboardPage() {
   const [projects, setProjects] = useState<Project[]>([]);
@@ -52,9 +57,10 @@ export default function DashboardPage() {
       
       setContributions(contributionsData ?? []);
 
+      // AHORA TRAEMOS TAMBIÉN EL ROL
       const { data: membersData } = await supabase
         .from("project_members")
-        .select("id, name")
+        .select("id, name, role")
         .eq("project_id", project.id)
         .order("created_at", { ascending: true });
 
@@ -67,7 +73,8 @@ export default function DashboardPage() {
   const refreshMembers = async () => {
     if (!selectedProject) return;
     const supabase = createClient();
-    const { data } = await supabase.from("project_members").select("id, name").eq("project_id", selectedProject.id);
+    // AHORA TRAEMOS TAMBIÉN EL ROL AL REFRESCAR
+    const { data } = await supabase.from("project_members").select("id, name, role").eq("project_id", selectedProject.id);
     setMembers(data ?? []);
   };
 
@@ -79,6 +86,96 @@ export default function DashboardPage() {
     setContributions((prev) => prev.filter((c) => c.id !== contribution.id));
   };
 
+  // --- FUNCIÓN PARA GENERAR EL PDF ---
+  const generatePDF = () => {
+    const doc = new jsPDF();
+    const projectName = selectedProject?.name || "Project Report";
+
+    // 1. CABECERA
+    doc.setFillColor(16, 185, 129); // Emerald 500
+    doc.rect(0, 0, 210, 20, 'F'); // Barra superior verde
+    
+    doc.setTextColor(255, 255, 255);
+    doc.setFontSize(16);
+    doc.setFont("helvetica", "bold");
+    doc.text("EQUILY REPORT", 14, 13);
+
+    doc.setTextColor(15, 23, 42); // Slate 900
+    doc.setFontSize(22);
+    doc.text(projectName, 14, 35);
+    
+    doc.setFontSize(10);
+    doc.setTextColor(100, 116, 139); // Slate 500
+    doc.text(`Generated on: ${new Date().toLocaleDateString()}`, 14, 42);
+
+    // 2. CÁLCULO DE EQUITY PARA LA TABLA
+    const totalRiskValue = contributions.reduce((sum, c) => sum + (c.risk_adjusted_value || 0), 0);
+    
+    const memberRows = members.map(m => {
+        const memberContributions = contributions.filter(c => c.contributor_name === m.name); // Usamos nombre ya que contributions guarda nombre
+        const memberTotal = memberContributions.reduce((sum, c) => sum + (c.risk_adjusted_value || 0), 0);
+        const percentage = totalRiskValue > 0 ? ((memberTotal / totalRiskValue) * 100).toFixed(2) : "0.00";
+        
+        return [
+            m.name,
+            m.role || "Member",
+            memberTotal.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
+            `${percentage}%`
+        ];
+    });
+
+    // 3. TABLA DE MIEMBROS (RESUMEN)
+    doc.setFontSize(12);
+    doc.setTextColor(15, 23, 42);
+    doc.text("Equity Distribution", 14, 55);
+
+    autoTable(doc, {
+      startY: 60,
+      head: [['Member', 'Role', 'Risk Value', 'Equity %']],
+      body: memberRows,
+      theme: 'grid',
+      headStyles: { fillColor: [16, 185, 129], textColor: 255, fontStyle: 'bold' }, // Emerald header
+      styles: { fontSize: 10, cellPadding: 3 },
+      alternateRowStyles: { fillColor: [248, 250, 252] } // Slate 50
+    });
+
+    // 4. TABLA DE APORTACIONES (DETALLE)
+    const finalY = (doc as any).lastAutoTable.finalY || 60;
+    
+    doc.setFontSize(12);
+    doc.setTextColor(15, 23, 42);
+    doc.text("Contribution Log", 14, finalY + 15);
+
+    const contributionRows = contributions.map(c => [
+      new Date(c.created_at).toLocaleDateString(),
+      c.contributor_name,
+      c.type,
+      c.description,
+      c.amount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
+      (c.risk_adjusted_value || 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+    ]);
+
+    autoTable(doc, {
+      startY: finalY + 20,
+      head: [['Date', 'Contributor', 'Type', 'Description', 'Value', 'Risk Adj. Value']],
+      body: contributionRows,
+      theme: 'striped',
+      headStyles: { fillColor: [15, 23, 42], textColor: 255 }, // Slate 900 header
+      styles: { fontSize: 9, cellPadding: 2 },
+    });
+
+    // 5. PIE DE PÁGINA
+    const pageCount = (doc as any).internal.getNumberOfPages();
+    for(let i = 1; i <= pageCount; i++) {
+        doc.setPage(i);
+        doc.setFontSize(8);
+        doc.setTextColor(150);
+        doc.text(`Page ${i} of ${pageCount} - Generated by Equily`, 105, 290, { align: 'center' });
+    }
+
+    doc.save(`${projectName.replace(/\s+/g, '_')}_Report.pdf`);
+  };
+
   useEffect(() => {
     fetchData();
   }, []);
@@ -87,7 +184,8 @@ export default function DashboardPage() {
     if (!selectedProject) return;
     const supabase = createClient();
     supabase.from("contributions").select("*").eq("project_id", selectedProject.id).then(({ data }) => setContributions(data ?? []));
-    supabase.from("project_members").select("id, name").eq("project_id", selectedProject.id).then(({ data }) => setMembers(data ?? []));
+    // Actualizado select aquí también
+    supabase.from("project_members").select("id, name, role").eq("project_id", selectedProject.id).then(({ data }) => setMembers(data ?? []));
   }, [selectedProject?.id]);
 
   const groupedContributionsForChart = contributions.reduce((acc, curr) => {
@@ -133,7 +231,6 @@ export default function DashboardPage() {
                   </select>
               </div>
             )}
-            {/* ELIMINADO: Avatar JD */}
           </div>
         </div>
       </nav>
@@ -163,6 +260,14 @@ export default function DashboardPage() {
                   <p className="mt-2 text-slate-500 font-medium">Risk-adjusted equity tracking.</p>
                 </div>
                 <div className="flex gap-3">
+                  {/* BOTÓN NUEVO: EXPORT PDF */}
+                  <button 
+                    onClick={generatePDF}
+                    className="inline-flex items-center gap-2 rounded-xl bg-white border border-slate-200 px-5 py-3 font-bold text-slate-700 shadow-sm hover:bg-slate-50 transition-all hover:-translate-y-0.5"
+                  >
+                    <Download className="h-5 w-5" /> Export PDF
+                  </button>
+
                   <button onClick={() => setMemberModalOpen(true)} className="inline-flex items-center gap-2 rounded-xl bg-white border border-slate-200 px-5 py-3 font-bold text-slate-700 shadow-sm hover:bg-slate-50 transition-all hover:-translate-y-0.5">
                     <Users className="h-5 w-5" /> Team
                   </button>

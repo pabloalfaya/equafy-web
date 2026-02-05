@@ -1,4 +1,4 @@
-"use client"; // Añadido para permitir que los interruptores funcionen
+"use client"; 
 
 import { useState } from "react";
 import Link from "next/link";
@@ -46,13 +46,18 @@ export default function LandingPage() {
             </div>
           </div>
           <div className="flex items-center gap-4">
+            {/* Log in se mantiene igual */}
             <Link href="/login" className="hidden md:block text-sm font-bold text-slate-600 hover:text-slate-900 transition-colors">
               Log in
             </Link>
-            <Link href="/login" className="hidden md:block text-sm font-bold text-slate-600 hover:text-emerald-600 transition-colors">
+            
+            {/* Sign Up -> AHORA ENVÍA LA SEÑAL view=signup */}
+            <Link href="/login?view=signup" className="hidden md:block text-sm font-bold text-slate-600 hover:text-emerald-600 transition-colors">
               Sign Up
             </Link>
-            <Link href="/login" className="relative group">
+            
+            {/* Start Free -> AHORA ENVÍA LA SEÑAL view=signup */}
+            <Link href="/login?view=signup" className="relative group">
                <div className="absolute -inset-0.5 bg-gradient-to-r from-emerald-500 to-emerald-400 rounded-full blur opacity-60 group-hover:opacity-100 transition duration-200"></div>
                <div className="relative flex items-center bg-slate-900 rounded-full px-6 py-2.5 leading-none">
                  <span className="text-sm font-bold text-white group-hover:text-emerald-50 transition duration-200">Start Free</span>
@@ -75,7 +80,8 @@ export default function LandingPage() {
             <span className="block mt-2 text-slate-400 text-base">Trustless. Dynamic. Fair.</span>
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Link href="/login" className="h-14 px-8 rounded-2xl bg-slate-900 text-white font-bold text-lg flex items-center justify-center shadow-xl shadow-slate-200 hover:bg-slate-800 hover:-translate-y-1 transition-all duration-300">
+            {/* Start Splitting Free -> AHORA ENVÍA LA SEÑAL view=signup */}
+            <Link href="/login?view=signup" className="h-14 px-8 rounded-2xl bg-slate-900 text-white font-bold text-lg flex items-center justify-center shadow-xl shadow-slate-200 hover:bg-slate-800 hover:-translate-y-1 transition-all duration-300">
               Start Splitting Free
             </Link>
             <button className="h-14 px-8 rounded-2xl bg-white border border-slate-200 text-slate-700 font-bold text-lg flex items-center justify-center gap-2 hover:bg-slate-50 hover:border-slate-300 transition-all duration-300 group">
@@ -323,7 +329,6 @@ export default function LandingPage() {
               <h4 className="font-bold text-slate-900 mb-6 text-sm">Product</h4>
               <ul className="space-y-4 text-sm font-medium text-slate-500">
                 <li><Link href="#" className="hover:text-emerald-600 transition-colors">Calculator</Link></li>
-                {/* ENLACE DE PRICING AÑADIDO AL PIE DE PÁGINA */}
                 <li><Link href="/pricing" className="hover:text-emerald-600 transition-colors">Pricing</Link></li>
                 <li><Link href="/models" className="hover:text-emerald-600 transition-colors">Equity Models</Link></li>
               </ul>
