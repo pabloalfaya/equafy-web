@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { createClient } from "@/utils/supabase/client";
-import { X, Loader2, ShieldCheck, Scale, Sliders } from "lucide-react";
+import { X, Loader2, ShieldCheck, Scale, Sliders, ArrowRight, ArrowLeft } from "lucide-react";
 import type { Project } from "@/types/database";
 
 interface CreateProjectModalProps {
@@ -12,6 +12,7 @@ interface CreateProjectModalProps {
 }
 
 export function CreateProjectModal({ isOpen, onClose, onProjectCreated }: CreateProjectModalProps) {
+  const [step, setStep] = useState(1); // Paso 1: Nombre, Paso 2: Modelo
   const [name, setName] = useState("");
   const [model, setModel] = useState("just_split");
   const [loading, setLoading] = useState(false);
@@ -19,14 +20,16 @@ export function CreateProjectModal({ isOpen, onClose, onProjectCreated }: Create
 
   if (!isOpen) return null;
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleNext = (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
+    if (name.trim()) setStep(2);
+  };
 
+  const handleSubmit = async () => {
+    setLoading(true);
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) { setLoading(false); return; }
 
-    // 1. Crear Proyecto con el modelo elegido
     const { data: project, error } = await supabase
       .from("projects")
       .insert([{ 
@@ -34,16 +37,9 @@ export function CreateProjectModal({ isOpen, onClose, onProjectCreated }: Create
         created_by: user.id,
         equity_model: model 
       }])
-      .select()
-      .single();
+      .select().single();
 
-    if (error) {
-      alert("Error: " + error.message);
-      setLoading(false);
-      return;
-    }
-
-    if (project) {
+    if (!error && project) {
         await supabase.from("project_members").insert({
             project_id: project.id,
             user_id: user.id,
@@ -52,66 +48,101 @@ export function CreateProjectModal({ isOpen, onClose, onProjectCreated }: Create
             role: 'owner',
             status: 'active'
         });
-        
         onProjectCreated(project);
+        // Reset para la próxima vez
         setName("");
+        setStep(1);
     }
     setLoading(false);
   };
 
   const models = [
-    { id: 'just_split', name: 'Just Split', icon: ShieldCheck, desc: 'Risk-adjusted (x4 Cash, x2 Work).', color: 'text-emerald-600 bg-emerald-50' },
-    { id: 'flat', name: 'Flat Model', icon: Scale, desc: 'Linear split (1 unit = 1 share).', color: 'text-purple-600 bg-purple-50' },
-    { id: 'custom', name: 'Custom', icon: Sliders, desc: 'Define your own multipliers.', color: 'text-blue-600 bg-blue-50' }
+    { 
+        id: 'just_split', 
+        name: 'Just Split', 
+        icon: ShieldCheck, 
+        desc: 'The Fair Standard',
+        details: 'Multiplies Cash x4 and Work x2 to reward real financial risk.',
+        color: 'text-emerald-600 bg-emerald-50 border-emerald-100' 
+    },
+    { 
+        id: 'flat', 
+        name: 'Flat Model', 
+        icon: Scale, 
+        desc: 'Absolute Equality',
+        details: '1 unit of value = 1 unit of equity. No risk multipliers applied.',
+        color: 'text-purple-600 bg-purple-50 border-purple-100' 
+    },
+    { 
+        id: 'custom', 
+        name: 'Custom', 
+        icon: Sliders, 
+        desc: 'Your Rules',
+        details: 'Set your own multipliers for different asset types later.',
+        color: 'text-blue-600 bg-blue-50 border-blue-100' 
+    }
   ];
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 backdrop-blur-sm p-4">
       <div className="absolute inset-0" onClick={onClose}></div>
-      <div className="bg-white rounded-[32px] w-full max-w-lg p-8 shadow-2xl relative z-10 animate-in fade-in zoom-in duration-200">
-        <button onClick={onClose} className="absolute top-6 right-6 text-slate-400 hover:text-slate-600"><X className="w-5 h-5" /></button>
+      <div className="bg-white rounded-[40px] w-full max-w-xl p-10 shadow-2xl relative z-10 animate-in fade-in zoom-in duration-300">
         
-        <h2 className="text-2xl font-black text-slate-900 mb-1">New Project</h2>
-        <p className="text-sm text-slate-500 mb-8">Setup your **equity** rules from the start.</p>
+        <button onClick={onClose} className="absolute top-8 right-8 text-slate-400 hover:text-slate-600"><X className="w-6 h-6" /></button>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
-          <div>
-            <label className="block text-xs font-black uppercase text-slate-400 mb-2 tracking-widest">Company Name</label>
+        {step === 1 ? (
+          <form onSubmit={handleNext} className="space-y-8">
+            <div>
+              <span className="text-[10px] font-black uppercase tracking-[0.3em] text-emerald-600 mb-4 block">Step 01/02</span>
+              <h2 className="text-3xl font-black text-slate-900 mb-2">Name your project</h2>
+              <p className="text-slate-500 font-medium">Give a name to your new venture to start tracking.</p>
+            </div>
+            
             <input 
               autoFocus type="text" value={name} onChange={(e) => setName(e.target.value)}
-              placeholder="e.g. My New Venture"
-              className="w-full px-5 py-4 rounded-2xl border border-slate-200 focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 outline-none transition-all font-bold text-lg"
+              placeholder="e.g. Apollo Dynamics"
+              className="w-full px-8 py-6 rounded-2xl border-2 border-slate-100 focus:border-emerald-500 focus:ring-0 outline-none transition-all font-bold text-2xl placeholder:text-slate-200"
               required
             />
-          </div>
 
-          <div>
-            <label className="block text-xs font-black uppercase text-slate-400 mb-3 tracking-widest">Select Equity Model</label>
-            <div className="grid gap-3">
+            <button type="submit" className="w-full flex items-center justify-center gap-3 bg-slate-900 text-white py-5 rounded-2xl font-black hover:bg-slate-800 transition-all shadow-xl group">
+                Continue to Models <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+            </button>
+          </form>
+        ) : (
+          <div className="space-y-8">
+            <div>
+              <button onClick={() => setStep(1)} className="flex items-center gap-2 text-xs font-bold text-slate-400 hover:text-slate-600 mb-4 transition-colors">
+                <ArrowLeft className="w-3 h-3" /> Back to name
+              </button>
+              <h2 className="text-3xl font-black text-slate-900 mb-1">Choose your DNA</h2>
+              <p className="text-slate-500 font-medium italic">How should we value the risk of each founder?</p>
+            </div>
+
+            <div className="grid gap-4">
               {models.map((m) => (
                 <button
-                  key={m.id} type="button" onClick={() => setModel(m.id)}
-                  className={`flex items-center gap-4 p-4 rounded-2xl border-2 transition-all text-left ${model === m.id ? 'border-emerald-500 bg-emerald-50/30' : 'border-slate-100 hover:border-slate-200'}`}
+                  key={m.id} onClick={() => setModel(m.id)}
+                  className={`flex items-start gap-5 p-6 rounded-[24px] border-2 text-left transition-all ${model === m.id ? 'border-emerald-500 bg-emerald-50/30' : 'border-slate-50 hover:border-slate-200 bg-slate-50/50'}`}
                 >
-                  <div className={`p-3 rounded-xl ${m.color}`}><m.icon className="w-5 h-5" /></div>
+                  <div className={`p-4 rounded-2xl shrink-0 ${m.color}`}><m.icon className="w-6 h-6" /></div>
                   <div className="flex-1">
-                    <p className="font-bold text-slate-900">{m.name}</p>
-                    <p className="text-xs text-slate-500 font-medium">{m.desc}</p>
-                  </div>
-                  <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${model === m.id ? 'border-emerald-500 bg-emerald-500' : 'border-slate-200'}`}>
-                    {model === m.id && <div className="w-2 h-2 bg-white rounded-full" />}
+                    <div className="flex justify-between items-center mb-1">
+                        <p className="font-black text-slate-900 text-lg">{m.name}</p>
+                        {model === m.id && <div className="w-5 h-5 bg-emerald-500 rounded-full flex items-center justify-center"><div className="w-2 h-2 bg-white rounded-full"></div></div>}
+                    </div>
+                    <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">{m.desc}</p>
+                    <p className="text-sm text-slate-500 leading-relaxed font-medium">{m.details}</p>
                   </div>
                 </button>
               ))}
             </div>
-          </div>
-          
-          <div className="flex gap-4 pt-4">
-            <button type="submit" disabled={loading} className="flex-1 px-6 py-4 rounded-2xl bg-slate-900 text-white font-black hover:bg-slate-800 transition-all flex items-center justify-center gap-2 shadow-xl shadow-slate-900/20 active:scale-[0.98]">
-                {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : "Launch Project"}
+
+            <button onClick={handleSubmit} disabled={loading} className="w-full bg-emerald-600 text-white py-5 rounded-2xl font-black hover:bg-emerald-700 transition-all flex items-center justify-center gap-2 shadow-xl shadow-emerald-200 active:scale-95">
+                {loading ? <Loader2 className="w-6 h-6 animate-spin" /> : "Launch Project"}
             </button>
           </div>
-        </form>
+        )}
       </div>
     </div>
   );

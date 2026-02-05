@@ -1,30 +1,39 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { X } from "lucide-react";
+import { X, Info } from "lucide-react";
 import { createClient } from "@/utils/supabase/client";
-import { Project } from "@/types/database";
 
-export function AddContributionModal({ isOpen, onClose, projectId, onSuccess, members, onAddMemberClick }: any) {
+export function AddContributionModal({ isOpen, onClose, projectId, projectConfig, onSuccess, members }: any) {
   const [contributorId, setContributorId] = useState("");
   const [concept, setConcept] = useState("");
   const [type, setType] = useState("CASH");
   const [amount, setAmount] = useState("");
   const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
-  const [project, setProject] = useState<Project | null>(null);
+  const [multiplier, setMultiplier] = useState(1);
   const [loading, setLoading] = useState(false);
 
   const supabase = createClient();
 
+  // LÓGICA DE MULTIPLICADORES INTELIGENTES
   useEffect(() => {
-    async function loadProjectConfig() {
-      if (projectId && isOpen) {
-        const { data } = await supabase.from("projects").select("*").eq("id", projectId).single();
-        if (data) setProject(data);
-      }
+    if (!projectConfig) return;
+
+    const model = projectConfig.equity_model;
+
+    if (model === 'flat') {
+      setMultiplier(1);
+    } else if (model === 'just_split') {
+      // Reglas estándar de Just Split
+      if (type === 'CASH') setMultiplier(4);
+      else if (type === 'WORK' || type === 'INTANGIBLE') setMultiplier(2);
+      else setMultiplier(1);
+    } else if (model === 'custom') {
+      // Si es custom, usamos los valores guardados en el proyecto o 1 por defecto
+      const customMult = projectConfig[`mult_${type.toLowerCase()}`] || 1;
+      setMultiplier(customMult);
     }
-    loadProjectConfig();
-  }, [projectId, isOpen, supabase]);
+  }, [type, projectConfig, isOpen]);
 
   useEffect(() => {
     if (members.length > 0 && !contributorId) setContributorId(members[0].id);
@@ -32,8 +41,8 @@ export function AddContributionModal({ isOpen, onClose, projectId, onSuccess, me
 
   if (!isOpen) return null;
 
-  const currentMultiplier = project ? (project as any)[`mult_${type.toLowerCase()}`] || 1 : 1;
-  const riskAdjustedValue = (parseFloat(amount || "0") * (Number(currentMultiplier) || 1)).toFixed(2);
+  // Cálculo de la parte de la empresa (Puntos de riesgo)
+  const riskAdjustedValue = (parseFloat(amount || "0") * multiplier).toFixed(2);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -50,7 +59,7 @@ export function AddContributionModal({ isOpen, onClose, projectId, onSuccess, me
         concept: concept,
         type: type,
         amount: parseFloat(amount),
-        multiplier: currentMultiplier,
+        multiplier: multiplier,
         risk_adjusted_value: parseFloat(riskAdjustedValue),
         date: date
       }])
@@ -64,7 +73,7 @@ export function AddContributionModal({ isOpen, onClose, projectId, onSuccess, me
     } else if (data) {
       setConcept("");
       setAmount("");
-      setDate(new Date().toISOString().split('T')[0]);
+      setMultiplier(1);
       onSuccess(data);
       onClose();
     }
@@ -74,7 +83,12 @@ export function AddContributionModal({ isOpen, onClose, projectId, onSuccess, me
     <div className="fixed inset-0 z-[110] flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4">
       <div className="w-full max-w-md overflow-hidden rounded-[32px] bg-white shadow-2xl animate-in fade-in zoom-in duration-200 font-sans">
         <div className="border-b border-slate-100 bg-slate-50/50 px-8 py-6 flex justify-between items-center">
-          <h3 className="font-black text-slate-800 text-lg uppercase tracking-tight">Add Contribution</h3>
+          <div>
+            <h3 className="font-black text-slate-800 text-lg uppercase tracking-tight">Add Contribution</h3>
+            <p className="text-[10px] font-bold text-emerald-600 uppercase tracking-widest mt-1">
+              Model: {projectConfig?.equity_model?.replace('_', ' ') || 'standard'}
+            </p>
+          </div>
           <button onClick={onClose}><X className="h-5 w-5 text-slate-400 hover:text-slate-600" /></button>
         </div>
         
@@ -82,53 +96,53 @@ export function AddContributionModal({ isOpen, onClose, projectId, onSuccess, me
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">Contributor</label>
-              <select value={contributorId} onChange={(e) => setContributorId(e.target.value)} className="w-full rounded-xl border border-slate-200 px-4 py-3 bg-slate-50 font-bold outline-none">
+              <select value={contributorId} onChange={(e) => setContributorId(e.target.value)} className="w-full rounded-xl border border-slate-200 px-4 py-3 bg-slate-50 font-bold outline-none appearance-none">
                 {members.map((m: any) => <option key={m.id} value={m.id}>{m.name}</option>)}
               </select>
             </div>
             <div>
               <label className="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">Date</label>
-              <input 
-                type="date" 
-                required
-                value={date} 
-                onChange={(e) => setDate(e.target.value)} 
-                className="w-full rounded-xl border border-slate-200 px-4 py-3 bg-slate-50 font-bold outline-none text-slate-600" 
-              />
+              <input type="date" required value={date} onChange={(e) => setDate(e.target.value)} className="w-full rounded-xl border border-slate-200 px-4 py-3 bg-slate-50 font-bold outline-none text-slate-600" />
             </div>
           </div>
 
           <div>
             <label className="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">Description / Concept</label>
-            {/* FIX: Quitado 'italic' y añadido 'font-bold' para consistencia */}
-            <input type="text" required placeholder="e.g. Server costs" value={concept} onChange={(e) => setConcept(e.target.value)} className="w-full rounded-xl border border-slate-200 px-4 py-3 bg-slate-50 font-bold outline-none" />
+            <input type="text" required placeholder="e.g. Server costs or UX Design" value={concept} onChange={(e) => setConcept(e.target.value)} className="w-full rounded-xl border border-slate-200 px-4 py-3 bg-slate-50 font-bold outline-none" />
           </div>
 
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">Type</label>
-              <select value={type} onChange={(e) => setType(e.target.value)} className="w-full rounded-xl border border-slate-200 px-4 py-3 bg-slate-50 font-black text-xs uppercase outline-none">
-                <option value="CASH">Cash (x{project?.mult_cash || 4})</option>
-                <option value="WORK">Work (x{project?.mult_work || 2})</option>
-                <option value="TANGIBLE">Tangible (x{project?.mult_tangible || 1})</option>
-                <option value="INTANGIBLE">Intangible (x{project?.mult_intangible || 2})</option>
-                <option value="OTHERS">Others (x{project?.mult_others || 1})</option>
+              <select value={type} onChange={(e) => setType(e.target.value)} className="w-full rounded-xl border border-slate-200 px-4 py-3 bg-slate-50 font-black text-xs uppercase outline-none appearance-none">
+                <option value="CASH">Cash</option>
+                <option value="WORK">Work / Time</option>
+                <option value="TANGIBLE">Tangible Asset</option>
+                <option value="INTANGIBLE">Intangible / IP</option>
+                <option value="OTHERS">Others</option>
               </select>
             </div>
             <div>
-              {/* FIX: Cambiado '€' por 'Monetary Units' */}
-              <label className="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">Amount (Monetary Units)</label>
+              <label className="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">Value (Units)</label>
               <input type="number" required placeholder="0.00" value={amount} onChange={(e) => setAmount(e.target.value)} className="w-full rounded-xl border border-slate-200 px-4 py-3 bg-slate-50 font-black outline-none" />
             </div>
           </div>
 
-          <div className="rounded-2xl bg-emerald-500/10 p-5 border border-emerald-500/20 flex items-center justify-between">
-            <span className="text-[10px] font-black uppercase tracking-widest text-emerald-700">Value in Pts</span>
-            <span className="text-2xl font-black text-emerald-600">{Number(riskAdjustedValue).toLocaleString()}</span>
+          <div className="rounded-2xl bg-emerald-500/10 p-5 border border-emerald-500/20">
+            <div className="flex items-center justify-between mb-2">
+                <span className="text-[10px] font-black uppercase tracking-widest text-emerald-700 flex items-center gap-1">
+                    Risk Multiplier <Info className="w-3 h-3" />
+                </span>
+                <span className="font-black text-emerald-600 text-sm">x{multiplier}</span>
+            </div>
+            <div className="flex items-center justify-between">
+                <span className="text-[10px] font-black uppercase tracking-widest text-emerald-700">Calculated Points</span>
+                <span className="text-2xl font-black text-emerald-600">{Number(riskAdjustedValue).toLocaleString()}</span>
+            </div>
           </div>
 
-          <button type="submit" disabled={loading} className="w-full rounded-xl bg-slate-900 py-4 text-sm font-black text-white hover:bg-slate-800 transition-all shadow-xl uppercase tracking-widest">
-            {loading ? "Saving..." : "Add Contribution"}
+          <button type="submit" disabled={loading} className="w-full rounded-xl bg-slate-900 py-4 text-sm font-black text-white hover:bg-slate-800 transition-all shadow-xl uppercase tracking-widest active:scale-95">
+            {loading ? "Processing..." : "Log Contribution"}
           </button>
         </form>
       </div>
