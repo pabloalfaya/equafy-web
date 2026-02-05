@@ -1,20 +1,33 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useState, useEffect, Suspense } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { createClient } from "@/utils/supabase/client";
 import { Loader2, Lock, Mail, ArrowLeft } from "lucide-react";
 import Link from "next/link";
 
-export default function LoginPage() {
+// Creamos un componente interno para manejar la lógica de parámetros de URL
+function LoginForm() {
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const supabase = createClient();
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
-  const [isSignUp, setIsSignUp] = useState(false);
-  const [message, setMessage] = useState<{ text: string; type: 'error' | 'success' } | null>(null);
   
-  const router = useRouter();
-  const supabase = createClient();
+  // Estado inicial en false (Login por defecto)
+  const [isSignUp, setIsSignUp] = useState(false);
+  
+  const [message, setMessage] = useState<{ text: string; type: 'error' | 'success' } | null>(null);
+
+  // --- NUEVO: Detectar si venimos de un botón de "Sign Up" ---
+  useEffect(() => {
+    // Si la URL contiene ?view=signup, activamos el modo registro
+    if (searchParams.get("view") === "signup") {
+      setIsSignUp(true);
+    }
+  }, [searchParams]);
 
   const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -28,7 +41,6 @@ export default function LoginPage() {
           email,
           password,
           options: { 
-            // Esto asegura que tras confirmar email vuelvan a la web (si tienes confirmación activada)
             emailRedirectTo: `${window.location.origin}/auth/callback` 
           },
         });
@@ -42,7 +54,6 @@ export default function LoginPage() {
         });
         if (error) throw error;
         
-        // Si todo va bien, vamos al dashboard
         router.push("/dashboard");
         router.refresh();
       }
@@ -57,7 +68,6 @@ export default function LoginPage() {
     <div className="flex min-h-screen items-center justify-center bg-[#F8FAFC] px-4 font-sans">
       <div className="w-full max-w-md space-y-8 rounded-3xl bg-white p-10 shadow-xl border border-slate-100">
         
-        {/* Botón para volver atrás */}
         <Link href="/" className="inline-flex items-center text-sm text-slate-400 hover:text-slate-600 mb-4 transition-colors">
           <ArrowLeft className="mr-1 h-4 w-4" /> Back to Home
         </Link>
@@ -72,7 +82,6 @@ export default function LoginPage() {
           </p>
         </div>
 
-        {/* Mensajes de error o éxito */}
         {message && (
           <div className={`p-4 rounded-xl text-sm font-bold flex items-center justify-center ${message.type === 'error' ? 'bg-red-50 text-red-600 border border-red-100' : 'bg-emerald-50 text-emerald-600 border border-emerald-100'}`}>
             {message.text}
@@ -131,5 +140,14 @@ export default function LoginPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+// Exportamos el componente envuelto en Suspense
+export default function LoginPage() {
+  return (
+    <Suspense fallback={<div className="flex min-h-screen items-center justify-center bg-[#F8FAFC]"></div>}>
+      <LoginForm />
+    </Suspense>
   );
 }
