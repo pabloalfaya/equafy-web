@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { createClient } from "@/utils/supabase/client";
-import { X, Loader2, ShieldCheck, Scale, Sliders, ArrowRight, ArrowLeft } from "lucide-react";
+import { X, Loader2, ShieldCheck, Scale, Settings, ArrowRight, ArrowLeft, Rocket } from "lucide-react";
 import type { Project } from "@/types/database";
 
 interface CreateProjectModalProps {
@@ -12,10 +12,20 @@ interface CreateProjectModalProps {
 }
 
 export function CreateProjectModal({ isOpen, onClose, onProjectCreated }: CreateProjectModalProps) {
-  const [step, setStep] = useState(1); // Paso 1: Nombre, Paso 2: Modelo
+  const [step, setStep] = useState(1);
   const [name, setName] = useState("");
   const [model, setModel] = useState("just_split");
   const [loading, setLoading] = useState(false);
+
+  // Estados para los multiplicadores (por defecto los de Just Split)
+  const [mults, setMults] = useState({
+    cash: 4,
+    work: 2,
+    tangible: 2,
+    intangible: 2,
+    others: 1
+  });
+
   const supabase = createClient();
 
   if (!isOpen) return null;
@@ -30,12 +40,25 @@ export function CreateProjectModal({ isOpen, onClose, onProjectCreated }: Create
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) { setLoading(false); return; }
 
+    // Definimos qué multiplicadores guardar según el modelo
+    let finalMults = { ...mults };
+    if (model === 'just_split') {
+        finalMults = { cash: 4, work: 2, tangible: 2, intangible: 2, others: 2 };
+    } else if (model === 'flat') {
+        finalMults = { cash: 1, work: 1, tangible: 1, intangible: 1, others: 1 };
+    }
+
     const { data: project, error } = await supabase
       .from("projects")
       .insert([{ 
         name, 
         created_by: user.id,
-        equity_model: model 
+        equity_model: model,
+        mult_cash: finalMults.cash,
+        mult_work: finalMults.work,
+        mult_tangible: finalMults.tangible,
+        mult_intangible: finalMults.intangible,
+        mult_others: finalMults.others
       }])
       .select().single();
 
@@ -49,98 +72,138 @@ export function CreateProjectModal({ isOpen, onClose, onProjectCreated }: Create
             status: 'active'
         });
         onProjectCreated(project);
-        // Reset para la próxima vez
         setName("");
         setStep(1);
+        onClose();
     }
     setLoading(false);
   };
 
-  const models = [
-    { 
-        id: 'just_split', 
-        name: 'Just Split', 
-        icon: ShieldCheck, 
-        desc: 'The Fair Standard',
-        details: 'Multiplies Cash x4 and Work x2 to reward real financial risk.',
-        color: 'text-emerald-600 bg-emerald-50 border-emerald-100' 
-    },
-    { 
-        id: 'flat', 
-        name: 'Flat Model', 
-        icon: Scale, 
-        desc: 'Absolute Equality',
-        details: '1 unit of value = 1 unit of equity. No risk multipliers applied.',
-        color: 'text-purple-600 bg-purple-50 border-purple-100' 
-    },
-    { 
-        id: 'custom', 
-        name: 'Custom', 
-        icon: Sliders, 
-        desc: 'Your Rules',
-        details: 'Set your own multipliers for different asset types later.',
-        color: 'text-blue-600 bg-blue-50 border-blue-100' 
-    }
-  ];
-
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 backdrop-blur-sm p-4">
-      <div className="absolute inset-0" onClick={onClose}></div>
-      <div className="bg-white rounded-[40px] w-full max-w-xl p-10 shadow-2xl relative z-10 animate-in fade-in zoom-in duration-300">
+    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-md p-4">
+      <div className="relative w-full max-w-5xl bg-[#0f172a] rounded-[40px] border border-slate-800 shadow-2xl p-10 text-white overflow-hidden">
         
-        <button onClick={onClose} className="absolute top-8 right-8 text-slate-400 hover:text-slate-600"><X className="w-6 h-6" /></button>
+        <button onClick={onClose} className="absolute top-8 right-8 text-slate-500 hover:text-white transition-colors">
+          <X className="w-6 h-6" />
+        </button>
 
         {step === 1 ? (
-          <form onSubmit={handleNext} className="space-y-8">
+          <form onSubmit={handleNext} className="max-w-md mx-auto py-10 space-y-8 text-center">
             <div>
-              <span className="text-[10px] font-black uppercase tracking-[0.3em] text-emerald-600 mb-4 block">Step 01/02</span>
-              <h2 className="text-3xl font-black text-slate-900 mb-2">Name your project</h2>
-              <p className="text-slate-500 font-medium">Give a name to your new venture to start tracking.</p>
+                <div className="w-16 h-16 bg-emerald-500/10 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                    <Rocket className="w-8 h-8 text-emerald-500" />
+                </div>
+                <h2 className="text-4xl font-black mb-2 tracking-tight">Name your venture</h2>
+                <p className="text-slate-400 font-medium">How should we call this new project?</p>
             </div>
             
             <input 
               autoFocus type="text" value={name} onChange={(e) => setName(e.target.value)}
               placeholder="e.g. Apollo Dynamics"
-              className="w-full px-8 py-6 rounded-2xl border-2 border-slate-100 focus:border-emerald-500 focus:ring-0 outline-none transition-all font-bold text-2xl placeholder:text-slate-200"
+              className="w-full px-8 py-6 rounded-2xl bg-slate-800/50 border-2 border-slate-700 focus:border-emerald-500 outline-none transition-all font-bold text-2xl text-center"
               required
             />
 
-            <button type="submit" className="w-full flex items-center justify-center gap-3 bg-slate-900 text-white py-5 rounded-2xl font-black hover:bg-slate-800 transition-all shadow-xl group">
-                Continue to Models <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+            <button type="submit" className="w-full flex items-center justify-center gap-3 bg-white text-slate-900 py-5 rounded-2xl font-black hover:bg-emerald-400 transition-all group">
+                Continue to Logic <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
             </button>
           </form>
         ) : (
-          <div className="space-y-8">
-            <div>
-              <button onClick={() => setStep(1)} className="flex items-center gap-2 text-xs font-bold text-slate-400 hover:text-slate-600 mb-4 transition-colors">
-                <ArrowLeft className="w-3 h-3" /> Back to name
-              </button>
-              <h2 className="text-3xl font-black text-slate-900 mb-1">Choose your DNA</h2>
-              <p className="text-slate-500 font-medium italic">How should we value the risk of each founder?</p>
+          <div className="space-y-10">
+            <div className="text-center">
+              <h2 className="text-3xl font-black mb-2 uppercase tracking-tighter">Choose your logic</h2>
+              <p className="text-slate-400 font-medium">Select the best multiplier set for your team.</p>
             </div>
 
-            <div className="grid gap-4">
-              {models.map((m) => (
-                <button
-                  key={m.id} onClick={() => setModel(m.id)}
-                  className={`flex items-start gap-5 p-6 rounded-[24px] border-2 text-left transition-all ${model === m.id ? 'border-emerald-500 bg-emerald-50/30' : 'border-slate-50 hover:border-slate-200 bg-slate-50/50'}`}
-                >
-                  <div className={`p-4 rounded-2xl shrink-0 ${m.color}`}><m.icon className="w-6 h-6" /></div>
-                  <div className="flex-1">
-                    <div className="flex justify-between items-center mb-1">
-                        <p className="font-black text-slate-900 text-lg">{m.name}</p>
-                        {model === m.id && <div className="w-5 h-5 bg-emerald-500 rounded-full flex items-center justify-center"><div className="w-2 h-2 bg-white rounded-full"></div></div>}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              
+              {/* TARJETA CUSTOM */}
+              <div onClick={() => setModel('custom')} className={`relative p-8 rounded-[32px] border-2 transition-all cursor-pointer ${model === 'custom' ? 'border-blue-500 bg-blue-500/5' : 'border-slate-800 bg-slate-900/40 hover:border-slate-700'}`}>
+                <div className="flex items-center gap-3 mb-6">
+                    <div className="p-2 bg-slate-800 rounded-lg"><Settings className="w-4 h-4 text-blue-400" /></div>
+                    <span className="font-bold text-lg">Custom</span>
+                </div>
+                <div className="space-y-3 mb-8">
+                    {['Cash', 'Work', 'Intangible', 'Tangible', 'Others'].map((label) => (
+                        <div key={label} className="flex items-center justify-between p-3 bg-slate-950 rounded-xl border border-slate-800">
+                            <span className="text-[10px] font-black uppercase text-slate-500">{label}</span>
+                            <input 
+                                type="number" 
+                                value={mults[label.toLowerCase() as keyof typeof mults]}
+                                onChange={(e) => setMults({...mults, [label.toLowerCase()]: parseFloat(e.target.value)})}
+                                className="w-12 bg-transparent text-right font-black text-blue-400 outline-none"
+                            />
+                        </div>
+                    ))}
+                </div>
+                <p className="text-[10px] text-center text-slate-500 uppercase font-bold tracking-widest">Total manual control</p>
+              </div>
+
+              {/* TARJETA JUST SPLIT */}
+              <div onClick={() => setModel('just_split')} className={`relative p-8 rounded-[32px] border-2 transition-all cursor-pointer ${model === 'just_split' ? 'border-emerald-500 bg-emerald-500/5' : 'border-slate-800 bg-slate-900/40 hover:border-slate-700'}`}>
+                <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-emerald-500 text-[#0f172a] text-[10px] font-black px-4 py-1 rounded-full uppercase">Best Choice</div>
+                <div className="flex items-center gap-3 mb-6">
+                    <div className="p-2 bg-emerald-500/20 rounded-lg"><ShieldCheck className="w-4 h-4 text-emerald-400" /></div>
+                    <span className="font-bold text-lg">Just Split Model</span>
+                </div>
+                <div className="grid grid-cols-2 gap-3 mb-6">
+                    <div className="p-4 bg-slate-950 rounded-xl border border-slate-800 text-center">
+                        <span className="text-[8px] font-black text-emerald-500 uppercase block mb-1">Cash</span>
+                        <span className="text-xl font-black tracking-tighter text-white">x4</span>
                     </div>
-                    <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">{m.desc}</p>
-                    <p className="text-sm text-slate-500 leading-relaxed font-medium">{m.details}</p>
-                  </div>
-                </button>
-              ))}
+                    <div className="p-4 bg-slate-950 rounded-xl border border-slate-800 text-center">
+                        <span className="text-[8px] font-black text-emerald-500 uppercase block mb-1">Work</span>
+                        <span className="text-xl font-black tracking-tighter text-white">x2</span>
+                    </div>
+                    <div className="p-4 bg-slate-950 rounded-xl border border-slate-800 text-center">
+                        <span className="text-[8px] font-black text-emerald-500 uppercase block mb-1">Tang.</span>
+                        <span className="text-xl font-black tracking-tighter text-white">x2</span>
+                    </div>
+                    <div className="p-4 bg-slate-950 rounded-xl border border-slate-800 text-center">
+                        <span className="text-[8px] font-black text-emerald-500 uppercase block mb-1">Intan.</span>
+                        <span className="text-xl font-black tracking-tighter text-white">x2</span>
+                    </div>
+                </div>
+                <div className="p-3 bg-slate-950 rounded-xl border border-slate-800 flex justify-between items-center mb-6">
+                    <span className="text-[10px] font-black text-slate-500 uppercase">Log Risk</span>
+                    <div className="w-4 h-4 bg-emerald-500 rounded-sm"></div>
+                </div>
+                <p className="text-[10px] text-center text-emerald-500 uppercase font-bold tracking-widest underline decoration-2 underline-offset-4">Recommended</p>
+              </div>
+
+              {/* TARJETA FLAT MODEL */}
+              <div onClick={() => setModel('flat')} className={`relative p-8 rounded-[32px] border-2 transition-all cursor-pointer ${model === 'flat' ? 'border-purple-500 bg-purple-500/5' : 'border-slate-800 bg-slate-900/40 hover:border-slate-700'}`}>
+                <div className="flex items-center gap-3 mb-6">
+                    <div className="p-2 bg-purple-500/20 rounded-lg"><Scale className="w-4 h-4 text-purple-400" /></div>
+                    <span className="font-bold text-lg">Flat Model</span>
+                </div>
+                <div className="grid grid-cols-2 gap-3 mb-8">
+                    <div className="p-4 bg-slate-950 rounded-xl border border-slate-800 text-center">
+                        <span className="text-[8px] font-black text-purple-400 uppercase block mb-1">Cash</span>
+                        <span className="text-xl font-black tracking-tighter text-white">x1</span>
+                    </div>
+                    <div className="p-4 bg-slate-950 rounded-xl border border-slate-800 text-center">
+                        <span className="text-[8px] font-black text-purple-400 uppercase block mb-1">Work</span>
+                        <span className="text-xl font-black tracking-tighter text-white">x1</span>
+                    </div>
+                </div>
+                <div className="p-4 bg-slate-950 rounded-xl border border-slate-800 text-center mb-8">
+                    <span className="text-[8px] font-black text-purple-400 uppercase block mb-1">Others (Tang/Intan)</span>
+                    <span className="text-xl font-black tracking-tighter text-white">x1</span>
+                </div>
+                <p className="text-[10px] text-center text-purple-400 uppercase font-bold tracking-widest">Simple fixed split</p>
+              </div>
+
             </div>
 
-            <button onClick={handleSubmit} disabled={loading} className="w-full bg-emerald-600 text-white py-5 rounded-2xl font-black hover:bg-emerald-700 transition-all flex items-center justify-center gap-2 shadow-xl shadow-emerald-200 active:scale-95">
-                {loading ? <Loader2 className="w-6 h-6 animate-spin" /> : "Launch Project"}
-            </button>
+            <div className="flex items-center justify-between pt-6 border-t border-slate-800">
+                <button onClick={() => setStep(1)} className="flex items-center gap-2 text-slate-500 font-bold hover:text-white transition-colors">
+                    <ArrowLeft className="w-4 h-4" /> BACK
+                </button>
+                <button onClick={handleSubmit} disabled={loading} className="px-10 py-5 bg-white text-slate-900 rounded-2xl font-black hover:bg-emerald-400 transition-all flex items-center gap-3 shadow-xl shadow-emerald-500/20">
+                    {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <>Launch Project <Rocket className="w-5 h-5" /></>}
+                </button>
+            </div>
           </div>
         )}
       </div>
