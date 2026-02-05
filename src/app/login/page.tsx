@@ -6,7 +6,6 @@ import { createClient } from "@/utils/supabase/client";
 import { Loader2, Lock, Mail, ArrowLeft } from "lucide-react";
 import Link from "next/link";
 
-// Creamos un componente interno para manejar la lógica de parámetros de URL
 function LoginForm() {
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -16,16 +15,20 @@ function LoginForm() {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   
-  // Estado inicial en false (Login por defecto)
+  // Inicializamos en false, pero el useEffect lo corregirá al instante si hace falta
   const [isSignUp, setIsSignUp] = useState(false);
   
   const [message, setMessage] = useState<{ text: string; type: 'error' | 'success' } | null>(null);
 
-  // --- NUEVO: Detectar si venimos de un botón de "Sign Up" ---
+  // --- LÓGICA DE DETECCIÓN AUTOMÁTICA ---
   useEffect(() => {
-    // Si la URL contiene ?view=signup, activamos el modo registro
-    if (searchParams.get("view") === "signup") {
+    // Si la URL tiene ?view=signup, forzamos el modo registro
+    const view = searchParams.get("view");
+    if (view === "signup") {
       setIsSignUp(true);
+    } else {
+      // Si no, aseguramos que esté en modo Login
+      setIsSignUp(false);
     }
   }, [searchParams]);
 
@@ -132,7 +135,16 @@ function LoginForm() {
         <div className="text-center mt-6 pt-6 border-t border-slate-50">
           <button
             type="button"
-            onClick={() => { setIsSignUp(!isSignUp); setMessage(null); }}
+            // Al hacer clic manual, alternamos el estado y limpiamos la URL visualmente (opcional)
+            onClick={() => { 
+              setIsSignUp(!isSignUp); 
+              setMessage(null); 
+              // Opcional: limpiar query params sin recargar para que no interfiera si el usuario cambia de opinión
+              if (window.history.pushState) {
+                const newUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
+                window.history.pushState({path:newUrl},'',newUrl);
+              }
+            }}
             className="text-sm font-bold text-emerald-600 hover:text-emerald-500 hover:underline transition-all"
           >
             {isSignUp ? "Already have an account? Sign In" : "New to Equily? Create Account"}
@@ -143,7 +155,6 @@ function LoginForm() {
   );
 }
 
-// Exportamos el componente envuelto en Suspense
 export default function LoginPage() {
   return (
     <Suspense fallback={<div className="flex min-h-screen items-center justify-center bg-[#F8FAFC]"></div>}>
