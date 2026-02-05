@@ -17,6 +17,7 @@ export function CreateProjectModal({ isOpen, onClose, onProjectCreated }: Create
   const [model, setModel] = useState("just_split");
   const [loading, setLoading] = useState(false);
 
+  // Estados para los multiplicadores del modo Custom
   const [mults, setMults] = useState({
     cash: 4,
     work: 2,
@@ -80,97 +81,116 @@ export function CreateProjectModal({ isOpen, onClose, onProjectCreated }: Create
 
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/40 backdrop-blur-sm p-4">
-      <div className="relative w-full max-w-xl bg-white rounded-[40px] shadow-2xl p-10 text-slate-900 overflow-hidden animate-in fade-in zoom-in duration-300">
+      <div className="relative w-full max-w-6xl bg-white rounded-[40px] shadow-2xl p-10 text-slate-900 overflow-hidden animate-in fade-in zoom-in duration-300">
         
         <button onClick={onClose} className="absolute top-8 right-8 text-slate-400 hover:text-slate-600 transition-colors">
           <X className="w-6 h-6" />
         </button>
 
         {step === 1 ? (
-          <form onSubmit={handleNext} className="space-y-8 py-4">
+          <form onSubmit={handleNext} className="max-w-md mx-auto py-16 space-y-10 text-center">
             <div>
-                <span className="text-[10px] font-black uppercase tracking-[0.3em] text-emerald-600 mb-4 block">Step 01/02</span>
-                <h2 className="text-3xl font-black mb-2 tracking-tight">Name your project</h2>
-                <p className="text-slate-500 font-medium">Give a name to your new venture to start tracking.</p>
+                <div className="w-20 h-20 bg-emerald-50 rounded-3xl flex items-center justify-center mx-auto mb-6">
+                    <Rocket className="w-10 h-10 text-emerald-500" />
+                </div>
+                <h2 className="text-4xl font-black mb-2 tracking-tight">Name your venture</h2>
+                <p className="text-slate-500 font-medium">What is the name of this new project?</p>
             </div>
             
             <input 
               autoFocus type="text" value={name} onChange={(e) => setName(e.target.value)}
               placeholder="e.g. Apollo Dynamics"
-              className="w-full px-8 py-6 rounded-2xl bg-slate-50 border-2 border-slate-100 focus:border-emerald-500 focus:bg-white outline-none transition-all font-bold text-2xl"
+              className="w-full px-8 py-6 rounded-2xl bg-slate-50 border-2 border-slate-100 focus:border-emerald-500 focus:bg-white outline-none transition-all font-bold text-2xl text-center"
               required
             />
 
-            <button type="submit" className="w-full flex items-center justify-center gap-3 bg-slate-900 text-white py-5 rounded-2xl font-black text-lg hover:bg-slate-800 transition-all shadow-xl">
-                Continue to Models <ArrowRight className="w-5 h-5" />
+            <button type="submit" className="w-full flex items-center justify-center gap-3 bg-slate-900 text-white py-5 rounded-2xl font-black hover:bg-emerald-600 transition-all group">
+                Continue to Logic <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
             </button>
           </form>
         ) : (
-          <div className="space-y-8 animate-in slide-in-from-bottom-4 duration-500">
-            <div>
-              <button onClick={() => setStep(1)} className="flex items-center gap-2 text-xs font-bold text-slate-400 hover:text-slate-600 mb-4 transition-colors">
-                <ArrowLeft className="w-3 h-3" /> Back to name
-              </button>
-              <h2 className="text-3xl font-black mb-1 tracking-tight">Choose your DNA</h2>
-              <p className="text-slate-500 font-medium italic">How should we value the risk of each founder?</p>
+          <div className="space-y-10 animate-in slide-in-from-right-4 duration-500">
+            <div className="text-center">
+              <h2 className="text-3xl font-black mb-2 uppercase tracking-tighter">Choose your logic</h2>
+              <p className="text-slate-500 font-medium">Select the best multiplier set for your team.</p>
             </div>
 
-            <div className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               
-              {/* JUST SPLIT */}
-              <button onClick={() => setModel('just_split')} className={`w-full p-6 rounded-[28px] border-2 transition-all text-left flex items-start gap-5 ${model === 'just_split' ? 'border-emerald-500 bg-emerald-50/30' : 'border-slate-50 bg-slate-50/50 hover:border-slate-200'}`}>
-                <div className={`p-4 rounded-2xl ${model === 'just_split' ? 'bg-emerald-500 text-white' : 'bg-white text-slate-400'} shadow-sm`}>
-                    <ShieldCheck className="w-6 h-6" />
+              {/* TARJETA CUSTOM */}
+              <div onClick={() => setModel('custom')} className={`relative p-8 rounded-[32px] border-2 transition-all cursor-pointer flex flex-col ${model === 'custom' ? 'border-blue-500 bg-blue-50/30' : 'border-slate-100 bg-slate-50/50 hover:border-slate-200'}`}>
+                <div className="flex items-center gap-3 mb-6">
+                    <div className={`p-2 rounded-lg ${model === 'custom' ? 'bg-blue-500 text-white' : 'bg-white text-slate-400 shadow-sm'}`}><Settings className="w-4 h-4" /></div>
+                    <span className="font-bold text-lg">Custom</span>
                 </div>
-                <div className="flex-1">
-                    <div className="flex justify-between items-center mb-1">
-                        <p className="font-black text-lg">Just Split</p>
-                        {model === 'just_split' && <div className="w-5 h-5 bg-emerald-500 rounded-full flex items-center justify-center"><div className="w-2 h-2 bg-white rounded-full"></div></div>}
-                    </div>
-                    <p className="text-[10px] font-black uppercase tracking-widest text-emerald-600 mb-2">The Fair Standard</p>
-                    <p className="text-sm text-slate-500 font-medium leading-relaxed">
-                        Multiplies Cash x4 and Work x2. <span className="font-bold text-slate-700 underline underline-offset-2">Logarithmic Risk (Optional)</span>
-                    </p>
+                <div className="space-y-3 mb-8 flex-1">
+                    {['Cash', 'Work', 'Intangible', 'Tangible', 'Others'].map((label) => (
+                        <div key={label} className="flex items-center justify-between p-3 bg-white rounded-xl border border-slate-100">
+                            <span className="text-[10px] font-black uppercase text-slate-400">{label}</span>
+                            <input 
+                                type="number" 
+                                value={mults[label.toLowerCase() as keyof typeof mults]}
+                                onClick={(e) => e.stopPropagation()}
+                                onChange={(e) => setMults({...mults, [label.toLowerCase()]: parseFloat(e.target.value) || 0})}
+                                className="w-12 bg-transparent text-right font-black text-blue-600 outline-none focus:bg-blue-50 rounded px-1"
+                            />
+                        </div>
+                    ))}
                 </div>
-              </button>
+                <p className="text-[10px] text-center text-slate-400 uppercase font-bold tracking-widest mt-4">Logarithmic Risk (Optional)</p>
+                <p className="text-[10px] text-center text-slate-300 uppercase font-bold tracking-widest mt-1">Manual control</p>
+              </div>
 
-              {/* FLAT MODEL */}
-              <button onClick={() => setModel('flat')} className={`w-full p-6 rounded-[28px] border-2 transition-all text-left flex items-start gap-5 ${model === 'flat' ? 'border-purple-500 bg-purple-50/30' : 'border-slate-50 bg-slate-50/50 hover:border-slate-200'}`}>
-                <div className={`p-4 rounded-2xl ${model === 'flat' ? 'bg-purple-500 text-white' : 'bg-white text-slate-400'} shadow-sm`}>
-                    <Scale className="w-6 h-6" />
+              {/* TARJETA JUST SPLIT */}
+              <div onClick={() => setModel('just_split')} className={`relative p-8 rounded-[32px] border-2 transition-all cursor-pointer flex flex-col ${model === 'just_split' ? 'border-emerald-500 bg-emerald-50/30' : 'border-slate-100 bg-slate-50/50 hover:border-slate-200'}`}>
+                <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-emerald-500 text-white text-[10px] font-black px-4 py-1 rounded-full uppercase shadow-lg">Best Choice</div>
+                <div className="flex items-center gap-3 mb-6">
+                    <div className={`p-2 rounded-lg ${model === 'just_split' ? 'bg-emerald-500 text-white' : 'bg-white text-slate-400 shadow-sm'}`}><ShieldCheck className="w-4 h-4" /></div>
+                    <span className="font-bold text-lg">Just Split Model</span>
                 </div>
-                <div className="flex-1">
-                    <div className="flex justify-between items-center mb-1">
-                        <p className="font-black text-lg">Flat Model</p>
-                        {model === 'flat' && <div className="w-5 h-5 bg-purple-500 rounded-full flex items-center justify-center"><div className="w-2 h-2 bg-white rounded-full"></div></div>}
-                    </div>
-                    <p className="text-[10px] font-black uppercase tracking-widest text-purple-600 mb-2">Absolute Equality</p>
-                    <p className="text-sm text-slate-500 font-medium leading-relaxed">1 unit of value = 1 unit of equity. No risk multipliers applied.</p>
+                <div className="grid grid-cols-2 gap-3 mb-6 flex-1">
+                    {[{l:'CASH',v:'x4'},{l:'WORK',v:'x2'},{l:'ASSETS',v:'x2'},{l:'IP',v:'x2'}].map(item => (
+                        <div key={item.l} className="p-4 bg-white rounded-xl border border-slate-100 text-center shadow-sm">
+                            <span className="text-[8px] font-black text-emerald-500 uppercase block mb-1">{item.l}</span>
+                            <span className="text-xl font-black tracking-tighter text-slate-900">{item.v}</span>
+                        </div>
+                    ))}
                 </div>
-              </button>
+                <div className="p-3 bg-white rounded-xl border border-slate-100 flex justify-between items-center mb-6 shadow-sm">
+                    <span className="text-[10px] font-black text-slate-400 uppercase">Logarithmic Risk</span>
+                    <div className="w-4 h-4 bg-emerald-500 rounded-sm"></div>
+                </div>
+                <p className="text-[10px] text-center text-emerald-600 uppercase font-bold tracking-widest underline decoration-2 underline-offset-4">Recommended</p>
+              </div>
 
-              {/* CUSTOM */}
-              <button onClick={() => setModel('custom')} className={`w-full p-6 rounded-[28px] border-2 transition-all text-left flex items-start gap-5 ${model === 'custom' ? 'border-blue-500 bg-blue-50/30' : 'border-slate-50 bg-slate-50/50 hover:border-slate-200'}`}>
-                <div className={`p-4 rounded-2xl ${model === 'custom' ? 'bg-blue-500 text-white' : 'bg-white text-slate-400'} shadow-sm`}>
-                    <Settings className="w-6 h-6" />
+              {/* TARJETA FLAT MODEL */}
+              <div onClick={() => setModel('flat')} className={`relative p-8 rounded-[32px] border-2 transition-all cursor-pointer flex flex-col ${model === 'flat' ? 'border-purple-500 bg-purple-50/30' : 'border-slate-100 bg-slate-50/50 hover:border-slate-200'}`}>
+                <div className="flex items-center gap-3 mb-6">
+                    <div className={`p-2 rounded-lg ${model === 'flat' ? 'bg-purple-500 text-white' : 'bg-white text-slate-400 shadow-sm'}`}><Scale className="w-4 h-4" /></div>
+                    <span className="font-bold text-lg">Flat Model</span>
                 </div>
-                <div className="flex-1">
-                    <div className="flex justify-between items-center mb-1">
-                        <p className="font-black text-lg">Custom</p>
-                        {model === 'custom' && <div className="w-5 h-5 bg-blue-500 rounded-full flex items-center justify-center"><div className="w-2 h-2 bg-white rounded-full"></div></div>}
+                <div className="space-y-3 mb-8 flex-1">
+                    <div className="p-6 bg-white rounded-xl border border-slate-100 text-center shadow-sm">
+                        <span className="text-[8px] font-black text-purple-500 uppercase block mb-1">ALL CONTRIBUTIONS</span>
+                        <span className="text-3xl font-black tracking-tighter text-slate-900">x1</span>
                     </div>
-                    <p className="text-[10px] font-black uppercase tracking-widest text-blue-600 mb-2">Your Rules</p>
-                    <p className="text-sm text-slate-500 font-medium leading-relaxed">
-                        Set your own multipliers later. <span className="font-bold text-slate-700 underline underline-offset-2">Logarithmic Risk (Optional)</span>
-                    </p>
+                    <div className="p-4 bg-slate-50 rounded-xl border border-dashed border-slate-200 text-[10px] font-medium italic text-slate-400 text-center">
+                        Simple linear split where every unit is equal.
+                    </div>
                 </div>
-              </button>
+                <p className="text-[10px] text-center text-purple-600 uppercase font-bold tracking-widest mt-auto">Fixed split</p>
+              </div>
 
             </div>
 
-            <button onClick={handleSubmit} disabled={loading} className="w-full bg-emerald-600 text-white py-5 rounded-2xl font-black text-lg hover:bg-emerald-700 transition-all shadow-xl shadow-emerald-100 flex items-center justify-center gap-2">
-                {loading ? <Loader2 className="w-6 h-6 animate-spin" /> : "Launch Project"}
-            </button>
+            <div className="flex items-center justify-between pt-6 border-t border-slate-100">
+                <button onClick={() => setStep(1)} className="flex items-center gap-2 text-slate-400 font-bold hover:text-slate-600 transition-colors">
+                    <ArrowLeft className="w-4 h-4" /> BACK
+                </button>
+                <button onClick={handleSubmit} disabled={loading} className="px-10 py-5 bg-emerald-600 text-white rounded-2xl font-black hover:bg-emerald-700 transition-all flex items-center gap-3 shadow-xl shadow-emerald-100">
+                    {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <>Launch Project <Rocket className="w-5 h-5" /></>}
+                </button>
+            </div>
           </div>
         )}
       </div>
