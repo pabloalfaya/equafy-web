@@ -14,13 +14,14 @@ interface CreateProjectModalProps {
 export function CreateProjectModal({ isOpen, onClose, onProjectCreated }: CreateProjectModalProps) {
   const [step, setStep] = useState(1);
   const [name, setName] = useState("");
-  const [model, setModel] = useState("just_split");
+  const [model, setModel] = useState("just_split"); // Internal state uses lowercase
   const [loading, setLoading] = useState(false);
 
+  // Default values for Custom model editing
   const [mults, setMults] = useState({
     cash: 4,
     work: 2,
-    tangible: 2,
+    tangible: 1,
     intangible: 2,
     others: 1
   });
@@ -37,31 +38,54 @@ export function CreateProjectModal({ isOpen, onClose, onProjectCreated }: Create
   const handleSubmit = async () => {
     setLoading(true);
     const { data: { user } } = await supabase.auth.getUser();
-    if (!user) { setLoading(false); return; }
+    
+    if (!user) { 
+        setLoading(false); 
+        return; 
+    }
 
+    // 1. Calculate Final Multipliers based on selected model
+    // We override the custom inputs if a preset model is selected
     let finalMults = { ...mults };
+    
     if (model === 'just_split') {
+        // Recommended logic: Cash x4, everything else x2
         finalMults = { cash: 4, work: 2, tangible: 2, intangible: 2, others: 2 };
     } else if (model === 'flat') {
+        // Flat logic: Everything x1
         finalMults = { cash: 1, work: 1, tangible: 1, intangible: 1, others: 1 };
     }
 
-    const { data: project, error } = await supabase
-      .from("projects")
-      .insert([{ 
+    // 2. Prepare payload matching the NEW Database Schema
+    const payload = { 
         name, 
-        created_by: user.id,
-        equity_model: model,
+        owner_id: user.id, // Correct column name
+        model_type: model === 'just_split' ? 'JUST_SPLIT' : model === 'flat' ? 'FLAT' : 'CUSTOM', // Uppercase for DB Enum
         mult_cash: finalMults.cash,
         mult_work: finalMults.work,
         mult_tangible: finalMults.tangible,
         mult_intangible: finalMults.intangible,
-        mult_others: finalMults.others
-      }])
-      .select().single();
+        mult_others: finalMults.others,
+        use_log_risk: false
+    };
 
-    if (!error && project) {
-        await supabase.from("project_members").insert({
+    // 3. Insert into Supabase
+    const { data: project, error } = await supabase
+      .from("projects")
+      .insert([payload])
+      .select()
+      .single();
+
+    if (error) {
+        console.error("Error creating project:", error);
+        setLoading(false);
+        return;
+    }
+
+    if (project) {
+        // 4. Create Owner Member
+        // Assuming 'project_members' table exists as per your previous code
+        const { error: memberError } = await supabase.from("project_members").insert({
             project_id: project.id,
             user_id: user.id,
             email: user.email!,
@@ -69,18 +93,21 @@ export function CreateProjectModal({ isOpen, onClose, onProjectCreated }: Create
             role: 'owner',
             status: 'active'
         });
-        
-        onProjectCreated(project);
-        setName("");
-        setStep(1);
-        onClose();
+
+        if (!memberError) {
+            onProjectCreated(project);
+            setName("");
+            setStep(1);
+            onClose();
+        } else {
+            console.error("Error adding owner:", memberError);
+        }
     }
     setLoading(false);
   };
 
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4">
-      {/* El contenedor ahora cambia su ancho según el paso: max-w-lg para el nombre, max-w-5xl para la lógica */}
       <div className={`relative w-full ${step === 1 ? 'max-w-lg' : 'max-w-5xl'} bg-white rounded-[32px] shadow-2xl p-6 md:p-8 text-slate-900 transition-all duration-300 overflow-y-auto max-h-[95vh]`}>
         
         <button onClick={onClose} className="absolute top-6 right-6 text-slate-400 hover:text-slate-900 transition-colors z-20">
@@ -117,7 +144,7 @@ export function CreateProjectModal({ isOpen, onClose, onProjectCreated }: Create
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
               
-              {/* TARJETA CUSTOM */}
+              {/* CARD: CUSTOM */}
               <div onClick={() => setModel('custom')} className={`relative p-5 rounded-2xl border-2 transition-all cursor-pointer flex flex-col ${model === 'custom' ? 'border-blue-500 bg-blue-50/30 ring-1 ring-blue-500/20' : 'border-slate-100 bg-slate-50/50 hover:border-slate-200'}`}>
                 <div className="flex items-center gap-3 mb-4">
                     <div className={`p-2 rounded-lg ${model === 'custom' ? 'bg-blue-500 text-white' : 'bg-white text-slate-400 shadow-sm'}`}><Settings className="w-4 h-4" /></div>
@@ -143,7 +170,7 @@ export function CreateProjectModal({ isOpen, onClose, onProjectCreated }: Create
                 </div>
               </div>
 
-              {/* TARJETA JUST SPLIT */}
+              {/* CARD: JUST SPLIT */}
               <div onClick={() => setModel('just_split')} className={`relative p-5 rounded-2xl border-2 transition-all cursor-pointer flex flex-col ${model === 'just_split' ? 'border-emerald-500 bg-emerald-50/40 ring-1 ring-emerald-500/20' : 'border-slate-100 bg-slate-50/50 hover:border-slate-200'}`}>
                 <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-emerald-500 text-white text-[9px] font-black px-3 py-1 rounded-full uppercase shadow-lg z-10">Best Choice</div>
                 <div className="flex items-center gap-3 mb-4">
@@ -165,7 +192,7 @@ export function CreateProjectModal({ isOpen, onClose, onProjectCreated }: Create
                 <p className="text-[9px] text-center text-emerald-700 font-black uppercase tracking-widest underline decoration-2 underline-offset-4">Recommended</p>
               </div>
 
-              {/* TARJETA FLAT MODEL */}
+              {/* CARD: FLAT MODEL */}
               <div onClick={() => setModel('flat')} className={`relative p-5 rounded-2xl border-2 transition-all cursor-pointer flex flex-col ${model === 'flat' ? 'border-purple-500 bg-purple-50/20 ring-1 ring-purple-500/20' : 'border-slate-100 bg-slate-50/50 hover:border-slate-200'}`}>
                 <div className="flex items-center gap-3 mb-4">
                     <div className={`p-2 rounded-lg ${model === 'flat' ? 'bg-purple-500 text-white' : 'bg-white text-slate-400 shadow-sm'}`}><Scale className="w-4 h-4" /></div>
