@@ -42,6 +42,9 @@ export default function ProjectDashboardPage() {
   const [modalOpen, setModalOpen] = useState(false);
   const [memberModalOpen, setMemberModalOpen] = useState(false);
 
+  // NUEVO: Estado para rastrear qué aportación estamos editando
+  const [editingContribution, setEditingContribution] = useState<ExtendedContribution | null>(null);
+
   const fetchData = async () => {
     if (!projectId) return;
     const supabase = createClient();
@@ -85,27 +88,41 @@ export default function ProjectDashboardPage() {
     setMembers(data ?? []);
   };
 
-  const handleContributionAdded = (newContribution: Contribution) => {
-    setContributions((prev) => [...prev, newContribution as ExtendedContribution]);
+  // NUEVO: Maneja tanto la creación como la edición con éxito
+  const handleContributionSuccess = (updatedOrNew: Contribution) => {
+    setContributions((prev) => {
+      const exists = prev.find((c) => c.id === updatedOrNew.id);
+      if (exists) {
+        // Si ya existía, actualizamos la fila
+        return prev.map((c) => (c.id === updatedOrNew.id ? (updatedOrNew as ExtendedContribution) : c));
+      }
+      // Si es nueva, la añadimos al final
+      return [...prev, updatedOrNew as ExtendedContribution];
+    });
+    setEditingContribution(null);
   };
 
   const handleContributionDeleted = (contribution: Contribution) => {
     setContributions((prev) => prev.filter((c) => c.id !== contribution.id));
   };
 
-  // --- FUNCIÓN GENERAR PDF (CON TIPADO CORREGIDO) ---
+  // NUEVO: Abre el modal en modo edición
+  const handleEditContribution = (contribution: ExtendedContribution) => {
+    setEditingContribution(contribution);
+    setModalOpen(true);
+  };
+
+  // --- FUNCIÓN GENERAR PDF ---
   const generatePDF = () => {
     if (!project) return;
     const doc = new jsPDF();
     const projectName = project.name || "Project Report";
     
-    // Forzamos el tipo de color a una tupla de 3 números para TypeScript
     const colorDark: [number, number, number] = [15, 23, 42];      
     const colorEmerald: [number, number, number] = [16, 185, 129]; 
     const colorBlue: [number, number, number] = [59, 130, 246];    
     const colorGray: [number, number, number] = [100, 116, 139];
 
-    // 1. Cabecera Estilo Dashboard
     doc.setFillColor(colorDark[0], colorDark[1], colorDark[2]);
     doc.rect(0, 0, 210, 40, 'F');
     doc.setTextColor(255, 255, 255);
@@ -116,7 +133,6 @@ export default function ProjectDashboardPage() {
     doc.setFont("helvetica", "normal");
     doc.text("Dynamic Equity Split Report", 14, 28);
 
-    // 2. Título y Meta
     doc.setTextColor(colorDark[0], colorDark[1], colorDark[2]);
     doc.setFontSize(28);
     doc.setFont("helvetica", "bold");
@@ -125,7 +141,6 @@ export default function ProjectDashboardPage() {
     doc.setTextColor(colorGray[0], colorGray[1], colorGray[2]);
     doc.text(`Generated on: ${new Date().toLocaleDateString()}`, 14, 68);
 
-    // 3. Tabla de Reparto de la Empresa
     doc.setTextColor(colorDark[0], colorDark[1], colorDark[2]);
     doc.setFontSize(14);
     doc.text("Equity Distribution", 14, 85);
@@ -141,7 +156,6 @@ export default function ProjectDashboardPage() {
           ? ((memberTotal / totalProjectValue) * 100).toFixed(2) 
           : "0.00";
 
-        // Aseguramos que los valores sean siempre string para evitar el error RowInput
         return [
           m.name ?? "Unknown", 
           m.role ?? "Co-founder", 
@@ -159,7 +173,6 @@ export default function ProjectDashboardPage() {
       styles: { fontSize: 9, cellPadding: 4 }
     });
 
-    // 4. Tabla Log de Contribuciones
     const finalY = (doc as any).lastAutoTable.finalY || 150;
     doc.setFontSize(14);
     doc.setTextColor(colorDark[0], colorDark[1], colorDark[2]);
@@ -254,7 +267,7 @@ export default function ProjectDashboardPage() {
                 <button onClick={() => setMemberModalOpen(true)} className="inline-flex items-center gap-2 rounded-xl bg-white border border-slate-200 px-5 py-3 font-bold text-slate-700 shadow-sm hover:bg-slate-50 transition-all hover:-translate-y-0.5">
                   <Users className="h-5 w-5" /> Team
                 </button>
-                <button onClick={() => setModalOpen(true)} className="inline-flex items-center gap-2 rounded-xl bg-slate-900 px-6 py-3 font-bold text-white shadow-lg hover:bg-slate-800 transition-all hover:-translate-y-0.5">
+                <button onClick={() => { setEditingContribution(null); setModalOpen(true); }} className="inline-flex items-center gap-2 rounded-xl bg-slate-900 px-6 py-3 font-bold text-white shadow-lg hover:bg-slate-800 transition-all hover:-translate-y-0.5">
                   <Plus className="h-5 w-5" /> Add Contribution
                 </button>
               </div>
@@ -267,7 +280,11 @@ export default function ProjectDashboardPage() {
                         <h3 className="font-bold text-slate-900 text-xl">Contribution Log</h3>
                     </div>
                     <div className="overflow-x-auto max-h-[600px] overflow-y-auto pr-2 custom-scrollbar">
-                        <ContributionsTable contributions={contributions} onDelete={handleContributionDeleted} />
+                        <ContributionsTable 
+                          contributions={contributions} 
+                          onDelete={handleContributionDeleted}
+                          onEdit={handleEditContribution} 
+                        />
                     </div>
                 </div>
 
@@ -291,11 +308,12 @@ export default function ProjectDashboardPage() {
 
       <AddContributionModal
         isOpen={modalOpen}
-        onClose={() => setModalOpen(false)}
+        onClose={() => { setModalOpen(false); setEditingContribution(null); }}
         projectId={projectId}
         projectConfig={project} 
-        onSuccess={handleContributionAdded}
+        onSuccess={handleContributionSuccess}
         members={members}
+        editData={editingContribution}
         onAddMemberClick={() => { setModalOpen(false); setMemberModalOpen(true); }}
       />
 
