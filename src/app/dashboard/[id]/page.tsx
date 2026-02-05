@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation"; 
 import Link from "next/link";
+// Corregido: lucide-react en lugar de lucide-center
 import { Plus, TrendingUp, LayoutDashboard, PieChart, Users, Download, ArrowLeft } from "lucide-react";
 import { createClient } from "@/utils/supabase/client";
 import { EquityPieChart } from "@/components/EquityPieChart";
@@ -14,19 +15,14 @@ import type { Project, Contribution } from "@/types/database";
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 
-// --- TIPOS EXTENDIDOS ---
-type ExtendedProject = Project & {
-  equity_model?: string;
+// --- TIPOS ---
+type ExtendedProject = Project & { equity_model?: string };
+type ExtendedContribution = Contribution & { 
+  date?: string; 
+  concept?: string; 
+  multiplier?: number; 
+  [key: string]: any 
 };
-
-type ExtendedContribution = Contribution & {
-  date?: string;
-  concept?: string;     
-  multiplier?: number;  
-  risk_multiplier?: number; 
-  [key: string]: any;
-};
-
 type Member = { id: string; name: string; role?: string };
 
 export default function ProjectDashboardPage() {
@@ -42,7 +38,7 @@ export default function ProjectDashboardPage() {
   const [modalOpen, setModalOpen] = useState(false);
   const [memberModalOpen, setMemberModalOpen] = useState(false);
 
-  // NUEVO: Estado para rastrear qué aportación estamos editando
+  // Estado para la edición de aportaciones
   const [editingContribution, setEditingContribution] = useState<ExtendedContribution | null>(null);
 
   const fetchData = async () => {
@@ -88,15 +84,12 @@ export default function ProjectDashboardPage() {
     setMembers(data ?? []);
   };
 
-  // NUEVO: Maneja tanto la creación como la edición con éxito
   const handleContributionSuccess = (updatedOrNew: Contribution) => {
     setContributions((prev) => {
       const exists = prev.find((c) => c.id === updatedOrNew.id);
       if (exists) {
-        // Si ya existía, actualizamos la fila
         return prev.map((c) => (c.id === updatedOrNew.id ? (updatedOrNew as ExtendedContribution) : c));
       }
-      // Si es nueva, la añadimos al final
       return [...prev, updatedOrNew as ExtendedContribution];
     });
     setEditingContribution(null);
@@ -106,13 +99,12 @@ export default function ProjectDashboardPage() {
     setContributions((prev) => prev.filter((c) => c.id !== contribution.id));
   };
 
-  // NUEVO: Abre el modal en modo edición
   const handleEditContribution = (contribution: ExtendedContribution) => {
     setEditingContribution(contribution);
     setModalOpen(true);
   };
 
-  // --- FUNCIÓN GENERAR PDF ---
+  // --- PDF GENERATION ---
   const generatePDF = () => {
     if (!project) return;
     const doc = new jsPDF();
@@ -130,38 +122,22 @@ export default function ProjectDashboardPage() {
     doc.setFontSize(24);
     doc.text("EQUILY", 14, 20);
     doc.setFontSize(10);
-    doc.setFont("helvetica", "normal");
     doc.text("Dynamic Equity Split Report", 14, 28);
 
     doc.setTextColor(colorDark[0], colorDark[1], colorDark[2]);
     doc.setFontSize(28);
-    doc.setFont("helvetica", "bold");
     doc.text(projectName.toLowerCase(), 14, 60);
     doc.setFontSize(10);
     doc.setTextColor(colorGray[0], colorGray[1], colorGray[2]);
     doc.text(`Generated on: ${new Date().toLocaleDateString()}`, 14, 68);
 
-    doc.setTextColor(colorDark[0], colorDark[1], colorDark[2]);
-    doc.setFontSize(14);
-    doc.text("Equity Distribution", 14, 85);
-
     const totalProjectValue = contributions.reduce((sum, c) => sum + (Number(c.risk_adjusted_value) || 0), 0);
-
     const memberRows = members.map(m => {
         const memberTotal = contributions
           .filter(c => c.contributor_name === m.name)
           .reduce((sum, c) => sum + (Number(c.risk_adjusted_value) || 0), 0);
-        
-        const percentage = totalProjectValue > 0 
-          ? ((memberTotal / totalProjectValue) * 100).toFixed(2) 
-          : "0.00";
-
-        return [
-          m.name ?? "Unknown", 
-          m.role ?? "Co-founder", 
-          memberTotal.toLocaleString(undefined, { minimumFractionDigits: 2 }), 
-          `${percentage}%`
-        ];
+        const percentage = totalProjectValue > 0 ? ((memberTotal / totalProjectValue) * 100).toFixed(2) : "0.00";
+        return [m.name ?? "Unknown", m.role ?? "Co-founder", memberTotal.toLocaleString(), `${percentage}%`];
     });
 
     autoTable(doc, {
@@ -169,39 +145,31 @@ export default function ProjectDashboardPage() {
       head: [['Member', 'Role', 'Risk Value', 'Equity %']],
       body: memberRows,
       theme: 'striped',
-      headStyles: { fillColor: colorEmerald, textColor: 255, fontStyle: 'bold' },
-      styles: { fontSize: 9, cellPadding: 4 }
+      headStyles: { fillColor: colorEmerald, textColor: 255, fontStyle: 'bold' }
     });
 
     const finalY = (doc as any).lastAutoTable.finalY || 150;
-    doc.setFontSize(14);
-    doc.setTextColor(colorDark[0], colorDark[1], colorDark[2]);
-    doc.text("Contribution Log", 14, finalY + 20);
-
     const contributionRows = contributions.map(c => [
       c.date ? new Date(c.date).toLocaleDateString() : 'N/A',
       c.contributor_name ?? "Anonymous",
       c.type ?? "Other",
       c.concept ?? "No description",
-      Number(c.amount).toLocaleString(undefined, { minimumFractionDigits: 2 }),
-      Number(c.risk_adjusted_value).toLocaleString(undefined, { minimumFractionDigits: 2 })
+      Number(c.amount).toLocaleString(),
+      Number(c.risk_adjusted_value).toLocaleString()
     ]);
 
     autoTable(doc, {
-      startY: finalY + 25,
-      head: [['Date', 'Contributor', 'Category', 'Description', 'Value', 'Risk Adj. Value']],
+      startY: finalY + 20,
+      head: [['Date', 'Contributor', 'Type', 'Description', 'Value', 'Risk Adj.']],
       body: contributionRows,
       theme: 'striped',
-      headStyles: { fillColor: colorBlue, textColor: 255, fontStyle: 'bold' },
-      styles: { fontSize: 8, cellPadding: 3 }
+      headStyles: { fillColor: colorBlue, textColor: 255 }
     });
 
-    doc.save(`${projectName}_Report_Full.pdf`);
+    doc.save(`${projectName}_Full_Report.pdf`);
   };
 
-  useEffect(() => { 
-    fetchData(); 
-  }, [projectId]);
+  useEffect(() => { fetchData(); }, [projectId]);
 
   const groupedContributionsForChart = contributions.reduce((acc, curr) => {
     const existingIndex = acc.findIndex((c) => c.contributor_name === curr.contributor_name);
@@ -228,18 +196,10 @@ export default function ProjectDashboardPage() {
 
   return (
     <div className="min-h-screen bg-[#F8FAFC] font-sans text-slate-900 overflow-x-hidden">
-       <div className="fixed inset-0 z-0 pointer-events-none">
-        <div className="absolute top-0 left-0 w-[600px] h-[600px] bg-emerald-400/5 blur-[100px] rounded-full mix-blend-multiply"></div>
-        <div className="absolute bottom-0 right-0 w-[600px] h-[600px] bg-blue-400/5 blur-[100px] rounded-full mix-blend-multiply"></div>
-        <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]"></div>
-      </div>
-
       <nav className="fixed top-0 inset-x-0 z-50 border-b border-white/50 bg-white/60 backdrop-blur-xl">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-2">
           <div className="flex items-center gap-4">
-             <Link href="/dashboard" className="p-2 hover:bg-slate-100 rounded-lg transition-colors" title="Back to Projects">
-                <ArrowLeft className="w-5 h-5 text-slate-500" />
-             </Link>
+             <Link href="/dashboard" className="p-2 hover:bg-slate-100 rounded-lg transition-colors"><ArrowLeft className="w-5 h-5 text-slate-500" /></Link>
              <Link href="/"><img src="/logo.png" alt="Equily" className="h-20 w-auto object-contain" /></Link>
           </div>
           <div className="flex items-center gap-2 px-4 py-2 bg-slate-100 rounded-full border border-slate-200/50">
@@ -253,23 +213,13 @@ export default function ProjectDashboardPage() {
         <div className="mx-auto max-w-7xl">
             <div className="mb-10 flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
               <div>
-                <div className="inline-flex items-center gap-2 rounded-full bg-emerald-50 border border-emerald-100 px-3 py-1 text-xs font-bold text-emerald-700 mb-4">
-                    <span className="flex h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                    <span>Live Tracking</span>
-                </div>
                 <h1 className="text-4xl font-black text-slate-900 tracking-tight">{project.name}</h1>
                 <p className="mt-2 text-slate-500 font-medium italic">Calculated using the {project.equity_model?.replace('_', ' ')} model.</p>
               </div>
               <div className="flex gap-3">
-                <button onClick={generatePDF} className="inline-flex items-center gap-2 rounded-xl bg-white border border-slate-200 px-5 py-3 font-bold text-slate-700 shadow-sm hover:bg-slate-50 transition-all hover:-translate-y-0.5">
-                  <Download className="h-5 w-5" /> Export PDF
-                </button>
-                <button onClick={() => setMemberModalOpen(true)} className="inline-flex items-center gap-2 rounded-xl bg-white border border-slate-200 px-5 py-3 font-bold text-slate-700 shadow-sm hover:bg-slate-50 transition-all hover:-translate-y-0.5">
-                  <Users className="h-5 w-5" /> Team
-                </button>
-                <button onClick={() => { setEditingContribution(null); setModalOpen(true); }} className="inline-flex items-center gap-2 rounded-xl bg-slate-900 px-6 py-3 font-bold text-white shadow-lg hover:bg-slate-800 transition-all hover:-translate-y-0.5">
-                  <Plus className="h-5 w-5" /> Add Contribution
-                </button>
+                <button onClick={generatePDF} className="inline-flex items-center gap-2 rounded-xl bg-white border border-slate-200 px-5 py-3 font-bold text-slate-700 shadow-sm hover:bg-slate-50 transition-all shadow-sm"><Download className="h-5 w-5" /> Export PDF</button>
+                <button onClick={() => setMemberModalOpen(true)} className="inline-flex items-center gap-2 rounded-xl bg-white border border-slate-200 px-5 py-3 font-bold text-slate-700 shadow-sm hover:bg-slate-50 transition-all shadow-sm"><Users className="h-5 w-5" /> Team</button>
+                <button onClick={() => { setEditingContribution(null); setModalOpen(true); }} className="inline-flex items-center gap-2 rounded-xl bg-slate-900 px-6 py-3 font-bold text-white shadow-lg hover:bg-slate-800 transition-all"><Plus className="h-5 w-5" /> Add Contribution</button>
               </div>
             </div>
 
@@ -296,11 +246,6 @@ export default function ProjectDashboardPage() {
                     <div className="w-full aspect-square">
                         <EquityPieChart contributions={groupedContributionsForChart} />
                     </div>
-                    <div className="mt-8 pt-6 border-t border-slate-100">
-                        <p className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 text-center">
-                            Based on risk-adjusted contributions
-                        </p>
-                    </div>
                 </div>
             </div>
         </div>
@@ -314,7 +259,6 @@ export default function ProjectDashboardPage() {
         onSuccess={handleContributionSuccess}
         members={members}
         editData={editingContribution}
-        onAddMemberClick={() => { setModalOpen(false); setMemberModalOpen(true); }}
       />
 
       <AddMemberModal 
