@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { X, UserPlus, Trash2, Briefcase, Mail, CheckCircle2 } from "lucide-react";
+import { X, UserPlus, Trash2, Briefcase, Mail, Loader2 } from "lucide-react";
 import { createClient } from "@/utils/supabase/client";
 
 interface AddMemberModalProps {
@@ -13,7 +13,7 @@ interface AddMemberModalProps {
 
 interface Member {
   id: string;
-  email: string | null; // Ahora puede ser null
+  email: string | null;
   name: string;
   role: string;
 }
@@ -41,7 +41,7 @@ export function AddMemberModal({ isOpen, onClose, projectId, onSuccess }: AddMem
       .from("project_members")
       .select("*")
       .eq("project_id", projectId)
-      .order("created_at", { ascending: true }); // Ordenar por fecha
+      .order("created_at", { ascending: true });
     
     if (data) setMembers(data);
   };
@@ -54,13 +54,16 @@ export function AddMemberModal({ isOpen, onClose, projectId, onSuccess }: AddMem
 
     // Lógica: Si hay email, es 'pending' (invitación). Si no, es 'active' (manual).
     const status = email ? 'pending' : 'active';
+    
+    // CORRECCIÓN CLAVE: Convertimos el rol a minúsculas para cumplir con la restricción SQL
+    const sanitizedRole = (role.trim() || "member").toLowerCase();
 
     const { error } = await supabase.from("project_members").insert([
       { 
         project_id: projectId, 
         name: name, 
-        email: email || null, // Si el string está vacío, mandamos null
-        role: role || "Member",
+        email: email || null, 
+        role: sanitizedRole, 
         status: status 
       }
     ]);
@@ -75,7 +78,7 @@ export function AddMemberModal({ isOpen, onClose, projectId, onSuccess }: AddMem
       setEmail("");
       setRole("");
       
-      // Actualizamos lista y padre
+      // Actualizamos lista y notificamos al componente padre
       await fetchMembers();
       onSuccess();
     }
@@ -126,7 +129,7 @@ export function AddMemberModal({ isOpen, onClose, projectId, onSuccess }: AddMem
               <input 
                 type="text" 
                 required 
-                placeholder="e.g. Sarah" 
+                placeholder="e.g. Carmelo" 
                 value={name} 
                 onChange={(e) => setName(e.target.value)}
                 className="w-full rounded-lg border border-slate-200 px-4 py-3 text-sm text-slate-700 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 transition-all font-medium" 
@@ -137,16 +140,16 @@ export function AddMemberModal({ isOpen, onClose, projectId, onSuccess }: AddMem
             <div>
               <label className="flex justify-between text-xs font-bold text-slate-700 uppercase mb-1">
                 <span>Email</span>
-                <span className="text-emerald-600 normal-case bg-emerald-50 px-2 rounded-full">Optional - sends invite</span>
+                <span className="text-emerald-600 normal-case bg-emerald-50 px-2 rounded-full font-bold">Optional - sends invite</span>
               </label>
               <div className="relative">
                 <Mail className="absolute left-3 top-3.5 h-4 w-4 text-slate-400" />
                 <input 
                   type="email" 
-                  placeholder="sarah@company.com" 
+                  placeholder="partner@company.com" 
                   value={email} 
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full rounded-lg border border-slate-200 pl-10 pr-4 py-3 text-sm text-slate-700 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 transition-all" 
+                  className="w-full rounded-lg border border-slate-200 pl-10 pr-4 py-3 text-sm text-slate-700 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 transition-all font-medium" 
                 />
               </div>
             </div>
@@ -161,7 +164,7 @@ export function AddMemberModal({ isOpen, onClose, projectId, onSuccess }: AddMem
                   placeholder="e.g. CTO, Developer..." 
                   value={role} 
                   onChange={(e) => setRole(e.target.value)}
-                  className="w-full rounded-lg border border-slate-200 pl-10 pr-4 py-3 text-sm text-slate-700 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 transition-all" 
+                  className="w-full rounded-lg border border-slate-200 pl-10 pr-4 py-3 text-sm text-slate-700 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 transition-all font-medium" 
                 />
               </div>
             </div>
@@ -169,9 +172,14 @@ export function AddMemberModal({ isOpen, onClose, projectId, onSuccess }: AddMem
             <button 
               type="submit" 
               disabled={loading} 
-              className="w-full rounded-lg bg-emerald-600 px-6 py-3 text-sm font-bold text-white hover:bg-emerald-700 disabled:opacity-50 shadow-md active:scale-95 transition-all"
+              className="w-full rounded-lg bg-emerald-600 px-6 py-3 text-sm font-bold text-white hover:bg-emerald-700 disabled:opacity-50 shadow-md active:scale-95 transition-all flex items-center justify-center gap-2"
             >
-              {loading ? "Adding..." : "Add Member"}
+              {loading ? (
+                <>
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  Adding...
+                </>
+              ) : "Add Member"}
             </button>
           </form>
 
@@ -189,8 +197,8 @@ export function AddMemberModal({ isOpen, onClose, projectId, onSuccess }: AddMem
                       <div>
                         <p className="text-sm font-bold text-slate-900 leading-tight">{member.name}</p>
                         <div className="flex items-center gap-2 mt-0.5">
-                          <span className="text-[10px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-100">
-                            {member.role || "Member"}
+                          <span className="text-[10px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-100 capitalize">
+                            {member.role || "member"}
                           </span>
                           {member.email ? (
                              <span className="text-[10px] text-slate-400 flex items-center gap-1">
