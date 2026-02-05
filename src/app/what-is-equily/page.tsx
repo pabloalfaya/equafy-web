@@ -1,20 +1,54 @@
+"use client";
+
+import { useState, useEffect, useRef } from "react"; // Imports necesarios para el scroll
 import Link from "next/link";
 import { CheckCircle2, TrendingUp, PieChart, FileText, Twitter, Linkedin, Mail, ArrowRight, PlayCircle } from "lucide-react";
 
 export default function WhatIsEquilyPage() {
+  // --- LÓGICA DEL NAVBAR ESCONDIDIZO ---
+  const [isNavVisible, setIsNavVisible] = useState(true);
+  const lastScrollY = useRef(0);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+      
+      // Si estamos arriba del todo, mostrar siempre
+      if (currentScrollY < 50) {
+        setIsNavVisible(true);
+      } 
+      // Si bajamos -> ESCONDER
+      else if (currentScrollY > lastScrollY.current) {
+        setIsNavVisible(false);
+      } 
+      // Si subimos -> MOSTRAR
+      else {
+        setIsNavVisible(true);
+      }
+
+      lastScrollY.current = currentScrollY;
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
   return (
     <div className="min-h-screen bg-[#F8FAFC] font-sans text-slate-900 selection:bg-emerald-100 selection:text-emerald-900 overflow-x-hidden">
       
-      {/* --- BACKGROUND AMBIENTAL (Igual que Home) --- */}
+      {/* --- BACKGROUND AMBIENTAL --- */}
       <div className="fixed inset-0 z-0 pointer-events-none">
         <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-emerald-400/10 blur-[120px] rounded-full opacity-50 mix-blend-multiply"></div>
         <div className="absolute bottom-0 left-0 w-[800px] h-[800px] bg-blue-400/10 blur-[120px] rounded-full opacity-40 mix-blend-multiply"></div>
-        {/* Rejilla técnica sutil */}
         <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]"></div>
       </div>
 
-      {/* --- NAVBAR PREMIUM UNIFICADO --- */}
-      <nav className="fixed top-0 inset-x-0 z-50 border-b border-white/50 bg-white/60 backdrop-blur-xl transition-all duration-300">
+      {/* --- NAVBAR DINÁMICO --- */}
+      <nav 
+        className={`fixed top-0 inset-x-0 z-50 border-b border-white/50 bg-white/60 backdrop-blur-xl transition-transform duration-300 ease-in-out ${
+          isNavVisible ? 'translate-y-0' : '-translate-y-full'
+        }`}
+      >
         <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-3">
           <div className="flex items-center gap-8">
             <Link href="/" className="relative group">
@@ -38,13 +72,13 @@ export default function WhatIsEquilyPage() {
           </div>
           
           <div className="flex items-center gap-4">
-            <Link href="/dashboard" className="hidden md:block text-sm font-bold text-slate-600 hover:text-slate-900 transition-colors">
+            <Link href="/login" className="hidden md:block text-sm font-bold text-slate-600 hover:text-slate-900 transition-colors">
               Log in
             </Link>
-            <Link href="/dashboard" className="hidden md:block text-sm font-bold text-slate-600 hover:text-emerald-600 transition-colors">
+            <Link href="/login?view=signup" className="hidden md:block text-sm font-bold text-slate-600 hover:text-emerald-600 transition-colors">
               Sign Up
             </Link>
-            <Link href="/dashboard" className="relative group">
+            <Link href="/login?view=signup" className="relative group">
                <div className="absolute -inset-0.5 bg-gradient-to-r from-emerald-500 to-emerald-400 rounded-full blur opacity-60 group-hover:opacity-100 transition duration-200"></div>
                <div className="relative flex items-center bg-slate-900 rounded-full px-6 py-2.5 leading-none">
                  <span className="text-sm font-bold text-white group-hover:text-emerald-50 transition duration-200">Start Free</span>
@@ -60,7 +94,7 @@ export default function WhatIsEquilyPage() {
         <div className="mx-auto max-w-7xl px-6">
           <div className="grid lg:grid-cols-2 gap-16 items-center">
             
-            {/* Lado Izquierdo: Texto (Con los nuevos textos) */}
+            {/* Lado Izquierdo: Texto */}
             <div className="relative z-10">
               <div className="inline-flex items-center gap-2 rounded-full bg-emerald-50 border border-emerald-100 px-3 py-1 text-xs font-bold text-emerald-700 mb-6">
                 <span className="flex h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
@@ -80,22 +114,20 @@ export default function WhatIsEquilyPage() {
               </p>
 
               <div className="flex gap-4">
-                 <Link href="/dashboard" className="px-8 py-4 rounded-xl bg-slate-900 text-white font-bold hover:bg-slate-800 hover:-translate-y-1 transition-all shadow-xl shadow-slate-200">
-                    Get Started
+                 {/* Enlace actualizado a login con registro */}
+                 <Link href="/login?view=signup" className="px-8 py-4 rounded-xl bg-slate-900 text-white font-bold hover:bg-slate-800 hover:-translate-y-1 transition-all shadow-xl shadow-slate-200">
+                   Get Started
                  </Link>
                  <button className="px-8 py-4 rounded-xl bg-white border border-slate-200 text-slate-700 font-bold hover:bg-slate-50 transition-all flex items-center gap-2">
-                    <PlayCircle className="w-5 h-5 text-emerald-500" />
-                    See it in action
+                   <PlayCircle className="w-5 h-5 text-emerald-500" />
+                   See it in action
                  </button>
               </div>
             </div>
 
-            {/* Lado Derecho: IMAGEN LIMPIA (Sin recuadro exterior) */}
+            {/* Lado Derecho: IMAGEN LIMPIA */}
             <div className="relative flex items-center justify-center">
-               {/* Decoración de fondo sutil detrás de la imagen */}
               <div className="absolute inset-0 bg-gradient-to-tr from-emerald-500/5 to-blue-500/5 rounded-full blur-3xl -z-10"></div>
-              
-              {/* Imagen limpia, sin bordes ni contenedores pesados */}
               <img 
                 src="/what-is-equily-hero.png" 
                 alt="Equily Dynamic Equity Illustration" 
@@ -108,7 +140,6 @@ export default function WhatIsEquilyPage() {
 
       {/* --- SECCIÓN "CORE FEATURES" (Dark Mode) --- */}
       <section className="py-32 relative z-10 bg-[#0B0F19] text-white overflow-hidden">
-        {/* Fondo decorativo */}
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-emerald-900/20 via-[#0B0F19] to-[#0B0F19]"></div>
         <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-emerald-500/20 to-transparent"></div>
         
@@ -152,7 +183,7 @@ export default function WhatIsEquilyPage() {
               <h4 className="font-bold text-slate-900 mb-6 text-sm">Product</h4>
               <ul className="space-y-4 text-sm font-medium text-slate-500">
                 <li><Link href="#" className="hover:text-emerald-600 transition-colors">Calculator</Link></li>
-                <li><Link href="#" className="hover:text-emerald-600 transition-colors">Equity Models</Link></li>
+                <li><Link href="/models" className="hover:text-emerald-600 transition-colors">Equity Models</Link></li>
                 <li><Link href="#" className="hover:text-emerald-600 transition-colors">Cap Table</Link></li>
               </ul>
             </div>
