@@ -15,7 +15,6 @@ import type { Project, Contribution } from "@/types/database";
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 
-// Actualizamos el tipo para incluir el rol
 type Member = { id: string; name: string; role?: string };
 
 export default function DashboardPage() {
@@ -57,7 +56,6 @@ export default function DashboardPage() {
       
       setContributions(contributionsData ?? []);
 
-      // AHORA TRAEMOS TAMBIÉN EL ROL
       const { data: membersData } = await supabase
         .from("project_members")
         .select("id, name, role")
@@ -73,7 +71,6 @@ export default function DashboardPage() {
   const refreshMembers = async () => {
     if (!selectedProject) return;
     const supabase = createClient();
-    // AHORA TRAEMOS TAMBIÉN EL ROL AL REFRESCAR
     const { data } = await supabase.from("project_members").select("id, name, role").eq("project_id", selectedProject.id);
     setMembers(data ?? []);
   };
@@ -93,7 +90,7 @@ export default function DashboardPage() {
 
     // 1. CABECERA
     doc.setFillColor(16, 185, 129); // Emerald 500
-    doc.rect(0, 0, 210, 20, 'F'); // Barra superior verde
+    doc.rect(0, 0, 210, 20, 'F'); 
     
     doc.setTextColor(255, 255, 255);
     doc.setFontSize(16);
@@ -108,11 +105,11 @@ export default function DashboardPage() {
     doc.setTextColor(100, 116, 139); // Slate 500
     doc.text(`Generated on: ${new Date().toLocaleDateString()}`, 14, 42);
 
-    // 2. CÁLCULO DE EQUITY PARA LA TABLA
+    // 2. CÁLCULO DE EQUITY
     const totalRiskValue = contributions.reduce((sum, c) => sum + (c.risk_adjusted_value || 0), 0);
     
     const memberRows = members.map(m => {
-        const memberContributions = contributions.filter(c => c.contributor_name === m.name); // Usamos nombre ya que contributions guarda nombre
+        const memberContributions = contributions.filter(c => c.contributor_name === m.name);
         const memberTotal = memberContributions.reduce((sum, c) => sum + (c.risk_adjusted_value || 0), 0);
         const percentage = totalRiskValue > 0 ? ((memberTotal / totalRiskValue) * 100).toFixed(2) : "0.00";
         
@@ -124,7 +121,7 @@ export default function DashboardPage() {
         ];
     });
 
-    // 3. TABLA DE MIEMBROS (RESUMEN)
+    // 3. TABLA DE EQUITY
     doc.setFontSize(12);
     doc.setTextColor(15, 23, 42);
     doc.text("Equity Distribution", 14, 55);
@@ -134,12 +131,12 @@ export default function DashboardPage() {
       head: [['Member', 'Role', 'Risk Value', 'Equity %']],
       body: memberRows,
       theme: 'grid',
-      headStyles: { fillColor: [16, 185, 129], textColor: 255, fontStyle: 'bold' }, // Emerald header
+      headStyles: { fillColor: [16, 185, 129], textColor: 255, fontStyle: 'bold' },
       styles: { fontSize: 10, cellPadding: 3 },
-      alternateRowStyles: { fillColor: [248, 250, 252] } // Slate 50
+      alternateRowStyles: { fillColor: [248, 250, 252] }
     });
 
-    // 4. TABLA DE APORTACIONES (DETALLE)
+    // 4. TABLA DE APORTACIONES
     const finalY = (doc as any).lastAutoTable.finalY || 60;
     
     doc.setFontSize(12);
@@ -147,10 +144,12 @@ export default function DashboardPage() {
     doc.text("Contribution Log", 14, finalY + 15);
 
     const contributionRows = contributions.map(c => [
-      new Date(c.created_at).toLocaleDateString(),
+      // CORRECCIÓN 1: Aseguramos que created_at no sea undefined
+      new Date(c.created_at || new Date().toISOString()).toLocaleDateString(),
       c.contributor_name,
       c.type,
-      c.description,
+      // CORRECCIÓN 2: Forzamos el tipo 'any' para leer 'description' aunque TS no lo vea
+      (c as any).description || "-",
       c.amount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
       (c.risk_adjusted_value || 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })
     ]);
@@ -160,7 +159,7 @@ export default function DashboardPage() {
       head: [['Date', 'Contributor', 'Type', 'Description', 'Value', 'Risk Adj. Value']],
       body: contributionRows,
       theme: 'striped',
-      headStyles: { fillColor: [15, 23, 42], textColor: 255 }, // Slate 900 header
+      headStyles: { fillColor: [15, 23, 42], textColor: 255 },
       styles: { fontSize: 9, cellPadding: 2 },
     });
 
@@ -184,7 +183,6 @@ export default function DashboardPage() {
     if (!selectedProject) return;
     const supabase = createClient();
     supabase.from("contributions").select("*").eq("project_id", selectedProject.id).then(({ data }) => setContributions(data ?? []));
-    // Actualizado select aquí también
     supabase.from("project_members").select("id, name, role").eq("project_id", selectedProject.id).then(({ data }) => setMembers(data ?? []));
   }, [selectedProject?.id]);
 
@@ -260,7 +258,6 @@ export default function DashboardPage() {
                   <p className="mt-2 text-slate-500 font-medium">Risk-adjusted equity tracking.</p>
                 </div>
                 <div className="flex gap-3">
-                  {/* BOTÓN NUEVO: EXPORT PDF */}
                   <button 
                     onClick={generatePDF}
                     className="inline-flex items-center gap-2 rounded-xl bg-white border border-slate-200 px-5 py-3 font-bold text-slate-700 shadow-sm hover:bg-slate-50 transition-all hover:-translate-y-0.5"
