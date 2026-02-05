@@ -14,10 +14,9 @@ interface CreateProjectModalProps {
 export function CreateProjectModal({ isOpen, onClose, onProjectCreated }: CreateProjectModalProps) {
   const [step, setStep] = useState(1);
   const [name, setName] = useState("");
-  const [model, setModel] = useState("just_split"); // Internal state uses lowercase
+  const [model, setModel] = useState("just_split"); 
   const [loading, setLoading] = useState(false);
 
-  // Default values for Custom model editing
   const [mults, setMults] = useState({
     cash: 4,
     work: 2,
@@ -37,30 +36,28 @@ export function CreateProjectModal({ isOpen, onClose, onProjectCreated }: Create
 
   const handleSubmit = async () => {
     setLoading(true);
-    const { data: { user } } = await supabase.auth.getUser();
     
-    if (!user) { 
+    // 1. Verificamos usuario
+    const { data: { user }, error: authError } = await supabase.auth.getUser();
+    if (authError || !user) { 
+        alert("Error: User not authenticated. Please log in again.");
         setLoading(false); 
         return; 
     }
 
-    // 1. Calculate Final Multipliers based on selected model
-    // We override the custom inputs if a preset model is selected
+    // 2. Preparamos multiplicadores
     let finalMults = { ...mults };
-    
     if (model === 'just_split') {
-        // Recommended logic: Cash x4, everything else x2
         finalMults = { cash: 4, work: 2, tangible: 2, intangible: 2, others: 2 };
     } else if (model === 'flat') {
-        // Flat logic: Everything x1
         finalMults = { cash: 1, work: 1, tangible: 1, intangible: 1, others: 1 };
     }
 
-    // 2. Prepare payload matching the NEW Database Schema
+    // 3. Insertamos PROYECTO
     const payload = { 
         name, 
-        owner_id: user.id, // Correct column name
-        model_type: model === 'just_split' ? 'JUST_SPLIT' : model === 'flat' ? 'FLAT' : 'CUSTOM', // Uppercase for DB Enum
+        owner_id: user.id, 
+        model_type: model === 'just_split' ? 'JUST_SPLIT' : model === 'flat' ? 'FLAT' : 'CUSTOM',
         mult_cash: finalMults.cash,
         mult_work: finalMults.work,
         mult_tangible: finalMults.tangible,
@@ -69,22 +66,21 @@ export function CreateProjectModal({ isOpen, onClose, onProjectCreated }: Create
         use_log_risk: false
     };
 
-    // 3. Insert into Supabase
-    const { data: project, error } = await supabase
+    const { data: project, error: projectError } = await supabase
       .from("projects")
       .insert([payload])
       .select()
       .single();
 
-    if (error) {
-        console.error("Error creating project:", error);
+    if (projectError) {
+        console.error("Error creating project:", projectError);
+        alert(`Error creating project: ${projectError.message}`); // AVISO VISUAL
         setLoading(false);
         return;
     }
 
     if (project) {
-        // 4. Create Owner Member
-        // Assuming 'project_members' table exists as per your previous code
+        // 4. Insertamos MIEMBRO (Aquí es donde fallaba si no existía la tabla)
         const { error: memberError } = await supabase.from("project_members").insert({
             project_id: project.id,
             user_id: user.id,
@@ -94,13 +90,15 @@ export function CreateProjectModal({ isOpen, onClose, onProjectCreated }: Create
             status: 'active'
         });
 
-        if (!memberError) {
+        if (memberError) {
+            console.error("Error adding owner:", memberError);
+            alert(`Project created but failed to add owner: ${memberError.message}`); // AVISO VISUAL
+        } else {
+            // ÉXITO TOTAL
             onProjectCreated(project);
             setName("");
             setStep(1);
             onClose();
-        } else {
-            console.error("Error adding owner:", memberError);
         }
     }
     setLoading(false);
