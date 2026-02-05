@@ -14,8 +14,7 @@ import type { Project, Contribution } from "@/types/database";
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 
-// --- SOLUCIÓN AL ERROR DE TYPESCRIPT ---
-// Extendemos el tipo Project para que acepte la nueva columna equity_model
+// --- TIPOS EXTENDIDOS ---
 type ExtendedProject = Project & {
   equity_model?: string;
 };
@@ -35,7 +34,6 @@ export default function ProjectDashboardPage() {
   const projectId = params.id as string;
   const router = useRouter();
 
-  // Usamos ExtendedProject en lugar de Project
   const [project, setProject] = useState<ExtendedProject | null>(null);
   const [contributions, setContributions] = useState<ExtendedContribution[]>([]);
   const [members, setMembers] = useState<Member[]>([]); 
@@ -59,7 +57,7 @@ export default function ProjectDashboardPage() {
       router.push("/dashboard"); 
       return;
     }
-    setProject(projectData as ExtendedProject); // Forzamos el tipo extendido aquí
+    setProject(projectData as ExtendedProject);
 
     const { data: contributionsData } = await supabase
       .from("contributions")
@@ -75,7 +73,6 @@ export default function ProjectDashboardPage() {
       .eq("project_id", projectId);
       
     setMembers(membersData ?? []);
-    
     setLoading(false);
   };
 
@@ -96,41 +93,97 @@ export default function ProjectDashboardPage() {
     setContributions((prev) => prev.filter((c) => c.id !== contribution.id));
   };
 
+  // --- FUNCIÓN GENERAR PDF (CON TIPADO CORREGIDO) ---
   const generatePDF = () => {
     if (!project) return;
     const doc = new jsPDF();
     const projectName = project.name || "Project Report";
-    const headerBg = [15, 23, 42];      
-    const table1Header = [16, 185, 129]; 
+    
+    // Forzamos el tipo de color a una tupla de 3 números para TypeScript
+    const colorDark: [number, number, number] = [15, 23, 42];      
+    const colorEmerald: [number, number, number] = [16, 185, 129]; 
+    const colorBlue: [number, number, number] = [59, 130, 246];    
+    const colorGray: [number, number, number] = [100, 116, 139];
 
-    doc.setFillColor(headerBg[0], headerBg[1], headerBg[2]); 
-    doc.rect(0, 0, 210, 30, 'F'); 
+    // 1. Cabecera Estilo Dashboard
+    doc.setFillColor(colorDark[0], colorDark[1], colorDark[2]);
+    doc.rect(0, 0, 210, 40, 'F');
     doc.setTextColor(255, 255, 255);
-    doc.setFontSize(22);
     doc.setFont("helvetica", "bold");
-    doc.text("EQUILY", 14, 18);
-    doc.setTextColor(15, 23, 42); 
-    doc.setFontSize(26);
-    doc.text(projectName, 14, 50);
+    doc.setFontSize(24);
+    doc.text("EQUILY", 14, 20);
     doc.setFontSize(10);
-    doc.setTextColor(100, 116, 139);
-    doc.text(`Generated on: ${new Date().toLocaleDateString()}`, 14, 56);
+    doc.setFont("helvetica", "normal");
+    doc.text("Dynamic Equity Split Report", 14, 28);
+
+    // 2. Título y Meta
+    doc.setTextColor(colorDark[0], colorDark[1], colorDark[2]);
+    doc.setFontSize(28);
+    doc.setFont("helvetica", "bold");
+    doc.text(projectName.toLowerCase(), 14, 60);
+    doc.setFontSize(10);
+    doc.setTextColor(colorGray[0], colorGray[1], colorGray[2]);
+    doc.text(`Generated on: ${new Date().toLocaleDateString()}`, 14, 68);
+
+    // 3. Tabla de Reparto de la Empresa
+    doc.setTextColor(colorDark[0], colorDark[1], colorDark[2]);
+    doc.setFontSize(14);
+    doc.text("Equity Distribution", 14, 85);
+
+    const totalProjectValue = contributions.reduce((sum, c) => sum + (Number(c.risk_adjusted_value) || 0), 0);
 
     const memberRows = members.map(m => {
-        const memberContributions = contributions.filter(c => c.contributor_name === m.name);
-        const memberTotal = memberContributions.reduce((sum, c) => sum + (c.risk_adjusted_value || 0), 0);
-        return [m.name, m.role || "Member", memberTotal.toFixed(2)];
+        const memberTotal = contributions
+          .filter(c => c.contributor_name === m.name)
+          .reduce((sum, c) => sum + (Number(c.risk_adjusted_value) || 0), 0);
+        
+        const percentage = totalProjectValue > 0 
+          ? ((memberTotal / totalProjectValue) * 100).toFixed(2) 
+          : "0.00";
+
+        // Aseguramos que los valores sean siempre string para evitar el error RowInput
+        return [
+          m.name ?? "Unknown", 
+          m.role ?? "Co-founder", 
+          memberTotal.toLocaleString(undefined, { minimumFractionDigits: 2 }), 
+          `${percentage}%`
+        ];
     });
 
     autoTable(doc, {
-      startY: 80,
-      head: [['Member', 'Role', 'Risk Value']],
+      startY: 90,
+      head: [['Member', 'Role', 'Risk Value', 'Equity %']],
       body: memberRows,
-      theme: 'grid',
-      headStyles: { fillColor: [table1Header[0], table1Header[1], table1Header[2]], textColor: 255 }
+      theme: 'striped',
+      headStyles: { fillColor: colorEmerald, textColor: 255, fontStyle: 'bold' },
+      styles: { fontSize: 9, cellPadding: 4 }
     });
 
-    doc.save(`${projectName}_Report.pdf`);
+    // 4. Tabla Log de Contribuciones
+    const finalY = (doc as any).lastAutoTable.finalY || 150;
+    doc.setFontSize(14);
+    doc.setTextColor(colorDark[0], colorDark[1], colorDark[2]);
+    doc.text("Contribution Log", 14, finalY + 20);
+
+    const contributionRows = contributions.map(c => [
+      c.date ? new Date(c.date).toLocaleDateString() : 'N/A',
+      c.contributor_name ?? "Anonymous",
+      c.type ?? "Other",
+      c.concept ?? "No description",
+      Number(c.amount).toLocaleString(undefined, { minimumFractionDigits: 2 }),
+      Number(c.risk_adjusted_value).toLocaleString(undefined, { minimumFractionDigits: 2 })
+    ]);
+
+    autoTable(doc, {
+      startY: finalY + 25,
+      head: [['Date', 'Contributor', 'Category', 'Description', 'Value', 'Risk Adj. Value']],
+      body: contributionRows,
+      theme: 'striped',
+      headStyles: { fillColor: colorBlue, textColor: 255, fontStyle: 'bold' },
+      styles: { fontSize: 8, cellPadding: 3 }
+    });
+
+    doc.save(`${projectName}_Report_Full.pdf`);
   };
 
   useEffect(() => { 
