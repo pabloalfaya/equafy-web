@@ -79,46 +79,46 @@ export function CreateProjectModal({ isOpen, onClose, onProjectCreated }: Create
   };
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/50 backdrop-blur-sm p-4">
-      {/* Ajustado max-w y padding para que quepa mejor en pantallas pequeñas */}
-      <div className="relative w-full max-w-5xl bg-white rounded-[32px] shadow-2xl p-6 md:p-8 text-slate-900 overflow-y-auto max-h-[95vh] animate-in fade-in zoom-in duration-300">
+    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4">
+      {/* El contenedor ahora cambia su ancho según el paso: max-w-lg para el nombre, max-w-5xl para la lógica */}
+      <div className={`relative w-full ${step === 1 ? 'max-w-lg' : 'max-w-5xl'} bg-white rounded-[32px] shadow-2xl p-6 md:p-8 text-slate-900 transition-all duration-300 overflow-y-auto max-h-[95vh]`}>
         
-        <button onClick={onClose} className="absolute top-6 right-6 text-slate-400 hover:text-slate-900 transition-colors">
-          <X className="w-6 h-6" />
+        <button onClick={onClose} className="absolute top-6 right-6 text-slate-400 hover:text-slate-900 transition-colors z-20">
+          <X className="w-5 h-5" />
         </button>
 
         {step === 1 ? (
-          <form onSubmit={handleNext} className="max-w-md mx-auto py-12 space-y-8 text-center">
+          <form onSubmit={handleNext} className="py-8 space-y-6 text-center animate-in fade-in zoom-in duration-300">
             <div>
-                <div className="w-16 h-16 bg-emerald-50 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                    <Rocket className="w-8 h-8 text-emerald-600" />
+                <div className="w-14 h-14 bg-emerald-50 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                    <Rocket className="w-7 h-7 text-emerald-600" />
                 </div>
-                <h2 className="text-3xl font-black mb-1 text-slate-900">Name your venture</h2>
-                <p className="text-slate-600 font-bold">What is the name of this new project?</p>
+                <h2 className="text-2xl font-black mb-1 text-slate-900 tracking-tight">Name your venture</h2>
+                <p className="text-slate-600 font-bold text-sm">What is the name of this new project?</p>
             </div>
             
             <input 
               autoFocus type="text" value={name} onChange={(e) => setName(e.target.value)}
               placeholder="e.g. Apollo Dynamics"
-              className="w-full px-6 py-4 rounded-xl bg-slate-50 border-2 border-slate-200 focus:border-emerald-500 focus:bg-white outline-none transition-all font-bold text-xl text-center placeholder:text-slate-300 text-slate-800"
+              className="w-full px-5 py-4 rounded-xl bg-slate-50 border-2 border-slate-100 focus:border-emerald-500 focus:bg-white outline-none transition-all font-bold text-lg text-center placeholder:text-slate-300 text-slate-800"
               required
             />
 
-            <button type="submit" className="w-full flex items-center justify-center gap-2 bg-slate-900 text-white py-4 rounded-xl font-black hover:bg-emerald-600 transition-all group">
-                Continue to Logic <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+            <button type="submit" className="w-full flex items-center justify-center gap-2 bg-slate-900 text-white py-4 rounded-xl font-black hover:bg-emerald-600 transition-all group shadow-lg active:scale-[0.98]">
+                Continue to Logic <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
             </button>
           </form>
         ) : (
           <div className="space-y-6 animate-in slide-in-from-right-4 duration-500">
-            <div className="text-center">
+            <div className="text-center pt-2">
               <h2 className="text-2xl font-black mb-1 uppercase tracking-tight text-slate-900">Choose your logic</h2>
               <p className="text-slate-600 font-bold text-sm">Select the best multiplier set for your team.</p>
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
               
-              {/* TARJETA CUSTOM (MÁS COMPACTA) */}
-              <div onClick={() => setModel('custom')} className={`relative p-5 rounded-2xl border-2 transition-all cursor-pointer flex flex-col ${model === 'custom' ? 'border-blue-500 bg-blue-50/20 ring-1 ring-blue-500/20' : 'border-slate-100 bg-slate-50/50 hover:border-slate-200'}`}>
+              {/* TARJETA CUSTOM */}
+              <div onClick={() => setModel('custom')} className={`relative p-5 rounded-2xl border-2 transition-all cursor-pointer flex flex-col ${model === 'custom' ? 'border-blue-500 bg-blue-50/30 ring-1 ring-blue-500/20' : 'border-slate-100 bg-slate-50/50 hover:border-slate-200'}`}>
                 <div className="flex items-center gap-3 mb-4">
                     <div className={`p-2 rounded-lg ${model === 'custom' ? 'bg-blue-500 text-white' : 'bg-white text-slate-400 shadow-sm'}`}><Settings className="w-4 h-4" /></div>
                     <span className="font-black text-slate-800">Custom</span>
@@ -132,7 +132,7 @@ export function CreateProjectModal({ isOpen, onClose, onProjectCreated }: Create
                                 value={mults[label.toLowerCase() as keyof typeof mults]}
                                 onClick={(e) => e.stopPropagation()}
                                 onChange={(e) => setMults({...mults, [label.toLowerCase()]: parseFloat(e.target.value) || 0})}
-                                className="w-10 bg-transparent text-right font-black text-blue-700 outline-none focus:ring-1 ring-blue-200 rounded"
+                                className="w-10 bg-transparent text-right font-black text-blue-700 outline-none rounded"
                             />
                         </div>
                     ))}
@@ -143,9 +143,9 @@ export function CreateProjectModal({ isOpen, onClose, onProjectCreated }: Create
                 </div>
               </div>
 
-              {/* TARJETA JUST SPLIT (DISEÑO MEJORADO) */}
-              <div onClick={() => setModel('just_split')} className={`relative p-5 rounded-2xl border-2 transition-all cursor-pointer flex flex-col ${model === 'just_split' ? 'border-emerald-500 bg-emerald-50/30 ring-1 ring-emerald-500/20' : 'border-slate-100 bg-slate-50/50 hover:border-slate-200'}`}>
-                <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-emerald-500 text-white text-[9px] font-black px-3 py-1 rounded-full uppercase">Best Choice</div>
+              {/* TARJETA JUST SPLIT */}
+              <div onClick={() => setModel('just_split')} className={`relative p-5 rounded-2xl border-2 transition-all cursor-pointer flex flex-col ${model === 'just_split' ? 'border-emerald-500 bg-emerald-50/40 ring-1 ring-emerald-500/20' : 'border-slate-100 bg-slate-50/50 hover:border-slate-200'}`}>
+                <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-emerald-500 text-white text-[9px] font-black px-3 py-1 rounded-full uppercase shadow-lg z-10">Best Choice</div>
                 <div className="flex items-center gap-3 mb-4">
                     <div className={`p-2 rounded-lg ${model === 'just_split' ? 'bg-emerald-500 text-white' : 'bg-white text-slate-400 shadow-sm'}`}><ShieldCheck className="w-4 h-4" /></div>
                     <span className="font-black text-slate-800">Just Split Model</span>
@@ -160,7 +160,7 @@ export function CreateProjectModal({ isOpen, onClose, onProjectCreated }: Create
                 </div>
                 <div className="p-2.5 bg-white rounded-lg border border-slate-100 flex justify-between items-center mb-4 shadow-sm">
                     <span className="text-[9px] font-black text-slate-800 uppercase">LOGARITHMIC RISK</span>
-                    <div className="w-3.5 h-3.5 bg-emerald-500 rounded-sm"></div>
+                    <div className="w-3.5 h-3.5 bg-emerald-500 rounded-sm shadow-sm shadow-emerald-500/30"></div>
                 </div>
                 <p className="text-[9px] text-center text-emerald-700 font-black uppercase tracking-widest underline decoration-2 underline-offset-4">Recommended</p>
               </div>
@@ -177,7 +177,7 @@ export function CreateProjectModal({ isOpen, onClose, onProjectCreated }: Create
                         <span className="text-3xl font-black tracking-tighter text-slate-900">x1</span>
                     </div>
                     <div className="p-3 bg-slate-50/50 rounded-lg border border-dashed border-slate-200 text-[9px] font-bold italic text-slate-500 text-center leading-tight">
-                        Simple linear split where every unit is equal.
+                        Simple linear split where every unit is treated as equal.
                     </div>
                 </div>
                 <p className="text-[9px] text-center text-purple-700 font-black uppercase tracking-widest mt-auto">Fixed split</p>
@@ -189,7 +189,7 @@ export function CreateProjectModal({ isOpen, onClose, onProjectCreated }: Create
                 <button onClick={() => setStep(1)} className="flex items-center gap-2 text-xs font-black text-slate-400 hover:text-slate-900 transition-colors">
                     <ArrowLeft className="w-4 h-4" /> BACK
                 </button>
-                <button onClick={handleSubmit} disabled={loading} className="px-8 py-3.5 bg-slate-900 text-white rounded-xl font-black hover:bg-emerald-600 transition-all flex items-center gap-2 shadow-lg active:scale-95 disabled:opacity-50">
+                <button onClick={handleSubmit} disabled={loading} className="px-8 py-3.5 bg-slate-900 text-white rounded-xl font-black hover:bg-emerald-600 transition-all flex items-center gap-2 shadow-lg active:scale-[0.98] disabled:opacity-50">
                     {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <>Launch Project <Rocket className="w-4 h-4" /></>}
                 </button>
             </div>
