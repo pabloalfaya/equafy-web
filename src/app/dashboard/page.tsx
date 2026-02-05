@@ -11,14 +11,16 @@ import { AddMemberModal } from "@/components/AddMemberModal";
 import { CreateProjectModal } from "@/components/CreateProjectModal";
 import type { Project, Contribution } from "@/types/database";
 
-// Importaciones para el PDF
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 
-// Tipos extendidos para flexibilidad
+// Definimos un tipo flexible para que no de error si faltan campos en los tipos oficiales
 type ExtendedContribution = Contribution & {
   date?: string;
-  [key: string]: any; // Permitimos propiedades extra para evitar errores
+  concept?: string;     // La columna real de la descripción
+  multiplier?: number;  // A veces se llama multiplier
+  risk_multiplier?: number; // A veces risk_multiplier
+  [key: string]: any;
 };
 
 type Member = { id: string; name: string; role?: string };
@@ -89,13 +91,13 @@ export default function DashboardPage() {
     setContributions((prev) => prev.filter((c) => c.id !== contribution.id));
   };
 
-  // --- FUNCIÓN PARA GENERAR EL PDF ---
+  // --- FUNCIÓN GENERAR PDF ---
   const generatePDF = () => {
     const doc = new jsPDF();
     const projectName = selectedProject?.name || "Project Report";
 
-    // 1. CABECERA
-    doc.setFillColor(16, 185, 129); // Verde Emerald
+    // 1. CABECERA (Verde Emerald)
+    doc.setFillColor(16, 185, 129); 
     doc.rect(0, 0, 210, 20, 'F'); 
     
     doc.setTextColor(255, 255, 255);
@@ -103,15 +105,15 @@ export default function DashboardPage() {
     doc.setFont("helvetica", "bold");
     doc.text("EQUILY REPORT", 14, 13);
 
-    doc.setTextColor(15, 23, 42); // Slate 900
+    doc.setTextColor(15, 23, 42); 
     doc.setFontSize(22);
     doc.text(projectName, 14, 35);
     
     doc.setFontSize(10);
-    doc.setTextColor(100, 116, 139); // Slate 500
+    doc.setTextColor(100, 116, 139);
     doc.text(`Generated on: ${new Date().toLocaleDateString()}`, 14, 42);
 
-    // 2. CÁLCULO DE EQUITY
+    // 2. CÁLCULO DE EQUITY (Usando risk_adjusted_value)
     const totalRiskValue = contributions.reduce((sum, c) => sum + (c.risk_adjusted_value || 0), 0);
     
     const memberRows = members.map(m => {
@@ -127,7 +129,7 @@ export default function DashboardPage() {
         ];
     });
 
-    // 3. TABLA EQUITY
+    // TABLA 1: EQUITY DISTRIBUTION
     doc.setFontSize(12);
     doc.setTextColor(15, 23, 42);
     doc.text("Equity Distribution", 14, 55);
@@ -142,7 +144,7 @@ export default function DashboardPage() {
       alternateRowStyles: { fillColor: [248, 250, 252] }
     });
 
-    // 4. TABLA APORTACIONES
+    // 3. PREPARACIÓN TABLA 2: APORTACIONES
     const finalY = (doc as any).lastAutoTable.finalY || 60;
     
     doc.setFontSize(12);
@@ -150,33 +152,32 @@ export default function DashboardPage() {
     doc.text("Contribution Log", 14, finalY + 15);
 
     const contributionRows = contributions.map(c => {
-      // FECHA
+      // A. FECHA (Prioridad: 'date' manual > 'created_at' sistema)
       const rawDate = c.date || c.created_at;
       const displayDate = rawDate ? new Date(rawDate).toLocaleDateString() : "-";
 
-      // DESCRIPTION: Usamos el campo 'type' de la BD
-      const descriptionText = c.type || "-";
+      // B. DESCRIPCIÓN (Usamos 'concept' que es lo que sale en tu BD)
+      const descriptionText = c.concept || "-"; 
 
-      // CORRECCIÓN PARA EL ERROR "risk_multiplier does not exist"
-      // Leemos cualquier propiedad que pueda contener el multiplicador
-      const riskVal = (c as any).risk_multiplier || (c as any).multiplier || 1;
-
-      // TYPE (Categoría): Calculada basada en el multiplicador
-      let category = "Other";
+      // C. CATEGORÍA (Calculada según el multiplicador)
+      // Buscamos el multiplicador en cualquiera de los dos campos posibles
+      const riskVal = c.multiplier || c.risk_multiplier || 1;
+      
+      let category = "Others";
       if (riskVal >= 4) category = "Cash";
-      else if (riskVal === 2) category = "Work/IP";
-      else if (riskVal === 1) category = "Tangible";
-
+      else if (riskVal >= 2) category = "Work";
+      
       return [
         displayDate,
         c.contributor_name,
-        category,        // Columna Type (Calculada)
-        descriptionText, // Columna Description (Datos reales de la BD)
+        category,        // Columna CATEGORY (Cash, Work, Others)
+        descriptionText, // Columna DESCRIPTION (Concepto de la BD)
         c.amount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
         (c.risk_adjusted_value || 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })
       ];
     });
 
+    // TABLA 2: CONTRIBUTION LOG
     autoTable(doc, {
       startY: finalY + 20,
       head: [['Date', 'Contributor', 'Category', 'Description', 'Value', 'Risk Adj. Value']],
@@ -186,7 +187,7 @@ export default function DashboardPage() {
       styles: { fontSize: 9, cellPadding: 2 },
     });
 
-    // 5. PIE DE PÁGINA
+    // 4. PIE DE PÁGINA
     const pageCount = (doc as any).internal.getNumberOfPages();
     for(let i = 1; i <= pageCount; i++) {
         doc.setPage(i);
