@@ -1,16 +1,44 @@
 "use client"; 
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react"; // Añadido useRef y useEffect
 import Link from "next/link";
 import { 
   ShieldCheck, PieChart, PlayCircle, Mail, Twitter, Linkedin, ArrowRight,
-  Sliders, Zap, Scale, AlertTriangle, CheckCircle2, TrendingUp
+  Sliders, Scale, AlertTriangle, CheckCircle2, TrendingUp
 } from "lucide-react";
 
 export default function LandingPage() {
   // Estados para los interruptores decorativos
   const [standardRisk, setStandardRisk] = useState(true);
   const [customRisk, setCustomRisk] = useState(false);
+
+  // --- LÓGICA DEL NAVBAR ESCONDIDIZO ---
+  const [isNavVisible, setIsNavVisible] = useState(true);
+  const lastScrollY = useRef(0);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+      
+      // Si estamos arriba del todo (menos de 50px), mostrar siempre
+      if (currentScrollY < 50) {
+        setIsNavVisible(true);
+      } 
+      // Si bajamos (current > last) -> ESCONDER
+      else if (currentScrollY > lastScrollY.current) {
+        setIsNavVisible(false);
+      } 
+      // Si subimos (current < last) -> MOSTRAR
+      else {
+        setIsNavVisible(true);
+      }
+
+      lastScrollY.current = currentScrollY;
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   return (
     <div className="min-h-screen bg-[#F8FAFC] font-sans text-slate-900 selection:bg-emerald-100 selection:text-emerald-900 overflow-x-hidden">
@@ -22,8 +50,12 @@ export default function LandingPage() {
         <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]"></div>
       </div>
 
-      {/* --- NAVBAR --- */}
-      <nav className="fixed top-0 inset-x-0 z-50 border-b border-white/50 bg-white/60 backdrop-blur-xl transition-all duration-300">
+      {/* --- NAVBAR DINÁMICO --- */}
+      <nav 
+        className={`fixed top-0 inset-x-0 z-50 border-b border-white/50 bg-white/60 backdrop-blur-xl transition-transform duration-300 ease-in-out ${
+          isNavVisible ? 'translate-y-0' : '-translate-y-full'
+        }`}
+      >
         <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-3">
           <div className="flex items-center gap-8">
             <Link href="/" className="relative group">
@@ -46,17 +78,14 @@ export default function LandingPage() {
             </div>
           </div>
           <div className="flex items-center gap-4">
-            {/* Log in se mantiene igual */}
             <Link href="/login" className="hidden md:block text-sm font-bold text-slate-600 hover:text-slate-900 transition-colors">
               Log in
             </Link>
             
-            {/* Sign Up -> AHORA ENVÍA LA SEÑAL view=signup */}
             <Link href="/login?view=signup" className="hidden md:block text-sm font-bold text-slate-600 hover:text-emerald-600 transition-colors">
               Sign Up
             </Link>
             
-            {/* Start Free -> AHORA ENVÍA LA SEÑAL view=signup */}
             <Link href="/login?view=signup" className="relative group">
                <div className="absolute -inset-0.5 bg-gradient-to-r from-emerald-500 to-emerald-400 rounded-full blur opacity-60 group-hover:opacity-100 transition duration-200"></div>
                <div className="relative flex items-center bg-slate-900 rounded-full px-6 py-2.5 leading-none">
@@ -80,7 +109,6 @@ export default function LandingPage() {
             <span className="block mt-2 text-slate-400 text-base">Trustless. Dynamic. Fair.</span>
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            {/* Start Splitting Free -> AHORA ENVÍA LA SEÑAL view=signup */}
             <Link href="/login?view=signup" className="h-14 px-8 rounded-2xl bg-slate-900 text-white font-bold text-lg flex items-center justify-center shadow-xl shadow-slate-200 hover:bg-slate-800 hover:-translate-y-1 transition-all duration-300">
               Start Splitting Free
             </Link>
