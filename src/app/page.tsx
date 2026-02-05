@@ -1,4 +1,4 @@
-"use client"; // Añadido para permitir que los interruptores funcionen [cite: 2026-02-04]
+"use client"; // Añadido para permitir que los interruptores funcionen
 
 import { useState } from "react";
 import Link from "next/link";
@@ -34,7 +34,7 @@ export default function LandingPage() {
               {[
                 { name: "What is Equily?", href: "/what-is-equily" },
                 { name: "How does Equily work?", href: "/how-it-works" },
-                { name: "Pricing", href: "/pricing" } // Redirección confirmada a /pricing
+                { name: "Pricing", href: "/pricing" }
               ].map((item) => (
                 <Link key={item.name} href={item.href} className="px-5 py-2 text-sm font-bold text-slate-600 hover:text-slate-900 hover:bg-white rounded-full transition-all duration-200">
                   {item.name}
@@ -201,7 +201,9 @@ export default function LandingPage() {
                   <div className={`mt-6 rounded-xl p-4 border flex items-center justify-between transition-colors ${customRisk ? 'border-emerald-500/30 bg-white/5' : 'border-white/5 bg-transparent'}`}>
                     <div className="flex items-center gap-2">
                       <PieChart className={`w-4 h-4 transition-colors ${customRisk ? 'text-emerald-400' : 'text-slate-500'}`} />
-                      <span className={`text-sm font-bold transition-colors ${customRisk ? 'text-white' : 'text-slate-400'}`}>Logarithmic Risk</span>
+                      <span className={`text-sm font-bold transition-colors ${customRisk ? 'text-white' : 'text-slate-400'}`}>
+                        Logarithmic Risk <span className="text-[10px] opacity-70 font-normal ml-1">(Optional)</span>
+                      </span>
                     </div>
                     <button 
                       onClick={() => setCustomRisk(!customRisk)}
@@ -248,7 +250,9 @@ export default function LandingPage() {
                   <div className={`rounded-xl p-4 border flex items-center justify-between transition-colors ${standardRisk ? 'border-emerald-500/30 bg-white/5' : 'border-white/5 bg-transparent'}`}>
                     <div className="flex items-center gap-2">
                       <PieChart className={`w-4 h-4 transition-colors ${standardRisk ? 'text-emerald-400' : 'text-slate-500'}`} />
-                      <span className={`text-sm font-bold transition-colors ${standardRisk ? 'text-white' : 'text-slate-400'}`}>Logarithmic Risk</span>
+                      <span className={`text-sm font-bold transition-colors ${standardRisk ? 'text-white' : 'text-slate-400'}`}>
+                         Logarithmic Risk <span className="text-[10px] opacity-70 font-normal ml-1">(Optional)</span>
+                      </span>
                     </div>
                     <button 
                       onClick={() => setStandardRisk(!standardRisk)}
