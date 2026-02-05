@@ -15,12 +15,20 @@ import type { Project, Contribution } from "@/types/database";
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 
+// Definimos un tipo extendido para evitar errores de TypeScript
+type ExtendedContribution = Contribution & {
+  description?: string;
+  details?: string;
+  note?: string;
+  date?: string;
+};
+
 type Member = { id: string; name: string; role?: string };
 
 export default function DashboardPage() {
   const [projects, setProjects] = useState<Project[]>([]);
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
-  const [contributions, setContributions] = useState<Contribution[]>([]);
+  const [contributions, setContributions] = useState<ExtendedContribution[]>([]);
   const [members, setMembers] = useState<Member[]>([]); 
   const [loading, setLoading] = useState(true);
   
@@ -54,7 +62,7 @@ export default function DashboardPage() {
         .eq("project_id", project.id)
         .order("created_at", { ascending: true });
       
-      setContributions(contributionsData ?? []);
+      setContributions(contributionsData as ExtendedContribution[] ?? []);
 
       const { data: membersData } = await supabase
         .from("project_members")
@@ -88,8 +96,10 @@ export default function DashboardPage() {
     const doc = new jsPDF();
     const projectName = selectedProject?.name || "Project Report";
 
-    // 1. CABECERA
-    doc.setFillColor(16, 185, 129); // Emerald 500
+    // --- 1. CABECERA CON COLORES ---
+    // Puedes cambiar estos números RGB para cambiar el color
+    // Color Verde Emerald: [16, 185, 129]
+    doc.setFillColor(16, 185, 129); 
     doc.rect(0, 0, 210, 20, 'F'); 
     
     doc.setTextColor(255, 255, 255);
@@ -97,15 +107,15 @@ export default function DashboardPage() {
     doc.setFont("helvetica", "bold");
     doc.text("EQUILY REPORT", 14, 13);
 
-    doc.setTextColor(15, 23, 42); // Slate 900
+    doc.setTextColor(15, 23, 42); // Slate 900 (Oscuro)
     doc.setFontSize(22);
     doc.text(projectName, 14, 35);
     
     doc.setFontSize(10);
-    doc.setTextColor(100, 116, 139); // Slate 500
+    doc.setTextColor(100, 116, 139); // Slate 500 (Gris)
     doc.text(`Generated on: ${new Date().toLocaleDateString()}`, 14, 42);
 
-    // 2. CÁLCULO DE EQUITY
+    // --- 2. CÁLCULO DE EQUITY ---
     const totalRiskValue = contributions.reduce((sum, c) => sum + (c.risk_adjusted_value || 0), 0);
     
     const memberRows = members.map(m => {
@@ -121,7 +131,7 @@ export default function DashboardPage() {
         ];
     });
 
-    // 3. TABLA DE EQUITY
+    // --- 3. TABLA DE EQUITY ---
     doc.setFontSize(12);
     doc.setTextColor(15, 23, 42);
     doc.text("Equity Distribution", 14, 55);
@@ -131,12 +141,13 @@ export default function DashboardPage() {
       head: [['Member', 'Role', 'Risk Value', 'Equity %']],
       body: memberRows,
       theme: 'grid',
+      // Color del encabezado de la tabla (Verde)
       headStyles: { fillColor: [16, 185, 129], textColor: 255, fontStyle: 'bold' },
       styles: { fontSize: 10, cellPadding: 3 },
       alternateRowStyles: { fillColor: [248, 250, 252] }
     });
 
-    // 4. TABLA DE APORTACIONES
+    // --- 4. TABLA DE APORTACIONES ---
     const finalY = (doc as any).lastAutoTable.finalY || 60;
     
     doc.setFontSize(12);
@@ -144,17 +155,18 @@ export default function DashboardPage() {
     doc.text("Contribution Log", 14, finalY + 15);
 
     const contributionRows = contributions.map(c => {
-      // LOGICA CORREGIDA PARA LA FECHA:
-      // 1. Intentamos leer c.date (la fecha seleccionada manualmente)
-      // 2. Si no existe, usamos c.created_at (fecha de sistema)
-      const rawDate = (c as any).date || c.created_at;
+      // FECHA: Usamos c.date (manual) si existe, si no c.created_at (sistema)
+      const rawDate = c.date || c.created_at;
       const displayDate = rawDate ? new Date(rawDate).toLocaleDateString() : "-";
+
+      // DESCRIPCIÓN: Buscamos description, details, o desc para asegurar que salga algo
+      const description = c.description || c.details || c.note || "-";
 
       return [
         displayDate,
         c.contributor_name,
         c.type,
-        (c as any).description || "-",
+        description,
         c.amount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
         (c.risk_adjusted_value || 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })
       ];
@@ -165,11 +177,12 @@ export default function DashboardPage() {
       head: [['Date', 'Contributor', 'Type', 'Description', 'Value', 'Risk Adj. Value']],
       body: contributionRows,
       theme: 'striped',
+      // Color del encabezado de la segunda tabla (Oscuro)
       headStyles: { fillColor: [15, 23, 42], textColor: 255 },
       styles: { fontSize: 9, cellPadding: 2 },
     });
 
-    // 5. PIE DE PÁGINA
+    // --- 5. PIE DE PÁGINA ---
     const pageCount = (doc as any).internal.getNumberOfPages();
     for(let i = 1; i <= pageCount; i++) {
         doc.setPage(i);
@@ -188,7 +201,7 @@ export default function DashboardPage() {
   useEffect(() => {
     if (!selectedProject) return;
     const supabase = createClient();
-    supabase.from("contributions").select("*").eq("project_id", selectedProject.id).then(({ data }) => setContributions(data ?? []));
+    supabase.from("contributions").select("*").eq("project_id", selectedProject.id).then(({ data }) => setContributions(data as ExtendedContribution[] ?? []));
     supabase.from("project_members").select("id, name, role").eq("project_id", selectedProject.id).then(({ data }) => setMembers(data ?? []));
   }, [selectedProject?.id]);
 
@@ -264,7 +277,7 @@ export default function DashboardPage() {
                   <p className="mt-2 text-slate-500 font-medium">Risk-adjusted equity tracking.</p>
                 </div>
                 <div className="flex gap-3">
-                  {/* BOTÓN DE PDF */}
+                  {/* BOTÓN PDF */}
                   <button 
                     onClick={generatePDF}
                     className="inline-flex items-center gap-2 rounded-xl bg-white border border-slate-200 px-5 py-3 font-bold text-slate-700 shadow-sm hover:bg-slate-50 transition-all hover:-translate-y-0.5"
