@@ -71,11 +71,12 @@ export function CreateProjectModal() {
       </button>
 
       {isOpen && (
-        /* CAMBIOS IMPORTANTES:
-           1. z-[99999]: Prioridad máxima para estar encima de todo.
-           2. bg-[#0F172A]: Fondo SOLIDO (no transparente) para tapar la barra de navegación.
+        /* SOLUCIÓN DEFINITIVA:
+           1. fixed top-0 left-0 w-screen h-screen: Fuerza a ocupar TODA la pantalla desde el borde.
+           2. z-[2147483647]: Es el valor máximo de z-index posible en CSS. Nada puede estar encima.
+           3. bg-[#0F172A]: Fondo sólido para tapar la barra de navegación.
         */
-        <div className="fixed inset-0 z-[99999] flex items-center justify-center bg-[#0F172A] p-4 overflow-y-auto">
+        <div className="fixed top-0 left-0 w-screen h-screen z-[2147483647] flex items-center justify-center bg-[#0F172A] p-4 overflow-y-auto">
           
           {/* CONTENEDOR DEL MODAL */}
           <div className="relative w-full max-w-6xl bg-[#0F172A] border border-slate-800 rounded-[32px] shadow-2xl flex flex-col animate-in fade-in zoom-in duration-300 overflow-hidden text-white my-auto">
