@@ -1,3 +1,6 @@
+"use client";
+
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { 
   ShieldCheck, Sliders, Scale, CheckCircle2, AlertTriangle, 
@@ -5,6 +8,34 @@ import {
 } from "lucide-react";
 
 export default function ModelsPage() {
+  // --- LÓGICA DEL NAVBAR ESCONDIDIZO ---
+  const [isNavVisible, setIsNavVisible] = useState(true);
+  const lastScrollY = useRef(0);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+      
+      // Si estamos arriba del todo (menos de 50px), mostrar siempre
+      if (currentScrollY < 50) {
+        setIsNavVisible(true);
+      } 
+      // Si bajamos (current > last) -> ESCONDER
+      else if (currentScrollY > lastScrollY.current) {
+        setIsNavVisible(false);
+      } 
+      // Si subimos (current < last) -> MOSTRAR
+      else {
+        setIsNavVisible(true);
+      }
+
+      lastScrollY.current = currentScrollY;
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
   return (
     <div className="min-h-screen bg-[#F8FAFC] font-sans text-slate-900 selection:bg-emerald-100 selection:text-emerald-900 overflow-x-hidden">
       
@@ -15,8 +46,12 @@ export default function ModelsPage() {
         <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]"></div>
       </div>
 
-      {/* --- NAVBAR COMPLETO (IGUAL QUE HOME) --- */}
-      <nav className="fixed top-0 inset-x-0 z-50 border-b border-white/50 bg-white/60 backdrop-blur-xl transition-all duration-300">
+      {/* --- NAVBAR DINÁMICO --- */}
+      <nav 
+        className={`fixed top-0 inset-x-0 z-50 border-b border-white/50 bg-white/60 backdrop-blur-xl transition-transform duration-300 ease-in-out ${
+          isNavVisible ? 'translate-y-0' : '-translate-y-full'
+        }`}
+      >
         <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-3">
           <div className="flex items-center gap-8">
             <Link href="/" className="relative group">
@@ -38,14 +73,15 @@ export default function ModelsPage() {
               </Link>
             </div>
           </div>
+          
           <div className="flex items-center gap-4">
             <Link href="/login" className="hidden md:block text-sm font-bold text-slate-600 hover:text-slate-900 transition-colors">
               Log in
             </Link>
-            <Link href="/login" className="hidden md:block text-sm font-bold text-slate-600 hover:text-emerald-600 transition-colors">
+            <Link href="/login?view=signup" className="hidden md:block text-sm font-bold text-slate-600 hover:text-emerald-600 transition-colors">
               Sign Up
             </Link>
-            <Link href="/login" className="relative group">
+            <Link href="/login?view=signup" className="relative group">
                <div className="absolute -inset-0.5 bg-gradient-to-r from-emerald-500 to-emerald-400 rounded-full blur opacity-60 group-hover:opacity-100 transition duration-200"></div>
                <div className="relative flex items-center bg-slate-900 rounded-full px-6 py-2.5 leading-none">
                  <span className="text-sm font-bold text-white group-hover:text-emerald-50 transition duration-200">Start Free</span>
@@ -90,7 +126,6 @@ export default function ModelsPage() {
                   <h4 className="font-black text-blue-600 uppercase text-xs tracking-widest mb-4 flex items-center gap-2">
                     <Briefcase className="w-4 h-4" /> Work, Tangibles & Intangibles: x2 Multiplier
                   </h4>
-                  {/* ACTUALIZADO: Incluye tangibles e intangibles con x2 */}
                   <p className="text-slate-600 leading-relaxed font-medium">
                     Recognizes the "potential" risk of time, equipment (tangibles), or knowledge (intangibles). Partners aren't charging market salaries, so we give double value to these essential contributions.
                   </p>
