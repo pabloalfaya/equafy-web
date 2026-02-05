@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { X, UserPlus, Trash2, Briefcase, Mail, Loader2 } from "lucide-center";
+// CORREGIDO: "lucide-center" cambiado por "lucide-react"
+import { X, UserPlus, Trash2, Briefcase, Mail, Loader2 } from "lucide-react";
 import { createClient } from "@/utils/supabase/client";
 
 interface AddMemberModalProps {
@@ -52,7 +53,7 @@ export function AddMemberModal({ isOpen, onClose, projectId, onSuccess }: AddMem
 
     const status = email ? 'pending' : 'active';
     
-    // Ahora enviamos el rol tal cual lo escribes, o "Member" por defecto
+    // Enviamos el rol tal cual lo escribes (ej: "Worker", "CEO")
     const finalRole = role.trim() || "Member";
 
     const { error } = await supabase.from("project_members").insert([
@@ -97,7 +98,7 @@ export function AddMemberModal({ isOpen, onClose, projectId, onSuccess }: AddMem
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4">
       <div className="absolute inset-0" onClick={onClose}></div>
 
-      <div className="relative w-full max-w-lg bg-white rounded-2xl shadow-2xl flex flex-col overflow-hidden animate-in fade-in zoom-in duration-200 max-h-[85vh] z-10">
+      <div className="relative w-full max-w-lg bg-white rounded-2xl shadow-2xl flex flex-col overflow-hidden animate-in fade-in zoom-in duration-200 max-h-[85vh] z-10 font-sans">
         <div className="flex items-center justify-between px-6 py-5 border-b border-slate-100 bg-slate-50/50">
           <h3 className="text-lg font-bold text-slate-800 flex items-center gap-2">
             <UserPlus className="h-5 w-5 text-emerald-600" />
@@ -191,6 +192,7 @@ export function AddMemberModal({ isOpen, onClose, projectId, onSuccess }: AddMem
                     </div>
                     
                     <button 
+                      type="button"
                       onClick={() => handleDeleteMember(member.id)}
                       className="p-2 text-slate-300 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all opacity-0 group-hover:opacity-100"
                     >
