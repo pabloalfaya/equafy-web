@@ -71,9 +71,10 @@ export function CreateProjectModal() {
       </button>
 
       {isOpen && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-950/80 backdrop-blur-sm p-4 overflow-y-auto">
-          {/* CONTENEDOR DEL MODAL (OSCURO) */}
-          <div className="relative w-full max-w-6xl bg-[#0F172A] border border-slate-800 rounded-[32px] shadow-2xl flex flex-col animate-in fade-in zoom-in duration-300 overflow-hidden text-white">
+        /* CAMBIO CLAVE: z-[9999] para asegurar que tape el banner de arriba */
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-slate-950/80 backdrop-blur-sm p-4 overflow-y-auto">
+          {/* CONTENEDOR DEL MODAL */}
+          <div className="relative w-full max-w-6xl bg-[#0F172A] border border-slate-800 rounded-[32px] shadow-2xl flex flex-col animate-in fade-in zoom-in duration-300 overflow-hidden text-white my-auto">
             
             <button onClick={() => setIsOpen(false)} className="absolute right-6 top-6 text-slate-400 hover:text-white transition-colors z-20">
               <X className="w-6 h-6" />
