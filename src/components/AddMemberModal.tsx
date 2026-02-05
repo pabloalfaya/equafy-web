@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { X, UserPlus, Trash2, Briefcase } from "lucide-react";
+import { X, UserPlus, Trash2, Briefcase, Mail, CheckCircle2 } from "lucide-react";
 import { createClient } from "@/utils/supabase/client";
 
 interface AddMemberModalProps {
@@ -13,7 +13,7 @@ interface AddMemberModalProps {
 
 interface Member {
   id: string;
-  email: string; // Ajustado a 'email' según tu código anterior
+  email: string | null; // Ahora puede ser null
   name: string;
   role: string;
 }
@@ -21,9 +21,9 @@ interface Member {
 export function AddMemberModal({ isOpen, onClose, projectId, onSuccess }: AddMemberModalProps) {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
-  const [role, setRole] = useState(""); // Nuevo estado para el rol
+  const [role, setRole] = useState("");
   const [loading, setLoading] = useState(false);
-  const [members, setMembers] = useState<Member[]>([]); // Estado para la lista
+  const [members, setMembers] = useState<Member[]>([]);
 
   const supabase = createClient();
 
@@ -37,10 +37,11 @@ export function AddMemberModal({ isOpen, onClose, projectId, onSuccess }: AddMem
   const fetchMembers = async () => {
     if (!projectId) return;
     
-    const { data, error } = await supabase
+    const { data } = await supabase
       .from("project_members")
       .select("*")
-      .eq("project_id", projectId);
+      .eq("project_id", projectId)
+      .order("created_at", { ascending: true }); // Ordenar por fecha
     
     if (data) setMembers(data);
   };
@@ -51,12 +52,16 @@ export function AddMemberModal({ isOpen, onClose, projectId, onSuccess }: AddMem
 
     setLoading(true);
 
+    // Lógica: Si hay email, es 'pending' (invitación). Si no, es 'active' (manual).
+    const status = email ? 'pending' : 'active';
+
     const { error } = await supabase.from("project_members").insert([
       { 
         project_id: projectId, 
         name: name, 
-        email: email || null,
-        role: role || "Member" // Guardamos el rol (o Member por defecto)
+        email: email || null, // Si el string está vacío, mandamos null
+        role: role || "Member",
+        status: status 
       }
     ]);
 
@@ -70,13 +75,9 @@ export function AddMemberModal({ isOpen, onClose, projectId, onSuccess }: AddMem
       setEmail("");
       setRole("");
       
-      // Actualizamos la lista local y notificamos al padre
+      // Actualizamos lista y padre
       await fetchMembers();
       onSuccess();
-      
-      // NOTA: He quitado el onClose() aquí para que puedas seguir gestionando el equipo
-      // Si prefieres que se cierre al añadir, descomenta la siguiente línea:
-      // onClose();
     }
   };
 
@@ -90,7 +91,7 @@ export function AddMemberModal({ isOpen, onClose, projectId, onSuccess }: AddMem
 
     if (!error) {
       fetchMembers();
-      onSuccess(); // Para actualizar contadores en el padre si hace falta
+      onSuccess();
     }
   };
 
@@ -98,8 +99,11 @@ export function AddMemberModal({ isOpen, onClose, projectId, onSuccess }: AddMem
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4">
+      {/* Fondo clicable para cerrar */}
+      <div className="absolute inset-0" onClick={onClose}></div>
+
       {/* Modal Container */}
-      <div className="relative w-full max-w-lg bg-white rounded-2xl shadow-2xl flex flex-col overflow-hidden animate-in fade-in zoom-in duration-200 max-h-[85vh]">
+      <div className="relative w-full max-w-lg bg-white rounded-2xl shadow-2xl flex flex-col overflow-hidden animate-in fade-in zoom-in duration-200 max-h-[85vh] z-10">
         
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-5 border-b border-slate-100 bg-slate-50/50">
@@ -113,34 +117,43 @@ export function AddMemberModal({ isOpen, onClose, projectId, onSuccess }: AddMem
         </div>
         
         {/* Scrollable Content */}
-        <div className="p-6 overflow-y-auto">
+        <div className="p-6 overflow-y-auto custom-scrollbar">
           <form onSubmit={handleSubmit} className="space-y-4 mb-8">
+            
+            {/* Nombre */}
             <div>
-              <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Name</label>
+              <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Name <span className="text-red-500">*</span></label>
               <input 
                 type="text" 
                 required 
                 placeholder="e.g. Sarah" 
                 value={name} 
                 onChange={(e) => setName(e.target.value)}
-                className="w-full rounded-lg border border-slate-200 px-4 py-3 text-sm text-slate-700 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 transition-all" 
+                className="w-full rounded-lg border border-slate-200 px-4 py-3 text-sm text-slate-700 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 transition-all font-medium" 
               />
             </div>
 
+            {/* Email (Opcional) */}
             <div>
-              <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Email (Optional)</label>
-              <input 
-                type="email" 
-                placeholder="sarah@company.com" 
-                value={email} 
-                onChange={(e) => setEmail(e.target.value)}
-                className="w-full rounded-lg border border-slate-200 px-4 py-3 text-sm text-slate-700 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 transition-all" 
-              />
+              <label className="flex justify-between text-xs font-bold text-slate-700 uppercase mb-1">
+                <span>Email</span>
+                <span className="text-emerald-600 normal-case bg-emerald-50 px-2 rounded-full">Optional - sends invite</span>
+              </label>
+              <div className="relative">
+                <Mail className="absolute left-3 top-3.5 h-4 w-4 text-slate-400" />
+                <input 
+                  type="email" 
+                  placeholder="sarah@company.com" 
+                  value={email} 
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="w-full rounded-lg border border-slate-200 pl-10 pr-4 py-3 text-sm text-slate-700 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 transition-all" 
+                />
+              </div>
             </div>
 
-            {/* Nuevo campo de Rol */}
+            {/* Rol */}
             <div>
-              <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Role / Position</label>
+              <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Role</label>
               <div className="relative">
                 <Briefcase className="absolute left-3 top-3.5 h-4 w-4 text-slate-400" />
                 <input 
@@ -179,7 +192,13 @@ export function AddMemberModal({ isOpen, onClose, projectId, onSuccess }: AddMem
                           <span className="text-[10px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-100">
                             {member.role || "Member"}
                           </span>
-                          {member.email && <span className="text-[10px] text-slate-400">• {member.email}</span>}
+                          {member.email ? (
+                             <span className="text-[10px] text-slate-400 flex items-center gap-1">
+                                • {member.email}
+                             </span>
+                          ) : (
+                             <span className="text-[10px] text-slate-400 italic">• Manual Entry</span>
+                          )}
                         </div>
                       </div>
                     </div>
