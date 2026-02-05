@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation"; 
 import Link from "next/link";
-// Corregido: lucide-react en lugar de lucide-center
 import { Plus, TrendingUp, LayoutDashboard, PieChart, Users, Download, ArrowLeft } from "lucide-react";
 import { createClient } from "@/utils/supabase/client";
 import { EquityPieChart } from "@/components/EquityPieChart";
@@ -15,14 +14,8 @@ import type { Project, Contribution } from "@/types/database";
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 
-// --- TIPOS ---
 type ExtendedProject = Project & { equity_model?: string };
-type ExtendedContribution = Contribution & { 
-  date?: string; 
-  concept?: string; 
-  multiplier?: number; 
-  [key: string]: any 
-};
+type ExtendedContribution = Contribution & { date?: string; concept?: string; multiplier?: number; [key: string]: any };
 type Member = { id: string; name: string; role?: string };
 
 export default function ProjectDashboardPage() {
@@ -37,8 +30,6 @@ export default function ProjectDashboardPage() {
   
   const [modalOpen, setModalOpen] = useState(false);
   const [memberModalOpen, setMemberModalOpen] = useState(false);
-
-  // Estado para la edición de aportaciones
   const [editingContribution, setEditingContribution] = useState<ExtendedContribution | null>(null);
 
   const fetchData = async () => {
@@ -47,10 +38,7 @@ export default function ProjectDashboardPage() {
     setLoading(true);
 
     const { data: projectData, error: projectError } = await supabase
-      .from("projects")
-      .select("*")
-      .eq("id", projectId)
-      .single();
+      .from("projects").select("*").eq("id", projectId).single();
 
     if (projectError || !projectData) {
       router.push("/dashboard"); 
@@ -59,17 +47,12 @@ export default function ProjectDashboardPage() {
     setProject(projectData as ExtendedProject);
 
     const { data: contributionsData } = await supabase
-      .from("contributions")
-      .select("*")
-      .eq("project_id", projectId)
-      .order("created_at", { ascending: true });
+      .from("contributions").select("*").eq("project_id", projectId).order("created_at", { ascending: true });
     
     setContributions(contributionsData as ExtendedContribution[] ?? []);
 
     const { data: membersData } = await supabase
-      .from("project_members")
-      .select("id, name, role")
-      .eq("project_id", projectId);
+      .from("project_members").select("id, name, role").eq("project_id", projectId);
       
     setMembers(membersData ?? []);
     setLoading(false);
@@ -77,10 +60,7 @@ export default function ProjectDashboardPage() {
 
   const refreshMembers = async () => {
     const supabase = createClient();
-    const { data } = await supabase
-      .from("project_members")
-      .select("id, name, role")
-      .eq("project_id", projectId);
+    const { data } = await supabase.from("project_members").select("id, name, role").eq("project_id", projectId);
     setMembers(data ?? []);
   };
 
@@ -102,71 +82,6 @@ export default function ProjectDashboardPage() {
   const handleEditContribution = (contribution: ExtendedContribution) => {
     setEditingContribution(contribution);
     setModalOpen(true);
-  };
-
-  // --- PDF GENERATION ---
-  const generatePDF = () => {
-    if (!project) return;
-    const doc = new jsPDF();
-    const projectName = project.name || "Project Report";
-    
-    const colorDark: [number, number, number] = [15, 23, 42];      
-    const colorEmerald: [number, number, number] = [16, 185, 129]; 
-    const colorBlue: [number, number, number] = [59, 130, 246];    
-    const colorGray: [number, number, number] = [100, 116, 139];
-
-    doc.setFillColor(colorDark[0], colorDark[1], colorDark[2]);
-    doc.rect(0, 0, 210, 40, 'F');
-    doc.setTextColor(255, 255, 255);
-    doc.setFont("helvetica", "bold");
-    doc.setFontSize(24);
-    doc.text("EQUILY", 14, 20);
-    doc.setFontSize(10);
-    doc.text("Dynamic Equity Split Report", 14, 28);
-
-    doc.setTextColor(colorDark[0], colorDark[1], colorDark[2]);
-    doc.setFontSize(28);
-    doc.text(projectName.toLowerCase(), 14, 60);
-    doc.setFontSize(10);
-    doc.setTextColor(colorGray[0], colorGray[1], colorGray[2]);
-    doc.text(`Generated on: ${new Date().toLocaleDateString()}`, 14, 68);
-
-    const totalProjectValue = contributions.reduce((sum, c) => sum + (Number(c.risk_adjusted_value) || 0), 0);
-    const memberRows = members.map(m => {
-        const memberTotal = contributions
-          .filter(c => c.contributor_name === m.name)
-          .reduce((sum, c) => sum + (Number(c.risk_adjusted_value) || 0), 0);
-        const percentage = totalProjectValue > 0 ? ((memberTotal / totalProjectValue) * 100).toFixed(2) : "0.00";
-        return [m.name ?? "Unknown", m.role ?? "Co-founder", memberTotal.toLocaleString(), `${percentage}%`];
-    });
-
-    autoTable(doc, {
-      startY: 90,
-      head: [['Member', 'Role', 'Risk Value', 'Equity %']],
-      body: memberRows,
-      theme: 'striped',
-      headStyles: { fillColor: colorEmerald, textColor: 255, fontStyle: 'bold' }
-    });
-
-    const finalY = (doc as any).lastAutoTable.finalY || 150;
-    const contributionRows = contributions.map(c => [
-      c.date ? new Date(c.date).toLocaleDateString() : 'N/A',
-      c.contributor_name ?? "Anonymous",
-      c.type ?? "Other",
-      c.concept ?? "No description",
-      Number(c.amount).toLocaleString(),
-      Number(c.risk_adjusted_value).toLocaleString()
-    ]);
-
-    autoTable(doc, {
-      startY: finalY + 20,
-      head: [['Date', 'Contributor', 'Type', 'Description', 'Value', 'Risk Adj.']],
-      body: contributionRows,
-      theme: 'striped',
-      headStyles: { fillColor: colorBlue, textColor: 255 }
-    });
-
-    doc.save(`${projectName}_Full_Report.pdf`);
   };
 
   useEffect(() => { fetchData(); }, [projectId]);
@@ -217,7 +132,6 @@ export default function ProjectDashboardPage() {
                 <p className="mt-2 text-slate-500 font-medium italic">Calculated using the {project.equity_model?.replace('_', ' ')} model.</p>
               </div>
               <div className="flex gap-3">
-                <button onClick={generatePDF} className="inline-flex items-center gap-2 rounded-xl bg-white border border-slate-200 px-5 py-3 font-bold text-slate-700 shadow-sm hover:bg-slate-50 transition-all shadow-sm"><Download className="h-5 w-5" /> Export PDF</button>
                 <button onClick={() => setMemberModalOpen(true)} className="inline-flex items-center gap-2 rounded-xl bg-white border border-slate-200 px-5 py-3 font-bold text-slate-700 shadow-sm hover:bg-slate-50 transition-all shadow-sm"><Users className="h-5 w-5" /> Team</button>
                 <button onClick={() => { setEditingContribution(null); setModalOpen(true); }} className="inline-flex items-center gap-2 rounded-xl bg-slate-900 px-6 py-3 font-bold text-white shadow-lg hover:bg-slate-800 transition-all"><Plus className="h-5 w-5" /> Add Contribution</button>
               </div>
