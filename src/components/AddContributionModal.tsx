@@ -4,13 +4,13 @@ import { useState, useEffect } from "react";
 import { X } from "lucide-react";
 import { createClient } from "@/utils/supabase/client";
 
-// Definimos los tipos disponibles con sus etiquetas en MAYÚSCULAS para coincidir con tu diseño
+// Defined types with English labels
 const CONTRIBUTION_TYPES = [
   { value: "CASH", label: "CASH" },
   { value: "WORK", label: "WORK" },
   { value: "TANGIBLE", label: "TANGIBLE" },
   { value: "INTANGIBLE", label: "INTANGIBLE" },
-  { value: "OTHERS", label: "OTROS" },
+  { value: "OTHERS", label: "OTHERS" },
 ];
 
 export function AddContributionModal({ isOpen, onClose, projectId, projectConfig, onSuccess, members, editData = null }: any) {
@@ -24,33 +24,33 @@ export function AddContributionModal({ isOpen, onClose, projectId, projectConfig
 
   const supabase = createClient();
   
-  // Cálculo en tiempo real del valor ajustado
   const riskAdjustedValue = (parseFloat(amount || "0") * multiplier).toFixed(2);
 
-  // Función para obtener el multiplicador
+  // --- MULTIPLIER LOGIC (NORMALIZED) ---
   const getMultiplierForType = (t: string) => {
-    // Si no ha cargado la config, devolvemos 1 por defecto
     if (!projectConfig) return 1;
     
-    // Detectamos el modelo (soportando nombres nuevos y antiguos por si acaso)
-    const model = projectConfig.model_type || projectConfig.equity_model || 'CUSTOM';
+    // Normalize model name to uppercase to handle "Flat", "flat", "FLAT"
+    const rawModel = projectConfig.model_type || projectConfig.equity_model || 'CUSTOM';
+    const model = rawModel.toString().toUpperCase();
 
-    // 1. Modelo Flat
-    if (model === 'FLAT') return 1;
+    // 1. Flat Model
+    if (model === 'FLAT' || model.includes('FLAT')) {
+        return 1;
+    }
 
-    // 2. Modelo Just Split
-    if (model === 'JUST_SPLIT') { 
+    // 2. Just Split Model (Recommended)
+    if (model === 'JUST_SPLIT' || model.includes('JUST')) { 
       if (t === 'CASH') return 4; 
       return 2; 
     }
 
-    // 3. Modelo Custom (busca mult_cash, mult_work, etc.)
+    // 3. Custom Model
     const key = `mult_${t.toLowerCase()}`;
-    // Si el valor es 0 o null, usamos 1 como seguridad
-    return projectConfig[key] || 1;
+    return projectConfig[key] ?? 1;
   };
 
-  // Efecto: Cargar datos si estamos editando
+  // Effect: Load data on open
   useEffect(() => {
     if (isOpen) {
       if (editData) {
@@ -73,17 +73,14 @@ export function AddContributionModal({ isOpen, onClose, projectId, projectConfig
     }
   }, [isOpen, editData, members]);
 
-  // Efecto: Actualizar el multiplicador cuando cambia el tipo
+  // Effect: Update multiplier dynamically
   useEffect(() => { 
     if (isOpen) {
-        // Obtenemos el nuevo multiplicador
         const newMult = getMultiplierForType(type);
-        // Solo lo actualizamos si no estamos en modo edición (para no sobrescribir datos históricos)
-        // O si el usuario cambia el tipo manualmente durante la edición
+        
         if (!editData || (editData && type !== editData.type)) {
             setMultiplier(newMult);
         } else if (editData && type === editData.type) {
-            // Si es el mismo tipo original, mantenemos el original
             setMultiplier(editData.multiplier);
         }
     }
@@ -130,19 +127,19 @@ export function AddContributionModal({ isOpen, onClose, projectId, projectConfig
         {/* Header */}
         <div className="flex justify-between items-center mb-6">
           <h3 className="font-black text-slate-800 text-lg uppercase tracking-tight">
-            {editData ? "Editar Aportación" : "Añadir Aportación"}
+            {editData ? "Edit Contribution" : "Add Contribution"}
           </h3>
           <button onClick={onClose} className="p-2 hover:bg-slate-100 rounded-full text-slate-400 transition-colors">
             <X className="h-5 w-5" />
           </button>
         </div>
 
-        {/* Formulario */}
+        {/* Form */}
         <form onSubmit={handleSubmit} className="space-y-4">
           
-          {/* Selector de Miembro */}
+          {/* Member Selector */}
           <div>
-            <label className="text-xs font-bold text-slate-400 ml-1 mb-1 block uppercase">Socio</label>
+            <label className="text-xs font-bold text-slate-400 ml-1 mb-1 block uppercase">Member</label>
             <select 
                 value={contributorId} 
                 onChange={(e) => setContributorId(e.target.value)} 
@@ -152,26 +149,22 @@ export function AddContributionModal({ isOpen, onClose, projectId, projectConfig
             </select>
           </div>
 
-          {/* Input Concepto */}
+          {/* Concept Input */}
           <div>
-            <label className="text-xs font-bold text-slate-400 ml-1 mb-1 block uppercase">Concepto</label>
+            <label className="text-xs font-bold text-slate-400 ml-1 mb-1 block uppercase">Description</label>
             <input 
                 type="text" 
-                placeholder="Ej: Desarrollo Frontend..." 
+                placeholder="Ex: MVP Development..." 
                 value={concept} 
                 onChange={(e) => setConcept(e.target.value)} 
                 className="w-full rounded-xl border border-slate-200 px-4 py-3 bg-slate-50 font-bold outline-none text-slate-700 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all" 
             />
           </div>
 
-          {/* Grid: Tipo y Cantidad */}
+          {/* Type & Amount Grid */}
           <div className="grid grid-cols-2 gap-4">
             <div>
-                <label className="text-xs font-bold text-slate-400 ml-1 mb-1 block uppercase">Tipo</label>
-                {/* AQUÍ ESTÁ LA CLAVE: 
-                   Usamos .map() para generar las opciones dinámicamente con el multiplicador.
-                   Si ves esto en el código, DEBERÍAN salir los números.
-                */}
+                <label className="text-xs font-bold text-slate-400 ml-1 mb-1 block uppercase">Type</label>
                 <select 
                     value={type} 
                     onChange={(e) => setType(e.target.value)} 
@@ -189,7 +182,7 @@ export function AddContributionModal({ isOpen, onClose, projectId, projectConfig
             </div>
             
             <div>
-                <label className="text-xs font-bold text-slate-400 ml-1 mb-1 block uppercase">Valor (€)</label>
+                <label className="text-xs font-bold text-slate-400 ml-1 mb-1 block uppercase">Value</label>
                 <input 
                     type="number" 
                     placeholder="0.00" 
@@ -200,7 +193,7 @@ export function AddContributionModal({ isOpen, onClose, projectId, projectConfig
             </div>
           </div>
 
-          {/* Fecha */}
+          {/* Date */}
           <div>
              <input 
                 type="date" 
@@ -210,25 +203,25 @@ export function AddContributionModal({ isOpen, onClose, projectId, projectConfig
              />
           </div>
 
-          {/* Tarjeta de Resultado */}
+          {/* Result Card */}
           <div className="rounded-2xl bg-slate-900 p-6 text-white shadow-lg shadow-emerald-900/20">
              <div className="flex justify-between text-[10px] font-black uppercase opacity-60 mb-2">
-                <span>Riesgo Calculado</span>
+                <span>Calculated Risk</span>
                 <span className="bg-emerald-500/20 px-2 py-0.5 rounded text-emerald-400">x{multiplier} Multiplier</span>
              </div>
              <div className="flex items-baseline gap-1">
                 <span className="text-3xl font-black text-emerald-400">{Number(riskAdjustedValue).toLocaleString()}</span>
-                <span className="text-sm font-bold text-emerald-400/60">puntos</span>
+                <span className="text-sm font-bold text-emerald-400/60">points</span>
              </div>
           </div>
 
-          {/* Botón */}
+          {/* Submit Button */}
           <button 
             type="submit" 
             disabled={loading} 
             className="w-full rounded-2xl bg-emerald-600 py-4 text-sm font-black text-white hover:bg-emerald-500 hover:shadow-lg hover:shadow-emerald-500/30 transition-all uppercase tracking-widest disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {loading ? "Guardando..." : editData ? "Guardar Cambios" : "Confirmar Aportación"}
+            {loading ? "Saving..." : editData ? "Save Changes" : "Confirm Contribution"}
           </button>
 
         </form>
