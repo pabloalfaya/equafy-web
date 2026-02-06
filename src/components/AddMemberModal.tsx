@@ -25,14 +25,12 @@ export function AddMemberModal({ isOpen, onClose, projectId, members, onUpdate }
   const [role, setRole] = useState("");
   const [loading, setLoading] = useState(false);
   
-  // Nuevo estado para controlar si estamos editando a alguien
   const [editingId, setEditingId] = useState<string | null>(null);
 
   const supabase = createClient();
 
   if (!isOpen) return null;
 
-  // Función unificada para Crear o Actualizar
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!name.trim()) return;
@@ -48,14 +46,12 @@ export function AddMemberModal({ isOpen, onClose, projectId, members, onUpdate }
     let error;
 
     if (editingId) {
-        // --- MODO EDICIÓN: Actualizamos el existente ---
         const { error: updateError } = await supabase
             .from("project_members")
             .update(payload)
             .eq("id", editingId);
         error = updateError;
     } else {
-        // --- MODO CREACIÓN: Insertamos uno nuevo ---
         const { error: insertError } = await supabase
             .from("project_members")
             .insert({
@@ -94,7 +90,7 @@ export function AddMemberModal({ isOpen, onClose, projectId, members, onUpdate }
     if (!confirm("Are you sure? This might affect existing contributions.")) return;
     const { error } = await supabase.from("project_members").delete().eq("id", id);
     if (!error) {
-      if (editingId === id) resetForm(); // Si borramos el que estábamos editando, limpiamos el form
+      if (editingId === id) resetForm();
       onUpdate();
     }
   };
@@ -135,10 +131,10 @@ export function AddMemberModal({ isOpen, onClose, projectId, members, onUpdate }
             </div>
           </div>
 
-          {/* Email - CAMBIOS APLICADOS AQUÍ */}
+          {/* Email - CORREGIDO A INGLÉS + OPCIONAL */}
           <div>
             <label className="text-xs font-bold text-slate-500 ml-1 mb-1 block uppercase">
-              Email (Invitar al proyecto)
+              Email (Optional - Invite to Project)
             </label>
             <div className="relative">
                 <Mail className="absolute left-4 top-3.5 w-4 h-4 text-slate-300" />
@@ -151,7 +147,7 @@ export function AddMemberModal({ isOpen, onClose, projectId, members, onUpdate }
                 />
             </div>
             <p className="text-xs text-slate-400 mt-1 ml-1">
-              Si pones su email, verán este proyecto en su cuenta.
+              If added, they will automatically see this project in their dashboard.
             </p>
           </div>
 
@@ -209,7 +205,6 @@ export function AddMemberModal({ isOpen, onClose, projectId, members, onUpdate }
                 </div>
                 
                 <div className="flex items-center gap-1">
-                    {/* Botón Editar */}
                     <button 
                         onClick={() => startEdit(m)}
                         className="p-2 text-slate-300 hover:text-blue-500 hover:bg-blue-50 rounded-lg transition-all"
@@ -218,7 +213,6 @@ export function AddMemberModal({ isOpen, onClose, projectId, members, onUpdate }
                         <Pencil className="w-4 h-4" />
                     </button>
 
-                    {/* Botón Borrar (Solo si no es Owner) */}
                     {m.role !== 'owner' && (
                         <button 
                             onClick={() => handleDelete(m.id)}
