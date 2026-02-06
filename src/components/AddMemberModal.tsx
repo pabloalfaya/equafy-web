@@ -1,14 +1,14 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { X, Trash2, UserPlus, Mail, Shield, User } from "lucide-react";
 import { createClient } from "@/utils/supabase/client";
 
 interface Member {
   id: string;
   name: string;
-  email?: string;
-  role: string;
+  email?: string | null;
+  role?: string;
 }
 
 interface AddMemberModalProps {
@@ -22,7 +22,7 @@ interface AddMemberModalProps {
 export function AddMemberModal({ isOpen, onClose, projectId, members, onUpdate }: AddMemberModalProps) {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
-  const [role, setRole] = useState("member");
+  const [role, setRole] = useState(""); // Texto libre, empieza vacío
   const [loading, setLoading] = useState(false);
   const supabase = createClient();
 
@@ -34,33 +34,30 @@ export function AddMemberModal({ isOpen, onClose, projectId, members, onUpdate }
 
     setLoading(true);
 
-    const { error } = await supabase.from("project_members").insert({
-      project_id: projectId,
-      // We assume the current user is adding this, but we don't link the member to a specific auth user_id yet 
-      // unless they are already in the system. For now, we create a placeholder record.
-      // Note: In a real invite system, you'd send an email. Here we just store the data.
-      user_id: (await supabase.auth.getUser()).data.user?.id, // Temporary: owner owns the record logic
-      name: name,
-      email: email || null,
-      role: role,
-      status: 'active'
-    });
+    const payload = {
+        project_id: projectId,
+        name: name.trim(),
+        email: email.trim() === "" ? null : email.trim(),
+        role: role.trim() || "Member", // Si lo dejan vacío, guardamos "Member" por defecto
+        status: 'active'
+    };
+
+    const { error } = await supabase.from("project_members").insert(payload);
 
     if (error) {
       console.error("Error adding member:", error);
-      alert("Error adding member. Please try again.");
+      alert(`Error adding member: ${error.message}`);
     } else {
       setName("");
       setEmail("");
-      setRole("member");
+      setRole("");
       onUpdate();
     }
     setLoading(false);
   };
 
   const handleDelete = async (id: string) => {
-    if (!confirm("Are you sure you want to remove this member? Contributions linked to them might be affected.")) return;
-
+    if (!confirm("Are you sure? This might affect existing contributions.")) return;
     const { error } = await supabase.from("project_members").delete().eq("id", id);
     if (!error) {
       onUpdate();
@@ -82,15 +79,17 @@ export function AddMemberModal({ isOpen, onClose, projectId, members, onUpdate }
           </button>
         </div>
 
-        {/* Add Form */}
+        {/* Formulario */}
         <form onSubmit={handleAdd} className="space-y-4 mb-8">
+          
+          {/* Nombre */}
           <div>
             <label className="text-xs font-bold text-slate-400 ml-1 mb-1 block uppercase">Name *</label>
             <div className="relative">
                 <User className="absolute left-4 top-3.5 w-4 h-4 text-slate-300" />
                 <input 
                     type="text" 
-                    placeholder="e.g. John Doe" 
+                    placeholder="e.g. Jane Doe" 
                     value={name} 
                     onChange={(e) => setName(e.target.value)} 
                     className="w-full pl-10 pr-4 py-3 rounded-xl bg-slate-50 border border-slate-200 font-bold text-slate-700 outline-none focus:border-emerald-500 transition-all"
@@ -99,13 +98,14 @@ export function AddMemberModal({ isOpen, onClose, projectId, members, onUpdate }
             </div>
           </div>
 
+          {/* Email */}
           <div>
             <label className="text-xs font-bold text-slate-400 ml-1 mb-1 block uppercase">Email (Optional)</label>
             <div className="relative">
                 <Mail className="absolute left-4 top-3.5 w-4 h-4 text-slate-300" />
                 <input 
                     type="email" 
-                    placeholder="john@example.com" 
+                    placeholder="jane@example.com" 
                     value={email} 
                     onChange={(e) => setEmail(e.target.value)} 
                     className="w-full pl-10 pr-4 py-3 rounded-xl bg-slate-50 border border-slate-200 font-bold text-slate-700 outline-none focus:border-emerald-500 transition-all"
@@ -113,20 +113,18 @@ export function AddMemberModal({ isOpen, onClose, projectId, members, onUpdate }
             </div>
           </div>
 
+          {/* Rol (TEXTO LIBRE AHORA) */}
           <div>
             <label className="text-xs font-bold text-slate-400 ml-1 mb-1 block uppercase">Role</label>
             <div className="relative">
                 <Shield className="absolute left-4 top-3.5 w-4 h-4 text-slate-300" />
-                <select 
+                <input 
+                    type="text" 
+                    placeholder="e.g. Co-Founder & CTO" 
                     value={role} 
                     onChange={(e) => setRole(e.target.value)}
-                    className="w-full pl-10 pr-4 py-3 rounded-xl bg-slate-50 border border-slate-200 font-bold text-slate-700 outline-none focus:border-emerald-500 transition-all appearance-none"
-                >
-                    <option value="member">Partner / Member</option>
-                    <option value="advisor">Advisor</option>
-                    <option value="observer">Observer</option>
-                    <option value="owner">Owner</option>
-                </select>
+                    className="w-full pl-10 pr-4 py-3 rounded-xl bg-slate-50 border border-slate-200 font-bold text-slate-700 outline-none focus:border-emerald-500 transition-all"
+                />
             </div>
           </div>
 
@@ -139,8 +137,8 @@ export function AddMemberModal({ isOpen, onClose, projectId, members, onUpdate }
           </button>
         </form>
 
-        {/* Member List */}
-        <div className="space-y-3 max-h-[200px] overflow-y-auto pr-2">
+        {/* Lista */}
+        <div className="space-y-3 max-h-[200px] overflow-y-auto pr-2 custom-scrollbar mt-6 border-t border-slate-100 pt-4">
           <label className="text-xs font-bold text-slate-400 ml-1 block uppercase mb-2">Current Team ({members.length})</label>
           
           {members.length === 0 ? (
@@ -148,18 +146,19 @@ export function AddMemberModal({ isOpen, onClose, projectId, members, onUpdate }
           ) : (
             members.map((m) => (
               <div key={m.id} className="flex items-center justify-between p-3 bg-slate-50 border border-slate-100 rounded-xl group hover:border-slate-200 transition-all">
-                <div className="flex flex-col">
-                  <span className="font-bold text-slate-800 text-sm">{m.name}</span>
-                  <div className="flex gap-2 text-[10px] uppercase font-black tracking-wider">
-                     <span className="text-emerald-600">{m.role}</span>
-                     {m.email && <span className="text-slate-400 normal-case font-medium tracking-normal border-l border-slate-300 pl-2">{m.email}</span>}
+                <div className="flex flex-col overflow-hidden">
+                  <span className="font-bold text-slate-800 text-sm truncate">{m.name}</span>
+                  <div className="flex items-center gap-2 text-[11px] text-slate-500 font-medium mt-0.5 truncate">
+                     {m.role && <span className="uppercase font-bold text-emerald-600">{m.role}</span>}
+                     {m.email && <span>| {m.email}</span>}
                   </div>
                 </div>
-                {/* No permitimos borrar al Owner principal por seguridad visual aquí */}
+                
                 {m.role !== 'owner' && (
                     <button 
                         onClick={() => handleDelete(m.id)}
-                        className="p-2 text-slate-300 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all"
+                        className="p-2 text-slate-300 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all shrink-0"
+                        title="Remove member"
                     >
                         <Trash2 className="w-4 h-4" />
                     </button>
