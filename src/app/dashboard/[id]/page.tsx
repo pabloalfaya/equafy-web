@@ -14,14 +14,14 @@ import type { Project, Contribution } from "@/types/database";
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 
-// Extended types to handle dynamic DB fields
+// Tipos extendidos
 type ExtendedProject = Project & { 
     equity_model?: string; 
     model_type?: string; 
 };
 type ExtendedContribution = Contribution & { date?: string; concept?: string; multiplier?: number; [key: string]: any };
 
-// CORRECCIÓN AQUÍ: Quitamos el '?' de role. Ahora es obligatorio (string), coincidiendo con el Modal.
+// Tipos de miembros
 type Member = { id: string; name: string; role: string; email?: string };
 
 export default function ProjectDashboardPage() {
@@ -43,17 +43,16 @@ export default function ProjectDashboardPage() {
     const supabase = createClient();
     setLoading(true);
     
-    // Fetch Project
+    // Cargar Proyecto
     const { data: projectData, error: projectError } = await supabase.from("projects").select("*").eq("id", projectId).single();
     if (projectError || !projectData) { router.push("/dashboard"); return; }
     setProject(projectData as ExtendedProject);
 
-    // Fetch Contributions
+    // Cargar Aportaciones
     const { data: contributionsData } = await supabase.from("contributions").select("*").eq("project_id", projectId).order("created_at", { ascending: true });
     setContributions(contributionsData as ExtendedContribution[] ?? []);
 
-    // Fetch Members
-    // Usamos 'as unknown as Member[]' para asegurar a TypeScript que los datos coinciden con nuestra interfaz estricta
+    // Cargar Miembros
     const { data: membersData } = await supabase.from("project_members").select("id, name, role, email").eq("project_id", projectId);
     setMembers((membersData as unknown as Member[]) ?? []);
     
@@ -84,13 +83,106 @@ export default function ProjectDashboardPage() {
     setModalOpen(true);
   };
 
+  // --- LÓGICA DE GENERACIÓN DE PDF PROFESIONAL ---
   const generatePDF = () => {
     if (!project) return;
     const doc = new jsPDF();
-    const projectName = project.name || "Report";
-    doc.text(projectName, 14, 20);
-    // Aquí puedes añadir lógica de autotable si lo necesitas en el futuro
-    doc.save(`${projectName}_Report.pdf`);
+    const projectName = project.name || "Project Report";
+    const dateStr = new Date().toLocaleDateString();
+
+    // 1. ENCABEZADO
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(22);
+    doc.setTextColor(16, 185, 129); // Emerald Green
+    doc.text("EQUILY", 14, 20);
+
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(10);
+    doc.setTextColor(100);
+    doc.text("Dynamic Equity Split Report", 14, 26);
+
+    doc.setFontSize(14);
+    doc.setTextColor(0);
+    doc.text(`Project: ${projectName}`, 14, 35);
+    doc.setFontSize(10);
+    doc.setTextColor(100);
+    doc.text(`Generated on: ${dateStr}`, 14, 40);
+
+    // 2. CÁLCULO DE DATOS PARA LA TABLA RESUMEN
+    // Calculamos el valor total del proyecto
+    const totalProjectValue = contributions.reduce((sum, c) => sum + (c.risk_adjusted_value || 0), 0);
+    
+    // Preparamos los datos de cada socio (sumando sus aportaciones)
+    const summaryData = members.map(member => {
+        const memberContribs = contributions.filter(c => c.contributor_name === member.name);
+        const memberTotal = memberContribs.reduce((sum, c) => sum + (c.risk_adjusted_value || 0), 0);
+        const equityPercent = totalProjectValue > 0 ? (memberTotal / totalProjectValue) * 100 : 0;
+        
+        return [
+            member.name,
+            member.role || "Member",
+            memberTotal.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
+            `${equityPercent.toFixed(2)}%`
+        ];
+    });
+
+    // 3. TABLA 1: RESUMEN DE EQUITY (Arriba)
+    doc.setFontSize(12);
+    doc.setTextColor(0);
+    doc.text("Equity Distribution Summary", 14, 52);
+
+    autoTable(doc, {
+        startY: 55,
+        head: [['Member', 'Role', 'Risk Value (Points)', 'Equity %']],
+        body: summaryData,
+        theme: 'grid',
+        headStyles: { fillColor: [16, 185, 129], textColor: 255, fontStyle: 'bold' }, // Estilo profesional Emerald
+        styles: { fontSize: 10, cellPadding: 3 },
+        columnStyles: {
+            0: { fontStyle: 'bold' },
+            2: { halign: 'right' },
+            3: { halign: 'right', fontStyle: 'bold' }
+        }
+    });
+
+    // 4. TABLA 2: DETALLE DE APORTACIONES (Abajo)
+    const finalY = (doc as any).lastAutoTable.finalY + 15; // Espacio después de la primera tabla
+
+    doc.setFontSize(12);
+    doc.text("Detailed Contribution Log", 14, finalY - 3);
+
+    const detailsData = contributions.map(c => [
+        c.date || "-",
+        c.contributor_name,
+        c.type,
+        c.concept || "-",
+        c.amount.toLocaleString(),
+        c.risk_adjusted_value.toLocaleString()
+    ]);
+
+    autoTable(doc, {
+        startY: finalY,
+        head: [['Date', 'Contributor', 'Type', 'Description', 'Value', 'Risk Adj.']],
+        body: detailsData,
+        theme: 'striped',
+        headStyles: { fillColor: [51, 65, 85], textColor: 255 }, // Slate color para diferenciar
+        styles: { fontSize: 9 },
+        columnStyles: {
+            4: { halign: 'right' },
+            5: { halign: 'right', fontStyle: 'bold' }
+        }
+    });
+
+    // Pie de página
+    const pageCount = (doc as any).internal.getNumberOfPages();
+    for(let i = 1; i <= pageCount; i++) {
+        doc.setPage(i);
+        doc.setFontSize(8);
+        doc.setTextColor(150);
+        doc.text(`Page ${i} of ${pageCount} - Generated by Equily`, 105, 290, { align: 'center' });
+    }
+
+    doc.save(`${projectName}_Full_Report.pdf`);
   };
 
   useEffect(() => { fetchData(); }, [projectId]);
@@ -107,7 +199,6 @@ export default function ProjectDashboardPage() {
     return [...acc, { ...curr }];
   }, [] as Contribution[]);
 
-  // Helper to format model name
   const getModelName = () => {
     const raw = project?.model_type || project?.equity_model || "Custom";
     return raw.replace(/_/g, ' ').toLowerCase(); 
@@ -162,7 +253,6 @@ export default function ProjectDashboardPage() {
             </div>
 
             <div className="grid lg:grid-cols-3 gap-8">
-                {/* Tabla de Contribuciones */}
                 <div className="lg:col-span-2 bg-white/70 backdrop-blur-xl border border-white/60 rounded-[32px] p-8 shadow-xl flex flex-col">
                     <div className="flex items-center gap-3 mb-6">
                         <div className="p-2 bg-blue-50 rounded-lg"><TrendingUp className="h-5 w-5 text-blue-600" /></div>
@@ -173,7 +263,6 @@ export default function ProjectDashboardPage() {
                     </div>
                 </div>
                 
-                {/* Gráfica de Equity */}
                 <div className="bg-white/70 backdrop-blur-xl border border-white/60 rounded-[32px] p-8 shadow-xl flex flex-col h-fit sticky top-32">
                     <div className="flex items-center gap-3 mb-8">
                         <div className="p-2 bg-emerald-50 rounded-lg"><PieChart className="h-5 w-5 text-emerald-600" /></div>
