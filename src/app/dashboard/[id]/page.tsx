@@ -20,7 +20,9 @@ type ExtendedProject = Project & {
     model_type?: string; 
 };
 type ExtendedContribution = Contribution & { date?: string; concept?: string; multiplier?: number; [key: string]: any };
-type Member = { id: string; name: string; role?: string; email?: string };
+
+// CORRECCIÓN AQUÍ: Quitamos el '?' de role. Ahora es obligatorio (string), coincidiendo con el Modal.
+type Member = { id: string; name: string; role: string; email?: string };
 
 export default function ProjectDashboardPage() {
   const params = useParams(); 
@@ -51,8 +53,9 @@ export default function ProjectDashboardPage() {
     setContributions(contributionsData as ExtendedContribution[] ?? []);
 
     // Fetch Members
+    // Usamos 'as unknown as Member[]' para asegurar a TypeScript que los datos coinciden con nuestra interfaz estricta
     const { data: membersData } = await supabase.from("project_members").select("id, name, role, email").eq("project_id", projectId);
-    setMembers(membersData ?? []);
+    setMembers((membersData as unknown as Member[]) ?? []);
     
     setLoading(false);
   };
@@ -60,7 +63,7 @@ export default function ProjectDashboardPage() {
   const refreshMembers = async () => {
     const supabase = createClient();
     const { data } = await supabase.from("project_members").select("id, name, role, email").eq("project_id", projectId);
-    setMembers(data ?? []);
+    setMembers((data as unknown as Member[]) ?? []);
   };
 
   const handleContributionSuccess = (updatedOrNew: Contribution) => {
@@ -86,7 +89,7 @@ export default function ProjectDashboardPage() {
     const doc = new jsPDF();
     const projectName = project.name || "Report";
     doc.text(projectName, 14, 20);
-    // Note: You might need to add specific autoTable logic here for the table content
+    // Aquí puedes añadir lógica de autotable si lo necesitas en el futuro
     doc.save(`${projectName}_Report.pdf`);
   };
 
@@ -107,7 +110,7 @@ export default function ProjectDashboardPage() {
   // Helper to format model name
   const getModelName = () => {
     const raw = project?.model_type || project?.equity_model || "Custom";
-    return raw.replace(/_/g, ' ').toLowerCase(); // e.g., "JUST_SPLIT" -> "just split"
+    return raw.replace(/_/g, ' ').toLowerCase(); 
   };
 
   if (loading) return (
@@ -174,7 +177,6 @@ export default function ProjectDashboardPage() {
                 <div className="bg-white/70 backdrop-blur-xl border border-white/60 rounded-[32px] p-8 shadow-xl flex flex-col h-fit sticky top-32">
                     <div className="flex items-center gap-3 mb-8">
                         <div className="p-2 bg-emerald-50 rounded-lg"><PieChart className="h-5 w-5 text-emerald-600" /></div>
-                        {/* TRADUCIDO: Parte de la empresa -> Equity Distribution */}
                         <h3 className="font-bold text-slate-900 text-xl">Equity Distribution</h3>
                     </div>
                     <div className="w-full aspect-square"><EquityPieChart contributions={groupedContributionsForChart} /></div>
@@ -193,13 +195,12 @@ export default function ProjectDashboardPage() {
         editData={editingContribution} 
       />
       
-      {/* Modal de Miembros Actualizado */}
       <AddMemberModal 
         isOpen={memberModalOpen} 
         onClose={() => setMemberModalOpen(false)} 
         projectId={projectId} 
-        members={members}       // Pasamos la lista de miembros para que se vean
-        onUpdate={refreshMembers} // Cambiado de onSuccess a onUpdate para coincidir con el componente
+        members={members}       
+        onUpdate={refreshMembers} 
       />
     </div>
   );
