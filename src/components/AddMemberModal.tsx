@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { X, Trash2, UserPlus, Mail, Shield, User } from "lucide-react";
+import { X, Trash2, UserPlus, Mail, Shield, User, Pencil, Ban } from "lucide-react";
 import { createClient } from "@/utils/supabase/client";
 
 interface Member {
@@ -22,44 +22,79 @@ interface AddMemberModalProps {
 export function AddMemberModal({ isOpen, onClose, projectId, members, onUpdate }: AddMemberModalProps) {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
-  const [role, setRole] = useState(""); // Texto libre, empieza vacío
+  const [role, setRole] = useState("");
   const [loading, setLoading] = useState(false);
+  
+  // Nuevo estado para controlar si estamos editando a alguien
+  const [editingId, setEditingId] = useState<string | null>(null);
+
   const supabase = createClient();
 
   if (!isOpen) return null;
 
-  const handleAdd = async (e: React.FormEvent) => {
+  // Función unificada para Crear o Actualizar
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!name.trim()) return;
 
     setLoading(true);
 
     const payload = {
-        project_id: projectId,
         name: name.trim(),
         email: email.trim() === "" ? null : email.trim(),
-        role: role.trim() || "Member", // Si lo dejan vacío, guardamos "Member" por defecto
-        status: 'active'
+        role: role.trim() || "Member",
     };
 
-    const { error } = await supabase.from("project_members").insert(payload);
+    let error;
+
+    if (editingId) {
+        // --- MODO EDICIÓN: Actualizamos el existente ---
+        const { error: updateError } = await supabase
+            .from("project_members")
+            .update(payload)
+            .eq("id", editingId);
+        error = updateError;
+    } else {
+        // --- MODO CREACIÓN: Insertamos uno nuevo ---
+        const { error: insertError } = await supabase
+            .from("project_members")
+            .insert({
+                ...payload,
+                project_id: projectId,
+                status: 'active'
+            });
+        error = insertError;
+    }
 
     if (error) {
-      console.error("Error adding member:", error);
-      alert(`Error adding member: ${error.message}`);
+      console.error("Error saving member:", error);
+      alert(`Error: ${error.message}`);
     } else {
-      setName("");
-      setEmail("");
-      setRole("");
+      resetForm();
       onUpdate();
     }
     setLoading(false);
+  };
+
+  const resetForm = () => {
+      setName("");
+      setEmail("");
+      setRole("");
+      setEditingId(null);
+  };
+
+  const startEdit = (member: Member) => {
+      setName(member.name);
+      setEmail(member.email || "");
+      setRole(member.role || "");
+      setEditingId(member.id);
   };
 
   const handleDelete = async (id: string) => {
     if (!confirm("Are you sure? This might affect existing contributions.")) return;
     const { error } = await supabase.from("project_members").delete().eq("id", id);
     if (!error) {
+      if (editingId === id) resetForm(); // Si borramos el que estábamos editando, limpiamos el form
       onUpdate();
     }
   };
@@ -72,15 +107,17 @@ export function AddMemberModal({ isOpen, onClose, projectId, members, onUpdate }
         <div className="flex justify-between items-center mb-6">
           <div className="flex items-center gap-2">
             <UserPlus className="w-5 h-5 text-emerald-600" />
-            <h3 className="font-black text-slate-800 text-lg uppercase tracking-tight">Manage Team</h3>
+            <h3 className="font-black text-slate-800 text-lg uppercase tracking-tight">
+                {editingId ? "Edit Member" : "Manage Team"}
+            </h3>
           </div>
-          <button onClick={onClose} className="p-2 hover:bg-slate-100 rounded-full text-slate-400 transition-colors">
+          <button onClick={() => { resetForm(); onClose(); }} className="p-2 hover:bg-slate-100 rounded-full text-slate-400 transition-colors">
             <X className="h-5 w-5" />
           </button>
         </div>
 
         {/* Formulario */}
-        <form onSubmit={handleAdd} className="space-y-4 mb-8">
+        <form onSubmit={handleSubmit} className="space-y-4 mb-8">
           
           {/* Nombre */}
           <div>
@@ -113,7 +150,7 @@ export function AddMemberModal({ isOpen, onClose, projectId, members, onUpdate }
             </div>
           </div>
 
-          {/* Rol (TEXTO LIBRE AHORA) */}
+          {/* Rol */}
           <div>
             <label className="text-xs font-bold text-slate-400 ml-1 mb-1 block uppercase">Role</label>
             <div className="relative">
@@ -128,13 +165,25 @@ export function AddMemberModal({ isOpen, onClose, projectId, members, onUpdate }
             </div>
           </div>
 
-          <button 
-            type="submit" 
-            disabled={loading}
-            className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-black py-3 rounded-xl uppercase tracking-wider transition-all shadow-lg shadow-emerald-600/20 disabled:opacity-50"
-          >
-            {loading ? "Adding..." : "Add Member"}
-          </button>
+          <div className="flex gap-2">
+            {editingId && (
+                <button 
+                    type="button"
+                    onClick={resetForm}
+                    className="px-4 py-3 bg-slate-100 hover:bg-slate-200 text-slate-500 font-bold rounded-xl transition-all"
+                    title="Cancel Edit"
+                >
+                    <Ban className="w-5 h-5" />
+                </button>
+            )}
+            <button 
+                type="submit" 
+                disabled={loading}
+                className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white font-black py-3 rounded-xl uppercase tracking-wider transition-all shadow-lg shadow-emerald-600/20 disabled:opacity-50"
+            >
+                {loading ? "Saving..." : editingId ? "Update Member" : "Add Member"}
+            </button>
+          </div>
         </form>
 
         {/* Lista */}
@@ -145,8 +194,8 @@ export function AddMemberModal({ isOpen, onClose, projectId, members, onUpdate }
             <p className="text-center text-slate-400 text-sm italic py-4">No members yet.</p>
           ) : (
             members.map((m) => (
-              <div key={m.id} className="flex items-center justify-between p-3 bg-slate-50 border border-slate-100 rounded-xl group hover:border-slate-200 transition-all">
-                <div className="flex flex-col overflow-hidden">
+              <div key={m.id} className={`flex items-center justify-between p-3 border rounded-xl group transition-all ${editingId === m.id ? 'bg-emerald-50 border-emerald-200 ring-1 ring-emerald-200' : 'bg-slate-50 border-slate-100 hover:border-slate-200'}`}>
+                <div className="flex flex-col overflow-hidden mr-2">
                   <span className="font-bold text-slate-800 text-sm truncate">{m.name}</span>
                   <div className="flex items-center gap-2 text-[11px] text-slate-500 font-medium mt-0.5 truncate">
                      {m.role && <span className="uppercase font-bold text-emerald-600">{m.role}</span>}
@@ -154,15 +203,27 @@ export function AddMemberModal({ isOpen, onClose, projectId, members, onUpdate }
                   </div>
                 </div>
                 
-                {m.role !== 'owner' && (
+                <div className="flex items-center gap-1">
+                    {/* Botón Editar */}
                     <button 
-                        onClick={() => handleDelete(m.id)}
-                        className="p-2 text-slate-300 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all shrink-0"
-                        title="Remove member"
+                        onClick={() => startEdit(m)}
+                        className="p-2 text-slate-300 hover:text-blue-500 hover:bg-blue-50 rounded-lg transition-all"
+                        title="Edit member"
                     >
-                        <Trash2 className="w-4 h-4" />
+                        <Pencil className="w-4 h-4" />
                     </button>
-                )}
+
+                    {/* Botón Borrar (Solo si no es Owner) */}
+                    {m.role !== 'owner' && (
+                        <button 
+                            onClick={() => handleDelete(m.id)}
+                            className="p-2 text-slate-300 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all"
+                            title="Remove member"
+                        >
+                            <Trash2 className="w-4 h-4" />
+                        </button>
+                    )}
+                </div>
               </div>
             ))
           )}
