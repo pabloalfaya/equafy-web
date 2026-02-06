@@ -135,9 +135,11 @@ export function AddMemberModal({ isOpen, onClose, projectId, members, onUpdate }
             </div>
           </div>
 
-          {/* Email */}
+          {/* Email - CAMBIOS APLICADOS AQUÍ */}
           <div>
-            <label className="text-xs font-bold text-slate-400 ml-1 mb-1 block uppercase">Email (Optional)</label>
+            <label className="text-xs font-bold text-slate-500 ml-1 mb-1 block uppercase">
+              Email (Invitar al proyecto)
+            </label>
             <div className="relative">
                 <Mail className="absolute left-4 top-3.5 w-4 h-4 text-slate-300" />
                 <input 
@@ -148,6 +150,9 @@ export function AddMemberModal({ isOpen, onClose, projectId, members, onUpdate }
                     className="w-full pl-10 pr-4 py-3 rounded-xl bg-slate-50 border border-slate-200 font-bold text-slate-700 outline-none focus:border-emerald-500 transition-all"
                 />
             </div>
+            <p className="text-xs text-slate-400 mt-1 ml-1">
+              Si pones su email, verán este proyecto en su cuenta.
+            </p>
           </div>
 
           {/* Rol */}
@@ -198,8 +203,8 @@ export function AddMemberModal({ isOpen, onClose, projectId, members, onUpdate }
                 <div className="flex flex-col overflow-hidden mr-2">
                   <span className="font-bold text-slate-800 text-sm truncate">{m.name}</span>
                   <div className="flex items-center gap-2 text-[11px] text-slate-500 font-medium mt-0.5 truncate">
-                     {m.role && <span className="uppercase font-bold text-emerald-600">{m.role}</span>}
-                     {m.email && <span>| {m.email}</span>}
+                      {m.role && <span className="uppercase font-bold text-emerald-600">{m.role}</span>}
+                      {m.email && <span>| {m.email}</span>}
                   </div>
                 </div>
                 
