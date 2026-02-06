@@ -2,27 +2,28 @@
 
 import { Pencil, Trash2, Calendar, Tag, FileText } from "lucide-react";
 
+// 1. Definimos la interfaz EXACTAMENTE como viene de la base de datos
 interface Contribution {
   id: string;
   contributor_name: string;
-  description: string;
-  category: string;
+  concept: string;        // Antes buscábamos "description" (error)
+  type: string;           // Antes buscábamos "category" (error)
   risk_adjusted_value: number;
-  created_at: string;
+  date: string;           // Usamos la fecha elegida, no el "created_at"
 }
 
 interface ContributionsTableProps {
-  contributions: Contribution[];
+  contributions: any[]; // Usamos any[] temporalmente para evitar conflictos de tipos estrictos
   onDelete: (id: string) => void;
-  onEdit: (contribution: Contribution) => void;
-  currentUserId?: string; // Para saber si puede editar
-  isOwner?: boolean;      // Para saber si puede borrar todo
+  onEdit: (contribution: any) => void;
+  currentUserId?: string;
+  isOwner?: boolean;
 }
 
-export function ContributionsTable({ contributions, onDelete, onEdit, isOwner }: ContributionsTableProps) {
+export function ContributionsTable({ contributions, onDelete, onEdit }: ContributionsTableProps) {
   
-  // Función simple para formatear fecha (ej: 12 Feb 2026)
   const formatDate = (dateString: string) => {
+    if (!dateString) return "-";
     return new Date(dateString).toLocaleDateString("en-GB", {
       day: "numeric",
       month: "short",
@@ -55,11 +56,11 @@ export function ContributionsTable({ contributions, onDelete, onEdit, isOwner }:
           {contributions.map((c) => (
             <tr key={c.id} className="border-b border-slate-50 hover:bg-slate-50/50 transition-colors group">
               
-              {/* 1. FECHA */}
+              {/* 1. FECHA (Usamos c.date) */}
               <td className="py-4 px-4 whitespace-nowrap text-slate-500 font-medium">
                 <div className="flex items-center gap-2">
                     <Calendar className="w-3 h-3 text-slate-300" />
-                    {formatDate(c.created_at)}
+                    {formatDate(c.date)} 
                 </div>
               </td>
 
@@ -68,19 +69,19 @@ export function ContributionsTable({ contributions, onDelete, onEdit, isOwner }:
                 {c.contributor_name}
               </td>
 
-              {/* 3. ROL / CATEGORÍA */}
+              {/* 3. TIPO (Usamos c.type) */}
               <td className="py-4 px-4">
                 <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-slate-100 text-slate-600 text-xs font-bold uppercase tracking-wide">
                     <Tag className="w-3 h-3" />
-                    {c.category}
+                    {c.type}
                 </span>
               </td>
 
-              {/* 4. DESCRIPCIÓN */}
-              <td className="py-4 px-4 max-w-[200px] truncate text-slate-500" title={c.description}>
+              {/* 4. CONCEPTO (Usamos c.concept) */}
+              <td className="py-4 px-4 max-w-[200px] truncate text-slate-500" title={c.concept}>
                 <div className="flex items-center gap-2">
                     <FileText className="w-3 h-3 text-slate-300 shrink-0" />
-                    <span className="truncate">{c.description}</span>
+                    <span className="truncate font-medium">{c.concept}</span>
                 </div>
               </td>
 

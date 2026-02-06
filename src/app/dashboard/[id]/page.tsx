@@ -74,8 +74,9 @@ export default function ProjectDashboardPage() {
     setEditingContribution(null);
   };
 
-  const handleContributionDeleted = (contribution: Contribution) => {
-    setContributions((prev) => prev.filter((c) => c.id !== contribution.id));
+  // --- CORRECCIÓN AQUÍ: Ahora aceptamos 'id' como string ---
+  const handleContributionDeleted = (id: string) => {
+    setContributions((prev) => prev.filter((c) => c.id !== id));
   };
 
   const handleEditContribution = (contribution: ExtendedContribution) => {
