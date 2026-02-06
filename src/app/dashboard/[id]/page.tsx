@@ -14,9 +14,13 @@ import type { Project, Contribution } from "@/types/database";
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 
-type ExtendedProject = Project & { equity_model?: string };
+// Extended types to handle dynamic DB fields
+type ExtendedProject = Project & { 
+    equity_model?: string; 
+    model_type?: string; 
+};
 type ExtendedContribution = Contribution & { date?: string; concept?: string; multiplier?: number; [key: string]: any };
-type Member = { id: string; name: string; role?: string };
+type Member = { id: string; name: string; role?: string; email?: string };
 
 export default function ProjectDashboardPage() {
   const params = useParams(); 
@@ -36,19 +40,26 @@ export default function ProjectDashboardPage() {
     if (!projectId) return;
     const supabase = createClient();
     setLoading(true);
+    
+    // Fetch Project
     const { data: projectData, error: projectError } = await supabase.from("projects").select("*").eq("id", projectId).single();
     if (projectError || !projectData) { router.push("/dashboard"); return; }
     setProject(projectData as ExtendedProject);
+
+    // Fetch Contributions
     const { data: contributionsData } = await supabase.from("contributions").select("*").eq("project_id", projectId).order("created_at", { ascending: true });
     setContributions(contributionsData as ExtendedContribution[] ?? []);
-    const { data: membersData } = await supabase.from("project_members").select("id, name, role").eq("project_id", projectId);
+
+    // Fetch Members
+    const { data: membersData } = await supabase.from("project_members").select("id, name, role, email").eq("project_id", projectId);
     setMembers(membersData ?? []);
+    
     setLoading(false);
   };
 
   const refreshMembers = async () => {
     const supabase = createClient();
-    const { data } = await supabase.from("project_members").select("id, name, role").eq("project_id", projectId);
+    const { data } = await supabase.from("project_members").select("id, name, role, email").eq("project_id", projectId);
     setMembers(data ?? []);
   };
 
@@ -75,6 +86,7 @@ export default function ProjectDashboardPage() {
     const doc = new jsPDF();
     const projectName = project.name || "Report";
     doc.text(projectName, 14, 20);
+    // Note: You might need to add specific autoTable logic here for the table content
     doc.save(`${projectName}_Report.pdf`);
   };
 
@@ -92,7 +104,21 @@ export default function ProjectDashboardPage() {
     return [...acc, { ...curr }];
   }, [] as Contribution[]);
 
-  if (loading) return <div className="flex min-h-screen items-center justify-center bg-[#F8FAFC]"><div className="animate-pulse flex flex-col items-center gap-4"><div className="h-12 w-12 bg-emerald-200 rounded-full"></div><p className="text-slate-400 font-bold">Cargando...</p></div></div>;
+  // Helper to format model name
+  const getModelName = () => {
+    const raw = project?.model_type || project?.equity_model || "Custom";
+    return raw.replace(/_/g, ' ').toLowerCase(); // e.g., "JUST_SPLIT" -> "just split"
+  };
+
+  if (loading) return (
+    <div className="flex min-h-screen items-center justify-center bg-[#F8FAFC]">
+        <div className="animate-pulse flex flex-col items-center gap-4">
+            <div className="h-12 w-12 bg-emerald-200 rounded-full"></div>
+            <p className="text-slate-400 font-bold">Loading...</p>
+        </div>
+    </div>
+  );
+  
   if (!project) return null;
 
   return (
@@ -115,35 +141,66 @@ export default function ProjectDashboardPage() {
             <div className="mb-10 flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
               <div>
                 <h1 className="text-4xl font-black text-slate-900 tracking-tight">{project.name}</h1>
-                <p className="mt-2 text-slate-500 font-medium italic">Calculado con el modelo {project.equity_model?.replace('_', ' ')}.</p>
+                <p className="mt-2 text-slate-500 font-medium italic capitalize">
+                    Calculated using the {getModelName()} model.
+                </p>
               </div>
               <div className="flex gap-3">
-                {/* BOTÓN RESTAURADO */}
                 <button onClick={generatePDF} className="inline-flex items-center gap-2 rounded-xl bg-white border border-slate-200 px-5 py-3 font-bold text-slate-700 shadow-sm hover:bg-slate-50 transition-all">
                     <Download className="h-5 w-5" /> Export PDF
                 </button>
-                <button onClick={() => setMemberModalOpen(true)} className="inline-flex items-center gap-2 rounded-xl bg-white border border-slate-200 px-5 py-3 font-bold text-slate-700 shadow-sm hover:bg-slate-50 transition-all"><Users className="h-5 w-5" /> Team</button>
-                <button onClick={() => { setEditingContribution(null); setModalOpen(true); }} className="inline-flex items-center gap-2 rounded-xl bg-slate-900 px-6 py-3 font-bold text-white shadow-lg hover:bg-slate-800 transition-all"><Plus className="h-5 w-5" /> Add Contribution</button>
+                <button onClick={() => setMemberModalOpen(true)} className="inline-flex items-center gap-2 rounded-xl bg-white border border-slate-200 px-5 py-3 font-bold text-slate-700 shadow-sm hover:bg-slate-50 transition-all">
+                    <Users className="h-5 w-5" /> Team
+                </button>
+                <button onClick={() => { setEditingContribution(null); setModalOpen(true); }} className="inline-flex items-center gap-2 rounded-xl bg-slate-900 px-6 py-3 font-bold text-white shadow-lg hover:bg-slate-800 transition-all">
+                    <Plus className="h-5 w-5" /> Add Contribution
+                </button>
               </div>
             </div>
 
             <div className="grid lg:grid-cols-3 gap-8">
+                {/* Tabla de Contribuciones */}
                 <div className="lg:col-span-2 bg-white/70 backdrop-blur-xl border border-white/60 rounded-[32px] p-8 shadow-xl flex flex-col">
-                    <div className="flex items-center gap-3 mb-6"><div className="p-2 bg-blue-50 rounded-lg"><TrendingUp className="h-5 w-5 text-blue-600" /></div><h3 className="font-bold text-slate-900 text-xl">Contribution Log</h3></div>
+                    <div className="flex items-center gap-3 mb-6">
+                        <div className="p-2 bg-blue-50 rounded-lg"><TrendingUp className="h-5 w-5 text-blue-600" /></div>
+                        <h3 className="font-bold text-slate-900 text-xl">Contribution Log</h3>
+                    </div>
                     <div className="overflow-x-auto max-h-[600px] overflow-y-auto pr-2 custom-scrollbar">
                         <ContributionsTable contributions={contributions} onDelete={handleContributionDeleted} onEdit={handleEditContribution} />
                     </div>
                 </div>
+                
+                {/* Gráfica de Equity */}
                 <div className="bg-white/70 backdrop-blur-xl border border-white/60 rounded-[32px] p-8 shadow-xl flex flex-col h-fit sticky top-32">
-                    <div className="flex items-center gap-3 mb-8"><div className="p-2 bg-emerald-50 rounded-lg"><PieChart className="h-5 w-5 text-emerald-600" /></div><h3 className="font-bold text-slate-900 text-xl">Parte de la empresa</h3></div>
+                    <div className="flex items-center gap-3 mb-8">
+                        <div className="p-2 bg-emerald-50 rounded-lg"><PieChart className="h-5 w-5 text-emerald-600" /></div>
+                        {/* TRADUCIDO: Parte de la empresa -> Equity Distribution */}
+                        <h3 className="font-bold text-slate-900 text-xl">Equity Distribution</h3>
+                    </div>
                     <div className="w-full aspect-square"><EquityPieChart contributions={groupedContributionsForChart} /></div>
                 </div>
             </div>
         </div>
       </main>
 
-      <AddContributionModal isOpen={modalOpen} onClose={() => { setModalOpen(false); setEditingContribution(null); }} projectId={projectId} projectConfig={project} onSuccess={handleContributionSuccess} members={members} editData={editingContribution} />
-      <AddMemberModal isOpen={memberModalOpen} onClose={() => setMemberModalOpen(false)} projectId={projectId} onSuccess={refreshMembers} />
+      <AddContributionModal 
+        isOpen={modalOpen} 
+        onClose={() => { setModalOpen(false); setEditingContribution(null); }} 
+        projectId={projectId} 
+        projectConfig={project} 
+        onSuccess={handleContributionSuccess} 
+        members={members} 
+        editData={editingContribution} 
+      />
+      
+      {/* Modal de Miembros Actualizado */}
+      <AddMemberModal 
+        isOpen={memberModalOpen} 
+        onClose={() => setMemberModalOpen(false)} 
+        projectId={projectId} 
+        members={members}       // Pasamos la lista de miembros para que se vean
+        onUpdate={refreshMembers} // Cambiado de onSuccess a onUpdate para coincidir con el componente
+      />
     </div>
   );
 }
