@@ -124,20 +124,22 @@ export default function ProjectDashboardPage() {
     doc.setTextColor(100);
     doc.text(`Generated on: ${dateStr}`, 14, 40);
 
-    // 2. CÁLCULO DE DATOS PARA LA TABLA RESUMEN
-    // Calculamos el valor total del proyecto
-    const totalProjectValue = contributions.reduce((sum, c) => sum + (c.risk_adjusted_value || 0), 0);
-    
-    // Preparamos los datos de cada socio (sumando sus aportaciones)
+    // 2. CÁLCULO DE DATOS PARA LA TABLA RESUMEN (lógica híbrida Fixed + Dynamic Pool)
+    const totalFixedEquity = members.reduce((sum, m) => sum + (Number(m.fixed_equity) || 0), 0);
+    const dynamicPoolPercentage = 100 - totalFixedEquity;
+    const totalPoints = contributions.reduce((sum, c) => sum + (c.risk_adjusted_value || 0), 0);
+
     const summaryData = members.map(member => {
+        const memberFixed = Number(member.fixed_equity) || 0;
         const memberContribs = contributions.filter(c => c.contributor_name === member.name);
-        const memberTotal = memberContribs.reduce((sum, c) => sum + (c.risk_adjusted_value || 0), 0);
-        const equityPercent = totalProjectValue > 0 ? (memberTotal / totalProjectValue) * 100 : 0;
-        
+        const memberPoints = memberContribs.reduce((sum, c) => sum + (c.risk_adjusted_value || 0), 0);
+        const dynamicShare = totalPoints > 0 ? (memberPoints / totalPoints) * dynamicPoolPercentage : 0;
+        const equityPercent = memberFixed + dynamicShare;
+
         return [
             member.name,
             member.role || "Member",
-            memberTotal.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
+            memberPoints.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
             `${equityPercent.toFixed(2)}%`
         ];
     });
