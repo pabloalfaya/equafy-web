@@ -14,6 +14,15 @@ const CONTRIBUTION_TYPES = [
   { value: "OTHERS", label: "OTHERS" },
 ];
 
+// Defaults cuando no hay config en BD (coinciden con schema)
+const DEFAULT_MULTIPLIERS: Record<string, number> = {
+  mult_cash: 4,
+  mult_work: 2,
+  mult_tangible: 1,
+  mult_intangible: 2,
+  mult_others: 1,
+};
+
 export function AddContributionModal({ isOpen, onClose, projectId, projectConfig, onSuccess, members, editData = null }: any) {
   const [contributorId, setContributorId] = useState("");
   const [concept, setConcept] = useState("");
@@ -22,33 +31,47 @@ export function AddContributionModal({ isOpen, onClose, projectId, projectConfig
   const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
   const [multiplier, setMultiplier] = useState(1);
   const [loading, setLoading] = useState(false);
+  const [activeMultipliers, setActiveMultipliers] = useState<Record<string, number>>(DEFAULT_MULTIPLIERS);
 
   const supabase = createClient();
   
   const riskAdjustedValue = (parseFloat(amount || "0") * multiplier).toFixed(2);
 
-  // --- MULTIPLIER LOGIC (NORMALIZED) ---
-  const getMultiplierForType = (t: string) => {
-    if (!projectConfig) return 1;
-    
-    // Normalize model name to uppercase to handle "Flat", "flat", "FLAT"
-    const rawModel = projectConfig.model_type || projectConfig.equity_model || 'CUSTOM';
-    const model = rawModel.toString().toUpperCase();
-
-    // 1. Flat Model
-    if (model === 'FLAT' || model.includes('FLAT')) {
-        return 1;
+  // Lee multiplicadores desde BD al abrir el modal (siempre datos frescos)
+  useEffect(() => {
+    if (isOpen && projectId) {
+      const loadMultipliers = async () => {
+        const { data } = await supabase
+          .from("projects")
+          .select("mult_cash, mult_work, mult_tangible, mult_intangible, mult_others")
+          .eq("id", projectId)
+          .single();
+        if (data) {
+          setActiveMultipliers({
+            mult_cash: Number(data.mult_cash) ?? DEFAULT_MULTIPLIERS.mult_cash,
+            mult_work: Number(data.mult_work) ?? DEFAULT_MULTIPLIERS.mult_work,
+            mult_tangible: Number(data.mult_tangible) ?? DEFAULT_MULTIPLIERS.mult_tangible,
+            mult_intangible: Number(data.mult_intangible) ?? DEFAULT_MULTIPLIERS.mult_intangible,
+            mult_others: Number(data.mult_others) ?? DEFAULT_MULTIPLIERS.mult_others,
+          });
+        } else if (projectConfig) {
+          setActiveMultipliers({
+            mult_cash: Number(projectConfig.mult_cash) ?? DEFAULT_MULTIPLIERS.mult_cash,
+            mult_work: Number(projectConfig.mult_work) ?? DEFAULT_MULTIPLIERS.mult_work,
+            mult_tangible: Number(projectConfig.mult_tangible) ?? DEFAULT_MULTIPLIERS.mult_tangible,
+            mult_intangible: Number(projectConfig.mult_intangible) ?? DEFAULT_MULTIPLIERS.mult_intangible,
+            mult_others: Number(projectConfig.mult_others) ?? DEFAULT_MULTIPLIERS.mult_others,
+          });
+        }
+      };
+      loadMultipliers();
     }
+  }, [isOpen, projectId, projectConfig]);
 
-    // 2. Just Split Model (Recommended)
-    if (model === 'JUST_SPLIT' || model.includes('JUST')) { 
-      if (t === 'CASH') return 4; 
-      return 2; 
-    }
-
-    // 3. Custom Model
-    const key = `mult_${t.toLowerCase()}`;
-    return projectConfig[key] ?? 1;
+  const getMultiplierForType = (t: string): number => {
+    const key = `mult_${t.toLowerCase()}` as keyof typeof DEFAULT_MULTIPLIERS;
+    const val = activeMultipliers[key];
+    return typeof val === "number" && !Number.isNaN(val) ? val : (DEFAULT_MULTIPLIERS[key] ?? 1);
   };
 
   // Effect: Load data on open
@@ -74,18 +97,16 @@ export function AddContributionModal({ isOpen, onClose, projectId, projectConfig
     }
   }, [isOpen, editData, members]);
 
-  // Effect: Update multiplier dynamically
+  // Effect: Update multiplier when type or activeMultipliers change
   useEffect(() => { 
     if (isOpen) {
-        const newMult = getMultiplierForType(type);
-        
-        if (!editData || (editData && type !== editData.type)) {
-            setMultiplier(newMult);
-        } else if (editData && type === editData.type) {
+        if (editData && type === editData.type) {
             setMultiplier(editData.multiplier);
+        } else {
+            setMultiplier(getMultiplierForType(type));
         }
     }
-  }, [type, projectConfig, isOpen, editData]);
+  }, [type, isOpen, editData, activeMultipliers]);
 
   if (!isOpen) return null;
 
