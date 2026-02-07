@@ -5,6 +5,7 @@ import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { Plus, TrendingUp, LayoutDashboard, PieChart, Users, Download, ArrowLeft, Settings } from "lucide-react";
 import { createClient } from "@/utils/supabase/client";
+import { recalculateAndPersistProjectValuation } from "@/utils/projectRecalculator";
 import { EquityPieChart } from "@/components/EquityPieChart";
 import { ContributionsTable } from "@/components/ContributionsTable";
 import { AddContributionModal } from "@/components/AddContributionModal";
@@ -74,6 +75,8 @@ export default function ProjectDashboardPage() {
       return [...prev, updatedOrNew as ExtendedContribution];
     });
     setEditingContribution(null);
+    // Refrescar proyecto para obtener current_valuation y multiplicadores actualizados
+    fetchData();
   };
 
   const handleContributionDeleted = async (id: string) => {
@@ -84,6 +87,9 @@ export default function ProjectDashboardPage() {
       console.error("Error deleting contribution:", error);
       return;
     }
+
+    // Recalcular total y multiplicador tras la eliminación
+    await recalculateAndPersistProjectValuation(supabase, projectId, project ?? undefined);
 
     setContributions((prev) => prev.filter((c) => c.id !== id));
   };

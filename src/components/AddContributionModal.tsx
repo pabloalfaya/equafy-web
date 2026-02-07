@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { X } from "lucide-react";
 import { createClient } from "@/utils/supabase/client";
+import { recalculateAndPersistProjectValuation } from "@/utils/projectRecalculator";
 
 // Defined types with English labels
 const CONTRIBUTION_TYPES = [
@@ -111,12 +112,26 @@ export function AddContributionModal({ isOpen, onClose, projectId, projectConfig
 
     const { data, error } = await query.select().single();
 
-    if (!error) { 
-        if(onSuccess) onSuccess(data);
-        onClose(); 
-    } else {
+    if (error) {
         console.error("Error saving contribution:", error);
+        setLoading(false);
+        return;
     }
+
+    // Recalcular multiplicador y total acumulado basado en el NUEVO total
+    const { error: recalcError } = await recalculateAndPersistProjectValuation(
+      supabase,
+      projectId,
+      projectConfig
+    );
+
+    if (recalcError) {
+        console.error("Error recalculating project valuation:", recalcError);
+        // Aun así devolvemos éxito porque la aportación se guardó correctamente
+    }
+
+    if (onSuccess) onSuccess(data);
+    onClose();
     setLoading(false);
   };
 
