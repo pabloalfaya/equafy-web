@@ -33,6 +33,7 @@ export async function GET(
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 
+  // Ordenado del más reciente al más antiguo (equivalente a sort({ created_at: -1 }))
   const { data: history, error } = await supabase
     .from("project_audit_log")
     .select("id, project_id, user_id, user_email, action_type, description, created_at")

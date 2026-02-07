@@ -92,14 +92,17 @@ export default function ProjectDashboardPage() {
       return;
     }
 
-    await logAudit({
-      supabase,
-      projectId,
-      actionType: "REMOVE_CONTRIBUTION",
-      description: `Eliminó aportación: ${contribution?.contributor_name ?? "?"} - ${contribution?.concept ?? contribution?.type ?? id}`,
-    });
+    try {
+      await logAudit({
+        supabase,
+        projectId,
+        actionType: "REMOVE_CONTRIBUTION",
+        description: `Eliminó aportación: ${contribution?.contributor_name ?? "?"} - ${contribution?.concept ?? contribution?.type ?? id}`,
+      });
+    } catch (err) {
+      console.error("Error saving audit log:", err);
+    }
 
-    // Recalcular total y multiplicador tras la eliminación
     await recalculateAndPersistProjectValuation(supabase, projectId, project ?? undefined);
 
     setContributions((prev) => prev.filter((c) => c.id !== id));

@@ -54,7 +54,7 @@ export function ContributionsTable({ contributions, onDelete, onEdit }: Contribu
         </thead>
         <tbody className="text-sm text-slate-700">
           {contributions.map((c) => (
-            <tr key={c.id} className="border-b border-slate-50 hover:bg-slate-50/50 transition-colors group">
+            <tr key={c.id} className="border-b border-slate-50 hover:bg-slate-50/50 transition-colors">
               
               {/* 1. FECHA (Usamos c.date) */}
               <td className="py-4 px-4 whitespace-nowrap text-slate-500 font-medium">
@@ -92,17 +92,19 @@ export function ContributionsTable({ contributions, onDelete, onEdit }: Contribu
 
               {/* 6. ACCIONES */}
               <td className="py-4 px-4 text-right">
-                <div className="flex items-center justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                  <button 
+                <div className="flex items-center justify-end gap-1">
+                  <button
+                    type="button"
                     onClick={() => onEdit(c)}
-                    className="p-1.5 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all"
+                    className="p-1.5 text-gray-400 hover:text-gray-700 hover:bg-slate-100 rounded-lg transition-all"
                     title="Edit"
                   >
                     <Pencil className="w-4 h-4" />
                   </button>
-                  <button 
+                  <button
+                    type="button"
                     onClick={() => onDelete(c.id)}
-                    className="p-1.5 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all"
+                    className="p-1.5 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all"
                     title="Delete"
                   >
                     <Trash2 className="w-4 h-4" />

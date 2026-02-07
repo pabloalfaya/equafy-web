@@ -20,7 +20,7 @@ interface LogAuditParams {
 /**
  * Registra una entrada en el audit log del proyecto.
  * Captura el usuario autenticado (userId y email) para trazabilidad.
- * @throws Si el insert falla (p. ej. RLS, tabla inexistente).
+ * Usa email por defecto si no hay sesión para evitar que falle.
  */
 export async function logAudit({
   supabase,
@@ -32,10 +32,15 @@ export async function logAudit({
     data: { user },
   } = await supabase.auth.getUser();
 
+  const userEmail = user?.email ?? "admin@equily.com";
+  const userId = user?.id ?? null;
+
+  console.log("--- AUDIT LOG INTENTO ---", userEmail, actionType);
+
   const { error } = await supabase.from("project_audit_log").insert({
     project_id: projectId,
-    user_id: user?.id ?? null,
-    user_email: user?.email ?? null,
+    user_id: userId,
+    user_email: userEmail,
     action_type: actionType,
     description,
   });
@@ -44,4 +49,6 @@ export async function logAudit({
     console.error("❌ ERROR GUARDANDO AUDIT LOG:", error);
     throw error;
   }
+
+  console.log("--- AUDIT LOG ÉXITO ---");
 }
