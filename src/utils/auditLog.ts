@@ -37,18 +37,20 @@ export async function logAudit({
 
   console.log("--- AUDIT LOG INTENTO ---", userEmail, actionType);
 
-  const { error } = await supabase.from("project_audit_log").insert({
-    project_id: projectId,
-    user_id: userId,
-    user_email: userEmail,
-    action_type: actionType,
-    description,
-  });
+  const { error } = await supabase
+    .from("project_audit_log")
+    .insert({
+      project_id: projectId,
+      user_id: userId,
+      user_email: userEmail,
+      action_type: actionType,
+      description,
+    });
 
   if (error) {
-    console.error("❌ ERROR GUARDANDO AUDIT LOG:", error);
+    console.error("❌ ERROR SUPABASE:", error.message);
     throw error;
+  } else {
+    console.log("✅ ÉXITO: Guardado en Supabase");
   }
-
-  console.log("--- AUDIT LOG ÉXITO ---");
 }
