@@ -140,6 +140,18 @@ export function AddContributionModal({ isOpen, onClose, projectId, projectConfig
         return;
     }
 
+    // Audit log: justo después del insert exitoso
+    const actionType = editData ? "EDIT_CONTRIBUTION" : "ADD_CONTRIBUTION";
+    const amt = parseFloat(amount || "0");
+    const desc = editData
+      ? `Editó aportación: ${selectedMember?.name} - ${amt.toLocaleString()}€ en ${type}${concept ? ` (${concept})` : ""}`
+      : `Added contribution of ${amt.toLocaleString()}€ (${type})${concept ? ` - ${concept}` : ""}`;
+    try {
+      await logAudit({ supabase, projectId, actionType, description: desc });
+    } catch (err) {
+      console.error("❌ ERROR GUARDANDO AUDIT LOG:", err);
+    }
+
     // Recalcular multiplicador y total acumulado basado en el NUEVO total
     const { error: recalcError } = await recalculateAndPersistProjectValuation(
       supabase,
@@ -150,19 +162,6 @@ export function AddContributionModal({ isOpen, onClose, projectId, projectConfig
     if (recalcError) {
         console.error("Error recalculating project valuation:", recalcError);
         // Aun así devolvemos éxito porque la aportación se guardó correctamente
-    }
-
-    const actionType = editData ? "EDIT_CONTRIBUTION" : "ADD_CONTRIBUTION";
-    const amt = parseFloat(amount || "0");
-    const desc = editData
-      ? `Editó aportación: ${selectedMember?.name} - ${amt.toLocaleString()}€ en ${type}${concept ? ` (${concept})` : ""}`
-      : `Added contribution of ${amt.toLocaleString()}€ in ${type}${concept ? ` - ${concept}` : ""} (${Number(riskAdjustedValue).toLocaleString()} pts)`;
-
-    try {
-      await logAudit({ supabase, projectId, actionType, description: desc });
-      console.log("✅ AUDIT LOG GUARDADO CORRECTAMENTE");
-    } catch (err) {
-      console.error("❌ ERROR GUARDANDO AUDIT LOG:", err);
     }
 
     if (onSuccess) onSuccess(data);
