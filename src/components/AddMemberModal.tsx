@@ -38,44 +38,56 @@ export function AddMemberModal({ isOpen, onClose, projectId, members, onUpdate }
 
     setLoading(true);
 
-    const payload = {
+    try {
+      const payload = {
         name: name.trim(),
         email: email.trim() === "" ? null : email.trim(),
         role: role.trim() || "Member",
-    };
+      };
 
-    let error;
+      let error;
 
-    if (editingId) {
+      if (editingId) {
         const { error: updateError } = await supabase
-            .from("project_members")
-            .update(payload)
-            .eq("id", editingId);
+          .from("project_members")
+          .update(payload)
+          .eq("id", editingId);
         error = updateError;
-    } else {
+      } else {
         const { error: insertError } = await supabase
-            .from("project_members")
-            .insert({
-                ...payload,
-                project_id: projectId,
-                status: 'active'
-            });
+          .from("project_members")
+          .insert({
+            ...payload,
+            project_id: projectId,
+            status: "active",
+          });
         error = insertError;
-    }
+      }
 
-    if (error) {
-      console.error("Error saving member:", error);
-      alert(`Error: ${error.message}`);
-    } else {
-      const actionType = editingId ? "EDIT_MEMBER" : "ADD_MEMBER";
-      const desc = editingId
-        ? `Editó miembro: ${payload.name}`
-        : `Añadió miembro: ${payload.name}`;
-      await logAudit({ supabase, projectId, actionType, description: desc });
+      if (error) {
+        console.error("Error saving member:", error);
+        alert(`Error: ${error.message}`);
+        return;
+      }
+
+      try {
+        const actionType = editingId ? "EDIT_MEMBER" : "ADD_MEMBER";
+        const desc = editingId
+          ? `Editó miembro: ${payload.name}`
+          : `Añadió miembro: ${payload.name}`;
+        await logAudit({ supabase, projectId, actionType, description: desc });
+      } catch (auditErr) {
+        console.error("Error saving audit log (member still saved):", auditErr);
+      }
+
       resetForm();
       onUpdate();
+    } catch (error) {
+      console.error("Error saving member:", error);
+      alert(`Error: ${error instanceof Error ? error.message : "Unknown error"}`);
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   const resetForm = () => {
