@@ -3,12 +3,13 @@
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation"; 
 import Link from "next/link";
-import { Plus, TrendingUp, LayoutDashboard, PieChart, Users, Download, ArrowLeft } from "lucide-react";
+import { Plus, TrendingUp, LayoutDashboard, PieChart, Users, Download, ArrowLeft, Settings } from "lucide-react";
 import { createClient } from "@/utils/supabase/client";
 import { EquityPieChart } from "@/components/EquityPieChart";
 import { ContributionsTable } from "@/components/ContributionsTable";
 import { AddContributionModal } from "@/components/AddContributionModal";
 import { AddMemberModal } from "@/components/AddMemberModal";
+import { FixedEquityModal } from "@/components/FixedEquityModal";
 import type { Project, Contribution } from "@/types/database";
 
 import jsPDF from 'jspdf';
@@ -22,7 +23,7 @@ type ExtendedProject = Project & {
 type ExtendedContribution = Contribution & { date?: string; concept?: string; multiplier?: number; [key: string]: any };
 
 // Tipos de miembros
-type Member = { id: string; name: string; role: string; email?: string };
+type Member = { id: string; name: string; role: string; email?: string; fixed_equity?: number | null };
 
 export default function ProjectDashboardPage() {
   const params = useParams(); 
@@ -36,6 +37,7 @@ export default function ProjectDashboardPage() {
   
   const [modalOpen, setModalOpen] = useState(false);
   const [memberModalOpen, setMemberModalOpen] = useState(false);
+  const [fixedEquityOpen, setFixedEquityOpen] = useState(false);
   const [editingContribution, setEditingContribution] = useState<ExtendedContribution | null>(null);
 
   const fetchData = async () => {
@@ -53,7 +55,7 @@ export default function ProjectDashboardPage() {
     setContributions(contributionsData as ExtendedContribution[] ?? []);
 
     // Cargar Miembros
-    const { data: membersData } = await supabase.from("project_members").select("id, name, role, email").eq("project_id", projectId);
+    const { data: membersData } = await supabase.from("project_members").select("id, name, role, email, fixed_equity").eq("project_id", projectId);
     setMembers((membersData as unknown as Member[]) ?? []);
     
     setLoading(false);
@@ -61,7 +63,7 @@ export default function ProjectDashboardPage() {
 
   const refreshMembers = async () => {
     const supabase = createClient();
-    const { data } = await supabase.from("project_members").select("id, name, role, email").eq("project_id", projectId);
+    const { data } = await supabase.from("project_members").select("id, name, role, email, fixed_equity").eq("project_id", projectId);
     setMembers((data as unknown as Member[]) ?? []);
   };
 
@@ -244,6 +246,9 @@ export default function ProjectDashboardPage() {
                 <button onClick={generatePDF} className="inline-flex items-center gap-2 rounded-xl bg-white border border-slate-200 px-5 py-3 font-bold text-slate-700 shadow-sm hover:bg-slate-50 transition-all">
                     <Download className="h-5 w-5" /> Export PDF
                 </button>
+                <button onClick={() => setFixedEquityOpen(true)} className="inline-flex items-center gap-2 rounded-xl bg-white border border-slate-200 px-5 py-3 font-bold text-slate-700 shadow-sm hover:bg-slate-50 transition-all">
+                    <Settings className="h-5 w-5" /> Equity Settings
+                </button>
                 <button onClick={() => setMemberModalOpen(true)} className="inline-flex items-center gap-2 rounded-xl bg-white border border-slate-200 px-5 py-3 font-bold text-slate-700 shadow-sm hover:bg-slate-50 transition-all">
                     <Users className="h-5 w-5" /> Team
                 </button>
@@ -291,6 +296,14 @@ export default function ProjectDashboardPage() {
         projectId={projectId} 
         members={members}       
         onUpdate={refreshMembers} 
+      />
+
+      <FixedEquityModal
+        isOpen={fixedEquityOpen}
+        onClose={() => setFixedEquityOpen(false)}
+        projectId={projectId}
+        members={members}
+        onSuccess={refreshMembers}
       />
     </div>
   );

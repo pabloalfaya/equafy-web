@@ -63,3 +63,6 @@ USING (
     AND projects.owner_id = auth.uid()
   )
 );
+
+-- Si project_members existe pero no tiene fixed_equity, ejecuta:
+-- ALTER TABLE project_members ADD COLUMN IF NOT EXISTS fixed_equity NUMERIC DEFAULT 0;
