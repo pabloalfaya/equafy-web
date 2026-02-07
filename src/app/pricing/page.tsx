@@ -105,8 +105,8 @@ export default function PricingPage() {
         </div>
 
         {/* --- PRICING CARDS --- */}
-        <div className="grid md:grid-cols-2 gap-8 max-w-3xl mx-auto items-start">
-          <div className="bg-white/70 backdrop-blur-xl border border-white/60 rounded-[40px] p-10 shadow-xl hover:shadow-2xl transition-all">
+        <div className="grid md:grid-cols-2 gap-8 max-w-3xl mx-auto items-stretch">
+          <div className="flex flex-col bg-white/70 backdrop-blur-xl border border-white/60 rounded-[40px] p-10 shadow-xl hover:shadow-2xl transition-all">
             <div className="mb-8">
               <h3 className="text-xl font-black text-slate-900 mb-2">Monthly Plan</h3>
               <div className="flex items-baseline gap-1">
@@ -129,13 +129,13 @@ export default function PricingPage() {
             </ul>
             <Link
               href="/login?view=signup"
-              className="block text-center py-4 rounded-2xl border border-slate-200 font-black text-sm uppercase tracking-widest hover:bg-slate-50 transition-all"
+              className="mt-auto block text-center py-4 rounded-2xl border border-slate-200 font-black text-sm uppercase tracking-widest hover:bg-slate-50 transition-all"
             >
               Start Now
             </Link>
           </div>
 
-          <div className="relative bg-slate-900 rounded-[40px] p-10 shadow-2xl transform md:-translate-y-4 ring-2 ring-emerald-500/50">
+          <div className="relative flex flex-col bg-slate-900 rounded-[40px] p-10 shadow-2xl ring-2 ring-emerald-500/50">
             <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-emerald-500 text-white px-4 py-1.5 rounded-full text-[10px] font-black tracking-widest uppercase shadow-lg border border-emerald-400 whitespace-nowrap">
               Best Value - Save ~17%
             </div>
@@ -161,7 +161,7 @@ export default function PricingPage() {
             </ul>
             <Link
               href="/login?view=signup"
-              className="block text-center py-4 rounded-2xl bg-emerald-500 text-white font-black text-sm uppercase tracking-widest hover:bg-emerald-400 transition-all shadow-lg shadow-emerald-500/20"
+              className="mt-auto block text-center py-4 rounded-2xl bg-emerald-500 text-white font-black text-sm uppercase tracking-widest hover:bg-emerald-400 transition-all shadow-lg shadow-emerald-500/20"
             >
               Start Now
             </Link>
