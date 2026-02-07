@@ -248,7 +248,7 @@ export default function ProjectDashboardPage() {
             h.action_type,
             h.description,
           ])
-        : [["No audit entries yet", "—", "—", "—"]];
+        : [["No actions recorded yet", "—", "—", "—"]];
 
       autoTable(doc, {
         startY: 50,
