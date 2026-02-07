@@ -35,7 +35,7 @@ export async function GET(
 
   const { data: history, error } = await supabase
     .from("project_audit_log")
-    .select("id, project_id, user_id, action_type, description, created_at")
+    .select("id, project_id, user_id, user_email, action_type, description, created_at")
     .eq("project_id", projectId)
     .order("created_at", { ascending: false });
 

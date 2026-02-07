@@ -240,20 +240,15 @@ export default function ProjectDashboardPage() {
       doc.setTextColor(100);
       doc.text(`Download date: ${dateStr}`, 14, 42);
 
-      type AuditEntry = { created_at: string; user_id?: string | null; action_type: string; description: string };
-      const MOCK_DATA: [string, string, string, string][] = [
-        [new Date().toLocaleString(), "owner@example.com", "ADD_CONTRIBUTION", "Sample contribution for testing"],
-        [new Date(Date.now() - 86400000).toLocaleString(), "owner@example.com", "CHANGE_MULTIPLIER", "Updated Cash multiplier from x1 to x2"],
-      ];
-
+      type AuditEntry = { created_at: string; user_email?: string | null; action_type: string; description: string };
       const tableData: [string, string, string, string][] = history.length
         ? history.map((h: AuditEntry) => [
             new Date(h.created_at).toLocaleString(),
-            h.user_id ? `${String(h.user_id).slice(0, 8)}…` : "—",
+            h.user_email ?? "—",
             h.action_type,
             h.description,
           ])
-        : MOCK_DATA;
+        : [["No audit entries yet", "—", "—", "—"]];
 
       autoTable(doc, {
         startY: 50,
@@ -374,7 +369,7 @@ export default function ProjectDashboardPage() {
                         <h3 className="font-bold text-slate-900 text-xl">Equity Distribution</h3>
                     </div>
                     <div className="w-full aspect-square"><EquityPieChart contributions={groupedContributionsForChart} members={members} /></div>
-                </div>
+yy                </div>
 
                 <div className="grid grid-cols-3 gap-2 mt-2">
                     <button

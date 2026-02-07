@@ -72,10 +72,14 @@ CREATE TABLE IF NOT EXISTS project_audit_log (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   project_id UUID NOT NULL REFERENCES projects(id) ON DELETE CASCADE,
   user_id UUID REFERENCES auth.users(id) ON DELETE SET NULL,
+  user_email TEXT,
   action_type TEXT NOT NULL,
   description TEXT NOT NULL,
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
+
+-- Si la tabla project_audit_log ya existía sin user_email, ejecuta:
+-- ALTER TABLE project_audit_log ADD COLUMN IF NOT EXISTS user_email TEXT;
 
 CREATE INDEX IF NOT EXISTS idx_audit_log_project_id ON project_audit_log(project_id);
 CREATE INDEX IF NOT EXISTS idx_audit_log_created_at ON project_audit_log(created_at DESC);
