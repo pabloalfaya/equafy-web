@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
-import { CheckCircle2, ArrowRight, Zap, ShieldCheck, Globe, Users, MessageSquare } from "lucide-react";
+import { CheckCircle2, ArrowRight } from "lucide-react";
 
 export default function PricingPage() {
   const navItems = [
@@ -105,72 +105,65 @@ export default function PricingPage() {
         </div>
 
         {/* --- PRICING CARDS --- */}
-        <div className="grid md:grid-cols-3 gap-8 max-w-7xl mx-auto items-start">
-          
-          {/* Plan Bootstrap */}
+        <div className="grid md:grid-cols-2 gap-8 max-w-3xl mx-auto items-start">
           <div className="bg-white/70 backdrop-blur-xl border border-white/60 rounded-[40px] p-10 shadow-xl hover:shadow-2xl transition-all">
             <div className="mb-8">
-              <h3 className="text-xl font-black text-slate-900 mb-2">Bootstrap</h3>
+              <h3 className="text-xl font-black text-slate-900 mb-2">Monthly Plan</h3>
               <div className="flex items-baseline gap-1">
-                <span className="text-4xl font-black text-slate-900">XX</span>
+                <span className="text-4xl font-black text-slate-900">19.99</span>
                 <span className="text-slate-400 font-bold">/mo</span>
               </div>
             </div>
             <ul className="space-y-4 mb-10">
-              {["1 Project", "Up to 3 Members", "Standard Multipliers"].map(f => (
+              {[
+                "1 Project",
+                "Unlimited Members",
+                "All Slicing Pie Models",
+                "PDF Report Export",
+                "Priority Support",
+              ].map((f) => (
                 <li key={f} className="flex items-center gap-3 text-sm font-bold text-slate-600">
-                  <CheckCircle2 className="w-5 h-5 text-emerald-500" /> {f}
+                  <CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0" /> {f}
                 </li>
               ))}
             </ul>
-            {/* Link corregido */}
-            <Link href="/login?view=signup" className="block text-center py-4 rounded-2xl border border-slate-200 font-black text-sm uppercase tracking-widest hover:bg-slate-50 transition-all">
-              Get Started
+            <Link
+              href="/login?view=signup"
+              className="block text-center py-4 rounded-2xl border border-slate-200 font-black text-sm uppercase tracking-widest hover:bg-slate-50 transition-all"
+            >
+              Start Now
             </Link>
           </div>
 
-          {/* Plan Growth */}
-          <div className="relative bg-slate-900 rounded-[40px] p-10 shadow-2xl transform md:-translate-y-4">
-            <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-emerald-500 text-white px-4 py-1.5 rounded-full text-[10px] font-black tracking-widest uppercase shadow-lg border border-emerald-400">
-              Most Popular
+          <div className="relative bg-slate-900 rounded-[40px] p-10 shadow-2xl transform md:-translate-y-4 ring-2 ring-emerald-500/50">
+            <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-emerald-500 text-white px-4 py-1.5 rounded-full text-[10px] font-black tracking-widest uppercase shadow-lg border border-emerald-400 whitespace-nowrap">
+              Best Value - Save ~17%
             </div>
             <div className="mb-8">
-              <h3 className="text-xl font-black text-white mb-2">Growth</h3>
+              <h3 className="text-xl font-black text-white mb-2">Yearly Plan</h3>
               <div className="flex items-baseline gap-1">
-                <span className="text-4xl font-black text-white">XX</span>
-                <span className="text-slate-400 font-bold">/mo</span>
+                <span className="text-4xl font-black text-white">199</span>
+                <span className="text-slate-400 font-bold">/yr</span>
               </div>
             </div>
             <ul className="space-y-4 mb-10">
-              {["Unlimited Projects", "Up to 10 Members", "Logarithmic Risk Toggle", "Custom Multipliers"].map(f => (
+              {[
+                "1 Project",
+                "Unlimited Members",
+                "All Slicing Pie Models",
+                "PDF Report Export",
+                "Priority Support",
+              ].map((f) => (
                 <li key={f} className="flex items-center gap-3 text-sm font-bold text-slate-200">
-                  <Zap className="w-5 h-5 text-emerald-400" /> {f}
+                  <CheckCircle2 className="w-5 h-5 text-emerald-400 shrink-0" /> {f}
                 </li>
               ))}
             </ul>
-            {/* Link corregido */}
-            <Link href="/login?view=signup" className="block text-center py-4 rounded-2xl bg-emerald-500 text-white font-black text-sm uppercase tracking-widest hover:bg-emerald-400 transition-all shadow-lg shadow-emerald-500/20">
-              Start Scaling
-            </Link>
-          </div>
-
-          {/* Plan Enterprise */}
-          <div className="bg-white/70 backdrop-blur-xl border border-white/60 rounded-[40px] p-10 shadow-xl">
-            <div className="mb-8">
-              <h3 className="text-xl font-black text-slate-900 mb-2">Enterprise</h3>
-              <div className="flex items-baseline gap-1">
-                <span className="text-4xl font-black text-slate-900">Custom</span>
-              </div>
-            </div>
-            <ul className="space-y-4 mb-10">
-              {["Unlimited Members", "Legal Template Export", "Priority Support"].map(f => (
-                <li key={f} className="flex items-center gap-3 text-sm font-bold text-slate-600">
-                  <ShieldCheck className="w-5 h-5 text-blue-500" /> {f}
-                </li>
-              ))}
-            </ul>
-            <Link href="/contact" className="block text-center py-4 rounded-2xl bg-slate-900 text-white font-black text-sm uppercase tracking-widest hover:bg-slate-800 transition-all">
-              Contact Sales
+            <Link
+              href="/login?view=signup"
+              className="block text-center py-4 rounded-2xl bg-emerald-500 text-white font-black text-sm uppercase tracking-widest hover:bg-emerald-400 transition-all shadow-lg shadow-emerald-500/20"
+            >
+              Start Now
             </Link>
           </div>
         </div>
