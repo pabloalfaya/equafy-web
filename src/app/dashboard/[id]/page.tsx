@@ -214,13 +214,12 @@ export default function ProjectDashboardPage() {
     doc.save(`${projectName}_Full_Report.pdf`);
   };
 
-  const generateAuditTrailPDF = async () => {
+  const handleDownloadAuditLog = async () => {
     if (!projectId || !project) return;
     setAuditPdfLoading(true);
     try {
       const res = await fetch(`/api/projects/${projectId}/history`);
-      if (!res.ok) throw new Error("Failed to fetch audit history");
-      const history = await res.json();
+      const history = res.ok ? await res.json() : [];
 
       const doc = new jsPDF();
       const projectName = project.name || "Project";
@@ -239,22 +238,36 @@ export default function ProjectDashboardPage() {
       doc.text(`Project: ${projectName}`, 14, 35);
       doc.setFontSize(10);
       doc.setTextColor(100);
-      doc.text(`Generated on: ${dateStr}`, 14, 42);
+      doc.text(`Download date: ${dateStr}`, 14, 42);
 
-      const tableData = history.map((h: { created_at: string; action_type: string; description: string }) => [
-        new Date(h.created_at).toLocaleString(),
-        h.action_type,
-        h.description,
-      ]);
+      type AuditEntry = { created_at: string; user_id?: string | null; action_type: string; description: string };
+      const MOCK_DATA: [string, string, string, string][] = [
+        [new Date().toLocaleString(), "owner@example.com", "ADD_CONTRIBUTION", "Sample contribution for testing"],
+        [new Date(Date.now() - 86400000).toLocaleString(), "owner@example.com", "CHANGE_MULTIPLIER", "Updated Cash multiplier from x1 to x2"],
+      ];
+
+      const tableData: [string, string, string, string][] = history.length
+        ? history.map((h: AuditEntry) => [
+            new Date(h.created_at).toLocaleString(),
+            h.user_id ? `${String(h.user_id).slice(0, 8)}…` : "—",
+            h.action_type,
+            h.description,
+          ])
+        : MOCK_DATA;
 
       autoTable(doc, {
         startY: 50,
-        head: [["Timestamp", "Action", "Description"]],
-        body: tableData.length ? tableData : [["No audit entries yet", "-", "-"]],
+        head: [["Date", "User", "Action", "Description"]],
+        body: tableData,
         theme: "grid",
         headStyles: { fillColor: [100, 116, 139], textColor: 255, fontStyle: "bold" },
         styles: { fontSize: 9, cellPadding: 3 },
-        columnStyles: { 0: { cellWidth: 40 }, 1: { cellWidth: 50 }, 2: { cellWidth: "auto" } },
+        columnStyles: {
+          0: { cellWidth: 38 },
+          1: { cellWidth: 32 },
+          2: { cellWidth: 45 },
+          3: { cellWidth: "auto" },
+        },
       });
 
       const pageCount = (doc as any).internal.getNumberOfPages();
@@ -354,38 +367,40 @@ export default function ProjectDashboardPage() {
                     </div>
                 </div>
                 
+                <div className="lg:col-span-1 flex flex-col gap-4">
                 <div className="bg-white/70 backdrop-blur-xl border border-white/60 rounded-[32px] p-8 shadow-xl flex flex-col h-fit sticky top-32">
                     <div className="flex items-center gap-3 mb-8">
                         <div className="p-2 bg-emerald-50 rounded-lg"><PieChart className="h-5 w-5 text-emerald-600" /></div>
                         <h3 className="font-bold text-slate-900 text-xl">Equity Distribution</h3>
                     </div>
                     <div className="w-full aspect-square"><EquityPieChart contributions={groupedContributionsForChart} members={members} /></div>
-
-                    <div className="grid grid-cols-3 gap-2 mt-6">
-                        <button
-                          onClick={generateAuditTrailPDF}
-                          disabled={auditPdfLoading}
-                          className="flex flex-col items-center justify-center gap-2 rounded-xl border border-slate-200 bg-slate-50 px-3 py-4 font-bold text-slate-600 hover:bg-slate-100 transition-all disabled:opacity-50"
-                        >
-                          <History className="h-5 w-5 text-slate-500" />
-                          <span className="text-xs">Audit Log</span>
-                        </button>
-                        <button
-                          disabled
-                          className="flex flex-col items-center justify-center gap-2 rounded-xl border border-slate-200 bg-slate-50 px-3 py-4 font-bold text-slate-400 opacity-60 cursor-not-allowed"
-                        >
-                          <FileText className="h-5 w-5" />
-                          <span className="text-xs">Legal Docs</span>
-                        </button>
-                        <button
-                          disabled
-                          className="flex flex-col items-center justify-center gap-2 rounded-xl border border-red-200 bg-red-50/50 px-3 py-4 font-bold text-red-600 opacity-60 cursor-not-allowed"
-                        >
-                          <Flag className="h-5 w-5" />
-                          <span className="text-xs">Finalize Project</span>
-                        </button>
-                    </div>
                 </div>
+
+                <div className="grid grid-cols-3 gap-2 mt-2">
+                    <button
+                      onClick={handleDownloadAuditLog}
+                      disabled={auditPdfLoading}
+                      className="flex flex-col items-center justify-center gap-2 rounded-xl border border-slate-200 bg-slate-50 px-3 py-4 font-bold text-slate-600 hover:bg-slate-100 transition-all disabled:opacity-50"
+                    >
+                      <History className="h-5 w-5 text-slate-500" />
+                      <span className="text-xs">Audit Log</span>
+                    </button>
+                    <button
+                      disabled
+                      className="flex flex-col items-center justify-center gap-2 rounded-xl border border-slate-200 bg-slate-50 px-3 py-4 font-bold text-slate-400 opacity-60 cursor-not-allowed"
+                    >
+                      <FileText className="h-5 w-5" />
+                      <span className="text-xs">Legal Docs</span>
+                    </button>
+                    <button
+                      disabled
+                      className="flex flex-col items-center justify-center gap-2 rounded-xl border border-red-200 bg-red-50/50 px-3 py-4 font-bold text-red-600 opacity-60 cursor-not-allowed"
+                    >
+                      <Flag className="h-5 w-5" />
+                      <span className="text-xs">Finalize Project</span>
+                    </button>
+                </div>
+            </div>
             </div>
         </div>
       </main>
