@@ -76,8 +76,15 @@ export default function ProjectDashboardPage() {
     setEditingContribution(null);
   };
 
-  // --- CORRECCIÓN AQUÍ: Ahora aceptamos 'id' como string ---
-  const handleContributionDeleted = (id: string) => {
+  const handleContributionDeleted = async (id: string) => {
+    const supabase = createClient();
+    const { error } = await supabase.from("contributions").delete().eq("id", id);
+
+    if (error) {
+      console.error("Error deleting contribution:", error);
+      return;
+    }
+
     setContributions((prev) => prev.filter((c) => c.id !== id));
   };
 
