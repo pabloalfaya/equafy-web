@@ -9,7 +9,7 @@ import { EquityPieChart } from "@/components/EquityPieChart";
 import { ContributionsTable } from "@/components/ContributionsTable";
 import { AddContributionModal } from "@/components/AddContributionModal";
 import { AddMemberModal } from "@/components/AddMemberModal";
-import { FixedEquityModal } from "@/components/FixedEquityModal";
+import { EquitySettingsModal } from "@/components/EquitySettingsModal";
 import type { Project, Contribution } from "@/types/database";
 
 import jsPDF from 'jspdf';
@@ -305,12 +305,16 @@ export default function ProjectDashboardPage() {
         onUpdate={refreshMembers} 
       />
 
-      <FixedEquityModal
+      <EquitySettingsModal
         isOpen={fixedEquityOpen}
         onClose={() => setFixedEquityOpen(false)}
         projectId={projectId}
+        project={project}
         members={members}
-        onSuccess={refreshMembers}
+        onSuccess={() => {
+          refreshMembers();
+          fetchData();
+        }}
       />
     </div>
   );
