@@ -156,8 +156,14 @@ export function AddContributionModal({ isOpen, onClose, projectId, projectConfig
     const amt = parseFloat(amount || "0");
     const desc = editData
       ? `Editó aportación: ${selectedMember?.name} - ${amt.toLocaleString()}€ en ${type}${concept ? ` (${concept})` : ""}`
-      : `Añadió ${amt.toLocaleString()}€ en ${type}${concept ? ` - ${concept}` : ""} (${Number(riskAdjustedValue).toLocaleString()} pts)`;
-    await logAudit({ supabase, projectId, actionType, description: desc });
+      : `Added contribution of ${amt.toLocaleString()}€ in ${type}${concept ? ` - ${concept}` : ""} (${Number(riskAdjustedValue).toLocaleString()} pts)`;
+
+    try {
+      await logAudit({ supabase, projectId, actionType, description: desc });
+      console.log("✅ AUDIT LOG GUARDADO CORRECTAMENTE");
+    } catch (err) {
+      console.error("❌ ERROR GUARDANDO AUDIT LOG:", err);
+    }
 
     if (onSuccess) onSuccess(data);
     onClose();
