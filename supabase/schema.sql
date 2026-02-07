@@ -66,3 +66,38 @@ USING (
 
 -- Si project_members existe pero no tiene fixed_equity, ejecuta:
 -- ALTER TABLE project_members ADD COLUMN IF NOT EXISTS fixed_equity NUMERIC DEFAULT 0;
+
+-- 4. TABLA DE AUDITORÍA (Audit Trail)
+CREATE TABLE IF NOT EXISTS project_audit_log (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  project_id UUID NOT NULL REFERENCES projects(id) ON DELETE CASCADE,
+  user_id UUID REFERENCES auth.users(id) ON DELETE SET NULL,
+  action_type TEXT NOT NULL,
+  description TEXT NOT NULL,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_audit_log_project_id ON project_audit_log(project_id);
+CREATE INDEX IF NOT EXISTS idx_audit_log_created_at ON project_audit_log(created_at DESC);
+
+ALTER TABLE project_audit_log ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Users can read audit log of their projects"
+ON project_audit_log FOR SELECT
+USING (
+  EXISTS (
+    SELECT 1 FROM projects
+    WHERE projects.id = project_audit_log.project_id
+    AND projects.owner_id = auth.uid()
+  )
+);
+
+CREATE POLICY "Users can insert audit log for their projects"
+ON project_audit_log FOR INSERT
+WITH CHECK (
+  EXISTS (
+    SELECT 1 FROM projects
+    WHERE projects.id = project_audit_log.project_id
+    AND projects.owner_id = auth.uid()
+  )
+);

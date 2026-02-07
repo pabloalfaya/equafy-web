@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { X } from "lucide-react";
 import { createClient } from "@/utils/supabase/client";
 import { recalculateAndPersistProjectValuation } from "@/utils/projectRecalculator";
+import { logAudit } from "@/utils/auditLog";
 
 // Defined types with English labels
 const CONTRIBUTION_TYPES = [
@@ -150,6 +151,12 @@ export function AddContributionModal({ isOpen, onClose, projectId, projectConfig
         console.error("Error recalculating project valuation:", recalcError);
         // Aun así devolvemos éxito porque la aportación se guardó correctamente
     }
+
+    const actionType = editData ? "EDIT_CONTRIBUTION" : "ADD_CONTRIBUTION";
+    const desc = editData
+      ? `Editó aportación: ${selectedMember?.name} - ${concept || type}`
+      : `Añadió aportación: ${selectedMember?.name} - ${concept || type} (${Number(riskAdjustedValue).toLocaleString()} pts)`;
+    await logAudit({ supabase, projectId, actionType, description: desc });
 
     if (onSuccess) onSuccess(data);
     onClose();

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { X, Trash2, UserPlus, Mail, Shield, User, Pencil, Ban } from "lucide-react";
 import { createClient } from "@/utils/supabase/client";
+import { logAudit } from "@/utils/auditLog";
 
 interface Member {
   id: string;
@@ -66,6 +67,11 @@ export function AddMemberModal({ isOpen, onClose, projectId, members, onUpdate }
       console.error("Error saving member:", error);
       alert(`Error: ${error.message}`);
     } else {
+      const actionType = editingId ? "EDIT_MEMBER" : "ADD_MEMBER";
+      const desc = editingId
+        ? `Editó miembro: ${payload.name}`
+        : `Añadió miembro: ${payload.name}`;
+      await logAudit({ supabase, projectId, actionType, description: desc });
       resetForm();
       onUpdate();
     }
@@ -88,8 +94,15 @@ export function AddMemberModal({ isOpen, onClose, projectId, members, onUpdate }
 
   const handleDelete = async (id: string) => {
     if (!confirm("Are you sure? This might affect existing contributions.")) return;
+    const member = members.find((m) => m.id === id);
     const { error } = await supabase.from("project_members").delete().eq("id", id);
     if (!error) {
+      await logAudit({
+        supabase,
+        projectId,
+        actionType: "REMOVE_MEMBER",
+        description: `Eliminó miembro: ${member?.name ?? id}`,
+      });
       if (editingId === id) resetForm();
       onUpdate();
     }

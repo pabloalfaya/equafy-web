@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { X, Percent, Save, Settings2 } from "lucide-react";
 import { createClient } from "@/utils/supabase/client";
+import { logAudit } from "@/utils/auditLog";
 
 const MEMBER_COLORS = [
   "bg-emerald-500",
@@ -146,6 +147,12 @@ export function EquitySettingsModal({
         setError(err?.message ?? "Error saving changes.");
       } else {
         setSuccessMessage("Fixed equity saved successfully!");
+        await logAudit({
+          supabase,
+          projectId,
+          actionType: "UPDATE_FIXED_EQUITY",
+          description: "Actualizó equity fijo de los miembros",
+        });
         onSuccess?.();
         setTimeout(() => setSuccessMessage(null), 2500);
       }
@@ -178,6 +185,13 @@ export function EquitySettingsModal({
       if (updateError) {
         setError(updateError.message ?? "Error saving multipliers.");
       } else {
+        const desc = `Cambió multiplicadores: Cash x${multipliers.mult_cash}, Work x${multipliers.mult_work}, Tangible x${multipliers.mult_tangible}, Intangible x${multipliers.mult_intangible}, Others x${multipliers.mult_others}`;
+        await logAudit({
+          supabase,
+          projectId,
+          actionType: "CHANGE_MULTIPLIER",
+          description: desc,
+        });
         setSuccessMessage("Multipliers saved successfully!");
         onSuccess?.();
         setTimeout(() => setSuccessMessage(null), 2500);
