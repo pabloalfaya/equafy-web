@@ -4,6 +4,28 @@ import { useState, useEffect } from "react";
 import { X, Percent, Save } from "lucide-react";
 import { createClient } from "@/utils/supabase/client";
 
+const MEMBER_COLORS = [
+  "bg-emerald-500",
+  "bg-blue-500",
+  "bg-violet-500",
+  "bg-amber-500",
+  "bg-red-500",
+  "bg-cyan-500",
+  "bg-pink-500",
+  "bg-indigo-500",
+];
+
+const MEMBER_BORDER_COLORS = [
+  "focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20",
+  "focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20",
+  "focus:border-violet-500 focus:ring-2 focus:ring-violet-500/20",
+  "focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20",
+  "focus:border-red-500 focus:ring-2 focus:ring-red-500/20",
+  "focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20",
+  "focus:border-pink-500 focus:ring-2 focus:ring-pink-500/20",
+  "focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20",
+];
+
 interface Member {
   id: string;
   name: string;
@@ -20,6 +42,15 @@ interface FixedEquityModalProps {
   onSuccess?: () => void;
 }
 
+function formatWithComma(num: number): string {
+  return num.toFixed(2).replace(".", ",");
+}
+
+function parseWithComma(str: string): number {
+  const normalized = str.replace(",", ".");
+  return parseFloat(normalized) || 0;
+}
+
 export function FixedEquityModal({
   isOpen,
   onClose,
@@ -30,6 +61,8 @@ export function FixedEquityModal({
   const [values, setValues] = useState<Record<string, number>>({});
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  const localMembers = members;
 
   useEffect(() => {
     if (isOpen && members.length > 0) {
@@ -46,9 +79,10 @@ export function FixedEquityModal({
   const totalDynamic = Math.max(0, 100 - totalFixed);
   const isValid = totalFixed <= 100;
 
-  const handleChange = (memberId: string, val: string) => {
-    const num = parseFloat(val) || 0;
-    setValues((prev) => ({ ...prev, [memberId]: num }));
+  const handleMemberChange = (memberId: string, val: string) => {
+    const num = parseWithComma(val);
+    const rounded = parseFloat(num.toFixed(2));
+    setValues((prev) => ({ ...prev, [memberId]: rounded }));
   };
 
   const handleSave = async () => {
@@ -115,25 +149,34 @@ export function FixedEquityModal({
           </button>
         </div>
 
-        {/* Progress Bar */}
+        {/* Segmented Progress Bar */}
         <div className="mb-6">
           <div className="flex justify-between text-xs font-bold text-slate-500 mb-2 uppercase">
             <span>Fixed</span>
             <span>Dynamic (Slicing Pie)</span>
           </div>
           <div className="h-4 rounded-full overflow-hidden bg-slate-100 flex">
-            <div
-              className="h-full bg-emerald-500 transition-all duration-300"
-              style={{ width: `${Math.min(totalFixed, 100)}%` }}
-            />
+            {localMembers
+              .filter((m) => (values[m.id] ?? 0) > 0)
+              .map((m) => {
+                const memberIndex = localMembers.findIndex((mx) => mx.id === m.id);
+                const width = values[m.id] ?? 0;
+                return (
+                  <div
+                    key={m.id}
+                    className={`h-full transition-all duration-300 ${MEMBER_COLORS[memberIndex % MEMBER_COLORS.length]}`}
+                    style={{ width: `${width}%` }}
+                  />
+                );
+              })}
             <div
               className="h-full bg-slate-300 transition-all duration-300"
               style={{ width: `${totalDynamic}%` }}
             />
           </div>
           <div className="flex justify-between mt-1.5 text-sm font-bold">
-            <span className="text-emerald-600">{totalFixed.toFixed(1)}%</span>
-            <span className="text-slate-500">{totalDynamic.toFixed(1)}%</span>
+            <span className="text-emerald-600">{formatWithComma(totalFixed)}%</span>
+            <span className="text-slate-500">{formatWithComma(totalDynamic)}%</span>
           </div>
           {!isValid && (
             <p className="mt-2 text-xs font-bold text-red-600">
@@ -144,35 +187,40 @@ export function FixedEquityModal({
 
         {/* Member list */}
         <div className="space-y-3 max-h-[240px] overflow-y-auto pr-2 custom-scrollbar">
-          {members.length === 0 ? (
+          {localMembers.length === 0 ? (
             <p className="text-center text-slate-400 text-sm italic py-4">
               No members yet.
             </p>
           ) : (
-            members.map((m) => (
+            localMembers.map((m, index) => (
               <div
                 key={m.id}
                 className="flex items-center justify-between p-3 rounded-xl bg-slate-50 border border-slate-100 hover:border-slate-200 transition-all"
               >
-                <div className="flex flex-col overflow-hidden mr-3">
-                  <span className="font-bold text-slate-800 text-sm truncate">
-                    {m.name}
-                  </span>
-                  {m.role && (
-                    <span className="text-[11px] font-medium text-slate-500 mt-0.5 uppercase">
-                      {m.role}
+                <div className="flex items-center gap-3 overflow-hidden mr-3">
+                  <div
+                    className={`h-3 w-3 rounded-full shrink-0 ${MEMBER_COLORS[index % MEMBER_COLORS.length]}`}
+                  />
+                  <div className="flex flex-col overflow-hidden">
+                    <span className="font-bold text-slate-800 text-sm truncate">
+                      {m.name}
                     </span>
-                  )}
+                    {m.role && (
+                      <span className="text-[11px] font-medium text-slate-500 mt-0.5 uppercase">
+                        {m.role}
+                      </span>
+                    )}
+                  </div>
                 </div>
                 <div className="flex items-center gap-1 shrink-0">
                   <input
-                    type="number"
+                    type="text"
+                    inputMode="decimal"
                     min={0}
                     max={100}
-                    step={0.5}
-                    value={Number.isNaN(values[m.id]) ? 0 : (values[m.id] ?? 0)}
-                    onChange={(e) => handleChange(m.id, e.target.value)}
-                    className="w-20 px-3 py-2 rounded-lg border border-slate-200 bg-white font-bold text-slate-800 text-sm text-right outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 transition-all"
+                    value={formatWithComma(Number.isNaN(values[m.id]) ? 0 : (values[m.id] ?? 0))}
+                    onChange={(e) => handleMemberChange(m.id, e.target.value)}
+                    className={`w-20 px-3 py-2 rounded-lg border border-slate-200 bg-white font-bold text-slate-800 text-sm text-right outline-none focus:ring-2 transition-all ${MEMBER_BORDER_COLORS[index % MEMBER_BORDER_COLORS.length]}`}
                   />
                   <span className="text-slate-400 font-bold text-sm">%</span>
                 </div>
