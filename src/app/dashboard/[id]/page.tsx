@@ -339,7 +339,7 @@ export default function ProjectDashboardPage() {
                         <div className="p-2 bg-emerald-50 rounded-lg"><PieChart className="h-5 w-5 text-emerald-600" /></div>
                         <h3 className="font-bold text-slate-900 text-xl">Equity Distribution</h3>
                     </div>
-                    <div className="w-full aspect-square"><EquityPieChart contributions={groupedContributionsForChart} members={members} /></div>
+                    <div className="w-full aspect-square"><EquityPieChart contributions={contributions} members={members} /></div>
                   </div>
 
                 <div className="grid grid-cols-3 gap-2 mt-2">

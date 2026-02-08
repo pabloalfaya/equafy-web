@@ -97,9 +97,9 @@ export function EquityPieChart({ contributions, members }: EquityPieChartProps) 
       };
     });
 
-    // 5. Normalizar para que la suma sea exactamente 100% (evitar errores de redondeo)
+    // 5. Normalizar SIEMPRE para que la suma sea exactamente 100% (evitar errores de redondeo al borrar)
     const rawSum = chartData.reduce((sum, d) => sum + d.value, 0);
-    if (rawSum > 0 && Math.abs(rawSum - 100) > 0.001) {
+    if (rawSum > 0) {
       chartData = chartData.map((d) => ({
         ...d,
         value: (d.value / rawSum) * 100,
