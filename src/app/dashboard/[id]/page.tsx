@@ -193,10 +193,18 @@ export default function ProjectDashboardPage() {
         footStyles: { fillColor: [229, 229, 229], textColor: [33, 33, 33], fontStyle: "bold" },
         styles: { fontSize: 10, cellPadding: 3 },
         columnStyles: {
-            0: { fontStyle: "bold" },
+            0: { fontStyle: "bold", halign: "left" },
+            1: { halign: "left" },
             2: { halign: "right" },
             3: { halign: "right" },
             4: { halign: "right", fontStyle: "bold" },
+        },
+        didParseCell: (data) => {
+          if (data.section === "foot") {
+            const colIdx = data.column.index;
+            if (colIdx >= 2) data.cell.styles.halign = "right";
+            else data.cell.styles.halign = "left";
+          }
         },
     });
 
