@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { createClient } from "@/utils/supabase/client";
+import { logAudit } from "@/utils/auditLog";
 import { X, Loader2, ShieldCheck, Scale, Settings, ArrowRight, ArrowLeft, Rocket } from "lucide-react";
 import type { Project } from "@/types/database";
 
@@ -92,9 +93,18 @@ export function CreateProjectModal({ isOpen, onClose, onProjectCreated }: Create
 
         if (memberError) {
             console.error("Error adding owner:", memberError);
-            alert(`Project created but failed to add owner: ${memberError.message}`); // AVISO VISUAL
+            alert(`Project created but failed to add owner: ${memberError.message}`);
         } else {
-            // ÉXITO TOTAL
+            try {
+              await logAudit({
+                supabase,
+                projectId: project.id,
+                actionType: "CREATE_PROJECT",
+                description: `Created project: ${name}`,
+              });
+            } catch (auditErr) {
+              console.error("Error saving audit log:", auditErr);
+            }
             onProjectCreated(project);
             setName("");
             setStep(1);

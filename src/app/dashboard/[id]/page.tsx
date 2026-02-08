@@ -96,8 +96,8 @@ export default function ProjectDashboardPage() {
       await logAudit({
         supabase,
         projectId,
-        actionType: "REMOVE_CONTRIBUTION",
-        description: `Eliminó aportación: ${contribution?.contributor_name ?? "?"} - ${contribution?.concept ?? contribution?.type ?? id}`,
+        actionType: "DELETE_CONTRIBUTION",
+        description: `Deleted contribution: ${contribution?.contributor_name ?? "?"} - ${contribution?.concept ?? contribution?.type ?? id}`,
       });
     } catch (err) {
       console.error("Error saving audit log:", err);

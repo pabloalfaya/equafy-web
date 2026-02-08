@@ -147,12 +147,16 @@ export function EquitySettingsModal({
         setError(err?.message ?? "Error saving changes.");
       } else {
         setSuccessMessage("Fixed equity saved successfully!");
-        await logAudit({
-          supabase,
-          projectId,
-          actionType: "UPDATE_FIXED_EQUITY",
-          description: "Actualizó equity fijo de los miembros",
-        });
+        try {
+          await logAudit({
+            supabase,
+            projectId,
+            actionType: "UPDATE_FIXED_EQUITY",
+            description: "Updated fixed equity distribution",
+          });
+        } catch (auditErr) {
+          console.error("Error saving audit log:", auditErr);
+        }
         onSuccess?.();
         setTimeout(() => setSuccessMessage(null), 2500);
       }
@@ -191,11 +195,11 @@ export function EquitySettingsModal({
       }
 
       try {
-        const desc = `Cambió multiplicadores: Cash x${multipliers.mult_cash}, Work x${multipliers.mult_work}, Tangible x${multipliers.mult_tangible}, Intangible x${multipliers.mult_intangible}, Others x${multipliers.mult_others}`;
+        const desc = `Updated multipliers: Cash x${multipliers.mult_cash}, Work x${multipliers.mult_work}, Tangible x${multipliers.mult_tangible}, Intangible x${multipliers.mult_intangible}, Others x${multipliers.mult_others}`;
         await logAudit({
           supabase,
           projectId,
-          actionType: "CHANGE_MULTIPLIER",
+          actionType: "UPDATE_MULTIPLIERS",
           description: desc,
         });
       } catch (auditErr) {

@@ -4,11 +4,17 @@ export type AuditActionType =
   | "ADD_CONTRIBUTION"
   | "EDIT_CONTRIBUTION"
   | "REMOVE_CONTRIBUTION"
+  | "DELETE_CONTRIBUTION"
   | "CHANGE_MULTIPLIER"
+  | "UPDATE_MULTIPLIERS"
+  | "UPDATE_RISK"
   | "UPDATE_FIXED_EQUITY"
   | "ADD_MEMBER"
   | "EDIT_MEMBER"
-  | "REMOVE_MEMBER";
+  | "UPDATE_MEMBER"
+  | "REMOVE_MEMBER"
+  | "CREATE_PROJECT"
+  | "UPDATE_PROJECT";
 
 interface LogAuditParams {
   supabase: SupabaseClient;

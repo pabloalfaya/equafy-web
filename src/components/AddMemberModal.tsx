@@ -71,10 +71,10 @@ export function AddMemberModal({ isOpen, onClose, projectId, members, onUpdate }
       }
 
       try {
-        const actionType = editingId ? "EDIT_MEMBER" : "ADD_MEMBER";
-        const desc = editingId
-          ? `Editó miembro: ${payload.name}`
-          : `Añadió miembro: ${payload.name}`;
+const actionType = editingId ? "EDIT_MEMBER" : "ADD_MEMBER";
+      const desc = editingId
+        ? `Updated member: ${payload.name}`
+        : `Added member: ${payload.name}`;
         await logAudit({ supabase, projectId, actionType, description: desc });
       } catch (auditErr) {
         console.error("Error saving audit log (member still saved):", auditErr);
@@ -109,12 +109,16 @@ export function AddMemberModal({ isOpen, onClose, projectId, members, onUpdate }
     const member = members.find((m) => m.id === id);
     const { error } = await supabase.from("project_members").delete().eq("id", id);
     if (!error) {
-      await logAudit({
-        supabase,
-        projectId,
-        actionType: "REMOVE_MEMBER",
-        description: `Eliminó miembro: ${member?.name ?? id}`,
-      });
+      try {
+        await logAudit({
+          supabase,
+          projectId,
+          actionType: "REMOVE_MEMBER",
+          description: `Removed member: ${member?.name ?? id}`,
+        });
+      } catch (auditErr) {
+        console.error("Error saving audit log:", auditErr);
+      }
       if (editingId === id) resetForm();
       onUpdate();
     }
