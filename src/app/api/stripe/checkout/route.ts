@@ -24,6 +24,7 @@ export async function POST(req: Request) {
       success_url: `${baseUrl}/dashboard?payment=success`,
       cancel_url: `${baseUrl}/dashboard?payment=cancelled`,
       allow_promotion_codes: true,
+      locale: "en",
     });
 
     return NextResponse.json({ url: session.url });

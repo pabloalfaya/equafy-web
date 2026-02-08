@@ -110,15 +110,15 @@ export function PricingModal({ isOpen, onClose }: PricingModalProps) {
         <div className="mb-6 p-6 rounded-2xl bg-slate-50 border border-slate-100">
           {plan === "monthly" ? (
             <p className="text-2xl font-black text-slate-900">
-              {PRICE_MONTHLY}€<span className="text-base font-bold text-slate-500">/mes</span>
+              {PRICE_MONTHLY}€<span className="text-base font-bold text-slate-500">/mo</span>
             </p>
           ) : (
             <div>
               <p className="text-2xl font-black text-slate-900">
-                {PRICE_YEARLY}€<span className="text-base font-bold text-slate-500">/año</span>
+                {PRICE_YEARLY}€<span className="text-base font-bold text-slate-500">/yr</span>
               </p>
               <p className="text-xs font-bold text-emerald-600 mt-1 uppercase tracking-wider">
-                Ahorro de 2 meses
+                Save 2 months
               </p>
             </div>
           )}
@@ -126,7 +126,7 @@ export function PricingModal({ isOpen, onClose }: PricingModalProps) {
 
         {/* Highlight */}
         <p className="text-center font-bold text-slate-700 mb-6">
-          14 Días de Prueba Gratis. Sin cobros hoy.
+          14-Day Free Trial. No charge today.
         </p>
 
         {error && (
