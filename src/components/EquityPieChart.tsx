@@ -33,11 +33,19 @@ function CustomTooltip(props: { active?: boolean; payload?: Array<{ payload: Cha
 
   const item = payload[0].payload;
   return (
-    <div className="rounded-xl border border-slate-200 bg-white px-4 py-3 shadow-lg">
-      <p className="font-bold text-slate-800 mb-1">{item.name}</p>
-      <p className="text-sm text-slate-600">Total: {item.value.toFixed(1)} %</p>
-      <p className="text-sm text-slate-600">Fixed: {item.fixed.toFixed(1)} %</p>
-      <p className="text-sm text-slate-600">Dynamic: {item.dynamic.toLocaleString()} pts</p>
+    <div
+      className="rounded-xl px-5 py-4"
+      style={{
+        backgroundColor: "#ffffff",
+        boxShadow: "0 10px 25px -5px rgb(0 0 0 / 0.15), 0 4px 6px -4px rgb(0 0 0 / 0.1)",
+        border: "1px solid #e2e8f0",
+        minWidth: "140px",
+      }}
+    >
+      <p className="font-bold text-slate-900 mb-2">{item.name}</p>
+      <p className="text-sm text-slate-700 mb-0.5">Total: {item.value.toFixed(1)}%</p>
+      <p className="text-sm text-slate-700 mb-0.5">Fixed: {item.fixed.toFixed(1)}%</p>
+      <p className="text-sm text-slate-700">Dynamic: {item.dynamic.toLocaleString()} pts</p>
     </div>
   );
 }
@@ -124,10 +132,13 @@ export function EquityPieChart({ contributions, members }: EquityPieChartProps) 
             </Pie>
             <Tooltip
               content={<CustomTooltip />}
+              wrapperStyle={{ zIndex: 50 }}
               contentStyle={{
+                backgroundColor: "#ffffff",
                 borderRadius: "12px",
-                border: "none",
-                boxShadow: "0 10px 15px -3px rgb(0 0 0 / 0.1)",
+                border: "1px solid #e2e8f0",
+                boxShadow: "0 10px 25px -5px rgb(0 0 0 / 0.15), 0 4px 6px -4px rgb(0 0 0 / 0.1)",
+                padding: "12px 16px",
               }}
             />
           </PieChart>
