@@ -39,24 +39,24 @@ export async function logAudit({
   } = await supabase.auth.getUser();
 
   const userEmail = user?.email ?? "admin@equily.com";
-  const userId = user?.id ?? null;
 
-  console.log("--- AUDIT LOG INTENTO ---", userEmail, actionType);
+  const data = {
+    project_id: projectId,
+    action_type: actionType,
+    description,
+    user_email: userEmail,
+  };
+
+  console.log("Intento de Audit:", data);
 
   const { error } = await supabase
     .from("project_audit_log")
-    .insert({
-      project_id: projectId,
-      user_id: userId,
-      user_email: userEmail,
-      action_type: actionType,
-      description,
-    });
+    .insert(data);
 
   if (error) {
-    console.error("❌ ERROR SUPABASE:", error.message);
+    console.error("Error Audit:", error);
     throw error;
   } else {
-    console.log("✅ ÉXITO: Guardado en Supabase");
+    console.log("✅ Audit guardado correctamente");
   }
 }
