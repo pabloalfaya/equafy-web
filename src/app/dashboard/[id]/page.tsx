@@ -154,9 +154,29 @@ export default function ProjectDashboardPage() {
             member.name,
             member.role || "Member",
             memberPoints.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
-            `${equityPercent.toFixed(2)}%`
+            `${memberFixed.toFixed(2)}%`,
+            `${equityPercent.toFixed(2)}%`,
         ];
     });
+
+    const totalPointsSum = members.reduce((sum, m) => {
+      const pts = contributions.filter(c => c.contributor_name === m.name).reduce((s, c) => s + (c.risk_adjusted_value || 0), 0);
+      return sum + pts;
+    }, 0);
+    const totalEquitySum = summaryData.reduce((sum, row) => {
+      const val = row[4];
+      return sum + parseFloat(typeof val === "string" ? val.replace("%", "") : "0") || 0;
+    }, 0);
+
+    const footData = [
+      [
+        "TOTAL",
+        "",
+        totalPointsSum.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
+        `${totalFixedEquity.toFixed(2)}%`,
+        `${totalEquitySum.toFixed(2)}%`,
+      ],
+    ];
 
     // 3. TABLA 1: RESUMEN DE EQUITY (Arriba)
     doc.setFontSize(12);
@@ -165,16 +185,19 @@ export default function ProjectDashboardPage() {
 
     autoTable(doc, {
         startY: 55,
-        head: [['Member', 'Role', 'Risk Value (Points)', 'Equity %']],
+        head: [["Member", "Role", "Risk Value (Points)", "Fixed Equity", "Equity %"]],
         body: summaryData,
-        theme: 'grid',
-        headStyles: { fillColor: [16, 185, 129], textColor: 255, fontStyle: 'bold' }, // Estilo profesional Emerald
+        foot: footData,
+        theme: "grid",
+        headStyles: { fillColor: [16, 185, 129], textColor: 255, fontStyle: "bold" },
+        footStyles: { fillColor: [241, 245, 249], fontStyle: "bold" },
         styles: { fontSize: 10, cellPadding: 3 },
         columnStyles: {
-            0: { fontStyle: 'bold' },
-            2: { halign: 'right' },
-            3: { halign: 'right', fontStyle: 'bold' }
-        }
+            0: { fontStyle: "bold" },
+            2: { halign: "right" },
+            3: { halign: "right" },
+            4: { halign: "right", fontStyle: "bold" },
+        },
     });
 
     // 4. TABLA 2: DETALLE DE APORTACIONES (Abajo)
@@ -372,7 +395,7 @@ export default function ProjectDashboardPage() {
                         <h3 className="font-bold text-slate-900 text-xl">Equity Distribution</h3>
                     </div>
                     <div className="w-full aspect-square"><EquityPieChart contributions={groupedContributionsForChart} members={members} /></div>
-                </div>
+                  </div>
 
                 <div className="grid grid-cols-3 gap-2 mt-2">
                     <button
