@@ -24,7 +24,7 @@ const DEFAULT_MULTIPLIERS: Record<string, number> = {
   mult_others: 1,
 };
 
-export function AddContributionModal({ isOpen, onClose, projectId, projectConfig, onSuccess, members, editData = null }: any) {
+export function AddContributionModal({ isOpen, onClose, projectId, projectConfig, onSuccess, members, editData = null, canEdit = true }: any) {
   const [contributorId, setContributorId] = useState("");
   const [concept, setConcept] = useState("");
   const [type, setType] = useState("CASH");
@@ -113,6 +113,7 @@ export function AddContributionModal({ isOpen, onClose, projectId, projectConfig
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!canEdit) return;
     setLoading(true);
 
     const selectedMember = members.find((m: any) => m.id === contributorId);
@@ -198,7 +199,8 @@ export function AddContributionModal({ isOpen, onClose, projectId, projectConfig
             <select 
                 value={contributorId} 
                 onChange={(e) => setContributorId(e.target.value)} 
-                className="w-full rounded-xl border border-slate-200 px-4 py-3 bg-slate-50 font-bold outline-none text-slate-700 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all"
+                disabled={!canEdit}
+                className="w-full rounded-xl border border-slate-200 px-4 py-3 bg-slate-50 font-bold outline-none text-slate-700 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all disabled:opacity-60 disabled:cursor-not-allowed"
             >
                 {members.map((m: any) => <option key={m.id} value={m.id}>{m.name}</option>)}
             </select>
@@ -212,7 +214,8 @@ export function AddContributionModal({ isOpen, onClose, projectId, projectConfig
                 placeholder="Ex: MVP Development..." 
                 value={concept} 
                 onChange={(e) => setConcept(e.target.value)} 
-                className="w-full rounded-xl border border-slate-200 px-4 py-3 bg-slate-50 font-bold outline-none text-slate-700 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all" 
+                disabled={!canEdit}
+                className="w-full rounded-xl border border-slate-200 px-4 py-3 bg-slate-50 font-bold outline-none text-slate-700 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all disabled:opacity-60 disabled:cursor-not-allowed" 
             />
           </div>
 
@@ -223,7 +226,8 @@ export function AddContributionModal({ isOpen, onClose, projectId, projectConfig
                 <select 
                     value={type} 
                     onChange={(e) => setType(e.target.value)} 
-                    className="w-full rounded-xl border border-slate-200 px-4 py-3 bg-slate-50 font-black text-xs uppercase outline-none text-slate-700 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all"
+                    disabled={!canEdit}
+                    className="w-full rounded-xl border border-slate-200 px-4 py-3 bg-slate-50 font-black text-xs uppercase outline-none text-slate-700 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all disabled:opacity-60 disabled:cursor-not-allowed"
                 >
                     {CONTRIBUTION_TYPES.map((t) => {
                         const multVal = getMultiplierForType(t.value);
@@ -243,7 +247,8 @@ export function AddContributionModal({ isOpen, onClose, projectId, projectConfig
                     placeholder="0.00" 
                     value={amount} 
                     onChange={(e) => setAmount(e.target.value)} 
-                    className="w-full rounded-xl border border-slate-200 px-4 py-3 bg-slate-50 font-black outline-none text-slate-700 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all" 
+                    disabled={!canEdit}
+                    className="w-full rounded-xl border border-slate-200 px-4 py-3 bg-slate-50 font-black outline-none text-slate-700 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all disabled:opacity-60 disabled:cursor-not-allowed" 
                 />
             </div>
           </div>
@@ -254,7 +259,8 @@ export function AddContributionModal({ isOpen, onClose, projectId, projectConfig
                 type="date" 
                 value={date}
                 onChange={(e) => setDate(e.target.value)}
-                className="w-full rounded-xl border border-slate-200 px-4 py-2 bg-slate-50 text-xs font-bold text-slate-500 outline-none focus:border-emerald-500 transition-all"
+                disabled={!canEdit}
+                className="w-full rounded-xl border border-slate-200 px-4 py-2 bg-slate-50 text-xs font-bold text-slate-500 outline-none focus:border-emerald-500 transition-all disabled:opacity-60 disabled:cursor-not-allowed"
              />
           </div>
 
@@ -271,13 +277,15 @@ export function AddContributionModal({ isOpen, onClose, projectId, projectConfig
           </div>
 
           {/* Submit Button */}
-          <button 
-            type="submit" 
-            disabled={loading} 
-            className="w-full rounded-2xl bg-emerald-600 py-4 text-sm font-black text-white hover:bg-emerald-500 hover:shadow-lg hover:shadow-emerald-500/30 transition-all uppercase tracking-widest disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            {loading ? "Saving..." : editData ? "Save Changes" : "Confirm Contribution"}
-          </button>
+          {canEdit && (
+            <button 
+              type="submit" 
+              disabled={loading} 
+              className="w-full rounded-2xl bg-emerald-600 py-4 text-sm font-black text-white hover:bg-emerald-500 hover:shadow-lg hover:shadow-emerald-500/30 transition-all uppercase tracking-widest disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {loading ? "Saving..." : editData ? "Save Changes" : "Confirm Contribution"}
+            </button>
+          )}
 
         </form>
       </div>

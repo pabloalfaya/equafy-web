@@ -50,6 +50,7 @@ interface EquitySettingsModalProps {
   project?: any;
   members: Member[];
   onSuccess?: () => void;
+  canEdit?: boolean;
 }
 
 function formatWithComma(num: number): string {
@@ -70,6 +71,7 @@ export function EquitySettingsModal({
   project,
   members,
   onSuccess,
+  canEdit = true,
 }: EquitySettingsModalProps) {
   const [activeTab, setActiveTab] = useState<TabType>("fixed");
   const [values, setValues] = useState<Record<string, number>>({});
@@ -114,12 +116,14 @@ export function EquitySettingsModal({
   const isValid = totalFixed <= 100;
 
   const handleMemberChange = (memberId: string, val: string) => {
+    if (!canEdit) return;
     const num = parseWithComma(val);
     const rounded = parseFloat(num.toFixed(2));
     setValues((prev) => ({ ...prev, [memberId]: rounded }));
   };
 
   const handleSaveFixed = async () => {
+    if (!canEdit) return;
     if (!isValid) {
       setError("The sum of fixed equity cannot exceed 100%.");
       return;
@@ -168,7 +172,7 @@ export function EquitySettingsModal({
   };
 
   const handleSaveMultipliers = async () => {
-    console.log("Intentando guardar multiplicadores...", multipliers);
+    if (!canEdit) return;
 
     setLoading(true);
     setError(null);
@@ -344,7 +348,9 @@ export function EquitySettingsModal({
                         inputMode="decimal"
                         value={formatWithComma(Number.isNaN(values[m.id]) ? 0 : (values[m.id] ?? 0))}
                         onChange={(e) => handleMemberChange(m.id, e.target.value)}
-                        className={`w-20 px-3 py-2 rounded-lg border border-slate-200 bg-white font-bold text-slate-800 text-sm text-right outline-none focus:ring-2 transition-all ${MEMBER_BORDER_COLORS[index % MEMBER_BORDER_COLORS.length]}`}
+                        disabled={!canEdit}
+                        readOnly={!canEdit}
+                        className={`w-20 px-3 py-2 rounded-lg border border-slate-200 bg-white font-bold text-slate-800 text-sm text-right outline-none focus:ring-2 transition-all disabled:opacity-60 disabled:cursor-not-allowed ${MEMBER_BORDER_COLORS[index % MEMBER_BORDER_COLORS.length]}`}
                       />
                       <span className="text-slate-400 font-bold text-sm">%</span>
                     </div>
@@ -361,15 +367,17 @@ export function EquitySettingsModal({
               >
                 Cancel
               </button>
-              <button
-                type="button"
-                onClick={handleSaveFixed}
-                disabled={loading || !isValid}
-                className="flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-xl font-black text-white bg-emerald-600 hover:bg-emerald-700 shadow-lg shadow-emerald-600/20 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
-              >
-                <Save className="w-4 h-4" />
-                {loading ? "Saving..." : "Save Changes"}
-              </button>
+              {canEdit && (
+                <button
+                  type="button"
+                  onClick={handleSaveFixed}
+                  disabled={loading || !isValid}
+                  className="flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-xl font-black text-white bg-emerald-600 hover:bg-emerald-700 shadow-lg shadow-emerald-600/20 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                >
+                  <Save className="w-4 h-4" />
+                  {loading ? "Saving..." : "Save Changes"}
+                </button>
+              )}
             </div>
           </>
         )}
@@ -396,12 +404,13 @@ export function EquitySettingsModal({
                     step={0.5}
                     value={multipliers[key]}
                     onChange={(e) =>
-                      setMultipliers((prev) => ({
+                      canEdit && setMultipliers((prev) => ({
                         ...prev,
                         [key]: parseFloat(e.target.value) || 0,
                       }))
                     }
-                    className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 font-bold text-slate-800 outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 transition-all"
+                    disabled={!canEdit}
+                    className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 font-bold text-slate-800 outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 transition-all disabled:opacity-60 disabled:cursor-not-allowed"
                   />
                 </div>
               ))}
@@ -415,15 +424,17 @@ export function EquitySettingsModal({
               >
                 Cancel
               </button>
-              <button
-                type="button"
-                onClick={handleSaveMultipliers}
-                disabled={loading}
-                className="flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-xl font-black text-white bg-emerald-600 hover:bg-emerald-700 shadow-lg shadow-emerald-600/20 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
-              >
-                <Save className="w-4 h-4" />
-                {loading ? "Saving..." : "Save Multipliers"}
-              </button>
+              {canEdit && (
+                <button
+                  type="button"
+                  onClick={handleSaveMultipliers}
+                  disabled={loading}
+                  className="flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-xl font-black text-white bg-emerald-600 hover:bg-emerald-700 shadow-lg shadow-emerald-600/20 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                >
+                  <Save className="w-4 h-4" />
+                  {loading ? "Saving..." : "Save Multipliers"}
+                </button>
+              )}
             </div>
           </>
         )}

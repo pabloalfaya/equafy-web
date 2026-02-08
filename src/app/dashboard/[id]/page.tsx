@@ -26,7 +26,7 @@ type ExtendedProject = Project & {
 type ExtendedContribution = Contribution & { date?: string; concept?: string; multiplier?: number; [key: string]: any };
 
 // Tipos de miembros
-type Member = { id: string; name: string; role: string; email?: string; fixed_equity?: number | null; access_level?: "editor" | "viewer" };
+type Member = { id: string; name: string; role: string; email?: string; fixed_equity?: number | null; access_level?: "editor" | "viewer"; user_id?: string | null };
 
 export default function ProjectDashboardPage() {
   const params = useParams(); 
@@ -43,11 +43,17 @@ export default function ProjectDashboardPage() {
   const [fixedEquityOpen, setFixedEquityOpen] = useState(false);
   const [auditLogModalOpen, setAuditLogModalOpen] = useState(false);
   const [editingContribution, setEditingContribution] = useState<ExtendedContribution | null>(null);
+  const [currentUserId, setCurrentUserId] = useState<string | null>(null);
+  const [currentUserEmail, setCurrentUserEmail] = useState<string | null>(null);
 
   const fetchData = async () => {
     if (!projectId) return;
     const supabase = createClient();
     setLoading(true);
+
+    const { data: { user } } = await supabase.auth.getUser();
+    setCurrentUserId(user?.id ?? null);
+    setCurrentUserEmail(user?.email ?? null);
     
     // Cargar Proyecto
     const { data: projectData, error: projectError } = await supabase.from("projects").select("*").eq("id", projectId).single();
@@ -58,8 +64,8 @@ export default function ProjectDashboardPage() {
     const { data: contributionsData } = await supabase.from("contributions").select("*").eq("project_id", projectId).order("created_at", { ascending: true });
     setContributions(contributionsData as ExtendedContribution[] ?? []);
 
-    // Cargar Miembros
-    const { data: membersData } = await supabase.from("project_members").select("id, name, role, email, fixed_equity, access_level").eq("project_id", projectId);
+    // Cargar Miembros (incluye user_id para RBAC)
+    const { data: membersData } = await supabase.from("project_members").select("id, name, role, email, fixed_equity, access_level, user_id").eq("project_id", projectId);
     setMembers((membersData as unknown as Member[]) ?? []);
     
     setLoading(false);
@@ -67,7 +73,7 @@ export default function ProjectDashboardPage() {
 
   const refreshMembers = async () => {
     const supabase = createClient();
-    const { data } = await supabase.from("project_members").select("id, name, role, email, fixed_equity, access_level").eq("project_id", projectId);
+    const { data } = await supabase.from("project_members").select("id, name, role, email, fixed_equity, access_level, user_id").eq("project_id", projectId);
     setMembers((data as unknown as Member[]) ?? []);
   };
 
@@ -270,6 +276,14 @@ export default function ProjectDashboardPage() {
 
   useEffect(() => { fetchData(); }, [projectId]);
 
+  const currentMember = members.find(
+    (m) =>
+      m.user_id === currentUserId ||
+      (currentUserEmail && m.email?.toLowerCase() === currentUserEmail.toLowerCase())
+  );
+  const isOwner = project?.owner_id === currentUserId || currentMember?.role === "owner";
+  const canEdit = isOwner || currentMember?.access_level === "editor";
+
   const groupedContributionsForChart = contributions.reduce((acc, curr) => {
     const existingIndex = acc.findIndex((c) => c.contributor_name === curr.contributor_name);
     if (existingIndex >= 0) {
@@ -322,19 +336,23 @@ export default function ProjectDashboardPage() {
                     Calculated using the {getModelName()} model.
                 </p>
               </div>
-              <div className="flex gap-3">
+              <div className="flex gap-3 flex-wrap">
                 <button onClick={generatePDF} className="inline-flex items-center gap-2 rounded-xl bg-white border border-slate-200 px-5 py-3 font-bold text-slate-700 shadow-sm hover:bg-slate-50 transition-all">
                     <Download className="h-5 w-5" /> Export PDF
                 </button>
-                <button onClick={() => setFixedEquityOpen(true)} className="inline-flex items-center gap-2 rounded-xl bg-white border border-slate-200 px-5 py-3 font-bold text-slate-700 shadow-sm hover:bg-slate-50 transition-all">
-                    <Settings className="h-5 w-5" /> Equity Settings
-                </button>
-                <button onClick={() => setMemberModalOpen(true)} className="inline-flex items-center gap-2 rounded-xl bg-white border border-slate-200 px-5 py-3 font-bold text-slate-700 shadow-sm hover:bg-slate-50 transition-all">
-                    <Users className="h-5 w-5" /> Team
-                </button>
-                <button onClick={() => { setEditingContribution(null); setModalOpen(true); }} className="inline-flex items-center gap-2 rounded-xl bg-slate-900 px-6 py-3 font-bold text-white shadow-lg hover:bg-slate-800 transition-all">
-                    <Plus className="h-5 w-5" /> Add Contribution
-                </button>
+                {canEdit && (
+                  <>
+                    <button onClick={() => setFixedEquityOpen(true)} className="inline-flex items-center gap-2 rounded-xl bg-white border border-slate-200 px-5 py-3 font-bold text-slate-700 shadow-sm hover:bg-slate-50 transition-all">
+                        <Settings className="h-5 w-5" /> Equity Settings
+                    </button>
+                    <button onClick={() => setMemberModalOpen(true)} className="inline-flex items-center gap-2 rounded-xl bg-white border border-slate-200 px-5 py-3 font-bold text-slate-700 shadow-sm hover:bg-slate-50 transition-all">
+                        <Users className="h-5 w-5" /> Team
+                    </button>
+                    <button onClick={() => { setEditingContribution(null); setModalOpen(true); }} className="inline-flex items-center gap-2 rounded-xl bg-slate-900 px-6 py-3 font-bold text-white shadow-lg hover:bg-slate-800 transition-all">
+                        <Plus className="h-5 w-5" /> Add Contribution
+                    </button>
+                  </>
+                )}
               </div>
             </div>
 
@@ -345,7 +363,7 @@ export default function ProjectDashboardPage() {
                         <h3 className="font-bold text-slate-900 text-xl">Contribution Log</h3>
                     </div>
                     <div className="overflow-x-auto max-h-[600px] overflow-y-auto pr-2 custom-scrollbar">
-                        <ContributionsTable contributions={contributions} onDelete={handleContributionDeleted} onEdit={handleEditContribution} />
+                        <ContributionsTable contributions={contributions} onDelete={handleContributionDeleted} onEdit={handleEditContribution} canEdit={canEdit} />
                     </div>
                 </div>
                 
@@ -393,7 +411,8 @@ export default function ProjectDashboardPage() {
         projectConfig={project} 
         onSuccess={handleContributionSuccess} 
         members={members} 
-        editData={editingContribution} 
+        editData={editingContribution}
+        canEdit={canEdit}
       />
       
       <AddMemberModal 
@@ -401,7 +420,8 @@ export default function ProjectDashboardPage() {
         onClose={() => setMemberModalOpen(false)} 
         projectId={projectId} 
         members={members}       
-        onUpdate={refreshMembers} 
+        onUpdate={refreshMembers}
+        canEdit={canEdit}
       />
 
       <EquitySettingsModal
@@ -414,6 +434,7 @@ export default function ProjectDashboardPage() {
           refreshMembers();
           fetchData();
         }}
+        canEdit={canEdit}
       />
 
       <AuditLogModal

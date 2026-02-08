@@ -19,9 +19,10 @@ interface AddMemberModalProps {
   projectId: string;
   members: Member[];
   onUpdate: () => void;
+  canEdit?: boolean;
 }
 
-export function AddMemberModal({ isOpen, onClose, projectId, members, onUpdate }: AddMemberModalProps) {
+export function AddMemberModal({ isOpen, onClose, projectId, members, onUpdate, canEdit = true }: AddMemberModalProps) {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [role, setRole] = useState("");
@@ -36,7 +37,7 @@ export function AddMemberModal({ isOpen, onClose, projectId, members, onUpdate }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!name.trim()) return;
+    if (!name.trim() || !canEdit) return;
 
     setLoading(true);
 
@@ -159,7 +160,8 @@ const actionType = editingId ? "EDIT_MEMBER" : "ADD_MEMBER";
                     placeholder="e.g. Jane Doe" 
                     value={name} 
                     onChange={(e) => setName(e.target.value)} 
-                    className="w-full pl-10 pr-4 py-3 rounded-xl bg-slate-50 border border-slate-200 font-bold text-slate-700 outline-none focus:border-emerald-500 transition-all"
+                    disabled={!canEdit}
+                    className="w-full pl-10 pr-4 py-3 rounded-xl bg-slate-50 border border-slate-200 font-bold text-slate-700 outline-none focus:border-emerald-500 transition-all disabled:opacity-60 disabled:cursor-not-allowed"
                     required
                 />
             </div>
@@ -177,7 +179,8 @@ const actionType = editingId ? "EDIT_MEMBER" : "ADD_MEMBER";
                     placeholder="jane@example.com" 
                     value={email} 
                     onChange={(e) => setEmail(e.target.value)} 
-                    className="w-full pl-10 pr-4 py-3 rounded-xl bg-slate-50 border border-slate-200 font-bold text-slate-700 outline-none focus:border-emerald-500 transition-all"
+                    disabled={!canEdit}
+                    className="w-full pl-10 pr-4 py-3 rounded-xl bg-slate-50 border border-slate-200 font-bold text-slate-700 outline-none focus:border-emerald-500 transition-all disabled:opacity-60 disabled:cursor-not-allowed"
                 />
             </div>
             <p className="text-xs text-slate-400 mt-1 ml-1">
@@ -195,7 +198,8 @@ const actionType = editingId ? "EDIT_MEMBER" : "ADD_MEMBER";
                     placeholder="e.g. Co-Founder & CTO" 
                     value={role} 
                     onChange={(e) => setRole(e.target.value)}
-                    className="w-full pl-10 pr-4 py-3 rounded-xl bg-slate-50 border border-slate-200 font-bold text-slate-700 outline-none focus:border-emerald-500 transition-all"
+                    disabled={!canEdit}
+                    className="w-full pl-10 pr-4 py-3 rounded-xl bg-slate-50 border border-slate-200 font-bold text-slate-700 outline-none focus:border-emerald-500 transition-all disabled:opacity-60 disabled:cursor-not-allowed"
                 />
             </div>
           </div>
@@ -214,7 +218,7 @@ const actionType = editingId ? "EDIT_MEMBER" : "ADD_MEMBER";
           </div>
 
           <div className="flex gap-2">
-            {editingId && (
+            {editingId && canEdit && (
                 <button 
                     type="button"
                     onClick={resetForm}
@@ -224,13 +228,15 @@ const actionType = editingId ? "EDIT_MEMBER" : "ADD_MEMBER";
                     <Ban className="w-5 h-5" />
                 </button>
             )}
-            <button 
-                type="submit" 
-                disabled={loading}
-                className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white font-black py-3 rounded-xl uppercase tracking-wider transition-all shadow-lg shadow-emerald-600/20 disabled:opacity-50"
-            >
-                {loading ? "Saving..." : editingId ? "Update Member" : "Add Member"}
-            </button>
+            {canEdit && (
+              <button 
+                  type="submit" 
+                  disabled={loading}
+                  className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white font-black py-3 rounded-xl uppercase tracking-wider transition-all shadow-lg shadow-emerald-600/20 disabled:opacity-50"
+              >
+                  {loading ? "Saving..." : editingId ? "Update Member" : "Add Member"}
+              </button>
+            )}
           </div>
         </form>
 
@@ -262,22 +268,25 @@ const actionType = editingId ? "EDIT_MEMBER" : "ADD_MEMBER";
                 </div>
                 
                 <div className="flex items-center gap-1">
-                    <button 
-                        onClick={() => startEdit(m)}
-                        className="p-2 text-slate-300 hover:text-blue-500 hover:bg-blue-50 rounded-lg transition-all"
-                        title="Edit member"
-                    >
-                        <Pencil className="w-4 h-4" />
-                    </button>
-
-                    {m.role !== 'owner' && (
+                    {canEdit && (
+                      <>
                         <button 
-                            onClick={() => handleDelete(m.id)}
-                            className="p-2 text-slate-300 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all"
-                            title="Remove member"
+                            onClick={() => startEdit(m)}
+                            className="p-2 text-slate-300 hover:text-blue-500 hover:bg-blue-50 rounded-lg transition-all"
+                            title="Edit member"
                         >
-                            <Trash2 className="w-4 h-4" />
+                            <Pencil className="w-4 h-4" />
                         </button>
+                        {m.role !== 'owner' && (
+                            <button 
+                                onClick={() => handleDelete(m.id)}
+                                className="p-2 text-slate-300 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all"
+                                title="Remove member"
+                            >
+                                <Trash2 className="w-4 h-4" />
+                            </button>
+                        )}
+                      </>
                     )}
                 </div>
               </div>

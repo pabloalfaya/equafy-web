@@ -13,14 +13,13 @@ interface Contribution {
 }
 
 interface ContributionsTableProps {
-  contributions: any[]; // Usamos any[] temporalmente para evitar conflictos de tipos estrictos
+  contributions: any[];
   onDelete: (id: string) => void;
   onEdit: (contribution: any) => void;
-  currentUserId?: string;
-  isOwner?: boolean;
+  canEdit?: boolean;
 }
 
-export function ContributionsTable({ contributions, onDelete, onEdit }: ContributionsTableProps) {
+export function ContributionsTable({ contributions, onDelete, onEdit, canEdit = true }: ContributionsTableProps) {
   
   const formatDate = (dateString: string) => {
     if (!dateString) return "-";
@@ -92,24 +91,28 @@ export function ContributionsTable({ contributions, onDelete, onEdit }: Contribu
 
               {/* 6. ACCIONES */}
               <td className="py-4 px-4 text-right">
-                <div className="flex items-center justify-end gap-1">
-                  <button
-                    type="button"
-                    onClick={() => onEdit(c)}
-                    className="p-1.5 text-gray-400 hover:text-gray-700 hover:bg-slate-100 rounded-lg transition-all"
-                    title="Edit"
-                  >
-                    <Pencil className="w-4 h-4" />
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => onDelete(c.id)}
-                    className="p-1.5 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all"
-                    title="Delete"
-                  >
-                    <Trash2 className="w-4 h-4" />
-                  </button>
-                </div>
+                {canEdit ? (
+                  <div className="flex items-center justify-end gap-1">
+                    <button
+                      type="button"
+                      onClick={() => onEdit(c)}
+                      className="p-1.5 text-gray-400 hover:text-gray-700 hover:bg-slate-100 rounded-lg transition-all"
+                      title="Edit"
+                    >
+                      <Pencil className="w-4 h-4" />
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => onDelete(c.id)}
+                      className="p-1.5 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all"
+                      title="Delete"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  </div>
+                ) : (
+                  <span className="text-slate-300 text-xs font-medium">—</span>
+                )}
               </td>
             </tr>
           ))}
