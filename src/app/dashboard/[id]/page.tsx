@@ -142,35 +142,51 @@ export default function ProjectDashboardPage() {
     doc.setTextColor(100);
     doc.text(`Generated on: ${dateStr}`, 14, 40);
 
-    // 2. CÁLCULO DE DATOS PARA LA TABLA RESUMEN (lógica híbrida Fixed + Dynamic Pool)
+    // 2. CÁLCULO DE DATOS PARA LA TABLA RESUMEN (recalculado al vuelo, igual que EquityPieChart)
     const totalFixedEquity = members.reduce((sum, m) => sum + (Number(m.fixed_equity) || 0), 0);
-    const dynamicPoolPercentage = 100 - totalFixedEquity;
-    const totalPoints = contributions.reduce((sum, c) => sum + (c.risk_adjusted_value || 0), 0);
+    const dynamicPool = Math.max(0, 100 - totalFixedEquity);
+    const totalRiskPoints = contributions.reduce((sum, c) => sum + (Number(c.risk_adjusted_value) || 0), 0);
 
-    const summaryData = members.map(member => {
-        const memberFixed = Number(member.fixed_equity) || 0;
-        const memberContribs = contributions.filter(c => c.contributor_name === member.name);
-        const memberPoints = memberContribs.reduce((sum, c) => sum + (c.risk_adjusted_value || 0), 0);
-        const dynamicShare = totalPoints > 0 ? (memberPoints / totalPoints) * dynamicPoolPercentage : 0;
-        const equityPercent = memberFixed + dynamicShare;
+    const memberRows = members.map((member) => {
+      const memberFixedEquity = Number(member.fixed_equity) || 0;
+      const memberPoints = contributions
+        .filter((c) => c.contributor_name === member.name)
+        .reduce((sum, c) => sum + (Number(c.risk_adjusted_value) || 0), 0);
 
-        return [
-            member.name,
-            member.role || "Member",
-            memberPoints.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
-            `${memberFixed.toFixed(2)}%`,
-            `${equityPercent.toFixed(2)}%`,
-        ];
+      let dynamicShare: number;
+      if (totalRiskPoints > 0) {
+        dynamicShare = (memberPoints / totalRiskPoints) * dynamicPool;
+      } else {
+        dynamicShare = members.length > 0 ? dynamicPool / members.length : 0;
+      }
+
+      const finalEquity = memberFixedEquity + dynamicShare;
+      return {
+        name: member.name,
+        role: member.role || "Member",
+        points: memberPoints,
+        fixed: memberFixedEquity,
+        equity: finalEquity,
+      };
     });
 
-    const totalPointsSum = members.reduce((sum, m) => {
-      const pts = contributions.filter(c => c.contributor_name === m.name).reduce((s, c) => s + (c.risk_adjusted_value || 0), 0);
-      return sum + pts;
-    }, 0);
-    const totalEquitySum = summaryData.reduce((sum, row) => {
-      const val = row[4];
-      return sum + parseFloat(typeof val === "string" ? val.replace("%", "") : "0") || 0;
-    }, 0);
+    // Normalizar para que Equity % sume exactamente 100%
+    const rawEquitySum = memberRows.reduce((sum, r) => sum + r.equity, 0);
+    const normalizedRows =
+      rawEquitySum > 0
+        ? memberRows.map((r) => ({ ...r, equity: (r.equity / rawEquitySum) * 100 }))
+        : memberRows;
+
+    const summaryData = normalizedRows.map((r) => [
+      r.name,
+      r.role,
+      r.points.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
+      `${r.fixed.toFixed(2)}%`,
+      `${r.equity.toFixed(2)}%`,
+    ]);
+
+    const totalPointsSum = normalizedRows.reduce((sum, r) => sum + r.points, 0);
+    const totalEquitySum = normalizedRows.reduce((sum, r) => sum + r.equity, 0);
 
     const footData = [
       [
