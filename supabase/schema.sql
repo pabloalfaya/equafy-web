@@ -67,6 +67,9 @@ USING (
 -- Si project_members existe pero no tiene fixed_equity, ejecuta:
 -- ALTER TABLE project_members ADD COLUMN IF NOT EXISTS fixed_equity NUMERIC DEFAULT 0;
 
+-- RBAC: Si project_members no tiene access_level, ejecuta:
+-- ALTER TABLE project_members ADD COLUMN IF NOT EXISTS access_level TEXT NOT NULL DEFAULT 'editor';
+
 -- 4. TABLA DE AUDITORÍA (Audit Trail)
 CREATE TABLE IF NOT EXISTS project_audit_log (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),

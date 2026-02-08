@@ -10,6 +10,7 @@ interface Member {
   name: string;
   email?: string | null;
   role?: string;
+  access_level?: "editor" | "viewer";
 }
 
 interface AddMemberModalProps {
@@ -24,6 +25,7 @@ export function AddMemberModal({ isOpen, onClose, projectId, members, onUpdate }
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [role, setRole] = useState("");
+  const [accessLevel, setAccessLevel] = useState<"editor" | "viewer">("editor");
   const [loading, setLoading] = useState(false);
   
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -43,6 +45,7 @@ export function AddMemberModal({ isOpen, onClose, projectId, members, onUpdate }
         name: name.trim(),
         email: email.trim() === "" ? null : email.trim(),
         role: role.trim() || "Member",
+        access_level: accessLevel,
       };
 
       let error;
@@ -94,6 +97,7 @@ const actionType = editingId ? "EDIT_MEMBER" : "ADD_MEMBER";
       setName("");
       setEmail("");
       setRole("");
+      setAccessLevel("editor");
       setEditingId(null);
   };
 
@@ -101,6 +105,7 @@ const actionType = editingId ? "EDIT_MEMBER" : "ADD_MEMBER";
       setName(member.name);
       setEmail(member.email || "");
       setRole(member.role || "");
+      setAccessLevel((member.access_level as "editor" | "viewer") || "editor");
       setEditingId(member.id);
   };
 
@@ -180,9 +185,9 @@ const actionType = editingId ? "EDIT_MEMBER" : "ADD_MEMBER";
             </p>
           </div>
 
-          {/* Rol */}
+          {/* Job Title */}
           <div>
-            <label className="text-xs font-bold text-slate-400 ml-1 mb-1 block uppercase">Role</label>
+            <label className="text-xs font-bold text-slate-400 ml-1 mb-1 block uppercase">Job Title</label>
             <div className="relative">
                 <Shield className="absolute left-4 top-3.5 w-4 h-4 text-slate-300" />
                 <input 
@@ -193,6 +198,19 @@ const actionType = editingId ? "EDIT_MEMBER" : "ADD_MEMBER";
                     className="w-full pl-10 pr-4 py-3 rounded-xl bg-slate-50 border border-slate-200 font-bold text-slate-700 outline-none focus:border-emerald-500 transition-all"
                 />
             </div>
+          </div>
+
+          {/* Permissions */}
+          <div>
+            <label className="text-xs font-bold text-slate-400 ml-1 mb-1 block uppercase">Permissions</label>
+            <select
+              value={accessLevel}
+              onChange={(e) => setAccessLevel(e.target.value as "editor" | "viewer")}
+              className="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 font-bold text-slate-700 outline-none focus:border-emerald-500 transition-all"
+            >
+              <option value="editor">Can Edit</option>
+              <option value="viewer">View Only</option>
+            </select>
           </div>
 
           <div className="flex gap-2">
@@ -226,10 +244,20 @@ const actionType = editingId ? "EDIT_MEMBER" : "ADD_MEMBER";
             members.map((m) => (
               <div key={m.id} className={`flex items-center justify-between p-3 border rounded-xl group transition-all ${editingId === m.id ? 'bg-emerald-50 border-emerald-200 ring-1 ring-emerald-200' : 'bg-slate-50 border-slate-100 hover:border-slate-200'}`}>
                 <div className="flex flex-col overflow-hidden mr-2">
-                  <span className="font-bold text-slate-800 text-sm truncate">{m.name}</span>
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <span className="font-bold text-slate-800 text-sm truncate">{m.name}</span>
+                    {m.role === "owner" ? (
+                      <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 uppercase">Owner</span>
+                    ) : (
+                      <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full uppercase ${m.access_level === "viewer" ? "bg-slate-200 text-slate-600" : "bg-emerald-100 text-emerald-700"}`}>
+                        {m.access_level === "viewer" ? "Viewer" : "Editor"}
+                      </span>
+                    )}
+                  </div>
                   <div className="flex items-center gap-2 text-[11px] text-slate-500 font-medium mt-0.5 truncate">
-                      {m.role && <span className="uppercase font-bold text-emerald-600">{m.role}</span>}
-                      {m.email && <span>| {m.email}</span>}
+                      {m.role && m.role !== "owner" && <span className="uppercase font-bold text-emerald-600">{m.role}</span>}
+                      {m.role && m.role !== "owner" && m.email && <span>|</span>}
+                      {m.email && <span>{m.email}</span>}
                   </div>
                 </div>
                 

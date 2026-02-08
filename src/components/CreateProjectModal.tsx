@@ -88,7 +88,8 @@ export function CreateProjectModal({ isOpen, onClose, onProjectCreated }: Create
             email: user.email!,
             name: user.user_metadata?.full_name || user.email?.split("@")[0] || "Owner",
             role: 'owner',
-            status: 'active'
+            status: 'active',
+            access_level: 'editor'
         });
 
         if (memberError) {
