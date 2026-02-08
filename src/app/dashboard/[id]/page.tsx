@@ -189,8 +189,8 @@ export default function ProjectDashboardPage() {
         body: summaryData,
         foot: footData,
         theme: "grid",
-        headStyles: { fillColor: [16, 185, 129], textColor: 255, fontStyle: "bold" },
-        footStyles: { fillColor: [241, 245, 249], fontStyle: "bold" },
+        headStyles: { fillColor: [44, 62, 80], textColor: [255, 255, 255], fontStyle: "bold" },
+        footStyles: { fillColor: [229, 229, 229], textColor: [33, 33, 33], fontStyle: "bold" },
         styles: { fontSize: 10, cellPadding: 3 },
         columnStyles: {
             0: { fontStyle: "bold" },
@@ -220,7 +220,7 @@ export default function ProjectDashboardPage() {
         head: [['Date', 'Contributor', 'Type', 'Description', 'Value', 'Risk Adj.']],
         body: detailsData,
         theme: 'striped',
-        headStyles: { fillColor: [51, 65, 85], textColor: 255 }, // Slate color para diferenciar
+        headStyles: { fillColor: [44, 62, 80], textColor: [255, 255, 255], fontStyle: 'bold' }, // Slate color para diferenciar
         styles: { fontSize: 9 },
         columnStyles: {
             4: { halign: 'right' },
