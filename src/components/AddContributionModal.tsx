@@ -143,9 +143,15 @@ export function AddContributionModal({ isOpen, onClose, projectId, projectConfig
     // Audit log: justo después del insert exitoso
     const actionType = editData ? "EDIT_CONTRIBUTION" : "ADD_CONTRIBUTION";
     const amt = parseFloat(amount || "0");
-    const desc = editData
-      ? `Edited contribution: ${selectedMember?.name} - ${amt.toLocaleString()}€ in ${type}${concept ? ` (${concept})` : ""}`
-      : `Added contribution of ${amt.toLocaleString()}€ in ${type}${concept ? ` - ${concept}` : ""}`;
+    const memberName = selectedMember?.name ?? "Unknown";
+
+    let desc: string;
+    if (editData) {
+      const oldAmt = Number(editData.amount) || 0;
+      desc = `Edited contribution for ${memberName}: Changed ${oldAmt.toLocaleString()}€ to ${amt.toLocaleString()}€ in ${type}`;
+    } else {
+      desc = `Added contribution of ${amt.toLocaleString()}€ in ${type} for ${memberName}`;
+    }
     try {
       await logAudit({ supabase, projectId, actionType, description: desc });
     } catch (err) {

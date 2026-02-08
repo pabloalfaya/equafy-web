@@ -94,11 +94,14 @@ export default function ProjectDashboardPage() {
     }
 
     try {
+      const memberName = contribution?.contributor_name ?? "Unknown";
+      const amt = contribution?.amount ?? 0;
+      const contributionType = contribution?.type ?? "?";
       await logAudit({
         supabase,
         projectId,
         actionType: "DELETE_CONTRIBUTION",
-        description: `Deleted contribution: ${contribution?.contributor_name ?? "?"} - ${contribution?.concept ?? contribution?.type ?? id}`,
+        description: `Deleted contribution: ${memberName} - ${Number(amt).toLocaleString()}€ (${contributionType})`,
       });
     } catch (err) {
       console.error("Error saving audit log:", err);
