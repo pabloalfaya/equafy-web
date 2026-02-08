@@ -54,46 +54,59 @@ export function EquityPieChart({ contributions, members }: EquityPieChartProps) 
   const { data } = useMemo(() => {
     const memberList = members ?? [];
 
-    // 2. totalFixedEquity = suma de fixed_equity de todos los miembros
+    // 1. TotalFixedEquity = suma de % fijos de todos los miembros
     const totalFixedEquity = memberList.reduce(
       (sum, m) => sum + (Number(m.fixed_equity) || 0),
       0
     );
 
-    // 3. dynamicPoolPercentage = 100 - totalFixedEquity
-    const dynamicPoolPercentage = 100 - totalFixedEquity;
+    // 2. DynamicPoolAvailable = 100 - TotalFixedEquity
+    const dynamicPoolAvailable = Math.max(0, 100 - totalFixedEquity);
 
-    // 4. totalPoints = suma de puntos de todas las contributions
-    const totalPoints = contributions.reduce(
+    // 3. TotalRiskPoints = suma de puntos de TODAS las aportaciones actuales
+    const totalRiskPoints = contributions.reduce(
       (sum, c) => sum + (Number(c.risk_adjusted_value) || 0),
       0
     );
 
-    // 5. Generar data iterando sobre members
-    const chartData: ChartDataItem[] = memberList.map((member) => {
+    // 4. Para cada miembro: UserFixed, UserDynamic, UserTotal
+    let chartData: ChartDataItem[] = memberList.map((member) => {
       const memberName = member.name || "Unknown";
-      const memberFixed = Number(member.fixed_equity) || 0;
+      const userFixed = Number(member.fixed_equity) || 0;
 
       const memberPoints = contributions
         .filter((c) => (c.contributor_name || "") === memberName)
         .reduce((sum, c) => sum + (Number(c.risk_adjusted_value) || 0), 0);
 
-      const dynamicShare =
-        totalPoints > 0
-          ? (memberPoints / totalPoints) * dynamicPoolPercentage
-          : 0;
+      // Si TotalRiskPoints es 0: repartir DynamicPool a partes iguales entre miembros, o 0
+      let userDynamic: number;
+      if (totalRiskPoints > 0) {
+        userDynamic = (memberPoints / totalRiskPoints) * dynamicPoolAvailable;
+      } else {
+        userDynamic =
+          memberList.length > 0 ? dynamicPoolAvailable / memberList.length : 0;
+      }
 
-      const finalValue = memberFixed + dynamicShare;
+      const userTotal = userFixed + userDynamic;
 
       return {
         name: memberName,
-        value: finalValue,
-        fixed: memberFixed,
+        value: userTotal,
+        fixed: userFixed,
         dynamic: memberPoints,
       };
     });
 
-    // Filtrar miembros con valor 0 para no mostrar segmentos vacíos (opcional: podríamos mantenerlos)
+    // 5. Normalizar para que la suma sea exactamente 100% (evitar errores de redondeo)
+    const rawSum = chartData.reduce((sum, d) => sum + d.value, 0);
+    if (rawSum > 0 && Math.abs(rawSum - 100) > 0.001) {
+      chartData = chartData.map((d) => ({
+        ...d,
+        value: (d.value / rawSum) * 100,
+      }));
+    }
+
+    // Filtrar miembros con valor 0 para no mostrar segmentos vacíos
     const filtered = chartData.filter((d) => d.value > 0);
 
     return { data: filtered };
