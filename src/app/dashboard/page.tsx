@@ -6,15 +6,26 @@ import { useRouter } from "next/navigation";
 import { Plus, Folder, ArrowRight, Loader2, LogOut } from "lucide-react";
 import { createClient } from "@/utils/supabase/client";
 import { CreateProjectModal } from "@/components/CreateProjectModal";
+import { PricingModal } from "@/components/PricingModal";
 import type { Project } from "@/types/database";
 
 export default function ProjectSelectorPage() {
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isPricingModalOpen, setIsPricingModalOpen] = useState(false);
   const [userEmail, setUserEmail] = useState("");
   const router = useRouter();
   const supabase = createClient();
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("payment") === "success") {
+      setIsPricingModalOpen(false);
+      setIsModalOpen(true);
+      window.history.replaceState({}, "", "/dashboard");
+    }
+  }, []);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -84,7 +95,7 @@ export default function ProjectSelectorPage() {
                 <p className="text-slate-500 font-medium">Select a project to manage equity or create a new one.</p>
             </div>
             <button 
-                onClick={() => setIsModalOpen(true)}
+                onClick={() => setIsPricingModalOpen(true)}
                 className="inline-flex items-center gap-2 bg-slate-900 hover:bg-slate-800 text-white px-6 py-3 rounded-xl font-bold transition-all shadow-lg hover:-translate-y-0.5"
             >
                 <Plus className="w-5 h-5" /> New Project
@@ -98,7 +109,7 @@ export default function ProjectSelectorPage() {
                 </div>
                 <h3 className="text-xl font-bold text-slate-900 mb-2">No projects yet</h3>
                 <p className="text-slate-400 max-w-xs mx-auto mb-8">Start by creating your first project to track equity dynamically.</p>
-                <button onClick={() => setIsModalOpen(true)} className="text-emerald-600 font-bold hover:underline">
+                <button onClick={() => setIsPricingModalOpen(true)} className="text-emerald-600 font-bold hover:underline">
                     Create your first project
                 </button>
             </div>
@@ -129,6 +140,10 @@ export default function ProjectSelectorPage() {
         )}
       </main>
 
+      <PricingModal
+        isOpen={isPricingModalOpen}
+        onClose={() => setIsPricingModalOpen(false)}
+      />
       <CreateProjectModal 
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
