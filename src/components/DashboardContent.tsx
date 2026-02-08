@@ -16,19 +16,30 @@ export function DashboardContent() {
   const [isPricingModalOpen, setIsPricingModalOpen] = useState(false);
   const [userEmail, setUserEmail] = useState("");
   const [showCancelledToast, setShowCancelledToast] = useState(false);
+  const [showSuccessToast, setShowSuccessToast] = useState(false);
   const router = useRouter();
   const searchParams = useSearchParams();
   const supabase = createClient();
 
   useEffect(() => {
-    const payment = searchParams.get("payment");
+    const params =
+      typeof window !== "undefined"
+        ? new URLSearchParams(window.location.search)
+        : new URLSearchParams(searchParams.toString());
+    const payment = params.get("payment");
     if (payment === "success") {
       setIsPricingModalOpen(false);
       setIsModalOpen(true);
-      router.replace("/dashboard");
+      setShowSuccessToast(true);
+      const t1 = setTimeout(() => setShowSuccessToast(false), 4000);
+      const t2 = setTimeout(() => router.replace("/dashboard"), 100);
+      return () => {
+        clearTimeout(t1);
+        clearTimeout(t2);
+      };
     } else if (payment === "cancelled") {
       setShowCancelledToast(true);
-      router.replace("/dashboard");
+      setTimeout(() => router.replace("/dashboard"), 100);
       const t = setTimeout(() => setShowCancelledToast(false), 4000);
       return () => clearTimeout(t);
     }
@@ -81,6 +92,11 @@ export function DashboardContent() {
 
   return (
     <div className="min-h-screen bg-[#F8FAFC] font-sans text-slate-900">
+      {showSuccessToast && (
+        <div className="fixed top-4 left-1/2 -translate-x-1/2 z-[200] px-5 py-3 bg-emerald-100 border border-emerald-300 text-emerald-800 rounded-xl font-bold text-sm shadow-lg animate-in fade-in slide-in-from-top-2 duration-300">
+          Payment successful! Welcome aboard.
+        </div>
+      )}
       {showCancelledToast && (
         <div className="fixed top-4 left-1/2 -translate-x-1/2 z-[200] px-5 py-3 bg-amber-100 border border-amber-300 text-amber-800 rounded-xl font-bold text-sm shadow-lg animate-in fade-in slide-in-from-top-2 duration-300">
           Payment cancelled
