@@ -2,48 +2,19 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { Plus, Folder, ArrowRight, Loader2, LogOut } from "lucide-react";
 import { createClient } from "@/utils/supabase/client";
 import { CreateProjectModal } from "@/components/CreateProjectModal";
-import { PricingModal } from "@/components/PricingModal";
 import type { Project } from "@/types/database";
 
 export function DashboardContent() {
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isPricingModalOpen, setIsPricingModalOpen] = useState(false);
   const [userEmail, setUserEmail] = useState("");
-  const [showCancelledToast, setShowCancelledToast] = useState(false);
-  const [showSuccessToast, setShowSuccessToast] = useState(false);
   const router = useRouter();
-  const searchParams = useSearchParams();
   const supabase = createClient();
-
-  useEffect(() => {
-    const params =
-      typeof window !== "undefined"
-        ? new URLSearchParams(window.location.search)
-        : new URLSearchParams(searchParams.toString());
-    const payment = params.get("payment");
-    if (payment === "success") {
-      setIsPricingModalOpen(false);
-      setIsModalOpen(true);
-      setShowSuccessToast(true);
-      const t1 = setTimeout(() => setShowSuccessToast(false), 4000);
-      const t2 = setTimeout(() => router.replace("/dashboard"), 100);
-      return () => {
-        clearTimeout(t1);
-        clearTimeout(t2);
-      };
-    } else if (payment === "cancelled") {
-      setShowCancelledToast(true);
-      setTimeout(() => router.replace("/dashboard"), 100);
-      const t = setTimeout(() => setShowCancelledToast(false), 4000);
-      return () => clearTimeout(t);
-    }
-  }, [searchParams, router]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -92,16 +63,6 @@ export function DashboardContent() {
 
   return (
     <div className="min-h-screen bg-[#F8FAFC] font-sans text-slate-900">
-      {showSuccessToast && (
-        <div className="fixed top-4 left-1/2 -translate-x-1/2 z-[200] px-5 py-3 bg-emerald-100 border border-emerald-300 text-emerald-800 rounded-xl font-bold text-sm shadow-lg animate-in fade-in slide-in-from-top-2 duration-300">
-          Payment successful! Welcome aboard.
-        </div>
-      )}
-      {showCancelledToast && (
-        <div className="fixed top-4 left-1/2 -translate-x-1/2 z-[200] px-5 py-3 bg-amber-100 border border-amber-300 text-amber-800 rounded-xl font-bold text-sm shadow-lg animate-in fade-in slide-in-from-top-2 duration-300">
-          Payment cancelled
-        </div>
-      )}
       <nav className="border-b border-slate-200 bg-white px-6 py-4 flex justify-between items-center sticky top-0 z-10">
         <Link href="/">
             <img src="/logo.png" alt="Equily" className="h-20 w-auto opacity-80 hover:opacity-100 transition-opacity object-contain" />
@@ -121,7 +82,7 @@ export function DashboardContent() {
                 <p className="text-slate-500 font-medium">Select a project to manage equity or create a new one.</p>
             </div>
             <button 
-                onClick={() => setIsPricingModalOpen(true)}
+                onClick={() => setIsModalOpen(true)}
                 className="inline-flex items-center gap-2 bg-slate-900 hover:bg-slate-800 text-white px-6 py-3 rounded-xl font-bold transition-all shadow-lg hover:-translate-y-0.5"
             >
                 <Plus className="w-5 h-5" /> New Project
@@ -135,7 +96,7 @@ export function DashboardContent() {
                 </div>
                 <h3 className="text-xl font-bold text-slate-900 mb-2">No projects yet</h3>
                 <p className="text-slate-400 max-w-xs mx-auto mb-8">Start by creating your first project to track equity dynamically.</p>
-                <button onClick={() => setIsPricingModalOpen(true)} className="text-emerald-600 font-bold hover:underline">
+                <button onClick={() => setIsModalOpen(true)} className="text-emerald-600 font-bold hover:underline">
                     Create your first project
                 </button>
             </div>
@@ -166,10 +127,6 @@ export function DashboardContent() {
         )}
       </main>
 
-      <PricingModal
-        isOpen={isPricingModalOpen}
-        onClose={() => setIsPricingModalOpen(false)}
-      />
       <CreateProjectModal 
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
