@@ -164,6 +164,8 @@ export function EquitySettingsModal({
   };
 
   const handleSaveMultipliers = async () => {
+    console.log("Intentando guardar multiplicadores...", multipliers);
+
     setLoading(true);
     setError(null);
     setSuccessMessage(null);
@@ -183,8 +185,12 @@ export function EquitySettingsModal({
         .eq("id", projectId);
 
       if (updateError) {
+        console.error("ERROR REAL:", updateError.message);
         setError(updateError.message ?? "Error saving multipliers.");
-      } else {
+        return;
+      }
+
+      try {
         const desc = `Cambió multiplicadores: Cash x${multipliers.mult_cash}, Work x${multipliers.mult_work}, Tangible x${multipliers.mult_tangible}, Intangible x${multipliers.mult_intangible}, Others x${multipliers.mult_others}`;
         await logAudit({
           supabase,
@@ -192,12 +198,17 @@ export function EquitySettingsModal({
           actionType: "CHANGE_MULTIPLIER",
           description: desc,
         });
-        setSuccessMessage("Multipliers saved successfully!");
-        onSuccess?.();
-        setTimeout(() => setSuccessMessage(null), 2500);
+      } catch (auditErr) {
+        console.error("Error saving audit log (multipliers still saved):", auditErr);
       }
+
+      setSuccessMessage("Multipliers saved successfully!");
+      onSuccess?.();
+      setTimeout(() => setSuccessMessage(null), 2500);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Error saving multipliers.");
+      const msg = err instanceof Error ? err.message : "Error saving multipliers.";
+      console.error("ERROR REAL:", msg);
+      setError(msg);
     } finally {
       setLoading(false);
     }
