@@ -143,7 +143,7 @@ export default function PricingPage() {
             <div className="mb-8">
               <h3 className="text-xl font-black text-white mb-2">Yearly Plan</h3>
               <div className="flex items-baseline gap-1">
-                <span className="text-4xl font-black text-white">199</span>
+                <span className="text-4xl font-black text-white">199.99</span>
                 <span className="text-slate-400 font-bold">/yr</span>
               </div>
             </div>
