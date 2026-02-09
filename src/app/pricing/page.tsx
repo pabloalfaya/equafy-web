@@ -8,7 +8,8 @@ export default function PricingPage() {
   const navItems = [
     { name: "What is Equily?", href: "/what-is-equily" },
     { name: "How does Equily work?", href: "/how-it-works" },
-    { name: "Pricing", href: "/pricing" }
+    { name: "Pricing", href: "/pricing" },
+    { name: "Legal", href: "/legal" }
   ];
 
   // --- LÓGICA DEL NAVBAR ESCONDIDIZO ---

@@ -62,7 +62,8 @@ export default function ModelsPage() {
               {[
                 { name: "What is Equily?", href: "/what-is-equily" },
                 { name: "How does Equily work?", href: "/how-it-works" },
-                { name: "Pricing", href: "/pricing" }
+                { name: "Pricing", href: "/pricing" },
+                { name: "Legal", href: "/legal" }
               ].map((item) => (
                 <Link key={item.name} href={item.href} className="px-5 py-2 text-sm font-bold text-slate-600 hover:text-slate-900 hover:bg-white rounded-full transition-all duration-200">
                   {item.name}
