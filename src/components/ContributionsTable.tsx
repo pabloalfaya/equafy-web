@@ -96,7 +96,7 @@ export function ContributionsTable({ contributions, onDelete, onEdit, canEdit = 
                     <button
                       type="button"
                       onClick={() => onEdit(c)}
-                      className="p-1.5 text-gray-400 hover:text-gray-700 hover:bg-slate-100 rounded-lg transition-all"
+                      className="p-1.5 text-sky-500 hover:text-sky-600 hover:bg-sky-50 rounded-lg transition-all"
                       title="Edit"
                     >
                       <Pencil className="w-4 h-4" />
@@ -104,7 +104,7 @@ export function ContributionsTable({ contributions, onDelete, onEdit, canEdit = 
                     <button
                       type="button"
                       onClick={() => onDelete(c.id)}
-                      className="p-1.5 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all"
+                      className="p-1.5 text-red-500 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all"
                       title="Delete"
                     >
                       <Trash2 className="w-4 h-4" />
