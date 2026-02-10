@@ -411,9 +411,9 @@ export default function LandingPage() {
               <X className="w-6 h-6" />
             </button>
             <iframe
-              src="https://www.tella.tv/video/vid_cmlgxlc98000204l7ey7sgylr/embed?b=1&title=0&a=1&loop=0&t=0&muted=0&wt=1"
+              src="https://www.youtube.com/embed/zZ3kANWXMOU?autoplay=1&rel=0"
               title="Equily Demo"
-              allow="autoplay; fullscreen"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
               allowFullScreen
               className="w-full h-full rounded-lg"
             />
