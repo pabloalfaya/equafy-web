@@ -98,13 +98,75 @@ export function SmartMultipliersModal({
         )}
 
         {activeTab === "logic" && (
-          <div className="space-y-4">
-            <p className="text-slate-600 font-medium leading-relaxed">
-              Equily uses a <strong className="text-slate-800">Logarithmic Decay</strong> formula.
-              Early contributions take more risk (higher multiplier). As the project accumulates
-              capital (&gt; €500k), the risk decreases, and the multiplier drops closer to x1.
-              This ensures fair dynamic equity.
-            </p>
+          <div className="max-h-[60vh] overflow-y-auto space-y-6 pr-1">
+            {/* Section 1: Introduction */}
+            <div className="space-y-2">
+              <h4 className="text-sm font-semibold text-slate-900">
+                The Mathematics of Fairness
+              </h4>
+              <p className="text-sm text-slate-600 leading-relaxed">
+                Equily uses a <span className="font-semibold text-slate-800">Logarithmic Decay Model</span>.
+                Why? Because €1,000 invested when the company is just an idea is infinitely riskier than
+                €1,000 invested when the company is already making millions.
+              </p>
+            </div>
+
+            {/* Section 2: Master Formula */}
+            <div className="space-y-3 rounded-2xl bg-slate-50 border border-slate-200 p-4">
+              <p className="text-xs font-semibold uppercase tracking-widest text-slate-500">
+                The Master Formula
+              </p>
+              <div className="rounded-xl bg-white border border-slate-100 px-4 py-3 overflow-x-auto">
+                <code className="font-mono text-sm text-slate-800">
+                  Multiplier = k / ln(Total_Value)
+                </code>
+              </div>
+              <div className="space-y-1">
+                <p className="text-sm text-slate-600">
+                  <span className="font-semibold text-slate-800">k (Constant):</span> 32 (Adjusted for
+                  initial market risk).
+                </p>
+                <p className="text-sm text-slate-600">
+                  <span className="font-semibold text-slate-800">ln:</span> Natural Logarithm (the decay
+                  curve).
+                </p>
+                <p className="text-sm text-slate-600">
+                  <span className="font-semibold text-slate-800">Total_Value:</span> The sum of all
+                  contributions to date.
+                </p>
+              </div>
+            </div>
+
+            {/* Section 3: Behavior Rules */}
+            <div className="space-y-2">
+              <h4 className="text-sm font-semibold text-slate-900">Behavior Rules</h4>
+              <ul className="list-disc list-inside space-y-2 text-sm text-slate-600">
+                <li>
+                  <span className="font-semibold text-slate-800">Early Stage (High Risk):</span> At
+                  €3,000 accumulated, the multiplier is maxed at <span className="font-semibold">x4.00</span>.
+                </li>
+                <li>
+                  <span className="font-semibold text-slate-800">Growth Stage (Decay):</span> As value
+                  accumulates, the multiplier drops rapidly at first, then slows down (logarithmic curve).
+                </li>
+                <li>
+                  <span className="font-semibold text-slate-800">Maturity (Stability):</span> The multiplier
+                  never drops below <span className="font-semibold">x1.00</span>, ensuring fair value for
+                  late contributions.
+                </li>
+              </ul>
+            </div>
+
+            {/* Section 4: Risk Hierarchy */}
+            <div className="space-y-2">
+              <h4 className="text-sm font-semibold text-slate-900">Risk Hierarchy</h4>
+              <p className="text-sm text-slate-600 leading-relaxed">
+                Cash takes the base multiplier. Work &amp; IP take 50% of the base multiplier
+                (Standard Slicing Pie logic). This hierarchy reflects that liquid capital is the
+                scarcest and riskiest resource, while time and intellectual property still carry
+                meaningful but comparatively lower risk.
+              </p>
+            </div>
           </div>
         )}
       </div>
