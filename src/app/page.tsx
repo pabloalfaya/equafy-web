@@ -11,6 +11,9 @@ export default function LandingPage() {
   const [standardRisk, setStandardRisk] = useState(true);
   const [customRisk, setCustomRisk] = useState(false);
   const [isVideoOpen, setIsVideoOpen] = useState(false);
+  const [language, setLanguage] = useState<"en" | "es">("en");
+
+  const DEMO_VIDEO_IDS = { en: "zZ3kANWXMOU", es: "gkxrYzL1Fss" } as const;
 
   // --- LÓGICA DEL NAVBAR ESCONDIDIZO ---
   const [isNavVisible, setIsNavVisible] = useState(true);
@@ -400,7 +403,7 @@ export default function LandingPage() {
           aria-label="Demo video"
         >
           <div
-            className="relative w-full max-w-4xl aspect-video rounded-xl overflow-hidden bg-black shadow-2xl"
+            className="relative w-full max-w-4xl flex flex-col rounded-xl overflow-hidden bg-black shadow-2xl pt-4"
             onClick={(e) => e.stopPropagation()}
           >
             <button
@@ -410,13 +413,40 @@ export default function LandingPage() {
             >
               <X className="w-6 h-6" />
             </button>
-            <iframe
-              src="https://www.youtube.com/embed/zZ3kANWXMOU?autoplay=1&rel=0"
-              title="Equily Demo"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen
-              className="w-full h-full rounded-lg"
-            />
+            <div className="flex items-center justify-center space-x-1 bg-gray-100 p-1 rounded-full w-fit mx-auto mb-4">
+              <button
+                type="button"
+                onClick={() => setLanguage("en")}
+                className={
+                  language === "en"
+                    ? "bg-white text-gray-900 shadow-sm rounded-full px-4 py-1.5 text-sm font-medium transition-all"
+                    : "text-gray-500 hover:text-gray-900 px-4 py-1.5 text-sm font-medium transition-colors"
+                }
+              >
+                🇬🇧 English
+              </button>
+              <button
+                type="button"
+                onClick={() => setLanguage("es")}
+                className={
+                  language === "es"
+                    ? "bg-white text-gray-900 shadow-sm rounded-full px-4 py-1.5 text-sm font-medium transition-all"
+                    : "text-gray-500 hover:text-gray-900 px-4 py-1.5 text-sm font-medium transition-colors"
+                }
+              >
+                🇪🇸 Español
+              </button>
+            </div>
+            <div className="aspect-video w-full">
+              <iframe
+                key={language}
+                src={`https://www.youtube.com/embed/${DEMO_VIDEO_IDS[language]}?autoplay=1&rel=0`}
+                title="Equily Demo"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+                className="w-full h-full rounded-lg"
+              />
+            </div>
           </div>
         </div>
       )}
