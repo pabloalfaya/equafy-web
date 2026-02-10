@@ -109,8 +109,8 @@ export default function ContactPage() {
             <Link href="/login?view=signup" className="relative group">
                <div className="absolute -inset-0.5 bg-gradient-to-r from-emerald-500 to-emerald-400 rounded-full blur opacity-60 group-hover:opacity-100 transition duration-200"></div>
                <div className="relative flex items-center bg-slate-900 rounded-full px-6 py-2.5 leading-none">
-                 {/* CAMBIO: Texto actualizado a Start Now */}
-                 <span className="text-sm font-bold text-white group-hover:text-emerald-50 transition duration-200">Start Now</span>
+                 {/* CAMBIO: Texto actualizado a Free Trial */}
+                 <span className="text-sm font-bold text-white group-hover:text-emerald-50 transition duration-200">Free Trial</span>
                  <ArrowRight className="w-4 h-4 text-emerald-400 ml-2 group-hover:translate-x-1 transition-transform" />
                </div>
             </Link>
