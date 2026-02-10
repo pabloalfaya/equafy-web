@@ -370,7 +370,7 @@ export default function ProjectDashboardPage() {
                     <Download className="h-5 w-5" /> Export PDF
                 </button>
                 <button onClick={() => setSmartMultipliersOpen(true)} className="inline-flex items-center gap-2 rounded-xl bg-white border border-slate-200 px-5 py-3 font-bold text-slate-700 shadow-sm hover:bg-slate-50 transition-all">
-                    <Sparkles className="h-5 w-5 text-amber-500" /> Smart Multipliers
+                    <Sparkles className="h-5 w-5 text-amber-500" /> Smart Risk
                 </button>
                 {canEdit && (
                   <>
