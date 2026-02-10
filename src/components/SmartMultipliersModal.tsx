@@ -85,7 +85,10 @@ export function SmartMultipliersModal({
                 </span>
               </div>
               <div className="flex items-center justify-between p-4 rounded-2xl bg-blue-50 border border-blue-100">
-                <span className="text-slate-700 font-bold">🛠️ Work/IP Risk</span>
+                <div>
+                  <span className="text-slate-700 font-bold block">💼 Non-Cash Risk</span>
+                  <span className="text-xs text-slate-500 font-medium">Work, IP, Tangibles &amp; Relationships</span>
+                </div>
                 <span className="text-xl font-black text-blue-700">
                   x{work.toFixed(2)}
                 </span>
@@ -161,10 +164,10 @@ export function SmartMultipliersModal({
             <div className="space-y-2">
               <h4 className="text-sm font-semibold text-slate-900">Risk Hierarchy</h4>
               <p className="text-sm text-slate-600 leading-relaxed">
-                Cash takes the base multiplier. Work &amp; IP take 50% of the base multiplier
-                (Standard Slicing Pie logic). This hierarchy reflects that liquid capital is the
-                scarcest and riskiest resource, while time and intellectual property still carry
-                meaningful but comparatively lower risk.
+                Cash takes the base multiplier. Non-cash (Work, IP, Tangibles &amp; Relationships)
+                takes 50% of the base multiplier (Standard Slicing Pie logic). This hierarchy reflects
+                that liquid capital is the scarcest and riskiest resource, while other contributions
+                carry meaningful but comparatively lower risk.
               </p>
             </div>
           </div>
