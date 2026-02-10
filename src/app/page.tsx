@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { 
   ShieldCheck, PieChart, PlayCircle, Mail, Twitter, Linkedin, ArrowRight,
-  Sliders, Scale, AlertTriangle, CheckCircle2, TrendingUp, X
+  Sliders, Scale, AlertTriangle, CheckCircle2, TrendingUp, X, ChevronDown, Check
 } from "lucide-react";
 
 export default function LandingPage() {
@@ -12,8 +12,26 @@ export default function LandingPage() {
   const [customRisk, setCustomRisk] = useState(false);
   const [isVideoOpen, setIsVideoOpen] = useState(false);
   const [language, setLanguage] = useState<"en" | "es">("en");
+  const [languageDropdownOpen, setLanguageDropdownOpen] = useState(false);
+  const languageDropdownRef = useRef<HTMLDivElement>(null);
 
   const DEMO_VIDEO_IDS = { en: "zZ3kANWXMOU", es: "gkxrYzL1Fss" } as const;
+  const LANGUAGE_OPTIONS: { id: "en" | "es"; flag: string; label: string; short: string }[] = [
+    { id: "en", flag: "🇬🇧", label: "English", short: "EN" },
+    { id: "es", flag: "🇪🇸", label: "Español", short: "ES" },
+  ];
+
+  // Cerrar dropdown de idioma al hacer clic fuera
+  useEffect(() => {
+    if (!languageDropdownOpen) return;
+    const handleClickOutside = (e: MouseEvent) => {
+      if (languageDropdownRef.current && !languageDropdownRef.current.contains(e.target as Node)) {
+        setLanguageDropdownOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [languageDropdownOpen]);
 
   // --- LÓGICA DEL NAVBAR ESCONDIDIZO ---
   const [isNavVisible, setIsNavVisible] = useState(true);
@@ -403,50 +421,59 @@ export default function LandingPage() {
           aria-label="Demo video"
         >
           <div
-            className="relative w-full max-w-4xl flex flex-col rounded-xl overflow-hidden bg-black shadow-2xl pt-4"
+            className="relative w-full max-w-4xl aspect-video rounded-xl overflow-hidden bg-black shadow-2xl"
             onClick={(e) => e.stopPropagation()}
           >
             <button
               onClick={() => setIsVideoOpen(false)}
-              className="absolute top-4 right-4 z-10 p-2 rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors"
+              className="absolute top-4 right-4 z-20 p-2 rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors"
               aria-label="Close"
             >
               <X className="w-6 h-6" />
             </button>
-            <div className="flex items-center justify-center space-x-1 bg-gray-100 p-1 rounded-full w-fit mx-auto mb-4">
+            <div ref={languageDropdownRef} className="absolute top-14 right-4 z-20">
               <button
                 type="button"
-                onClick={() => setLanguage("en")}
-                className={
-                  language === "en"
-                    ? "bg-white text-gray-900 shadow-sm rounded-full px-4 py-1.5 text-sm font-medium transition-all"
-                    : "text-gray-500 hover:text-gray-900 px-4 py-1.5 text-sm font-medium transition-colors"
-                }
+                onClick={() => setLanguageDropdownOpen((o) => !o)}
+                className="flex items-center gap-1.5 rounded-full bg-black/50 hover:bg-black/80 text-white text-xs font-medium px-3 py-2 transition-colors"
+                aria-expanded={languageDropdownOpen}
+                aria-haspopup="true"
               >
-                🇬🇧 English
+                <span>
+                  {LANGUAGE_OPTIONS.find((o) => o.id === language)?.flag}{" "}
+                  {LANGUAGE_OPTIONS.find((o) => o.id === language)?.short}
+                </span>
+                <ChevronDown className="w-3.5 h-3.5 shrink-0" />
               </button>
-              <button
-                type="button"
-                onClick={() => setLanguage("es")}
-                className={
-                  language === "es"
-                    ? "bg-white text-gray-900 shadow-sm rounded-full px-4 py-1.5 text-sm font-medium transition-all"
-                    : "text-gray-500 hover:text-gray-900 px-4 py-1.5 text-sm font-medium transition-colors"
-                }
-              >
-                🇪🇸 Español
-              </button>
+              {languageDropdownOpen && (
+                <div className="absolute top-full right-0 mt-1.5 min-w-[140px] rounded-lg bg-white shadow-lg border border-gray-100 py-1">
+                  {LANGUAGE_OPTIONS.map((opt) => (
+                    <button
+                      key={opt.id}
+                      type="button"
+                      onClick={() => {
+                        setLanguage(opt.id);
+                        setLanguageDropdownOpen(false);
+                      }}
+                      className={`flex items-center justify-between w-full px-3 py-2 text-left text-sm transition-colors hover:bg-gray-50 ${
+                        language === opt.id ? "font-semibold text-gray-900 bg-gray-50" : "text-gray-600"
+                      }`}
+                    >
+                      <span>{opt.flag} {opt.label}</span>
+                      {language === opt.id && <Check className="w-4 h-4 text-emerald-600 shrink-0" />}
+                    </button>
+                  ))}
+                </div>
+              )}
             </div>
-            <div className="aspect-video w-full">
-              <iframe
-                key={language}
-                src={`https://www.youtube.com/embed/${DEMO_VIDEO_IDS[language]}?autoplay=1&rel=0`}
-                title="Equily Demo"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-                className="w-full h-full rounded-lg"
-              />
-            </div>
+            <iframe
+              key={language}
+              src={`https://www.youtube.com/embed/${DEMO_VIDEO_IDS[language]}?autoplay=1&rel=0`}
+              title="Equily Demo"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+              className="absolute inset-0 w-full h-full rounded-lg"
+            />
           </div>
         </div>
       )}
