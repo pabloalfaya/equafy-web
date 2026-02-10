@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation"; 
 import Link from "next/link";
-import { Plus, TrendingUp, LayoutDashboard, PieChart, Users, Download, ArrowLeft, Settings, History, FileText, Flag } from "lucide-react";
+import { Plus, TrendingUp, LayoutDashboard, PieChart, Users, Download, ArrowLeft, Settings, History, FileText, Flag, Sparkles } from "lucide-react";
 import { createClient } from "@/utils/supabase/client";
 import { recalculateAndPersistProjectValuation } from "@/utils/projectRecalculator";
 import { logAudit } from "@/utils/auditLog";
@@ -13,6 +13,7 @@ import { AddContributionModal } from "@/components/AddContributionModal";
 import { AddMemberModal } from "@/components/AddMemberModal";
 import { EquitySettingsModal } from "@/components/EquitySettingsModal";
 import { AuditLogModal } from "@/components/AuditLogModal";
+import { SmartMultipliersModal } from "@/components/SmartMultipliersModal";
 import type { Project, Contribution } from "@/types/database";
 
 import jsPDF from 'jspdf';
@@ -42,6 +43,7 @@ export default function ProjectDashboardPage() {
   const [memberModalOpen, setMemberModalOpen] = useState(false);
   const [fixedEquityOpen, setFixedEquityOpen] = useState(false);
   const [auditLogModalOpen, setAuditLogModalOpen] = useState(false);
+  const [smartMultipliersOpen, setSmartMultipliersOpen] = useState(false);
   const [editingContribution, setEditingContribution] = useState<ExtendedContribution | null>(null);
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   const [currentUserEmail, setCurrentUserEmail] = useState<string | null>(null);
@@ -340,6 +342,9 @@ export default function ProjectDashboardPage() {
                 <button onClick={generatePDF} className="inline-flex items-center gap-2 rounded-xl bg-white border border-slate-200 px-5 py-3 font-bold text-slate-700 shadow-sm hover:bg-slate-50 transition-all">
                     <Download className="h-5 w-5" /> Export PDF
                 </button>
+                <button onClick={() => setSmartMultipliersOpen(true)} className="inline-flex items-center gap-2 rounded-xl bg-white border border-slate-200 px-5 py-3 font-bold text-slate-700 shadow-sm hover:bg-slate-50 transition-all">
+                    <Sparkles className="h-5 w-5 text-amber-500" /> Smart Multipliers
+                </button>
                 {canEdit && (
                   <>
                     <button onClick={() => setFixedEquityOpen(true)} className="inline-flex items-center gap-2 rounded-xl bg-white border border-slate-200 px-5 py-3 font-bold text-slate-700 shadow-sm hover:bg-slate-50 transition-all">
@@ -442,6 +447,12 @@ export default function ProjectDashboardPage() {
         onClose={() => setAuditLogModalOpen(false)}
         projectId={projectId}
         projectName={project?.name}
+      />
+
+      <SmartMultipliersModal
+        isOpen={smartMultipliersOpen}
+        onClose={() => setSmartMultipliersOpen(false)}
+        totalProjectValue={project?.current_valuation ?? 0}
       />
     </div>
   );
