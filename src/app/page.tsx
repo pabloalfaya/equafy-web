@@ -410,30 +410,30 @@ export default function LandingPage() {
           aria-label="Demo video"
         >
           <div
-            className="relative w-full max-w-4xl flex flex-col rounded-xl overflow-hidden bg-slate-900 shadow-2xl"
+            className={`relative w-full max-w-4xl flex flex-col rounded-xl overflow-hidden bg-slate-900 shadow-2xl ${language === null ? "min-h-[380px]" : ""}`}
             onClick={(e) => e.stopPropagation()}
           >
             {language === null ? (
               /* --- Paso 1: Selección de idioma --- */
-              <div className="flex flex-col items-center justify-center px-6 py-12 md:py-16">
-                <h2 className="text-xl md:text-2xl font-semibold text-white text-center mb-8">
+              <div className="flex flex-col items-center justify-center h-full px-6 py-12">
+                <h2 className="text-2xl md:text-3xl font-semibold text-white text-center mb-10">
                   Select Language / Selecciona Idioma
                 </h2>
                 <div className="flex flex-col sm:flex-row gap-4 w-full max-w-lg">
                   <button
                     type="button"
                     onClick={() => setLanguage("en")}
-                    className="flex items-center justify-center gap-3 rounded-xl border-2 border-white/40 bg-transparent text-white px-6 py-4 text-base font-medium hover:border-white/70 hover:bg-white/5 transition-all"
+                    className="flex items-center justify-center gap-3 rounded-lg border border-white bg-transparent text-white px-6 py-3 font-medium shadow-md hover:bg-white/10 transition-all"
                   >
-                    <span className="text-2xl">🇬🇧</span>
+                    <span className="text-2xl" aria-hidden>🇬🇧</span>
                     <span>Watch in English</span>
                   </button>
                   <button
                     type="button"
                     onClick={() => setLanguage("es")}
-                    className="flex items-center justify-center gap-3 rounded-xl bg-emerald-500 text-white px-6 py-4 text-base font-medium hover:bg-emerald-600 shadow-lg hover:shadow-emerald-500/25 transition-all"
+                    className="flex items-center justify-center gap-3 rounded-lg bg-[#1565C0] text-white px-6 py-3 font-medium shadow-md hover:bg-[#1E88E5] transition-all"
                   >
-                    <span className="text-2xl">🇪🇸</span>
+                    <span className="text-2xl" aria-hidden>🇪🇸</span>
                     <span>Ver en Español</span>
                   </button>
                 </div>
