@@ -291,7 +291,7 @@ export function EquitySettingsModal({
                 : "text-slate-600 hover:text-slate-800"
             }`}
           >
-            Smart Risk
+            Smart Multipliers
           </button>
         </div>
 
