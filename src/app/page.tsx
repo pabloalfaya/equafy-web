@@ -411,11 +411,11 @@ export default function LandingPage() {
               <X className="w-6 h-6" />
             </button>
             <iframe
-              src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1"
+              src="https://www.tella.tv/video/vid_cmlgxlc98000204l7ey7sgylr/embed?b=1&title=0&a=1&loop=0&t=0&muted=0&wt=1"
               title="Equily Demo"
-              allow="autoplay; encrypted-media"
+              allow="autoplay; fullscreen"
               allowFullScreen
-              className="absolute inset-0 w-full h-full"
+              className="w-full h-full rounded-lg"
             />
           </div>
         </div>
