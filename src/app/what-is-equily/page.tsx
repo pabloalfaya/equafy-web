@@ -207,7 +207,7 @@ export default function WhatIsEquilyPage() {
             </div>
           </div>
           <div className="pt-8 border-t border-slate-100 flex flex-col md:flex-row justify-between items-center gap-6 text-slate-400 font-bold text-xs uppercase tracking-wider">
-            <p>© 2026 Equily. Built in Seville.</p>
+            <p>© 2026 Equily</p>
             <div className="flex gap-6">
               <Twitter className="h-5 w-5 hover:text-slate-900 cursor-pointer transition-colors" />
               <Linkedin className="h-5 w-5 hover:text-slate-900 cursor-pointer transition-colors" />
