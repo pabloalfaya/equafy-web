@@ -410,20 +410,24 @@ export default function LandingPage() {
           aria-label="Demo video"
         >
           <div
-            className={`relative w-full max-w-4xl flex flex-col rounded-xl overflow-hidden bg-slate-900 shadow-2xl ${language === null ? "min-h-[380px]" : ""}`}
+            className={
+              language === null
+                ? "relative w-full max-w-md flex flex-col rounded-2xl overflow-hidden bg-white shadow-lg"
+                : "relative w-full max-w-4xl flex flex-col rounded-xl overflow-hidden bg-slate-900 shadow-2xl"
+            }
             onClick={(e) => e.stopPropagation()}
           >
             {language === null ? (
-              /* --- Paso 1: Selección de idioma --- */
-              <div className="flex flex-col items-center justify-center h-full px-6 py-12">
-                <h2 className="text-2xl md:text-3xl font-semibold text-white text-center mb-10">
+              /* --- Paso 1: Selección de idioma (tarjeta blanca compacta) --- */
+              <div className="flex flex-col items-center justify-center px-6 py-8">
+                <h2 className="text-xl font-semibold text-[#1E293B] text-center mb-6">
                   Select Language / Selecciona Idioma
                 </h2>
-                <div className="flex flex-col sm:flex-row gap-4 w-full max-w-lg">
+                <div className="flex flex-col sm:flex-row gap-4 w-full">
                   <button
                     type="button"
                     onClick={() => setLanguage("en")}
-                    className="flex items-center justify-center gap-3 rounded-lg border border-white bg-transparent text-white px-6 py-3 font-medium shadow-md hover:bg-white/10 transition-all"
+                    className="flex items-center justify-center gap-3 rounded-lg border border-gray-300 bg-transparent text-gray-700 px-6 py-3 font-medium hover:border-gray-400 transition-all"
                   >
                     <span className="text-2xl" aria-hidden>🇬🇧</span>
                     <span>Watch in English</span>
@@ -442,7 +446,7 @@ export default function LandingPage() {
                     setIsVideoOpen(false);
                     setLanguage(null);
                   }}
-                  className="absolute top-4 right-4 p-2 rounded-full text-white/70 hover:text-white hover:bg-white/10 transition-colors"
+                  className="absolute top-4 right-4 p-2 rounded-full text-gray-400 hover:text-gray-900 hover:bg-gray-100 transition-colors"
                   aria-label="Close"
                 >
                   <X className="w-6 h-6" />
