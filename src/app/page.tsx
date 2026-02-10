@@ -4,19 +4,19 @@ import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { 
   ShieldCheck, PieChart, PlayCircle, Mail, Twitter, Linkedin, ArrowRight,
-  Sliders, Scale, AlertTriangle, CheckCircle2, TrendingUp, X
+  Sliders, Scale, AlertTriangle, CheckCircle2, TrendingUp, X, ArrowLeft
 } from "lucide-react";
 
 export default function LandingPage() {
   const [standardRisk, setStandardRisk] = useState(true);
   const [customRisk, setCustomRisk] = useState(false);
   const [isVideoOpen, setIsVideoOpen] = useState(false);
-  const [language, setLanguage] = useState<"en" | "es">("en");
+  const [language, setLanguage] = useState<"en" | "es" | null>(null);
 
   const DEMO_VIDEO_IDS = { en: "zZ3kANWXMOU", es: "gkxrYzL1Fss" } as const;
-  const LANGUAGE_OPTIONS: { id: "en" | "es"; flag: string; short: string }[] = [
-    { id: "en", flag: "🇬🇧", short: "EN" },
-    { id: "es", flag: "🇪🇸", short: "ES" },
+  const LANGUAGE_OPTIONS: { id: "en" | "es"; flag: string; label: string }[] = [
+    { id: "en", flag: "🇬🇧", label: "Watch in English" },
+    { id: "es", flag: "🇪🇸", label: "Ver en Español" },
   ];
 
   // --- LÓGICA DEL NAVBAR ESCONDIDIZO ---
@@ -401,50 +401,87 @@ export default function LandingPage() {
       {isVideoOpen && (
         <div
           className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4"
-          onClick={() => setIsVideoOpen(false)}
+          onClick={() => {
+            setIsVideoOpen(false);
+            setLanguage(null);
+          }}
           role="dialog"
           aria-modal="true"
           aria-label="Demo video"
         >
           <div
-            className="relative w-full max-w-4xl flex flex-col rounded-xl overflow-hidden bg-black shadow-2xl"
+            className="relative w-full max-w-4xl flex flex-col rounded-xl overflow-hidden bg-slate-900 shadow-2xl"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="flex justify-end mb-2 pt-4 px-4 pr-14">
-              <div className="bg-white/10 p-1 rounded-full flex items-center space-x-1 w-fit backdrop-blur-sm">
-                {LANGUAGE_OPTIONS.map((opt) => (
+            {language === null ? (
+              /* --- Paso 1: Selección de idioma --- */
+              <div className="flex flex-col items-center justify-center px-6 py-12 md:py-16">
+                <h2 className="text-xl md:text-2xl font-semibold text-white text-center mb-8">
+                  Select Language / Selecciona Idioma
+                </h2>
+                <div className="flex flex-col sm:flex-row gap-4 w-full max-w-lg">
                   <button
-                    key={opt.id}
                     type="button"
-                    onClick={() => setLanguage(opt.id)}
-                    className={
-                      language === opt.id
-                        ? "bg-white text-gray-900 shadow-sm rounded-full px-3 py-1 text-sm font-medium transition-all"
-                        : "text-white/70 hover:text-white px-3 py-1 text-sm font-medium transition-colors"
-                    }
+                    onClick={() => setLanguage("en")}
+                    className="flex items-center justify-center gap-3 rounded-xl border-2 border-white/40 bg-transparent text-white px-6 py-4 text-base font-medium hover:border-white/70 hover:bg-white/5 transition-all"
                   >
-                    {opt.flag} {opt.short}
+                    <span className="text-2xl">🇬🇧</span>
+                    <span>Watch in English</span>
                   </button>
-                ))}
+                  <button
+                    type="button"
+                    onClick={() => setLanguage("es")}
+                    className="flex items-center justify-center gap-3 rounded-xl bg-emerald-500 text-white px-6 py-4 text-base font-medium hover:bg-emerald-600 shadow-lg hover:shadow-emerald-500/25 transition-all"
+                  >
+                    <span className="text-2xl">🇪🇸</span>
+                    <span>Ver en Español</span>
+                  </button>
+                </div>
+                <button
+                  onClick={() => {
+                    setIsVideoOpen(false);
+                    setLanguage(null);
+                  }}
+                  className="absolute top-4 right-4 p-2 rounded-full text-white/70 hover:text-white hover:bg-white/10 transition-colors"
+                  aria-label="Close"
+                >
+                  <X className="w-6 h-6" />
+                </button>
               </div>
-            </div>
-            <button
-              onClick={() => setIsVideoOpen(false)}
-              className="absolute top-4 right-4 z-10 p-2 rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors"
-              aria-label="Close"
-            >
-              <X className="w-6 h-6" />
-            </button>
-            <div className="aspect-video w-full">
-              <iframe
-                key={language}
-                src={`https://www.youtube.com/embed/${DEMO_VIDEO_IDS[language]}?autoplay=1&rel=0`}
-                title="Equily Demo"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-                className="w-full h-full rounded-lg"
-              />
-            </div>
+            ) : (
+              /* --- Paso 2: Reproducción del vídeo --- */
+              <>
+                <button
+                  type="button"
+                  onClick={() => setLanguage(null)}
+                  className="absolute top-4 left-4 z-10 flex items-center gap-1.5 rounded-full bg-white/10 hover:bg-white/20 text-white/90 text-xs font-medium px-3 py-2 transition-colors"
+                  aria-label="Change language"
+                >
+                  <ArrowLeft className="w-4 h-4" />
+                  Change Language
+                </button>
+                <button
+                  onClick={() => {
+                    setIsVideoOpen(false);
+                    setLanguage(null);
+                  }}
+                  className="absolute top-4 right-4 z-10 p-2 rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors"
+                  aria-label="Close"
+                >
+                  <X className="w-6 h-6" />
+                </button>
+                <div className="aspect-video w-full">
+                  <iframe
+                    key={language}
+                    src={`https://www.youtube.com/embed/${DEMO_VIDEO_IDS[language]}?autoplay=1&rel=0`}
+                    title="Equily Demo"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                    className="w-full h-full rounded-lg"
+                  />
+                </div>
+              </>
+            )}
           </div>
         </div>
       )}
