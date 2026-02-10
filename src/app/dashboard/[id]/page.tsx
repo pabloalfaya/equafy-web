@@ -47,6 +47,8 @@ export default function ProjectDashboardPage() {
   const [editingContribution, setEditingContribution] = useState<ExtendedContribution | null>(null);
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   const [currentUserEmail, setCurrentUserEmail] = useState<string | null>(null);
+  const [isVisible, setIsVisible] = useState(true);
+  const [lastScrollY, setLastScrollY] = useState(0);
 
   const fetchData = async () => {
     if (!projectId) return;
@@ -276,6 +278,27 @@ export default function ProjectDashboardPage() {
     doc.save(`${projectName}_Full_Report.pdf`);
   };
 
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentY = window.scrollY;
+
+      setLastScrollY((prevY) => {
+        if (currentY > prevY && currentY > 50) {
+          setIsVisible(false);
+        } else if (currentY < prevY) {
+          setIsVisible(true);
+        }
+        return currentY;
+      });
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
+
   useEffect(() => { fetchData(); }, [projectId]);
 
   const currentMember = members.find(
@@ -316,7 +339,11 @@ export default function ProjectDashboardPage() {
 
   return (
     <div className="min-h-screen bg-[#F8FAFC] font-sans text-slate-900 overflow-x-hidden">
-      <nav className="fixed top-0 inset-x-0 z-50 border-b border-white/50 bg-white/60 backdrop-blur-xl">
+      <nav
+        className={`fixed top-0 inset-x-0 z-50 border-b border-white/50 bg-white/60 backdrop-blur-xl transition-transform duration-300 ${
+          isVisible ? "translate-y-0" : "-translate-y-full"
+        }`}
+      >
         <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-2">
           <div className="flex items-center gap-4">
              <Link href="/dashboard" className="p-2 hover:bg-slate-100 rounded-lg transition-colors"><ArrowLeft className="w-5 h-5 text-slate-500" /></Link>
