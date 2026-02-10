@@ -51,7 +51,7 @@ function CustomTooltip(props: { active?: boolean; payload?: Array<{ payload: Cha
 }
 
 export function EquityPieChart({ contributions, members }: EquityPieChartProps) {
-  const { data } = useMemo(() => {
+  const { data, totalPoints } = useMemo(() => {
     const memberList = members ?? [];
 
     // 1. TotalFixedEquity = suma de % fijos de todos los miembros
@@ -109,10 +109,14 @@ export function EquityPieChart({ contributions, members }: EquityPieChartProps) 
     // Filtrar miembros con valor 0 para no mostrar segmentos vacíos
     const filtered = chartData.filter((d) => d.value > 0);
 
-    return { data: filtered };
+    return { data: filtered, totalPoints: totalRiskPoints };
   }, [contributions, members]);
 
   const totalValue = data.reduce((sum, item) => sum + item.value, 0);
+  const formattedTotalPoints = totalPoints.toLocaleString(undefined, {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  });
 
   // Si no hay datos, mostramos mensaje vacío
   if (data.length === 0 || totalValue === 0) {
@@ -160,16 +164,19 @@ export function EquityPieChart({ contributions, members }: EquityPieChartProps) 
         {/* Texto Central (Total) */}
         <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
           <span className="text-3xl font-black text-slate-800">
-            {totalValue.toFixed(0)}%
+            {formattedTotalPoints}
           </span>
           <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
-            Total Equity
+            Total Points
           </span>
         </div>
       </div>
 
       {/* --- SECCIÓN LEYENDA (Debajo) --- */}
       <div className="mt-4 space-y-3 px-2 overflow-y-auto custom-scrollbar max-h-[200px]">
+        <div className="flex justify-end pr-1">
+          <span className="text-[10px] font-medium text-slate-400">100%</span>
+        </div>
         {data.map((entry, index) => (
           <div key={index} className="flex items-center justify-between group py-1">
             <div className="flex items-center gap-3">
