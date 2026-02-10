@@ -4,12 +4,13 @@ import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { 
   ShieldCheck, PieChart, PlayCircle, Mail, Twitter, Linkedin, ArrowRight,
-  Sliders, Scale, AlertTriangle, CheckCircle2, TrendingUp
+  Sliders, Scale, AlertTriangle, CheckCircle2, TrendingUp, X
 } from "lucide-react";
 
 export default function LandingPage() {
   const [standardRisk, setStandardRisk] = useState(true);
   const [customRisk, setCustomRisk] = useState(false);
+  const [isVideoOpen, setIsVideoOpen] = useState(false);
 
   // --- LÓGICA DEL NAVBAR ESCONDIDIZO ---
   const [isNavVisible, setIsNavVisible] = useState(true);
@@ -109,7 +110,10 @@ export default function LandingPage() {
             <Link href="/login?view=signup" className="h-14 px-8 rounded-2xl bg-slate-900 text-white font-bold text-lg flex items-center justify-center shadow-xl shadow-slate-200 hover:bg-slate-800 hover:-translate-y-1 transition-all duration-300">
               Start Splitting
             </Link>
-            <button className="h-14 px-8 rounded-2xl bg-white border border-slate-200 text-slate-700 font-bold text-lg flex items-center justify-center gap-2 hover:bg-slate-50 hover:border-slate-300 transition-all duration-300 group">
+            <button
+              onClick={() => setIsVideoOpen(true)}
+              className="h-14 px-8 rounded-2xl bg-white border border-slate-200 text-slate-700 font-bold text-lg flex items-center justify-center gap-2 hover:bg-slate-50 hover:border-slate-300 transition-all duration-300 group"
+            >
               <PlayCircle className="w-5 h-5 text-emerald-500 group-hover:scale-110 transition-transform" />
               Watch Demo
             </button>
@@ -385,6 +389,37 @@ export default function LandingPage() {
           </div>
         </div>
       </footer>
+
+      {/* --- VIDEO DEMO MODAL --- */}
+      {isVideoOpen && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4"
+          onClick={() => setIsVideoOpen(false)}
+          role="dialog"
+          aria-modal="true"
+          aria-label="Demo video"
+        >
+          <div
+            className="relative w-full max-w-4xl aspect-video rounded-xl overflow-hidden bg-black shadow-2xl"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              onClick={() => setIsVideoOpen(false)}
+              className="absolute top-4 right-4 z-10 p-2 rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors"
+              aria-label="Close"
+            >
+              <X className="w-6 h-6" />
+            </button>
+            <iframe
+              src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1"
+              title="Equily Demo"
+              allow="autoplay; encrypted-media"
+              allowFullScreen
+              className="absolute inset-0 w-full h-full"
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 }
