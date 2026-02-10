@@ -118,6 +118,11 @@ export function EquityPieChart({ contributions, members }: EquityPieChartProps) 
     maximumFractionDigits: 2,
   });
 
+  const centerText = formattedTotalPoints;
+  const centerTextLength = centerText.length;
+  const centerFontSizeClass =
+    centerTextLength < 10 ? "text-3xl" : centerTextLength < 14 ? "text-2xl" : "text-xl";
+
   // Si no hay datos, mostramos mensaje vacío
   if (data.length === 0 || totalValue === 0) {
     return (
@@ -163,8 +168,8 @@ export function EquityPieChart({ contributions, members }: EquityPieChartProps) 
 
         {/* Texto Central (Total) */}
         <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-          <span className="text-3xl font-black text-slate-800">
-            {formattedTotalPoints}
+          <span className={`${centerFontSizeClass} font-black text-slate-800 whitespace-nowrap`}>
+            {centerText}
           </span>
           <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
             Total Points

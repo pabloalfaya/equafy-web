@@ -114,7 +114,7 @@ const actionType = editingId ? "EDIT_MEMBER" : "ADD_MEMBER";
   };
 
   const handleDelete = async (id: string) => {
-    if (!confirm("Are you sure? This might affect existing contributions.")) return;
+    if (!confirm("Are you sure you want to remove this member? This might affect existing contributions.")) return;
     const member = members.find((m) => m.id === id);
     const { error } = await supabase.from("project_members").delete().eq("id", id);
     if (!error) {

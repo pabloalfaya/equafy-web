@@ -103,7 +103,11 @@ export function ContributionsTable({ contributions, onDelete, onEdit, canEdit = 
                     </button>
                     <button
                       type="button"
-                      onClick={() => onDelete(c.id)}
+                      onClick={() => {
+                        if (window.confirm("Are you sure you want to delete this contribution?")) {
+                          onDelete(c.id);
+                        }
+                      }}
                       className="p-1.5 text-red-500 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all"
                       title="Delete"
                     >
