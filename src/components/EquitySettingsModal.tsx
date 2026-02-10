@@ -1,9 +1,10 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { X, Percent, Save, Settings2 } from "lucide-react";
+import { X, Percent, Save, Settings2, Sparkles, Calculator, BookOpen } from "lucide-react";
 import { createClient } from "@/utils/supabase/client";
 import { logAudit } from "@/utils/auditLog";
+import { calculateDynamicMultiplier } from "@/utils/riskEngine";
 
 const MEMBER_COLORS = [
   "bg-emerald-500",
@@ -62,7 +63,7 @@ function parseWithComma(str: string): number {
   return parseFloat(normalized) || 0;
 }
 
-type TabType = "fixed" | "multipliers";
+type TabType = "fixed" | "multipliers" | "smart";
 
 export function EquitySettingsModal({
   isOpen,
@@ -114,6 +115,13 @@ export function EquitySettingsModal({
   const totalFixed = Object.values(values).reduce((sum, v) => sum + (Number.isNaN(v) ? 0 : v), 0);
   const totalDynamic = Math.max(0, 100 - totalFixed);
   const isValid = totalFixed <= 100;
+
+  const totalProjectValue = Number(project?.current_valuation) || 0;
+  const { cash: smartCashMult, work: smartWorkMult } = calculateDynamicMultiplier(totalProjectValue || 0);
+  const smartDisplayValue = totalProjectValue.toLocaleString(undefined, {
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+  });
 
   const handleMemberChange = (memberId: string, val: string) => {
     if (!canEdit) return;
@@ -230,7 +238,7 @@ export function EquitySettingsModal({
       onClick={onClose}
     >
       <div
-        className="w-full max-w-md bg-white rounded-[32px] shadow-2xl p-8 animate-in zoom-in duration-200 font-sans"
+        className="w-full max-w-xl bg-white rounded-[32px] shadow-2xl p-8 animate-in zoom-in duration-200 font-sans"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
@@ -273,6 +281,17 @@ export function EquitySettingsModal({
             }`}
           >
             Multipliers
+          </button>
+          <button
+            type="button"
+            onClick={() => setActiveTab("smart")}
+            className={`flex-1 py-2.5 px-4 rounded-lg text-sm font-bold transition-all ${
+              activeTab === "smart"
+                ? "bg-white text-slate-800 shadow-sm"
+                : "text-slate-600 hover:text-slate-800"
+            }`}
+          >
+            Smart Risk
           </button>
         </div>
 
@@ -437,6 +456,118 @@ export function EquitySettingsModal({
               )}
             </div>
           </>
+        )}
+
+        {activeTab === "smart" && (
+          <div className="space-y-6 max-h-[55vh] overflow-y-auto pr-1">
+            {/* Smart Risk Calculator */}
+            <div className="space-y-3">
+              <div className="flex items-center gap-2">
+                <Sparkles className="w-4 h-4 text-amber-500" />
+                <p className="text-xs font-semibold uppercase tracking-widest text-slate-500">
+                  Smart Risk Calculator
+                </p>
+              </div>
+              <p className="text-lg font-black text-slate-900">
+                Current Project Value: €{smartDisplayValue}
+              </p>
+              <div className="space-y-3">
+                <div className="flex items-center justify-between p-4 rounded-2xl bg-emerald-50 border border-emerald-100">
+                  <span className="text-slate-700 font-bold">💵 Cash Risk</span>
+                  <span className="text-xl font-black text-emerald-700">
+                    x{smartCashMult.toFixed(2)}
+                  </span>
+                </div>
+                <div className="flex items-center justify-between p-4 rounded-2xl bg-blue-50 border border-blue-100">
+                  <span className="text-slate-700 font-bold">🛠️ Work/IP Risk</span>
+                  <span className="text-xl font-black text-blue-700">
+                    x{smartWorkMult.toFixed(2)}
+                  </span>
+                </div>
+              </div>
+              <p className="text-xs text-slate-500 font-medium">
+                These are the recommended multipliers based on current accumulation. They are
+                informative only and do not change your current settings until you update the
+                multipliers tab.
+              </p>
+            </div>
+
+            {/* The Logic Explanation */}
+            <div className="space-y-6">
+              {/* Section 1: Introduction */}
+              <div className="space-y-2">
+                <h4 className="text-sm font-semibold text-slate-900">
+                  The Mathematics of Fairness
+                </h4>
+                <p className="text-sm text-slate-600 leading-relaxed">
+                  Equily uses a{" "}
+                  <span className="font-semibold text-slate-800">Logarithmic Decay Model</span>. Why?
+                  Because €1,000 invested when the company is just an idea is infinitely riskier than
+                  €1,000 invested when the company is already making millions.
+                </p>
+              </div>
+
+              {/* Section 2: Master Formula */}
+              <div className="space-y-3 rounded-2xl bg-slate-50 border border-slate-200 p-4">
+                <p className="text-xs font-semibold uppercase tracking-widest text-slate-500">
+                  The Master Formula
+                </p>
+                <div className="rounded-xl bg-white border border-slate-100 px-4 py-3 overflow-x-auto flex items-center gap-2">
+                  <Calculator className="w-4 h-4 text-slate-500" />
+                  <code className="font-mono text-sm text-slate-800">
+                    Multiplier = k / ln(Total_Value)
+                  </code>
+                </div>
+                <div className="space-y-1">
+                  <p className="text-sm text-slate-600">
+                    <span className="font-semibold text-slate-800">k (Constant):</span> 32 (Adjusted
+                    for initial market risk).
+                  </p>
+                  <p className="text-sm text-slate-600">
+                    <span className="font-semibold text-slate-800">ln:</span> Natural Logarithm (the
+                    decay curve).
+                  </p>
+                  <p className="text-sm text-slate-600">
+                    <span className="font-semibold text-slate-800">Total_Value:</span> The sum of all
+                    contributions to date.
+                  </p>
+                </div>
+              </div>
+
+              {/* Section 3: Behavior Rules */}
+              <div className="space-y-2">
+                <h4 className="text-sm font-semibold text-slate-900">Behavior Rules</h4>
+                <ul className="list-disc list-inside space-y-2 text-sm text-slate-600">
+                  <li>
+                    <span className="font-semibold text-slate-800">Early Stage (High Risk):</span> At
+                    €3,000 accumulated, the multiplier is maxed at{" "}
+                    <span className="font-semibold">x4.00</span>.
+                  </li>
+                  <li>
+                    <span className="font-semibold text-slate-800">Growth Stage (Decay):</span> As
+                    value accumulates, the multiplier drops rapidly at first, then slows down
+                    (logarithmic curve).
+                  </li>
+                  <li>
+                    <span className="font-semibold text-slate-800">Maturity (Stability):</span> The
+                    multiplier never drops below <span className="font-semibold">x1.00</span>,
+                    ensuring fair value for late contributions.
+                  </li>
+                </ul>
+              </div>
+
+              {/* Section 4: Risk Hierarchy */}
+              <div className="space-y-2">
+                <h4 className="text-sm font-semibold text-slate-900">Risk Hierarchy</h4>
+                <p className="text-sm text-slate-600 leading-relaxed">
+                  Cash takes the base multiplier. Work &amp; IP take 50% of the base multiplier
+                  (Standard Slicing Pie logic). This hierarchy reflects that liquid capital is the
+                  scarcest and riskiest resource, while time and intellectual property still carry
+                  meaningful but comparatively lower risk.
+                </p>
+              </div>
+            </div>
+          </div>
         )}
 
         {error && (
