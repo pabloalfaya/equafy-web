@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
-import { ArrowRight, ChevronDown, Sparkles, Cog } from "lucide-react";
+import { ArrowRight, ChevronDown, Sparkles, Cog, Zap } from "lucide-react";
 
 export function Navbar() {
   const [isNavVisible, setIsNavVisible] = useState(true);
@@ -65,6 +65,23 @@ export function Navbar() {
               </button>
               {isProductMenuOpen && (
                 <div className="absolute left-0 mt-3 w-72 rounded-xl bg-white shadow-lg border border-gray-100 py-2 z-30">
+                  <Link
+                    href="/features"
+                    onClick={() => setIsProductMenuOpen(false)}
+                    className="flex items-start gap-3 px-3 py-2 rounded-lg hover:bg-gray-50 transition-colors"
+                  >
+                    <div className="mt-0.5 rounded-full bg-amber-50 p-2">
+                      <Zap className="w-4 h-4 text-amber-600" />
+                    </div>
+                    <div>
+                      <div className="text-sm font-semibold text-slate-900">
+                        Features
+                      </div>
+                      <p className="text-xs text-slate-500">
+                        Discover everything Equily can do.
+                      </p>
+                    </div>
+                  </Link>
                   <Link
                     href="/what-is-equily"
                     onClick={() => setIsProductMenuOpen(false)}
@@ -171,6 +188,13 @@ export function Navbar() {
           </button>
           {isProductMenuOpen && (
             <div className="mt-1 space-y-1 pb-2">
+              <Link
+                href="/features"
+                onClick={() => setIsProductMenuOpen(false)}
+                className="block text-sm text-slate-600 py-1 pl-2 border-l border-slate-200 hover:text-slate-900"
+              >
+                Features
+              </Link>
               <Link
                 href="/what-is-equily"
                 onClick={() => setIsProductMenuOpen(false)}
