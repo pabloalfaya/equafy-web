@@ -33,8 +33,6 @@ export default function LandingPage() {
         <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]"></div>
       </div>
 
-      {/* Navbar global viene de RootLayout */}
-
       {/* --- HERO SECTION --- */}
       <header className="relative pt-36 pb-10 z-10">
         <div className="mx-auto max-w-5xl px-6 text-center">

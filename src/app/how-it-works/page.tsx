@@ -1,38 +1,9 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { Zap, Calculator, Scale, FileCheck, Twitter, Linkedin, Mail, ArrowRight, CheckCircle2, PlayCircle } from "lucide-react";
 
 export default function HowItWorksPage() {
-  // --- LÓGICA DEL NAVBAR ESCONDIDIZO ---
-  const [isNavVisible, setIsNavVisible] = useState(true);
-  const lastScrollY = useRef(0);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      const currentScrollY = window.scrollY;
-      
-      // Si estamos arriba del todo (menos de 50px), mostrar siempre
-      if (currentScrollY < 50) {
-        setIsNavVisible(true);
-      } 
-      // Si bajamos (current > last) -> ESCONDER
-      else if (currentScrollY > lastScrollY.current) {
-        setIsNavVisible(false);
-      } 
-      // Si subimos (current < last) -> MOSTRAR
-      else {
-        setIsNavVisible(true);
-      }
-
-      lastScrollY.current = currentScrollY;
-    };
-
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
   return (
     <div className="min-h-screen bg-[#F8FAFC] font-sans text-slate-900 selection:bg-emerald-100 selection:text-emerald-900 overflow-x-hidden">
       
@@ -42,53 +13,6 @@ export default function HowItWorksPage() {
         <div className="absolute bottom-0 left-1/4 w-[800px] h-[800px] bg-emerald-400/10 blur-[120px] rounded-full opacity-40 mix-blend-multiply"></div>
         <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]"></div>
       </div>
-
-      {/* --- NAVBAR DINÁMICO --- */}
-      <nav 
-        className={`fixed top-0 inset-x-0 z-50 border-b border-white/50 bg-white/60 backdrop-blur-xl transition-transform duration-300 ease-in-out ${
-          isNavVisible ? 'translate-y-0' : '-translate-y-full'
-        }`}
-      >
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-3">
-          <div className="flex items-center gap-8">
-            <Link href="/" className="relative group">
-              <div className="absolute -inset-2 bg-gradient-to-r from-emerald-500/20 to-blue-500/20 rounded-lg blur opacity-0 group-hover:opacity-100 transition duration-500"></div>
-              <img src="/logo.png" alt="Equily Logo" className="relative h-28 w-auto object-contain transition-transform duration-300 group-hover:scale-105" />
-            </Link>
-            <div className="hidden lg:flex items-center gap-1 bg-slate-100/50 p-1 rounded-full border border-slate-200/50 backdrop-blur-md">
-              {[
-                { name: "What is Equily?", href: "/what-is-equily" },
-                { name: "How does Equily work?", href: "/how-it-works" },
-                { name: "Pricing", href: "/pricing" },
-                { name: "Legal", href: "/legal" }
-              ].map((item) => (
-                <Link key={item.name} href={item.href} className="px-5 py-2 text-sm font-bold text-slate-600 hover:text-slate-900 hover:bg-white rounded-full transition-all duration-200">
-                  {item.name}
-                </Link>
-              ))}
-              <Link href="/contact" className="px-5 py-2 text-sm font-bold text-slate-600 hover:text-emerald-600 hover:bg-white rounded-full transition-all duration-200">
-                Contact
-              </Link>
-            </div>
-          </div>
-          
-          <div className="flex items-center gap-4">
-            <Link href="/login" className="hidden md:block text-sm font-bold text-slate-600 hover:text-slate-900 transition-colors">
-              Log in
-            </Link>
-            <Link href="/login?view=signup" className="hidden md:block text-sm font-bold text-slate-600 hover:text-emerald-600 transition-colors">
-              Sign Up
-            </Link>
-            <Link href="/login?view=signup" className="relative group">
-               <div className="absolute -inset-0.5 bg-gradient-to-r from-emerald-500 to-emerald-400 rounded-full blur opacity-60 group-hover:opacity-100 transition duration-200"></div>
-               <div className="relative flex items-center bg-slate-900 rounded-full px-6 py-2.5 leading-none">
-                 <span className="text-sm font-bold text-white group-hover:text-emerald-50 transition duration-200">Free Trial</span>
-                 <ArrowRight className="w-4 h-4 text-emerald-400 ml-2 group-hover:translate-x-1 transition-transform" />
-               </div>
-            </Link>
-          </div>
-        </div>
-      </nav>
 
       {/* --- HERO SECTION --- */}
       <main className="relative z-10 pt-40 pb-20">
