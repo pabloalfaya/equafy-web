@@ -2,32 +2,94 @@
 
 import { useParams } from "next/navigation";
 import Link from "next/link";
-import { ArrowLeft, FileText, ShieldCheck, Clock } from "lucide-react";
+import { useEffect, useState } from "react";
+import { ArrowLeft, FileText, ShieldCheck, Clock, LayoutDashboard } from "lucide-react";
+import { createClient } from "@/utils/supabase/client";
 
 export default function ProjectLegalPage() {
   const params = useParams();
   const projectId = params?.id as string;
+  const [projectName, setProjectName] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [navVisible, setNavVisible] = useState(true);
+  const [lastScrollY, setLastScrollY] = useState(0);
+
+  useEffect(() => {
+    if (!projectId) {
+      setLoading(false);
+      return;
+    }
+    let cancelled = false;
+    const supabase = createClient();
+    void (async () => {
+      try {
+        const { data } = await supabase.from("projects").select("name").eq("id", projectId).single();
+        if (!cancelled) setProjectName(data?.name ?? null);
+      } catch {
+        if (!cancelled) setProjectName(null);
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    })();
+    return () => { cancelled = true; };
+  }, [projectId]);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentY = window.scrollY;
+      setLastScrollY((prevY) => {
+        if (currentY > prevY && currentY > 50) setNavVisible(false);
+        else if (currentY < prevY) setNavVisible(true);
+        return currentY;
+      });
+    };
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-[#F8FAFC]">
+        <div className="animate-pulse flex flex-col items-center gap-4">
+          <div className="h-12 w-12 bg-emerald-200 rounded-full" />
+          <p className="text-slate-400 font-bold">Loading...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-[#F8FAFC] font-sans text-slate-900 selection:bg-emerald-100 selection:text-emerald-900 overflow-x-hidden">
-      {/* Background */}
-      <div className="fixed inset-0 z-0 pointer-events-none">
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[600px] bg-emerald-400/20 blur-[120px] rounded-full opacity-50 mix-blend-multiply" />
-        <div className="absolute bottom-0 right-0 w-[800px] h-[600px] bg-blue-400/10 blur-[120px] rounded-full opacity-40 mix-blend-multiply" />
-        <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]" />
-      </div>
+      {/* Internal Dashboard Nav (same as project dashboard) */}
+      <nav
+        className={`fixed top-0 inset-x-0 z-50 border-b border-white/50 bg-white/60 backdrop-blur-xl transition-transform duration-300 ${
+          navVisible ? "translate-y-0" : "-translate-y-full"
+        }`}
+      >
+        <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-2">
+          <div className="flex items-center gap-4">
+            <Link
+              href={projectId ? `/dashboard/${projectId}` : "/dashboard"}
+              className="p-2 hover:bg-slate-100 rounded-lg transition-colors"
+            >
+              <ArrowLeft className="w-5 h-5 text-slate-500" />
+            </Link>
+            <Link href="/">
+              <img src="/logo.png" alt="Equily" className="h-20 w-auto object-contain" />
+            </Link>
+          </div>
+          <div className="flex items-center gap-2 px-4 py-2 bg-slate-100 rounded-full border border-slate-200/50">
+            <LayoutDashboard className="h-4 w-4 text-emerald-500" />
+            <span className="text-sm font-bold text-slate-700">
+              {projectName ?? "Legal Documents"}
+            </span>
+          </div>
+        </div>
+      </nav>
 
-      <main className="relative z-10 pt-8 pb-20 px-6">
+      {/* Content — same padding as dashboard main so it sits below nav */}
+      <main className="relative z-10 pt-32 pb-20 px-6">
         <div className="mx-auto max-w-4xl">
-          {/* Back to Dashboard */}
-          <Link
-            href={projectId ? `/dashboard/${projectId}` : "/dashboard"}
-            className="inline-flex items-center gap-2 text-sm font-bold text-slate-600 hover:text-slate-900 mb-8 transition-colors"
-          >
-            <ArrowLeft className="w-4 h-4" />
-            Back to Dashboard
-          </Link>
-
           {/* Header */}
           <header className="mb-10">
             <h1 className="text-4xl font-black text-slate-900 tracking-tight">
