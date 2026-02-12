@@ -4,10 +4,13 @@ import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { ArrowRight, ChevronDown, Sparkles, Cog, Zap } from "lucide-react";
 
+const PRODUCT_MENU_LEAVE_DELAY_MS = 120;
+
 export function Navbar() {
   const [isNavVisible, setIsNavVisible] = useState(true);
   const [isProductMenuOpen, setIsProductMenuOpen] = useState(false);
   const lastScrollY = useRef(0);
+  const productMenuLeaveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -47,11 +50,22 @@ export function Navbar() {
 
           {/* Desktop primary nav */}
           <div className="hidden lg:flex items-center gap-1 bg-slate-100/50 p-1 rounded-full border border-slate-200/50 backdrop-blur-md">
-            {/* Product dropdown (hover to open) */}
+            {/* Product dropdown (hover to open; bridge + delay so mouse can reach links) */}
             <div
               className="relative"
-              onMouseEnter={() => setIsProductMenuOpen(true)}
-              onMouseLeave={() => setIsProductMenuOpen(false)}
+              onMouseEnter={() => {
+                if (productMenuLeaveTimerRef.current) {
+                  clearTimeout(productMenuLeaveTimerRef.current);
+                  productMenuLeaveTimerRef.current = null;
+                }
+                setIsProductMenuOpen(true);
+              }}
+              onMouseLeave={() => {
+                productMenuLeaveTimerRef.current = setTimeout(() => {
+                  setIsProductMenuOpen(false);
+                  productMenuLeaveTimerRef.current = null;
+                }, PRODUCT_MENU_LEAVE_DELAY_MS);
+              }}
             >
               <button
                 type="button"
@@ -65,7 +79,8 @@ export function Navbar() {
                 />
               </button>
               {isProductMenuOpen && (
-                <div className="absolute left-0 mt-3 w-72 rounded-xl bg-white shadow-lg border border-gray-100 py-2 z-30">
+                <div className="absolute left-0 top-full pt-3 w-72 z-30">
+                  <div className="rounded-xl bg-white shadow-lg border border-gray-100 py-2">
                   <Link
                     href="/features"
                     onClick={() => setIsProductMenuOpen(false)}
@@ -117,6 +132,7 @@ export function Navbar() {
                       </p>
                     </div>
                   </Link>
+                  </div>
                 </div>
               )}
             </div>
