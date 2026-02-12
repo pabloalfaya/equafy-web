@@ -1,9 +1,13 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import { CheckCircle2, TrendingUp, PieChart, FileText, Twitter, Linkedin, Mail, ArrowRight, PlayCircle } from "lucide-react";
+import { VideoDemoModal } from "@/components/VideoDemoModal";
 
 export default function WhatIsEquilyPage() {
+  const [isVideoOpen, setIsVideoOpen] = useState(false);
+
   return (
     <div className="min-h-screen bg-[#F8FAFC] font-sans text-slate-900 selection:bg-emerald-100 selection:text-emerald-900 overflow-x-hidden">
       
@@ -38,14 +42,17 @@ export default function WhatIsEquilyPage() {
                 The engine behind this calculation operates through a system of customizable multipliers. This allows a specific weight to be assigned to each contribution, multiplying its value according to the chosen adjustments, ensuring that every contribution is valued exactly as the team needs.
               </p>
 
-              <div className="flex gap-4">
-                 {/* Enlace actualizado a login con registro */}
-                 <Link href="/login?view=signup" className="px-8 py-4 rounded-xl bg-slate-900 text-white font-bold hover:bg-slate-800 hover:-translate-y-1 transition-all shadow-xl shadow-slate-200">
+              <div className="flex flex-col sm:flex-row items-center gap-4">
+                 <Link href="/login?view=signup" className="h-14 px-8 rounded-2xl bg-slate-900 text-white font-bold text-lg flex items-center justify-center shadow-xl shadow-slate-200 hover:bg-slate-800 hover:-translate-y-1 transition-all duration-300">
                    Get Started
                  </Link>
-                 <button className="px-8 py-4 rounded-xl bg-white border border-slate-200 text-slate-700 font-bold hover:bg-slate-50 transition-all flex items-center gap-2">
-                   <PlayCircle className="w-5 h-5 text-emerald-500" />
-                   See it in action
+                 <button
+                   type="button"
+                   onClick={() => setIsVideoOpen(true)}
+                   className="h-14 px-8 rounded-2xl bg-white border border-slate-200 text-slate-700 font-bold text-lg flex items-center justify-center gap-2 hover:bg-slate-50 hover:border-slate-300 transition-all duration-300 group"
+                 >
+                   <PlayCircle className="w-5 h-5 text-emerald-500 group-hover:scale-110 transition-transform" />
+                   Watch Demo
                  </button>
               </div>
             </div>
@@ -139,6 +146,8 @@ export default function WhatIsEquilyPage() {
           </div>
         </div>
       </footer>
+
+      <VideoDemoModal open={isVideoOpen} onClose={() => setIsVideoOpen(false)} />
     </div>
   );
 }
