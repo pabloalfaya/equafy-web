@@ -26,7 +26,7 @@ type ExtendedProject = Project & {
 type ExtendedContribution = Contribution & { date?: string; concept?: string; multiplier?: number; [key: string]: any };
 
 // Tipos de miembros
-type Member = { id: string; name: string; role: string; email?: string; fixed_equity?: number | null; access_level?: "editor" | "viewer"; user_id?: string | null };
+type Member = { id: string; name: string; role: string; email?: string; fixed_equity?: number | null; equity_cap?: number | null; access_level?: "editor" | "viewer"; user_id?: string | null };
 
 export default function ProjectDashboardPage() {
   const params = useParams(); 
@@ -67,7 +67,7 @@ export default function ProjectDashboardPage() {
     setContributions(contributionsData as ExtendedContribution[] ?? []);
 
     // Cargar Miembros (incluye user_id para RBAC)
-    const { data: membersData } = await supabase.from("project_members").select("id, name, role, email, fixed_equity, access_level, user_id").eq("project_id", projectId);
+    const { data: membersData } = await supabase.from("project_members").select("id, name, role, email, fixed_equity, equity_cap, access_level, user_id").eq("project_id", projectId);
     setMembers((membersData as unknown as Member[]) ?? []);
     
     setLoading(false);
@@ -75,7 +75,7 @@ export default function ProjectDashboardPage() {
 
   const refreshMembers = async () => {
     const supabase = createClient();
-    const { data } = await supabase.from("project_members").select("id, name, role, email, fixed_equity, access_level, user_id").eq("project_id", projectId);
+    const { data } = await supabase.from("project_members").select("id, name, role, email, fixed_equity, equity_cap, access_level, user_id").eq("project_id", projectId);
     setMembers((data as unknown as Member[]) ?? []);
   };
 

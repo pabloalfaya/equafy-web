@@ -9,6 +9,7 @@ export type AuditActionType =
   | "UPDATE_MULTIPLIERS"
   | "UPDATE_RISK"
   | "UPDATE_FIXED_EQUITY"
+  | "UPDATE_EQUITY_CAPS"
   | "ADD_MEMBER"
   | "EDIT_MEMBER"
   | "UPDATE_MEMBER"
