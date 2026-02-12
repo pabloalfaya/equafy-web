@@ -75,7 +75,7 @@ export function EquitySettingsModal({
   onSuccess,
   canEdit = true,
 }: EquitySettingsModalProps) {
-  const [activeTab, setActiveTab] = useState<TabType>("fixed");
+  const [activeTab, setActiveTab] = useState<TabType>("multipliers");
   const [values, setValues] = useState<Record<string, number>>({});
   const [multipliers, setMultipliers] = useState({
     mult_cash: 4,
@@ -333,19 +333,8 @@ export function EquitySettingsModal({
           </button>
         </div>
 
-        {/* Tabs */}
+        {/* Tabs: 1. Multipliers 2. Fixed Equity 3. Limited Equity 4. Smart Multipliers */}
         <div className="flex gap-2 mb-6 p-1 rounded-xl bg-slate-100 border border-slate-200">
-          <button
-            type="button"
-            onClick={() => setActiveTab("fixed")}
-            className={`flex-1 py-2.5 px-4 rounded-lg text-sm font-bold transition-all ${
-              activeTab === "fixed"
-                ? "bg-white text-slate-800 shadow-sm"
-                : "text-slate-600 hover:text-slate-800"
-            }`}
-          >
-            Fixed Equity
-          </button>
           <button
             type="button"
             onClick={() => setActiveTab("multipliers")}
@@ -359,14 +348,14 @@ export function EquitySettingsModal({
           </button>
           <button
             type="button"
-            onClick={() => setActiveTab("smart")}
+            onClick={() => setActiveTab("fixed")}
             className={`flex-1 py-2.5 px-4 rounded-lg text-sm font-bold transition-all ${
-              activeTab === "smart"
+              activeTab === "fixed"
                 ? "bg-white text-slate-800 shadow-sm"
                 : "text-slate-600 hover:text-slate-800"
             }`}
           >
-            Smart Multipliers
+            Fixed Equity
           </button>
           <button
             type="button"
@@ -379,9 +368,77 @@ export function EquitySettingsModal({
           >
             Limited Equity
           </button>
+          <button
+            type="button"
+            onClick={() => setActiveTab("smart")}
+            className={`flex-1 py-2.5 px-4 rounded-lg text-sm font-bold transition-all ${
+              activeTab === "smart"
+                ? "bg-white text-slate-800 shadow-sm"
+                : "text-slate-600 hover:text-slate-800"
+            }`}
+          >
+            Smart Multipliers
+          </button>
         </div>
 
         {/* Tab Content */}
+        {activeTab === "multipliers" && (
+          <>
+            <div className="space-y-4 mb-6">
+              {(
+                [
+                  { key: "mult_cash", label: "Cash" },
+                  { key: "mult_work", label: "Work" },
+                  { key: "mult_tangible", label: "Tangible" },
+                  { key: "mult_intangible", label: "Intangible" },
+                  { key: "mult_others", label: "Others" },
+                ] as const
+              ).map(({ key, label }) => (
+                <div key={key}>
+                  <label className="text-xs font-bold text-slate-500 mb-1.5 block uppercase">
+                    {label}
+                  </label>
+                  <input
+                    type="number"
+                    min={0}
+                    step={0.5}
+                    value={multipliers[key]}
+                    onChange={(e) =>
+                      canEdit && setMultipliers((prev) => ({
+                        ...prev,
+                        [key]: parseFloat(e.target.value) || 0,
+                      }))
+                    }
+                    disabled={!canEdit}
+                    className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 font-bold text-slate-800 outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 transition-all disabled:opacity-60 disabled:cursor-not-allowed"
+                  />
+                </div>
+              ))}
+            </div>
+
+            <div className="flex gap-3">
+              <button
+                type="button"
+                onClick={onClose}
+                className="flex-1 px-4 py-3 rounded-xl font-bold text-slate-600 bg-slate-100 hover:bg-slate-200 transition-all"
+              >
+                Cancel
+              </button>
+              {canEdit && (
+                <button
+                  type="button"
+                  onClick={handleSaveMultipliers}
+                  disabled={loading}
+                  className="flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-xl font-black text-white bg-emerald-600 hover:bg-emerald-700 shadow-lg shadow-emerald-600/20 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                >
+                  <Save className="w-4 h-4" />
+                  {loading ? "Saving..." : "Save Multipliers"}
+                </button>
+              )}
+            </div>
+          </>
+        )}
+
         {activeTab === "fixed" && (
           <>
             {/* Segmented Progress Bar */}
@@ -487,41 +544,85 @@ export function EquitySettingsModal({
           </>
         )}
 
-        {activeTab === "multipliers" && (
+        {activeTab === "limited" && (
           <>
-            <div className="space-y-4 mb-6">
-              {(
-                [
-                  { key: "mult_cash", label: "Cash" },
-                  { key: "mult_work", label: "Work" },
-                  { key: "mult_tangible", label: "Tangible" },
-                  { key: "mult_intangible", label: "Intangible" },
-                  { key: "mult_others", label: "Others" },
-                ] as const
-              ).map(({ key, label }) => (
-                <div key={key}>
-                  <label className="text-xs font-bold text-slate-500 mb-1.5 block uppercase">
-                    {label}
-                  </label>
-                  <input
-                    type="number"
-                    min={0}
-                    step={0.5}
-                    value={multipliers[key]}
-                    onChange={(e) =>
-                      canEdit && setMultipliers((prev) => ({
-                        ...prev,
-                        [key]: parseFloat(e.target.value) || 0,
-                      }))
-                    }
-                    disabled={!canEdit}
-                    className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 font-bold text-slate-800 outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 transition-all disabled:opacity-60 disabled:cursor-not-allowed"
-                  />
-                </div>
-              ))}
+            <p className="text-xs text-slate-500 mb-4 leading-relaxed">
+              Set a hard cap (%) per member. When enabled, that member will not exceed this share regardless of contributions.
+            </p>
+            <div className="space-y-3 max-h-[200px] overflow-y-auto pr-2 custom-scrollbar mb-4">
+              {localMembers.length === 0 ? (
+                <p className="text-center text-slate-400 text-sm italic py-4">
+                  No members yet.
+                </p>
+              ) : (
+                localMembers.map((m, index) => {
+                  const capEnabled = equityCaps[m.id] !== null && equityCaps[m.id] !== undefined;
+                  const capValue = equityCaps[m.id] ?? 0;
+                  return (
+                    <div
+                      key={m.id}
+                      className="flex flex-col gap-2 p-3 rounded-xl bg-slate-50 border border-slate-100 hover:border-slate-200 transition-all"
+                    >
+                      <div className="flex items-center justify-between gap-4">
+                        <div className="flex items-center gap-3 overflow-hidden min-w-0">
+                          <div
+                            className={`h-3 w-3 rounded-full shrink-0 ${MEMBER_COLORS[index % MEMBER_COLORS.length]}`}
+                          />
+                          <div className="flex flex-col overflow-hidden min-w-0">
+                            <span className="font-bold text-slate-800 text-sm truncate">
+                              {m.name}
+                            </span>
+                            {m.role && (
+                              <span className="text-[11px] font-medium text-slate-500 mt-0.5 uppercase">
+                                {m.role}
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-4 shrink-0">
+                          <button
+                            type="button"
+                            role="switch"
+                            aria-checked={capEnabled}
+                            onClick={() => setCapEnabled(m.id, !capEnabled)}
+                            disabled={!canEdit}
+                            className={`relative inline-flex items-center h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors focus:outline-none focus:ring-2 focus:ring-[#00C853] focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed ${
+                              capEnabled ? "bg-[#00C853]" : "bg-slate-200"
+                            }`}
+                          >
+                            <span
+                              className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition ${
+                                capEnabled ? "translate-x-5" : "translate-x-0.5"
+                              }`}
+                            />
+                          </button>
+                          {capEnabled && (
+                            <div className="flex items-center gap-1">
+                              <input
+                                type="text"
+                                inputMode="decimal"
+                                value={formatWithComma(Number.isNaN(capValue) ? 0 : capValue)}
+                                onChange={(e) => setCapValue(m.id, e.target.value)}
+                                disabled={!canEdit}
+                                className={`w-20 px-3 py-2 rounded-lg border border-slate-200 bg-white font-bold text-slate-800 text-sm text-right outline-none focus:ring-2 transition-all disabled:opacity-60 disabled:cursor-not-allowed ${MEMBER_BORDER_COLORS[index % MEMBER_BORDER_COLORS.length]}`}
+                              />
+                              <span className="text-slate-400 font-bold text-sm">%</span>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                      {capEnabled && (
+                        <p className="text-[11px] text-slate-500 pl-6 leading-relaxed">
+                          This user will not exceed this % regardless of contributions.
+                        </p>
+                      )}
+                    </div>
+                  );
+                })
+              )}
             </div>
 
-            <div className="flex gap-3">
+            <div className="flex gap-3 mt-6">
               <button
                 type="button"
                 onClick={onClose}
@@ -532,12 +633,12 @@ export function EquitySettingsModal({
               {canEdit && (
                 <button
                   type="button"
-                  onClick={handleSaveMultipliers}
+                  onClick={handleSaveLimited}
                   disabled={loading}
-                  className="flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-xl font-black text-white bg-emerald-600 hover:bg-emerald-700 shadow-lg shadow-emerald-600/20 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                  className="flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-xl font-black text-white bg-[#00C853] hover:bg-emerald-600 shadow-lg shadow-emerald-600/20 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
                 >
                   <Save className="w-4 h-4" />
-                  {loading ? "Saving..." : "Save Multipliers"}
+                  {loading ? "Saving..." : "Save Changes"}
                 </button>
               )}
             </div>
@@ -662,107 +763,6 @@ export function EquitySettingsModal({
               </div>
             </div>
           </div>
-        )}
-
-        {activeTab === "limited" && (
-          <>
-            <p className="text-xs text-slate-500 mb-4 leading-relaxed">
-              Set a hard cap (%) per member. When enabled, that member will not exceed this share regardless of contributions.
-            </p>
-            <div className="space-y-3 max-h-[200px] overflow-y-auto pr-2 custom-scrollbar mb-4">
-              {localMembers.length === 0 ? (
-                <p className="text-center text-slate-400 text-sm italic py-4">
-                  No members yet.
-                </p>
-              ) : (
-                localMembers.map((m, index) => {
-                  const capEnabled = equityCaps[m.id] !== null && equityCaps[m.id] !== undefined;
-                  const capValue = equityCaps[m.id] ?? 0;
-                  return (
-                    <div
-                      key={m.id}
-                      className="flex flex-col gap-2 p-3 rounded-xl bg-slate-50 border border-slate-100 hover:border-slate-200 transition-all"
-                    >
-                      <div className="flex items-center justify-between gap-4">
-                        <div className="flex items-center gap-3 overflow-hidden min-w-0">
-                          <div
-                            className={`h-3 w-3 rounded-full shrink-0 ${MEMBER_COLORS[index % MEMBER_COLORS.length]}`}
-                          />
-                          <div className="flex flex-col overflow-hidden min-w-0">
-                            <span className="font-bold text-slate-800 text-sm truncate">
-                              {m.name}
-                            </span>
-                            {m.role && (
-                              <span className="text-[11px] font-medium text-slate-500 mt-0.5 uppercase">
-                                {m.role}
-                              </span>
-                            )}
-                          </div>
-                        </div>
-                        <div className="flex items-center gap-4 shrink-0">
-                          <button
-                            type="button"
-                            role="switch"
-                            aria-checked={capEnabled}
-                            onClick={() => setCapEnabled(m.id, !capEnabled)}
-                            disabled={!canEdit}
-                            className={`relative inline-flex items-center h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors focus:outline-none focus:ring-2 focus:ring-[#00C853] focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed ${
-                              capEnabled ? "bg-[#00C853]" : "bg-slate-200"
-                            }`}
-                          >
-                            <span
-                              className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition ${
-                                capEnabled ? "translate-x-5" : "translate-x-0.5"
-                              }`}
-                            />
-                          </button>
-                          {capEnabled && (
-                            <div className="flex items-center gap-1">
-                              <input
-                                type="text"
-                                inputMode="decimal"
-                                value={formatWithComma(Number.isNaN(capValue) ? 0 : capValue)}
-                                onChange={(e) => setCapValue(m.id, e.target.value)}
-                                disabled={!canEdit}
-                                className={`w-20 px-3 py-2 rounded-lg border border-slate-200 bg-white font-bold text-slate-800 text-sm text-right outline-none focus:ring-2 transition-all disabled:opacity-60 disabled:cursor-not-allowed ${MEMBER_BORDER_COLORS[index % MEMBER_BORDER_COLORS.length]}`}
-                              />
-                              <span className="text-slate-400 font-bold text-sm">%</span>
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                      {capEnabled && (
-                        <p className="text-[11px] text-slate-500 pl-6 leading-relaxed">
-                          This user will not exceed this % regardless of contributions.
-                        </p>
-                      )}
-                    </div>
-                  );
-                })
-              )}
-            </div>
-
-            <div className="flex gap-3 mt-6">
-              <button
-                type="button"
-                onClick={onClose}
-                className="flex-1 px-4 py-3 rounded-xl font-bold text-slate-600 bg-slate-100 hover:bg-slate-200 transition-all"
-              >
-                Cancel
-              </button>
-              {canEdit && (
-                <button
-                  type="button"
-                  onClick={handleSaveLimited}
-                  disabled={loading}
-                  className="flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-xl font-black text-white bg-[#00C853] hover:bg-emerald-600 shadow-lg shadow-emerald-600/20 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
-                >
-                  <Save className="w-4 h-4" />
-                  {loading ? "Saving..." : "Save Changes"}
-                </button>
-              )}
-            </div>
-          </>
         )}
 
         {error && (
