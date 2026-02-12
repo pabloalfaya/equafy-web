@@ -84,7 +84,7 @@ export default function ProjectDashboardPage() {
     setProject(projectData as ExtendedProject);
 
     // Cargar Aportaciones
-    const { data: contributionsData } = await supabase.from("contributions").select("*").eq("project_id", projectId).order("created_at", { ascending: true });
+    const { data: contributionsData } = await supabase.from("contributions").select("*").eq("project_id", projectId).order("created_at", { ascending: false });
     setContributions(contributionsData as ExtendedContribution[] ?? []);
 
     // Cargar Miembros (incluye user_id para RBAC; equity_cap opcional por si la columna aún no existe)
@@ -295,13 +295,18 @@ export default function ProjectDashboardPage() {
     doc.setFontSize(12);
     doc.text("Detailed Contribution Log", 14, finalY - 3);
 
-    const detailsData = contributions.map(c => [
-        c.date || "-",
-        c.contributor_name,
-        c.type,
-        c.concept || "-",
-        c.amount.toLocaleString(),
-        c.risk_adjusted_value.toLocaleString()
+    const sortedForPdf = [...contributions].sort((a, b) => {
+      const da = (a as ExtendedContribution).created_at ?? (a as ExtendedContribution).date ?? "";
+      const db = (b as ExtendedContribution).created_at ?? (b as ExtendedContribution).date ?? "";
+      return da > db ? -1 : da < db ? 1 : 0;
+    });
+    const detailsData = sortedForPdf.map(c => [
+        (c as ExtendedContribution).date || "-",
+        (c as ExtendedContribution).contributor_name,
+        (c as ExtendedContribution).type,
+        (c as ExtendedContribution).concept || "-",
+        (c as ExtendedContribution).amount.toLocaleString(),
+        (c as ExtendedContribution).risk_adjusted_value.toLocaleString()
     ]);
 
     autoTable(doc, {
