@@ -28,6 +28,27 @@ type ExtendedContribution = Contribution & { date?: string; concept?: string; mu
 // Tipos de miembros
 type Member = { id: string; name: string; role: string; email?: string; fixed_equity?: number | null; equity_cap?: number | null; access_level?: "editor" | "viewer"; user_id?: string | null };
 
+/** Carga miembros del proyecto. Si la columna equity_cap no existe en la BD, reintenta sin ella para no vaciar la lista. */
+async function fetchProjectMembers(
+  supabase: ReturnType<typeof createClient>,
+  projectId: string
+): Promise<Member[]> {
+  const baseCols = "id, name, role, email, fixed_equity, access_level, user_id";
+  const { data: withCap, error: errWithCap } = await supabase
+    .from("project_members")
+    .select(`${baseCols}, equity_cap`)
+    .eq("project_id", projectId);
+  if (!errWithCap && withCap != null) {
+    return (withCap as unknown as Member[]) ?? [];
+  }
+  const { data: withoutCap } = await supabase
+    .from("project_members")
+    .select(baseCols)
+    .eq("project_id", projectId);
+  const rows = (withoutCap ?? []) as (Omit<Member, "equity_cap"> & { equity_cap?: number | null })[];
+  return rows.map((r) => ({ ...r, equity_cap: r.equity_cap ?? null }));
+}
+
 export default function ProjectDashboardPage() {
   const params = useParams(); 
   const projectId = params.id as string;
@@ -66,17 +87,17 @@ export default function ProjectDashboardPage() {
     const { data: contributionsData } = await supabase.from("contributions").select("*").eq("project_id", projectId).order("created_at", { ascending: true });
     setContributions(contributionsData as ExtendedContribution[] ?? []);
 
-    // Cargar Miembros (incluye user_id para RBAC)
-    const { data: membersData } = await supabase.from("project_members").select("id, name, role, email, fixed_equity, equity_cap, access_level, user_id").eq("project_id", projectId);
-    setMembers((membersData as unknown as Member[]) ?? []);
-    
+    // Cargar Miembros (incluye user_id para RBAC; equity_cap opcional por si la columna aún no existe)
+    const membersList = await fetchProjectMembers(supabase, projectId);
+    setMembers(membersList);
+
     setLoading(false);
   };
 
   const refreshMembers = async () => {
     const supabase = createClient();
-    const { data } = await supabase.from("project_members").select("id, name, role, email, fixed_equity, equity_cap, access_level, user_id").eq("project_id", projectId);
-    setMembers((data as unknown as Member[]) ?? []);
+    const membersList = await fetchProjectMembers(supabase, projectId);
+    setMembers(membersList);
   };
 
   const handleContributionSuccess = (updatedOrNew: Contribution) => {
