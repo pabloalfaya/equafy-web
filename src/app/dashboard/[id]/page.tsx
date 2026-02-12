@@ -464,13 +464,13 @@ export default function ProjectDashboardPage() {
                       <History className="h-5 w-5 text-slate-500" />
                       <span className="text-xs">Audit Log</span>
                     </button>
-                    <button
-                      disabled
-                      className="flex flex-col items-center justify-center gap-2 rounded-xl border border-slate-200 bg-slate-50 px-3 py-4 font-bold text-slate-400 opacity-60 cursor-not-allowed"
+                    <Link
+                      href={`/dashboard/${projectId}/legal`}
+                      className="flex flex-col items-center justify-center gap-2 rounded-xl border border-slate-200 bg-slate-50 px-3 py-4 font-bold text-slate-600 hover:bg-slate-100 transition-all"
                     >
-                      <FileText className="h-5 w-5" />
+                      <FileText className="h-5 w-5 text-slate-500" />
                       <span className="text-xs">Legal Docs</span>
-                    </button>
+                    </Link>
                     <button
                       disabled
                       className="flex flex-col items-center justify-center gap-2 rounded-xl border border-red-200 bg-red-50/50 px-3 py-4 font-bold text-red-600 opacity-60 cursor-not-allowed"
