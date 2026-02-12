@@ -8,6 +8,16 @@ export interface MemberForEquity {
   name: string;
   fixed_equity?: number | null;
   equity_cap?: number | null;
+  /** Support camelCase from some sources */
+  equityCap?: number | null;
+}
+
+/** Parse equity_cap / equityCap to number; null if missing or invalid. Export for use in chart. */
+export function parseCap(m: MemberForEquity): number | null {
+  const raw = m.equity_cap ?? (m as { equityCap?: number | null }).equityCap;
+  if (raw == null || raw === undefined) return null;
+  const n = Number(raw);
+  return Number.isFinite(n) && n >= 0 ? n : null;
 }
 
 export interface ContributionForEquity {
@@ -61,10 +71,10 @@ export function computeMemberEquitySummary(
   let rawSum = theoretical.reduce((s, v) => s + v, 0);
   let normalized = rawSum > 0 ? theoretical.map((v) => (v / rawSum) * 100) : theoretical.slice();
 
-  const caps = memberList.map((m) =>
-    m.equity_cap != null && m.equity_cap !== undefined ? Number(m.equity_cap) : null
-  );
+  const caps = memberList.map((m) => parseCap(m));
   let finalValues = normalized.slice();
+
+  // 1. Apply cap: anyone over their cap gets clamped; collect excess
   let excess = 0;
   for (let i = 0; i < finalValues.length; i++) {
     const cap = caps[i];
@@ -73,6 +83,8 @@ export function computeMemberEquitySummary(
       finalValues[i] = cap;
     }
   }
+
+  // 2. Redistribute excess proportionally to uncapped members (by their theoretical share)
   let uncappedTheoreticalSum = 0;
   for (let i = 0; i < finalValues.length; i++) {
     const cap = caps[i];
@@ -85,6 +97,8 @@ export function computeMemberEquitySummary(
         finalValues[i] += excess * (normalized[i] / uncappedTheoreticalSum);
     }
   }
+
+  // 3. Normalize so total is exactly 100%
   const totalAfter = finalValues.reduce((s, v) => s + v, 0);
   if (totalAfter > 0) finalValues = finalValues.map((v) => (v / totalAfter) * 100);
 
