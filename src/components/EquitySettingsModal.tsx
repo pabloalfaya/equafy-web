@@ -683,7 +683,7 @@ export function EquitySettingsModal({
                       key={m.id}
                       className="flex flex-col gap-2 p-3 rounded-xl bg-slate-50 border border-slate-100 hover:border-slate-200 transition-all"
                     >
-                      <div className="flex items-center justify-between gap-3">
+                      <div className="flex items-center justify-between gap-4">
                         <div className="flex items-center gap-3 overflow-hidden min-w-0">
                           <div
                             className={`h-3 w-3 rounded-full shrink-0 ${MEMBER_COLORS[index % MEMBER_COLORS.length]}`}
@@ -699,14 +699,14 @@ export function EquitySettingsModal({
                             )}
                           </div>
                         </div>
-                        <div className="flex items-center gap-3 shrink-0">
+                        <div className="flex items-center gap-4 shrink-0">
                           <button
                             type="button"
                             role="switch"
                             aria-checked={capEnabled}
                             onClick={() => setCapEnabled(m.id, !capEnabled)}
                             disabled={!canEdit}
-                            className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors focus:outline-none focus:ring-2 focus:ring-[#00C853] focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed ${
+                            className={`relative inline-flex items-center h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors focus:outline-none focus:ring-2 focus:ring-[#00C853] focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed ${
                               capEnabled ? "bg-[#00C853]" : "bg-slate-200"
                             }`}
                           >
@@ -714,7 +714,6 @@ export function EquitySettingsModal({
                               className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition ${
                                 capEnabled ? "translate-x-5" : "translate-x-0.5"
                               }`}
-                              style={{ marginTop: 2 }}
                             />
                           </button>
                           {capEnabled && (
