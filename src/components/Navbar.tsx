@@ -47,13 +47,14 @@ export function Navbar() {
 
           {/* Desktop primary nav */}
           <div className="hidden lg:flex items-center gap-1 bg-slate-100/50 p-1 rounded-full border border-slate-200/50 backdrop-blur-md">
-            {/* Product dropdown */}
-            <div className="relative">
+            {/* Product dropdown (hover to open) */}
+            <div
+              className="relative"
+              onMouseEnter={() => setIsProductMenuOpen(true)}
+              onMouseLeave={() => setIsProductMenuOpen(false)}
+            >
               <button
                 type="button"
-                onClick={() =>
-                  setIsProductMenuOpen((open: boolean) => !open)
-                }
                 className="flex items-center gap-1.5 px-5 py-2 text-sm font-bold text-slate-600 hover:text-slate-900 hover:bg-white rounded-full transition-all duration-200"
               >
                 <span>Product</span>
