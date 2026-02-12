@@ -230,11 +230,17 @@ export default function ProjectDashboardPage() {
 
     const normalizedRows = memberRows.map((r, i) => ({ ...r, equity: finalPct[i] }));
 
-    const summaryData = normalizedRows.map((r) => [
+    const formatCap = (cap: number | null | undefined) => {
+      if (cap != null && cap !== undefined && Number(cap) > 0) return `${Number(cap).toFixed(2)}%`;
+      return "—";
+    };
+
+    const summaryData = normalizedRows.map((r, i) => [
       r.name,
       r.role,
       r.points.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
       `${r.fixed.toFixed(2)}%`,
+      formatCap(members[i]?.equity_cap),
       `${r.equity.toFixed(2)}%`,
     ]);
 
@@ -247,6 +253,7 @@ export default function ProjectDashboardPage() {
         "",
         totalPointsSum.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
         `${totalFixedEquity.toFixed(2)}%`,
+        "—",
         `${totalEquitySum.toFixed(2)}%`,
       ],
     ];
@@ -258,7 +265,7 @@ export default function ProjectDashboardPage() {
 
     autoTable(doc, {
         startY: 55,
-        head: [["Member", "Role", "Risk Value (Points)", "Fixed Equity", "Equity %"]],
+        head: [["Member", "Role", "Risk Value (Points)", "Fixed Equity", "Cap / Limit", "Equity %"]],
         body: summaryData,
         foot: footData,
         theme: "grid",
@@ -270,7 +277,8 @@ export default function ProjectDashboardPage() {
             1: { halign: "left" },
             2: { halign: "right" },
             3: { halign: "right" },
-            4: { halign: "right", fontStyle: "bold" },
+            4: { halign: "right" },
+            5: { halign: "right", fontStyle: "bold" },
         },
         didParseCell: (data) => {
           if (data.section === "foot") {
