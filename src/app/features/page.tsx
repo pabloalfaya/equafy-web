@@ -95,7 +95,7 @@ export default function FeaturesPage() {
         <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]" />
       </div>
 
-      <main className="relative z-10 px-6 py-20">
+      <main className="relative z-10 pt-24 md:pt-32 px-6 pb-20">
         <div className="mx-auto max-w-6xl">
           {/* Hero Section */}
           <header className="text-center mb-16 md:mb-20">
