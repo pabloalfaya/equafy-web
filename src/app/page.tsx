@@ -3,8 +3,23 @@
 import { useState, useEffect, useRef } from "react"; 
 import Link from "next/link";
 import { 
-  ShieldCheck, PieChart, PlayCircle, Mail, Twitter, Linkedin, ArrowRight,
-  Sliders, Scale, AlertTriangle, CheckCircle2, TrendingUp, X, ArrowLeft
+  ShieldCheck,
+  PieChart,
+  PlayCircle,
+  Mail,
+  Twitter,
+  Linkedin,
+  ArrowRight,
+  Sliders,
+  Scale,
+  AlertTriangle,
+  CheckCircle2,
+  TrendingUp,
+  X,
+  ArrowLeft,
+  ChevronDown,
+  Sparkles,
+  Cog
 } from "lucide-react";
 
 export default function LandingPage() {
@@ -12,6 +27,7 @@ export default function LandingPage() {
   const [customRisk, setCustomRisk] = useState(false);
   const [isVideoOpen, setIsVideoOpen] = useState(false);
   const [language, setLanguage] = useState<"en" | "es" | null>(null);
+  const [isProductMenuOpen, setIsProductMenuOpen] = useState(false);
 
   const DEMO_VIDEO_IDS = { en: "zZ3kANWXMOU", es: "gkxrYzL1Fss" } as const;
   const LANGUAGE_OPTIONS: { id: "en" | "es"; flag: string; label: string }[] = [
@@ -64,18 +80,70 @@ export default function LandingPage() {
               <div className="absolute -inset-2 bg-gradient-to-r from-emerald-500/20 to-blue-500/20 rounded-lg blur opacity-0 group-hover:opacity-100 transition duration-500"></div>
               <img src="/logo.png" alt="Equily Logo" className="relative h-28 w-auto object-contain transition-transform duration-300 group-hover:scale-105" />
             </Link>
+            {/* Desktop primary nav */}
             <div className="hidden lg:flex items-center gap-1 bg-slate-100/50 p-1 rounded-full border border-slate-200/50 backdrop-blur-md">
-              {[
-                { name: "What is Equily?", href: "/what-is-equily" },
-                { name: "How does Equily work?", href: "/how-it-works" },
-                { name: "Pricing", href: "/pricing" },
-                { name: "Legal", href: "/legal" }
-              ].map((item) => (
-                <Link key={item.name} href={item.href} className="px-5 py-2 text-sm font-bold text-slate-600 hover:text-slate-900 hover:bg-white rounded-full transition-all duration-200">
-                  {item.name}
-                </Link>
-              ))}
-              <Link href="/contact" className="px-5 py-2 text-sm font-bold text-slate-600 hover:text-emerald-600 hover:bg-white rounded-full transition-all duration-200">
+              {/* Product dropdown */}
+              <div className="relative">
+                <button
+                  type="button"
+                  onClick={() => setIsProductMenuOpen((open) => !open)}
+                  className="flex items-center gap-1.5 px-5 py-2 text-sm font-bold text-slate-600 hover:text-slate-900 hover:bg-white rounded-full transition-all duration-200"
+                >
+                  <span>Product</span>
+                  <ChevronDown
+                    className={`w-4 h-4 text-slate-500 transition-transform duration-200 ${
+                      isProductMenuOpen ? "rotate-180" : ""
+                    }`}
+                  />
+                </button>
+                {isProductMenuOpen && (
+                  <div className="absolute left-0 mt-3 w-72 rounded-xl bg-white shadow-lg border border-gray-100 py-2 z-30">
+                    <Link
+                      href="/what-is-equily"
+                      className="flex items-start gap-3 px-3 py-2 rounded-lg hover:bg-gray-50 transition-colors"
+                    >
+                      <div className="mt-0.5 rounded-full bg-emerald-50 p-2">
+                        <Sparkles className="w-4 h-4 text-emerald-600" />
+                      </div>
+                      <div>
+                        <div className="text-sm font-semibold text-slate-900">Overview</div>
+                        <p className="text-xs text-slate-500">
+                          Understand the basics of dynamic equity.
+                        </p>
+                      </div>
+                    </Link>
+                    <Link
+                      href="/how-it-works"
+                      className="flex items-start gap-3 px-3 py-2 rounded-lg hover:bg-gray-50 transition-colors"
+                    >
+                      <div className="mt-0.5 rounded-full bg-slate-50 p-2">
+                        <Cog className="w-4 h-4 text-slate-700" />
+                      </div>
+                      <div>
+                        <div className="text-sm font-semibold text-slate-900">How it Works</div>
+                        <p className="text-xs text-slate-500">Dive into the methodology.</p>
+                      </div>
+                    </Link>
+                  </div>
+                )}
+              </div>
+              {/* Other top-level links */}
+              <Link
+                href="/pricing"
+                className="px-5 py-2 text-sm font-bold text-slate-600 hover:text-slate-900 hover:bg-white rounded-full transition-all duration-200"
+              >
+                Pricing
+              </Link>
+              <Link
+                href="/legal"
+                className="px-5 py-2 text-sm font-bold text-slate-600 hover:text-slate-900 hover:bg-white rounded-full transition-all duration-200"
+              >
+                Legal
+              </Link>
+              <Link
+                href="/contact"
+                className="px-5 py-2 text-sm font-bold text-slate-600 hover:text-emerald-600 hover:bg-white rounded-full transition-all duration-200"
+              >
                 Contact
               </Link>
             </div>
@@ -97,6 +165,40 @@ export default function LandingPage() {
                  <ArrowRight className="w-4 h-4 text-emerald-400 ml-2 group-hover:translate-x-1 transition-transform" />
                </div>
             </Link>
+          </div>
+        </div>
+
+        {/* Mobile Product menu (accordion style) */}
+        <div className="lg:hidden border-t border-white/60 bg-white/80">
+          <div className="mx-auto max-w-7xl px-6 py-2">
+            <button
+              type="button"
+              onClick={() => setIsProductMenuOpen((open) => !open)}
+              className="flex items-center justify-between w-full text-sm font-semibold text-slate-700 py-2"
+            >
+              <span>Product</span>
+              <ChevronDown
+                className={`w-4 h-4 text-slate-500 transition-transform duration-200 ${
+                  isProductMenuOpen ? "rotate-180" : ""
+                }`}
+              />
+            </button>
+            {isProductMenuOpen && (
+              <div className="mt-1 space-y-1 pb-2">
+                <Link
+                  href="/what-is-equily"
+                  className="block text-sm text-slate-600 py-1 pl-2 border-l border-slate-200 hover:text-slate-900"
+                >
+                  Overview
+                </Link>
+                <Link
+                  href="/how-it-works"
+                  className="block text-sm text-slate-600 py-1 pl-2 border-l border-slate-200 hover:text-slate-900"
+                >
+                  How it Works
+                </Link>
+              </div>
+            )}
           </div>
         </div>
       </nav>
