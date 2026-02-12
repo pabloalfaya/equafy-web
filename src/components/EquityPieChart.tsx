@@ -97,7 +97,7 @@ export function EquityPieChart({ contributions, members }: EquityPieChartProps) 
       };
     });
 
-    // 5. Normalizar SIEMPRE para que la suma sea exactamente 100% (evitar errores de redondeo al borrar)
+    // 5. Normalizar suma teórica a 100%
     const rawSum = chartData.reduce((sum, d) => sum + d.value, 0);
     if (rawSum > 0) {
       chartData = chartData.map((d) => ({
@@ -105,6 +105,39 @@ export function EquityPieChart({ contributions, members }: EquityPieChartProps) 
         value: (d.value / rawSum) * 100,
       }));
     }
+
+    // 6. Aplicar equity cap (hard cap) y redistribuir excedente
+    const caps = memberList.map((m: any) =>
+      m.equity_cap != null && m.equity_cap !== undefined ? Number(m.equity_cap) : null
+    );
+    let finalValues = chartData.map((d) => d.value);
+    let excess = 0;
+    for (let i = 0; i < finalValues.length; i++) {
+      const cap = caps[i];
+      if (cap != null && finalValues[i] > cap) {
+        excess += finalValues[i] - cap;
+        finalValues[i] = cap;
+      }
+    }
+    const uncappedIndices: number[] = [];
+    let uncappedTheoreticalSum = 0;
+    for (let i = 0; i < finalValues.length; i++) {
+      const cap = caps[i];
+      if (cap == null || chartData[i].value <= cap) {
+        uncappedIndices.push(i);
+        uncappedTheoreticalSum += chartData[i].value;
+      }
+    }
+    if (excess > 0 && uncappedTheoreticalSum > 0) {
+      for (const i of uncappedIndices) {
+        finalValues[i] += excess * (chartData[i].value / uncappedTheoreticalSum);
+      }
+    }
+    const totalAfter = finalValues.reduce((s, v) => s + v, 0);
+    if (totalAfter > 0) {
+      finalValues = finalValues.map((v) => (v / totalAfter) * 100);
+    }
+    chartData = chartData.map((d, i) => ({ ...d, value: finalValues[i] }));
 
     // Filtrar miembros con valor 0 para no mostrar segmentos vacíos
     const filtered = chartData.filter((d) => d.value > 0);

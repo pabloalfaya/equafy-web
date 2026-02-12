@@ -171,7 +171,7 @@ export default function ProjectDashboardPage() {
     doc.setTextColor(100);
     doc.text(`Generated on: ${dateStr}`, 14, 40);
 
-    // 2. CÁLCULO DE DATOS PARA LA TABLA RESUMEN (recalculado al vuelo, igual que EquityPieChart)
+    // 2. CÁLCULO DE DATOS PARA LA TABLA RESUMEN (igual que EquityPieChart: teórico → cap → redistribución)
     const totalFixedEquity = members.reduce((sum, m) => sum + (Number(m.fixed_equity) || 0), 0);
     const dynamicPool = Math.max(0, 100 - totalFixedEquity);
     const totalRiskPoints = contributions.reduce((sum, c) => sum + (Number(c.risk_adjusted_value) || 0), 0);
@@ -189,22 +189,46 @@ export default function ProjectDashboardPage() {
         dynamicShare = members.length > 0 ? dynamicPool / members.length : 0;
       }
 
-      const finalEquity = memberFixedEquity + dynamicShare;
+      const theoreticalEquity = memberFixedEquity + dynamicShare;
       return {
         name: member.name,
         role: member.role || "Member",
         points: memberPoints,
         fixed: memberFixedEquity,
-        equity: finalEquity,
+        equity: theoreticalEquity,
       };
     });
 
-    // Normalizar para que Equity % sume exactamente 100%
-    const rawEquitySum = memberRows.reduce((sum, r) => sum + r.equity, 0);
-    const normalizedRows =
-      rawEquitySum > 0
-        ? memberRows.map((r) => ({ ...r, equity: (r.equity / rawEquitySum) * 100 }))
-        : memberRows;
+    // Normalizar teórico a 100%
+    let rawEquitySum = memberRows.reduce((sum, r) => sum + r.equity, 0);
+    let theoreticalPct = rawEquitySum > 0 ? memberRows.map((r) => (r.equity / rawEquitySum) * 100) : memberRows.map(() => 0);
+
+    // Aplicar equity cap y redistribuir excedente (igual que EquityPieChart)
+    const caps = members.map((m) => (m.equity_cap != null && m.equity_cap !== undefined ? Number(m.equity_cap) : null));
+    let finalPct = theoreticalPct.slice();
+    let excess = 0;
+    for (let i = 0; i < finalPct.length; i++) {
+      const cap = caps[i];
+      if (cap != null && finalPct[i] > cap) {
+        excess += finalPct[i] - cap;
+        finalPct[i] = cap;
+      }
+    }
+    let uncappedTheoreticalSum = 0;
+    for (let i = 0; i < finalPct.length; i++) {
+      const cap = caps[i];
+      if (cap == null || theoreticalPct[i] <= cap) uncappedTheoreticalSum += theoreticalPct[i];
+    }
+    if (excess > 0 && uncappedTheoreticalSum > 0) {
+      for (let i = 0; i < finalPct.length; i++) {
+        const cap = caps[i];
+        if (cap == null || theoreticalPct[i] <= cap) finalPct[i] += excess * (theoreticalPct[i] / uncappedTheoreticalSum);
+      }
+    }
+    const totalAfter = finalPct.reduce((s, v) => s + v, 0);
+    if (totalAfter > 0) finalPct = finalPct.map((v) => (v / totalAfter) * 100);
+
+    const normalizedRows = memberRows.map((r, i) => ({ ...r, equity: finalPct[i] }));
 
     const summaryData = normalizedRows.map((r) => [
       r.name,
