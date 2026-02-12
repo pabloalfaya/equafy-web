@@ -491,7 +491,8 @@ export default function ProjectDashboardPage() {
         isOpen={memberModalOpen} 
         onClose={() => setMemberModalOpen(false)} 
         projectId={projectId} 
-        members={members}       
+        members={members}
+        contributions={contributions}
         onUpdate={refreshMembers}
         canEdit={canEdit}
       />
