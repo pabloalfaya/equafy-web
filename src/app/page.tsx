@@ -1,8 +1,8 @@
-"use client"; 
+"use client";
 
-import { useState, useEffect, useRef } from "react"; 
+import { useState } from "react";
 import Link from "next/link";
-import { 
+import {
   ShieldCheck,
   PieChart,
   PlayCircle,
@@ -14,49 +14,14 @@ import {
   Scale,
   AlertTriangle,
   CheckCircle2,
-  TrendingUp,
-  X,
-  ArrowLeft,
-  ChevronDown,
-  Sparkles,
-  Cog
+  TrendingUp
 } from "lucide-react";
+import { VideoDemoModal } from "../components/VideoDemoModal";
 
 export default function LandingPage() {
   const [standardRisk, setStandardRisk] = useState(true);
   const [customRisk, setCustomRisk] = useState(false);
   const [isVideoOpen, setIsVideoOpen] = useState(false);
-  const [language, setLanguage] = useState<"en" | "es" | null>(null);
-  const [isProductMenuOpen, setIsProductMenuOpen] = useState(false);
-
-  const DEMO_VIDEO_IDS = { en: "zZ3kANWXMOU", es: "gkxrYzL1Fss" } as const;
-  const LANGUAGE_OPTIONS: { id: "en" | "es"; flag: string; label: string }[] = [
-    { id: "en", flag: "🇬🇧", label: "Watch in English" },
-    { id: "es", flag: "🇪🇸", label: "Ver en Español" },
-  ];
-
-  // --- LÓGICA DEL NAVBAR ESCONDIDIZO ---
-  const [isNavVisible, setIsNavVisible] = useState(true);
-  const lastScrollY = useRef(0);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      const currentScrollY = window.scrollY;
-      
-      if (currentScrollY < 50) {
-        setIsNavVisible(true);
-      } else if (currentScrollY > lastScrollY.current) {
-        setIsNavVisible(false);
-      } else {
-        setIsNavVisible(true);
-      }
-
-      lastScrollY.current = currentScrollY;
-    };
-
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
 
   return (
     <div className="min-h-screen bg-[#F8FAFC] font-sans text-slate-900 selection:bg-emerald-100 selection:text-emerald-900 overflow-x-hidden">
@@ -68,140 +33,7 @@ export default function LandingPage() {
         <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]"></div>
       </div>
 
-      {/* --- NAVBAR DINÁMICO --- */}
-      <nav 
-        className={`fixed top-0 inset-x-0 z-50 border-b border-white/50 bg-white/60 backdrop-blur-xl transition-transform duration-300 ease-in-out ${
-          isNavVisible ? 'translate-y-0' : '-translate-y-full'
-        }`}
-      >
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-3">
-          <div className="flex items-center gap-8">
-            <Link href="/" className="relative group">
-              <div className="absolute -inset-2 bg-gradient-to-r from-emerald-500/20 to-blue-500/20 rounded-lg blur opacity-0 group-hover:opacity-100 transition duration-500"></div>
-              <img src="/logo.png" alt="Equily Logo" className="relative h-28 w-auto object-contain transition-transform duration-300 group-hover:scale-105" />
-            </Link>
-            {/* Desktop primary nav */}
-            <div className="hidden lg:flex items-center gap-1 bg-slate-100/50 p-1 rounded-full border border-slate-200/50 backdrop-blur-md">
-              {/* Product dropdown */}
-              <div className="relative">
-                <button
-                  type="button"
-                  onClick={() => setIsProductMenuOpen((open) => !open)}
-                  className="flex items-center gap-1.5 px-5 py-2 text-sm font-bold text-slate-600 hover:text-slate-900 hover:bg-white rounded-full transition-all duration-200"
-                >
-                  <span>Product</span>
-                  <ChevronDown
-                    className={`w-4 h-4 text-slate-500 transition-transform duration-200 ${
-                      isProductMenuOpen ? "rotate-180" : ""
-                    }`}
-                  />
-                </button>
-                {isProductMenuOpen && (
-                  <div className="absolute left-0 mt-3 w-72 rounded-xl bg-white shadow-lg border border-gray-100 py-2 z-30">
-                    <Link
-                      href="/what-is-equily"
-                      className="flex items-start gap-3 px-3 py-2 rounded-lg hover:bg-gray-50 transition-colors"
-                    >
-                      <div className="mt-0.5 rounded-full bg-emerald-50 p-2">
-                        <Sparkles className="w-4 h-4 text-emerald-600" />
-                      </div>
-                      <div>
-                        <div className="text-sm font-semibold text-slate-900">Overview</div>
-                        <p className="text-xs text-slate-500">
-                          Understand the basics of dynamic equity.
-                        </p>
-                      </div>
-                    </Link>
-                    <Link
-                      href="/how-it-works"
-                      className="flex items-start gap-3 px-3 py-2 rounded-lg hover:bg-gray-50 transition-colors"
-                    >
-                      <div className="mt-0.5 rounded-full bg-slate-50 p-2">
-                        <Cog className="w-4 h-4 text-slate-700" />
-                      </div>
-                      <div>
-                        <div className="text-sm font-semibold text-slate-900">How it Works</div>
-                        <p className="text-xs text-slate-500">Dive into the methodology.</p>
-                      </div>
-                    </Link>
-                  </div>
-                )}
-              </div>
-              {/* Other top-level links */}
-              <Link
-                href="/pricing"
-                className="px-5 py-2 text-sm font-bold text-slate-600 hover:text-slate-900 hover:bg-white rounded-full transition-all duration-200"
-              >
-                Pricing
-              </Link>
-              <Link
-                href="/legal"
-                className="px-5 py-2 text-sm font-bold text-slate-600 hover:text-slate-900 hover:bg-white rounded-full transition-all duration-200"
-              >
-                Legal
-              </Link>
-              <Link
-                href="/contact"
-                className="px-5 py-2 text-sm font-bold text-slate-600 hover:text-emerald-600 hover:bg-white rounded-full transition-all duration-200"
-              >
-                Contact
-              </Link>
-            </div>
-          </div>
-          <div className="flex items-center gap-4">
-            <Link href="/login" className="hidden md:block text-sm font-bold text-slate-600 hover:text-slate-900 transition-colors">
-              Log in
-            </Link>
-            
-            <Link href="/login?view=signup" className="hidden md:block text-sm font-bold text-slate-600 hover:text-emerald-600 transition-colors">
-              Sign Up
-            </Link>
-            
-            <Link href="/login?view=signup" className="relative group">
-               <div className="absolute -inset-0.5 bg-gradient-to-r from-emerald-500 to-emerald-400 rounded-full blur opacity-60 group-hover:opacity-100 transition duration-200"></div>
-               <div className="relative flex items-center bg-slate-900 rounded-full px-6 py-2.5 leading-none">
-                 {/* CAMBIO 1: Start Free -> Free Trial */}
-                 <span className="text-sm font-bold text-white group-hover:text-emerald-50 transition duration-200">Free Trial</span>
-                 <ArrowRight className="w-4 h-4 text-emerald-400 ml-2 group-hover:translate-x-1 transition-transform" />
-               </div>
-            </Link>
-          </div>
-        </div>
-
-        {/* Mobile Product menu (accordion style) */}
-        <div className="lg:hidden border-t border-white/60 bg-white/80">
-          <div className="mx-auto max-w-7xl px-6 py-2">
-            <button
-              type="button"
-              onClick={() => setIsProductMenuOpen((open) => !open)}
-              className="flex items-center justify-between w-full text-sm font-semibold text-slate-700 py-2"
-            >
-              <span>Product</span>
-              <ChevronDown
-                className={`w-4 h-4 text-slate-500 transition-transform duration-200 ${
-                  isProductMenuOpen ? "rotate-180" : ""
-                }`}
-              />
-            </button>
-            {isProductMenuOpen && (
-              <div className="mt-1 space-y-1 pb-2">
-                <Link
-                  href="/what-is-equily"
-                  className="block text-sm text-slate-600 py-1 pl-2 border-l border-slate-200 hover:text-slate-900"
-                >
-                  Overview
-                </Link>
-                <Link
-                  href="/how-it-works"
-                  className="block text-sm text-slate-600 py-1 pl-2 border-l border-slate-200 hover:text-slate-900"
-                >
-                  How it Works
-                </Link>
-              </div>
-            )}
-          </div>
-        </div>
-      </nav>
+      {/* Navbar global viene de RootLayout */}
 
       {/* --- HERO SECTION --- */}
       <header className="relative pt-36 pb-10 z-10">
@@ -499,98 +331,7 @@ export default function LandingPage() {
         </div>
       </footer>
 
-      {/* --- VIDEO DEMO MODAL --- */}
-      {isVideoOpen && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4"
-          onClick={() => {
-            setIsVideoOpen(false);
-            setLanguage(null);
-          }}
-          role="dialog"
-          aria-modal="true"
-          aria-label="Demo video"
-        >
-          <div
-            className={
-              language === null
-                ? "relative w-full max-w-md flex flex-col rounded-2xl overflow-hidden bg-white shadow-lg"
-                : "relative w-full max-w-4xl flex flex-col rounded-xl overflow-hidden bg-slate-900 shadow-2xl"
-            }
-            onClick={(e) => e.stopPropagation()}
-          >
-            {language === null ? (
-              /* --- Paso 1: Selección de idioma (tarjeta blanca compacta) --- */
-              <div className="flex flex-col items-center justify-center px-6 py-8">
-                <h2 className="text-xl font-semibold text-[#1E293B] text-center mb-6">
-                  Select Language / Selecciona Idioma
-                </h2>
-                <div className="flex flex-col sm:flex-row gap-4 w-full">
-                  <button
-                    type="button"
-                    onClick={() => setLanguage("en")}
-                    className="flex items-center justify-center gap-3 rounded-lg border border-gray-300 bg-transparent text-gray-700 px-6 py-3 font-medium hover:border-gray-400 transition-all"
-                  >
-                    <span className="text-2xl" aria-hidden>🇬🇧</span>
-                    <span>Watch in English</span>
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setLanguage("es")}
-                    className="flex items-center justify-center gap-3 rounded-lg bg-[#1565C0] text-white px-6 py-3 font-medium shadow-md hover:bg-[#1E88E5] transition-all"
-                  >
-                    <span className="text-2xl" aria-hidden>🇪🇸</span>
-                    <span>Ver en Español</span>
-                  </button>
-                </div>
-                <button
-                  onClick={() => {
-                    setIsVideoOpen(false);
-                    setLanguage(null);
-                  }}
-                  className="absolute top-4 right-4 p-2 rounded-full text-gray-400 hover:text-gray-900 hover:bg-gray-100 transition-colors"
-                  aria-label="Close"
-                >
-                  <X className="w-6 h-6" />
-                </button>
-              </div>
-            ) : (
-              /* --- Paso 2: Reproducción del vídeo --- */
-              <>
-                <button
-                  type="button"
-                  onClick={() => setLanguage(null)}
-                  className="absolute top-4 left-4 z-10 flex items-center gap-1.5 rounded-full bg-white/10 hover:bg-white/20 text-white/90 text-xs font-medium px-3 py-2 transition-colors"
-                  aria-label="Change language"
-                >
-                  <ArrowLeft className="w-4 h-4" />
-                  Change Language
-                </button>
-                <button
-                  onClick={() => {
-                    setIsVideoOpen(false);
-                    setLanguage(null);
-                  }}
-                  className="absolute top-4 right-4 z-10 p-2 rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors"
-                  aria-label="Close"
-                >
-                  <X className="w-6 h-6" />
-                </button>
-                <div className="aspect-video w-full">
-                  <iframe
-                    key={language}
-                    src={`https://www.youtube.com/embed/${DEMO_VIDEO_IDS[language]}?autoplay=1&rel=0`}
-                    title="Equily Demo"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    allowFullScreen
-                    className="w-full h-full rounded-lg"
-                  />
-                </div>
-              </>
-            )}
-          </div>
-        </div>
-      )}
+      <VideoDemoModal open={isVideoOpen} onClose={() => setIsVideoOpen(false)} />
     </div>
   );
 }
