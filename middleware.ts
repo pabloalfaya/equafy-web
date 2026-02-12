@@ -5,11 +5,18 @@ import { updateSession } from "@/utils/supabase/middleware";
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // 1. Definimos las rutas que DEBEN ser públicas
-  const isPublicRoute = 
-    pathname === "/" || 
-    pathname.startsWith("/login") || 
-    pathname.startsWith("/models");
+  // 1. Definimos las rutas que DEBEN ser públicas (sin requerir auth)
+  const isPublicRoute =
+    pathname === "/" ||
+    pathname.startsWith("/login") ||
+    pathname.startsWith("/models") ||
+    pathname.startsWith("/guide") ||
+    pathname.startsWith("/features") ||
+    pathname.startsWith("/pricing") ||
+    pathname.startsWith("/contact") ||
+    pathname.startsWith("/what-is-equily") ||
+    pathname.startsWith("/how-it-works") ||
+    pathname.startsWith("/legal");
 
   // 2. Si es pública, dejamos que Next.js maneje la petición normalmente
   if (isPublicRoute) {

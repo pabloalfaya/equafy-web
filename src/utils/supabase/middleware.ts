@@ -40,13 +40,16 @@ export const updateSession = async (request: NextRequest) => {
   if (!user) {
     // ... y NO estás intentando ir a una de estas páginas públicas:
     if (
-      !request.nextUrl.pathname.startsWith("/login") && // Página de entrar
-      !request.nextUrl.pathname.startsWith("/auth") &&  // Rutas internas de auth
-      request.nextUrl.pathname !== "/" &&               // La Home
-      !request.nextUrl.pathname.startsWith("/what-is-equily") && // PÚBLICA
-      !request.nextUrl.pathname.startsWith("/how-it-works") &&   // PÚBLICA
-      !request.nextUrl.pathname.startsWith("/pricing") &&        // PÚBLICA
-      !request.nextUrl.pathname.startsWith("/contact")           // PÚBLICA
+      !request.nextUrl.pathname.startsWith("/login") &&
+      !request.nextUrl.pathname.startsWith("/auth") &&
+      request.nextUrl.pathname !== "/" &&
+      !request.nextUrl.pathname.startsWith("/what-is-equily") &&
+      !request.nextUrl.pathname.startsWith("/how-it-works") &&
+      !request.nextUrl.pathname.startsWith("/guide") &&
+      !request.nextUrl.pathname.startsWith("/features") &&
+      !request.nextUrl.pathname.startsWith("/pricing") &&
+      !request.nextUrl.pathname.startsWith("/contact") &&
+      !request.nextUrl.pathname.startsWith("/legal")
     ) {
       // ENTONCES: Te mando al login (porque intentas entrar al dashboard u otro sitio privado)
       const url = request.nextUrl.clone();

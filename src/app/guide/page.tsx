@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import {
   PieChart,
@@ -8,6 +9,7 @@ import {
   Wrench,
   ChevronRight,
 } from "lucide-react";
+import { createClient } from "@/utils/supabase/client";
 
 const STEPS = [
   {
@@ -33,6 +35,17 @@ const STEPS = [
 ];
 
 export default function GuidePage() {
+  const [user, setUser] = useState<{ id: string } | null>(null);
+  const [authChecked, setAuthChecked] = useState(false);
+
+  useEffect(() => {
+    const supabase = createClient();
+    supabase.auth.getUser().then(({ data: { user: u } }) => {
+      setUser(u ?? null);
+      setAuthChecked(true);
+    });
+  }, []);
+
   return (
     <div className="min-h-screen bg-[#F8FAFC] font-sans text-slate-900 selection:bg-emerald-100 selection:text-emerald-900 overflow-x-hidden">
       {/* Background — grid */}
@@ -186,15 +199,17 @@ export default function GuidePage() {
             ))}
           </div>
 
-          {/* CTA */}
+          {/* CTA: register if not logged in, dashboard (projects) if logged in */}
           <div className="mt-16 text-center">
-            <Link
-              href="/dashboard"
-              className="inline-flex items-center gap-2 h-14 px-8 rounded-2xl font-bold text-lg text-white shadow-lg transition-all duration-300 hover:opacity-95 hover:-translate-y-0.5 bg-[#00C853]"
-            >
-              Start Your Project Now
-              <ChevronRight className="w-5 h-5" />
-            </Link>
+            {authChecked && (
+              <Link
+                href={user ? "/dashboard" : "/login?view=signup"}
+                className="inline-flex items-center gap-2 h-14 px-8 rounded-2xl font-bold text-lg text-white shadow-lg transition-all duration-300 hover:opacity-95 hover:-translate-y-0.5 bg-[#00C853]"
+              >
+                Start Your Project Now
+                <ChevronRight className="w-5 h-5" />
+              </Link>
+            )}
           </div>
         </div>
       </main>
