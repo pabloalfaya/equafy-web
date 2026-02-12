@@ -51,7 +51,9 @@ export function Navbar() {
             <div className="relative">
               <button
                 type="button"
-                onClick={() => setIsProductMenuOpen((open) => !open)}
+                onClick={() =>
+                  setIsProductMenuOpen((open: boolean) => !open)
+                }
                 className="flex items-center gap-1.5 px-5 py-2 text-sm font-bold text-slate-600 hover:text-slate-900 hover:bg-white rounded-full transition-all duration-200"
               >
                 <span>Product</span>
@@ -65,6 +67,7 @@ export function Navbar() {
                 <div className="absolute left-0 mt-3 w-72 rounded-xl bg-white shadow-lg border border-gray-100 py-2 z-30">
                   <Link
                     href="/what-is-equily"
+                    onClick={() => setIsProductMenuOpen(false)}
                     className="flex items-start gap-3 px-3 py-2 rounded-lg hover:bg-gray-50 transition-colors"
                   >
                     <div className="mt-0.5 rounded-full bg-emerald-50 p-2">
@@ -81,6 +84,7 @@ export function Navbar() {
                   </Link>
                   <Link
                     href="/how-it-works"
+                    onClick={() => setIsProductMenuOpen(false)}
                     className="flex items-start gap-3 px-3 py-2 rounded-lg hover:bg-gray-50 transition-colors"
                   >
                     <div className="mt-0.5 rounded-full bg-slate-50 p-2">
@@ -153,7 +157,9 @@ export function Navbar() {
         <div className="mx-auto max-w-7xl px-6 py-2">
           <button
             type="button"
-            onClick={() => setIsProductMenuOpen((open) => !open)}
+            onClick={() =>
+              setIsProductMenuOpen((open: boolean) => !open)
+            }
             className="flex items-center justify-between w-full text-sm font-semibold text-slate-700 py-2"
           >
             <span>Product</span>
@@ -167,12 +173,14 @@ export function Navbar() {
             <div className="mt-1 space-y-1 pb-2">
               <Link
                 href="/what-is-equily"
+                onClick={() => setIsProductMenuOpen(false)}
                 className="block text-sm text-slate-600 py-1 pl-2 border-l border-slate-200 hover:text-slate-900"
               >
                 What is Equily?
               </Link>
               <Link
                 href="/how-it-works"
+                onClick={() => setIsProductMenuOpen(false)}
                 className="block text-sm text-slate-600 py-1 pl-2 border-l border-slate-200 hover:text-slate-900"
               >
                 How it Works
