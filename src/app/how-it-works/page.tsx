@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Zap, Calculator, Scale, FileCheck, Twitter, Linkedin, Mail, ArrowRight, CheckCircle2, PlayCircle } from "lucide-react";
+import { Zap, Calculator, Scale, FileCheck, ArrowRight } from "lucide-react";
 
 export default function HowItWorksPage() {
   return (
@@ -15,7 +15,7 @@ export default function HowItWorksPage() {
       </div>
 
       {/* --- HERO SECTION --- */}
-      <main className="relative z-10 pt-40 pb-20">
+      <main className="relative z-10 pt-24 md:pt-32 pb-20">
         <div className="mx-auto max-w-4xl px-6 text-center">
           <div className="inline-flex items-center gap-2 rounded-full bg-blue-50 border border-blue-100 px-3 py-1 text-xs font-bold text-blue-700 mb-6">
             <span className="flex h-1.5 w-1.5 rounded-full bg-blue-500 animate-pulse"></span>
@@ -25,14 +25,14 @@ export default function HowItWorksPage() {
           <h1 className="text-5xl md:text-7xl font-bold tracking-tight mb-8 leading-tight text-slate-900">
             How <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 to-blue-600">Equily</span> works?
           </h1>
-          <p className="text-xl text-slate-500 font-medium leading-relaxed mb-16 max-w-2xl mx-auto">
+          <p className="text-xl text-slate-500 font-medium leading-relaxed mb-10 max-w-2xl mx-auto">
             Our platform transforms emotional subjectivity into an exact mathematical formula. 
             <span className="block mt-2 text-slate-800 font-bold">Risk assumed = Ownership earned.</span>
           </p>
         </div>
 
         {/* --- PASOS DEL PROCESO --- */}
-        <div className="mx-auto max-w-6xl px-6 space-y-32">
+        <div className="mx-auto max-w-6xl px-6 space-y-20 md:space-y-24">
           
           {/* Paso 1: Track Contributions */}
           <div className="grid lg:grid-cols-2 gap-16 items-center">
@@ -121,54 +121,6 @@ export default function HowItWorksPage() {
 
         </div>
       </main>
-
-      {/* --- FOOTER UNIFICADO --- */}
-      <footer className="bg-white border-t border-slate-200 relative z-10 mt-20">
-        <div className="mx-auto max-w-7xl px-6 pt-20 pb-10">
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-12 mb-16">
-            <div className="col-span-2">
-              <Link href="/" className="inline-block">
-                <img src="/logo.png" alt="Equily Logo" className="h-16 w-auto mb-6 grayscale hover:grayscale-0 transition-all opacity-80 hover:opacity-100" />
-              </Link>
-              <p className="text-slate-500 font-medium max-w-xs leading-relaxed text-sm">
-                Modern tools for modern founders. Calculate, track, and manage equity with data-driven precision.
-              </p>
-            </div>
-            <div>
-              <h4 className="font-bold text-slate-900 mb-6 text-sm">Product</h4>
-              <ul className="space-y-4 text-sm font-medium text-slate-500">
-                <li><Link href="#" className="hover:text-emerald-600 transition-colors">Calculator</Link></li>
-                <li><Link href="/models" className="hover:text-emerald-600 transition-colors">Equity Models</Link></li>
-                <li><Link href="#" className="hover:text-emerald-600 transition-colors">Cap Table</Link></li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="font-bold text-slate-900 mb-6 text-sm">Resources</h4>
-              <ul className="space-y-4 text-sm font-medium text-slate-500">
-                <li><Link href="#" className="hover:text-emerald-600 transition-colors">Documentation</Link></li>
-                <li><Link href="#" className="hover:text-emerald-600 transition-colors">Guides</Link></li>
-                <li><Link href="#" className="hover:text-emerald-600 transition-colors">API Status</Link></li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="font-bold text-slate-900 mb-6 text-sm">Legal</h4>
-              <ul className="space-y-4 text-sm font-medium text-slate-500">
-                <li><Link href="#" className="hover:text-emerald-600 transition-colors">Privacy Policy</Link></li>
-                <li><Link href="#" className="hover:text-emerald-600 transition-colors">Terms</Link></li>
-                <li><Link href="#" className="hover:text-emerald-600 transition-colors">Security</Link></li>
-              </ul>
-            </div>
-          </div>
-          <div className="pt-8 border-t border-slate-100 flex flex-col md:flex-row justify-between items-center gap-6 text-slate-400 font-bold text-xs uppercase tracking-wider">
-            <p>© 2026 Equily. Built for modern co-founders.</p>
-            <div className="flex gap-6">
-              <Twitter className="h-5 w-5 hover:text-slate-900 cursor-pointer transition-colors" />
-              <Linkedin className="h-5 w-5 hover:text-slate-900 cursor-pointer transition-colors" />
-              <Mail className="h-5 w-5 hover:text-slate-900 cursor-pointer transition-colors" />
-            </div>
-          </div>
-        </div>
-      </footer>
     </div>
   );
 }

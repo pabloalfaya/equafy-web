@@ -14,8 +14,8 @@ export default function PricingPage() {
       </div>
 
       {/* --- CONTENIDO PRINCIPAL --- */}
-      <main className="relative z-10 pt-32 md:pt-44 pb-20 px-6">
-        <div className="mx-auto max-w-5xl text-center mb-20">
+      <main className="relative z-10 pt-24 md:pt-32 pb-20 px-6">
+        <div className="mx-auto max-w-5xl text-center mb-14">
           <h1 className="text-5xl md:text-7xl font-bold tracking-tight text-slate-900 mb-6 leading-tight">
             Fair pricing for <br />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 to-teal-500">fair equity.</span>

@@ -79,9 +79,9 @@ export default function FeaturesPage() {
         <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]" />
       </div>
 
-      <main className="relative z-10 pt-32 md:pt-44 pb-20 md:pb-32 px-6">
+      <main className="relative z-10 pt-24 md:pt-32 pb-20 md:pb-28 px-6">
         <div className="mx-auto max-w-6xl">
-          <header className="text-center mb-16 md:mb-20">
+          <header className="text-center mb-12 md:mb-16">
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-slate-900 mb-6">
               Complete Control Over Your Equity
             </h1>
@@ -112,7 +112,7 @@ export default function FeaturesPage() {
             })}
           </div>
 
-          <div className="mt-20 md:mt-24 text-center rounded-2xl bg-white/80 backdrop-blur-sm border border-slate-200/80 shadow-sm py-12 px-6">
+          <div className="mt-12 md:mt-16 text-center rounded-2xl bg-white/80 backdrop-blur-sm border border-slate-200/80 shadow-sm py-12 px-6">
             <p className="text-2xl font-bold text-slate-900 mb-6 tracking-tight">
               Ready to split fairly?
             </p>
