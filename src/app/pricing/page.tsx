@@ -14,7 +14,7 @@ export default function PricingPage() {
       </div>
 
       {/* --- CONTENIDO PRINCIPAL --- */}
-      <main className="relative z-10 pt-44 pb-20 px-6">
+      <main className="relative z-10 pt-32 md:pt-44 pb-20 px-6">
         <div className="mx-auto max-w-5xl text-center mb-20">
           <h1 className="text-5xl md:text-7xl font-bold tracking-tight text-slate-900 mb-6 leading-tight">
             Fair pricing for <br />
@@ -50,18 +50,18 @@ export default function PricingPage() {
             </ul>
             <Link
               href="/login?view=signup"
-              className="mt-auto block text-center py-4 rounded-2xl border border-slate-200 font-black text-sm uppercase tracking-widest hover:bg-slate-50 transition-all"
+              className="mt-auto block text-center py-4 rounded-2xl border border-slate-200 font-bold text-sm tracking-tight hover:bg-slate-50 transition-all"
             >
-              Start Now
+              Get Started
             </Link>
           </div>
 
           <div className="relative flex flex-col bg-slate-900 rounded-[40px] p-10 shadow-2xl ring-2 ring-emerald-500/50">
             <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-emerald-500 text-white px-4 py-1.5 rounded-full text-[10px] font-black tracking-widest uppercase shadow-lg border border-emerald-400 whitespace-nowrap">
-              Best Value - Save ~17%
+              Best Value — Save ~17%
             </div>
             <div className="mb-8">
-              <h3 className="text-xl font-black text-white mb-2">Yearly Plan</h3>
+              <h3 className="text-xl font-black text-white mb-2 tracking-tight">Yearly Plan</h3>
               <div className="flex items-baseline gap-1">
                 <span className="text-4xl font-black text-white">199.99</span>
                 <span className="text-slate-400 font-bold">/yr</span>
@@ -75,24 +75,20 @@ export default function PricingPage() {
                 "PDF Report Export",
                 "Priority Support",
               ].map((f) => (
-                <li key={f} className="flex items-center gap-3 text-sm font-bold text-slate-200">
+                <li key={f} className="flex items-center gap-3 text-sm font-bold text-slate-200 tracking-tight">
                   <CheckCircle2 className="w-5 h-5 text-emerald-400 shrink-0" /> {f}
                 </li>
               ))}
             </ul>
             <Link
               href="/login?view=signup"
-              className="mt-auto block text-center py-4 rounded-2xl bg-emerald-500 text-white font-black text-sm uppercase tracking-widest hover:bg-emerald-400 transition-all shadow-lg shadow-emerald-500/20"
+              className="mt-auto block text-center py-4 rounded-2xl bg-emerald-500 text-white font-bold text-sm tracking-tight hover:bg-emerald-400 transition-all shadow-lg shadow-emerald-500/20"
             >
-              Start Now
+              Get Started
             </Link>
           </div>
         </div>
       </main>
-
-      <footer className="bg-white border-t border-slate-200 py-10 text-center text-slate-400 font-bold text-[10px] uppercase tracking-widest relative z-10">
-        © 2026 Equily. Built for modern co-founders.
-      </footer>
     </div>
   );
 }

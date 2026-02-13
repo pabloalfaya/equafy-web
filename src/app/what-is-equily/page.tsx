@@ -19,7 +19,7 @@ export default function WhatIsEquilyPage() {
       </div>
 
       {/* --- SECCIÓN PRINCIPAL (HERO 2 COLUMNAS) --- */}
-      <main className="relative z-10 pt-40 pb-20">
+      <main className="relative z-10 pt-32 md:pt-44 pb-20">
         <div className="mx-auto max-w-7xl px-6">
           <div className="grid lg:grid-cols-2 gap-16 items-center">
             
@@ -43,7 +43,7 @@ export default function WhatIsEquilyPage() {
               </p>
 
               <div className="flex flex-col sm:flex-row items-center gap-4">
-                 <Link href="/login?view=signup" className="h-14 px-8 rounded-2xl bg-slate-900 text-white font-bold text-lg flex items-center justify-center shadow-xl shadow-slate-200 hover:bg-slate-800 hover:-translate-y-1 transition-all duration-300">
+                 <Link href="/login?view=signup" className="h-14 px-8 rounded-2xl bg-emerald-500 text-white font-bold text-lg flex items-center justify-center shadow-lg hover:bg-emerald-600 hover:-translate-y-0.5 transition-all duration-300 tracking-tight">
                    Get Started
                  </Link>
                  <button

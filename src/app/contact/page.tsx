@@ -44,7 +44,7 @@ export default function ContactPage() {
       </div>
 
       {/* --- SECCIÓN DE CONTACTO --- */}
-      <main className="relative z-10 pt-40 pb-20 px-6">
+      <main className="relative z-10 pt-32 md:pt-44 pb-20 px-6">
         <div className="mx-auto max-w-5xl">
           <div className="text-center mb-16">
             <h1 className="text-5xl md:text-7xl font-bold tracking-tight text-slate-900 mb-6">
@@ -84,9 +84,9 @@ export default function ContactPage() {
                     <label className="text-xs font-bold uppercase text-slate-400 ml-1">Message</label>
                     <textarea required rows={4} placeholder="Tell us about your project..." value={formData.message} onChange={(e) => setFormData({...formData, message: e.target.value})} className="w-full bg-white/50 border border-slate-200 rounded-2xl px-6 py-4 font-semibold text-slate-800 focus:border-emerald-500 outline-none transition-all resize-none"></textarea>
                   </div>
-                  <button type="submit" disabled={loading} className="w-full bg-slate-900 text-white font-bold text-lg py-5 rounded-2xl shadow-lg hover:bg-slate-800 transition-all flex items-center justify-center gap-3">
-                    <Send className={`h-5 w-5 ${loading ? 'animate-pulse' : ''}`} />
-                    {loading ? "Sending..." : "Send Message"}
+                  <button type="submit" disabled={loading} className="w-full bg-emerald-500 text-white font-bold text-lg py-5 rounded-2xl shadow-lg hover:bg-emerald-600 transition-all flex items-center justify-center gap-3 tracking-tight">
+                    <Send className={`h-5 w-5 ${loading ? "animate-pulse" : ""}`} />
+                    {loading ? "Sending…" : "Send Message"}
                   </button>
                 </form>
               )}
@@ -101,11 +101,6 @@ export default function ContactPage() {
           </div>
         </div>
       </main>
-
-      {/* --- FOOTER --- */}
-      <footer className="bg-white border-t border-slate-200 py-10 text-center text-slate-400 font-bold text-[10px] uppercase tracking-widest">
-        © 2026 Equily. Built for modern co-founders.
-      </footer>
     </div>
   );
 }

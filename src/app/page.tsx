@@ -6,9 +6,6 @@ import {
   ShieldCheck,
   PieChart,
   PlayCircle,
-  Mail,
-  Twitter,
-  Linkedin,
   ArrowRight,
   Sliders,
   Scale,
@@ -34,7 +31,7 @@ export default function LandingPage() {
       </div>
 
       {/* --- HERO SECTION --- */}
-      <header className="relative pt-36 pb-10 z-10">
+      <header className="relative pt-32 md:pt-44 pb-10 z-10">
         <div className="mx-auto max-w-5xl px-6 text-center">
           <h1 className="text-6xl md:text-8xl font-bold tracking-tighter text-slate-900 mb-4 leading-[1.1] md:leading-[1.1] py-2">
             Equity that <br className="hidden md:block" />
@@ -46,8 +43,8 @@ export default function LandingPage() {
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             {/* CAMBIO 2: Start Splitting Free -> Start Splitting */}
-            <Link href="/login?view=signup" className="h-14 px-8 rounded-2xl bg-slate-900 text-white font-bold text-lg flex items-center justify-center shadow-xl shadow-slate-200 hover:bg-slate-800 hover:-translate-y-1 transition-all duration-300">
-              Start Splitting
+            <Link href="/login?view=signup" className="h-14 px-8 rounded-2xl bg-emerald-500 text-white font-bold text-lg flex items-center justify-center shadow-lg hover:bg-emerald-600 hover:-translate-y-0.5 transition-all duration-300 tracking-tight">
+              Get Started
             </Link>
             <button
               onClick={() => setIsVideoOpen(true)}
@@ -188,8 +185,8 @@ export default function LandingPage() {
                   </div>
                 </div>
                 <Link href="/models#custom" className="w-full">
-                  <button className="w-full py-4 rounded-xl border border-white/10 text-white font-bold hover:bg-white hover:text-slate-900 transition-all uppercase text-[11px] tracking-widest">
-                      Know more about Custom Model
+                  <button className="w-full py-4 rounded-2xl border border-white/10 text-white font-bold hover:bg-white hover:text-slate-900 transition-all uppercase text-[11px] tracking-widest">
+                    Learn more about Custom Model
                   </button>
                 </Link>
               </div>
@@ -225,7 +222,7 @@ export default function LandingPage() {
                     <div className="flex items-center gap-2">
                       <PieChart className={`w-4 h-4 transition-colors ${standardRisk ? 'text-emerald-400' : 'text-slate-500'}`} />
                       <span className={`text-sm font-bold transition-colors ${standardRisk ? 'text-white' : 'text-slate-400'}`}>
-                         Logarithmic Risk <span className="text-[10px] opacity-70 font-normal ml-1">(Optional)</span>
+                        Logarithmic Risk <span className="text-[10px] opacity-70 font-normal ml-1">(Optional)</span>
                       </span>
                     </div>
                     <button 
@@ -237,8 +234,8 @@ export default function LandingPage() {
                   </div>
                 </div>
                 <Link href="/models#standard" className="w-full">
-                  <button className="w-full py-4 rounded-xl bg-emerald-500 text-white font-bold hover:bg-emerald-400 hover:scale-[1.02] shadow-lg shadow-emerald-900/20 text-center transition-all uppercase text-[11px] tracking-widest">
-                    Know more about Just Split Model
+                  <button className="w-full py-4 rounded-2xl bg-emerald-500 text-white font-bold hover:bg-emerald-400 hover:scale-[1.02] shadow-lg shadow-emerald-900/20 text-center transition-all uppercase text-[11px] tracking-widest">
+                    Learn more about Just Split Model
                   </button>
                 </Link>
               </div>
@@ -271,8 +268,8 @@ export default function LandingPage() {
                   </div>
                 </div>
                 <Link href="/models#flat" className="w-full">
-                  <button className="w-full py-4 rounded-xl border border-white/10 text-white font-bold hover:bg-white hover:text-slate-900 transition-all uppercase text-[11px] tracking-widest">
-                      Know more about Flat Model
+                  <button className="w-full py-4 rounded-2xl border border-white/10 text-white font-bold hover:bg-white hover:text-slate-900 transition-all uppercase text-[11px] tracking-widest">
+                    Learn more about Flat Model
                   </button>
                 </Link>
               </div>
@@ -280,54 +277,6 @@ export default function LandingPage() {
             </div>
           </div>
       </section>
-
-      {/* --- FOOTER --- */}
-      <footer className="bg-white border-t border-slate-200 relative z-10">
-        <div className="mx-auto max-w-7xl px-6 pt-20 pb-10">
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-12 mb-16">
-            <div className="col-span-2">
-              <Link href="/" className="inline-block">
-                <img src="/logo.png" alt="Equily Logo" className="h-16 w-auto mb-6 grayscale hover:grayscale-0 transition-all opacity-80 hover:opacity-100" />
-              </Link>
-              <p className="text-slate-500 font-medium max-w-xs leading-relaxed text-sm">
-                Modern tools for modern founders. Calculate, track, and manage equity with data-driven precision.
-              </p>
-            </div>
-            <div>
-              <h4 className="font-bold text-slate-900 mb-6 text-sm">Product</h4>
-              <ul className="space-y-4 text-sm font-medium text-slate-500">
-                <li><Link href="#" className="hover:text-emerald-600 transition-colors">Calculator</Link></li>
-                <li><Link href="/pricing" className="hover:text-emerald-600 transition-colors">Pricing</Link></li>
-                <li><Link href="/models" className="hover:text-emerald-600 transition-colors">Equity Models</Link></li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="font-bold text-slate-900 mb-6 text-sm">Resources</h4>
-              <ul className="space-y-4 text-sm font-medium text-slate-500">
-                <li><Link href="#" className="hover:text-emerald-600 transition-colors">Documentation</Link></li>
-                <li><Link href="#" className="hover:text-emerald-600 transition-colors">Guides</Link></li>
-                <li><Link href="#" className="hover:text-emerald-600 transition-colors">API Status</Link></li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="font-bold text-slate-900 mb-6 text-sm">Legal</h4>
-              <ul className="space-y-4 text-sm font-medium text-slate-500">
-                <li><Link href="#" className="hover:text-emerald-600 transition-colors">Privacy Policy</Link></li>
-                <li><Link href="#" className="hover:text-emerald-600 transition-colors">Terms</Link></li>
-                <li><Link href="#" className="hover:text-emerald-600 transition-colors">Security</Link></li>
-              </ul>
-            </div>
-          </div>
-          <div className="pt-8 border-t border-slate-100 flex flex-col md:flex-row justify-between items-center gap-6 text-slate-400 font-bold text-xs uppercase tracking-wider">
-            <p>© 2026 Equily. Built for modern co-founders.</p>
-            <div className="flex gap-6">
-              <Twitter className="h-5 w-5 hover:text-slate-900 cursor-pointer transition-colors" />
-              <Linkedin className="h-5 w-5 hover:text-slate-900 cursor-pointer transition-colors" />
-              <Mail className="h-5 w-5 hover:text-slate-900 cursor-pointer transition-colors" />
-            </div>
-          </div>
-        </div>
-      </footer>
 
       <VideoDemoModal open={isVideoOpen} onClose={() => setIsVideoOpen(false)} />
     </div>
