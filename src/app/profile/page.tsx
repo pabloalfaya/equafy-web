@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Loader2, LogOut, CreditCard } from "lucide-react";
+import { Loader2, LogOut, CreditCard, Sparkles } from "lucide-react";
 import { createClient } from "@/utils/supabase/client";
 import type { User } from "@supabase/supabase-js";
 
@@ -30,6 +30,10 @@ export default function ProfilePage() {
     await supabase.auth.signOut();
     router.refresh();
     router.push("/");
+  };
+
+  const handleUpgradeClick = () => {
+    alert("Payments coming soon!");
   };
 
   if (loading) {
@@ -80,7 +84,7 @@ export default function ProfilePage() {
           </div>
         </div>
 
-        <div className="bg-white border border-slate-200 rounded-2xl shadow-sm p-8">
+        <div className="bg-white border border-slate-200 rounded-2xl shadow-sm p-8 mb-6">
           <dl className="space-y-6">
             <div>
               <dt className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Email</dt>
@@ -91,13 +95,31 @@ export default function ProfilePage() {
               <dd className="text-slate-600 font-mono text-sm break-all">{user?.id ?? "—"}</dd>
             </div>
           </dl>
+        </div>
 
-          <div className="mt-8 pt-8 border-t border-slate-100">
+        {/* Subscription card - Free tier */}
+        <div className="bg-white border border-slate-200 rounded-2xl shadow-sm p-8">
+          <h2 className="text-lg font-bold text-slate-900 mb-2">Subscription</h2>
+          <h3 className="text-sm font-bold text-slate-500 uppercase tracking-wider mb-3">Current Plan</h3>
+          <span className="inline-block bg-emerald-50 text-emerald-700 text-sm font-bold px-3 py-1 rounded-full mb-4">
+            Free Plan
+          </span>
+          <p className="text-slate-600 font-medium text-sm leading-relaxed mb-6">
+            You are currently on the free tier. Upgrade to unlock unlimited projects and export features.
+          </p>
+          <div className="flex flex-wrap gap-3">
+            <button
+              onClick={handleUpgradeClick}
+              className="inline-flex items-center justify-center gap-2 bg-emerald-500 hover:bg-emerald-600 text-white px-6 py-3 rounded-xl font-bold transition-all shadow-lg shadow-emerald-500/20"
+            >
+              <Sparkles className="w-5 h-5" /> Upgrade to Pro
+            </button>
+            {/* Manage Billing - enable when Stripe is integrated */}
             <button
               disabled
-              className="inline-flex items-center justify-center gap-2 bg-slate-100 text-slate-400 cursor-not-allowed px-6 py-3 rounded-xl font-bold"
+              className="inline-flex items-center justify-center gap-2 bg-white border border-slate-200 text-slate-400 cursor-not-allowed px-6 py-3 rounded-xl font-bold"
             >
-              <CreditCard className="w-5 h-5" /> Manage Subscription
+              <CreditCard className="w-5 h-5" /> Manage Billing
             </button>
           </div>
         </div>
