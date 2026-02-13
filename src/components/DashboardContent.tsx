@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Plus, Folder, ArrowRight, Loader2, LogOut } from "lucide-react";
+import { Plus, Folder, ArrowRight, Loader2, LogOut, User } from "lucide-react";
 import { createClient } from "@/utils/supabase/client";
 import { CreateProjectModal } from "@/components/CreateProjectModal";
 import type { Project } from "@/types/database";
@@ -81,12 +81,20 @@ export function DashboardContent() {
                 <h1 className="text-3xl font-black text-slate-900 mb-2">My Projects</h1>
                 <p className="text-slate-500 font-medium">Select a project to manage equity or create a new one.</p>
             </div>
-            <button 
-                onClick={() => setIsModalOpen(true)}
-                className="inline-flex items-center gap-2 bg-slate-900 hover:bg-slate-800 text-white px-6 py-3 rounded-xl font-bold transition-all shadow-lg hover:-translate-y-0.5"
-            >
-                <Plus className="w-5 h-5" /> New Project
-            </button>
+            <div className="flex flex-col gap-3 items-end">
+                <Link
+                    href="/profile"
+                    className="inline-flex items-center gap-2 bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 hover:border-slate-300 px-6 py-3 rounded-xl font-bold transition-all"
+                >
+                    <User className="w-5 h-5" /> My Profile
+                </Link>
+                <button 
+                    onClick={() => setIsModalOpen(true)}
+                    className="inline-flex items-center gap-2 bg-slate-900 hover:bg-slate-800 text-white px-6 py-3 rounded-xl font-bold transition-all shadow-lg hover:-translate-y-0.5"
+                >
+                    <Plus className="w-5 h-5" /> New Project
+                </button>
+            </div>
         </div>
 
         {projects.length === 0 ? (
