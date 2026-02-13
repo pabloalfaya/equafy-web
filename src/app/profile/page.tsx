@@ -62,13 +62,23 @@ export default function ProfilePage() {
       </nav>
 
       <main className="max-w-2xl mx-auto px-6 py-12">
-        <Link
-          href="/dashboard"
-          className="inline-flex items-center gap-1.5 text-slate-500 hover:text-slate-900 font-medium text-sm mb-6 transition-colors"
-        >
-          ← Back to Projects
-        </Link>
-        <h1 className="text-3xl font-black text-slate-900 mb-8">My Profile</h1>
+        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-8">
+          <h1 className="text-3xl font-black text-slate-900">My Profile</h1>
+          <div className="flex gap-4">
+            <Link
+              href="/dashboard"
+              className="inline-flex items-center gap-2 bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 hover:border-slate-300 px-5 py-2.5 rounded-xl font-bold text-sm transition-all"
+            >
+              ← Back to Projects
+            </Link>
+            <button
+              onClick={handleSignOut}
+              className="inline-flex items-center gap-2 bg-red-50 hover:bg-red-100 text-red-600 hover:text-red-700 border border-red-200 px-5 py-2.5 rounded-xl font-bold text-sm transition-all"
+            >
+              <LogOut className="w-4 h-4" /> Sign Out
+            </button>
+          </div>
+        </div>
 
         <div className="bg-white border border-slate-200 rounded-2xl shadow-sm p-8">
           <dl className="space-y-6">
@@ -82,13 +92,7 @@ export default function ProfilePage() {
             </div>
           </dl>
 
-          <div className="mt-8 pt-8 border-t border-slate-100 flex flex-col sm:flex-row gap-3">
-            <button
-              onClick={handleSignOut}
-              className="inline-flex items-center justify-center gap-2 bg-slate-900 hover:bg-slate-800 text-white px-6 py-3 rounded-xl font-bold transition-all"
-            >
-              <LogOut className="w-5 h-5" /> Sign Out
-            </button>
+          <div className="mt-8 pt-8 border-t border-slate-100">
             <button
               disabled
               className="inline-flex items-center justify-center gap-2 bg-slate-100 text-slate-400 cursor-not-allowed px-6 py-3 rounded-xl font-bold"
