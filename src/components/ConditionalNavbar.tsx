@@ -4,12 +4,13 @@ import { usePathname } from "next/navigation";
 import { Navbar } from "@/components/Navbar";
 
 /**
- * Renders the public Navbar only on non-dashboard routes.
- * Dashboard routes (/dashboard/*) use their own internal nav (e.g. Back + logo + project name).
+ * Renders the public Navbar only on non-dashboard and non-profile routes.
+ * Dashboard and profile use their own internal nav (logo + email + Log out).
  */
 export function ConditionalNavbar() {
   const pathname = usePathname();
   const isDashboard = pathname?.startsWith("/dashboard");
-  if (isDashboard) return null;
+  const isProfile = pathname?.startsWith("/profile");
+  if (isDashboard || isProfile) return null;
   return <Navbar />;
 }

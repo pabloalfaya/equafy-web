@@ -6,6 +6,7 @@ import { PublicFooter } from "@/components/PublicFooter";
 export function ConditionalFooter() {
   const pathname = usePathname();
   const isDashboard = pathname?.startsWith("/dashboard");
-  if (isDashboard) return null;
+  const isProfile = pathname?.startsWith("/profile");
+  if (isDashboard || isProfile) return null;
   return <PublicFooter />;
 }
