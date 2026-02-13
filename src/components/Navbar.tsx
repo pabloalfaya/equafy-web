@@ -1,17 +1,39 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { ArrowRight, ChevronDown, Sparkles, Cog, Zap, BookOpen } from "lucide-react";
 
 const PRODUCT_MENU_LEAVE_DELAY_MS = 120;
 
 export function Navbar() {
+  const [isNavVisible, setIsNavVisible] = useState(true);
   const [isProductMenuOpen, setIsProductMenuOpen] = useState(false);
+  const lastScrollY = useRef(0);
   const productMenuLeaveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+      if (currentScrollY < 50) {
+        setIsNavVisible(true);
+      } else if (currentScrollY > lastScrollY.current) {
+        setIsNavVisible(false);
+      } else {
+        setIsNavVisible(true);
+      }
+      lastScrollY.current = currentScrollY;
+    };
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
   return (
-    <nav className="sticky top-0 inset-x-0 z-50 border-b border-gray-100/50 bg-white/80 backdrop-blur-md">
+    <nav
+      className={`fixed top-0 inset-x-0 z-50 border-b border-gray-100/50 bg-white/80 backdrop-blur-md transition-transform duration-300 ease-in-out ${
+        isNavVisible ? "translate-y-0" : "-translate-y-full"
+      }`}
+    >
       <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-3">
         <div className="flex items-center gap-8">
           <Link href="/" className="relative group">
