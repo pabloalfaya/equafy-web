@@ -31,7 +31,7 @@ export default function LandingPage() {
       </div>
 
       {/* --- HERO SECTION --- */}
-      <header className="relative pt-[60px] md:pt-[70px] pb-10 z-10">
+      <header className="relative pt-40 md:pt-52 pb-10 z-10">
         <div className="mx-auto max-w-5xl px-6 text-center">
           <h1 className="text-6xl md:text-8xl font-bold tracking-tighter text-slate-900 mb-4 leading-[1.1] md:leading-[1.1] py-2">
             Equity that <br className="hidden md:block" />
