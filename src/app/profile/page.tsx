@@ -28,6 +28,7 @@ export default function ProfilePage() {
 
   const handleSignOut = async () => {
     await supabase.auth.signOut();
+    router.refresh();
     router.push("/");
   };
 
@@ -61,6 +62,12 @@ export default function ProfilePage() {
       </nav>
 
       <main className="max-w-2xl mx-auto px-6 py-12">
+        <Link
+          href="/dashboard"
+          className="inline-flex items-center gap-1.5 text-slate-500 hover:text-slate-900 font-medium text-sm mb-6 transition-colors"
+        >
+          ← Back to Projects
+        </Link>
         <h1 className="text-3xl font-black text-slate-900 mb-8">My Profile</h1>
 
         <div className="bg-white border border-slate-200 rounded-2xl shadow-sm p-8">
