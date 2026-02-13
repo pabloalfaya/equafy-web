@@ -15,7 +15,7 @@ export default function HowItWorksPage() {
       </div>
 
       {/* --- HERO SECTION --- */}
-      <main className="relative z-10 pt-24 md:pt-32 pb-20">
+      <main className="relative z-10 pt-32 md:pt-40 pb-20">
         <div className="mx-auto max-w-4xl px-6 text-center">
           <div className="inline-flex items-center gap-2 rounded-full bg-blue-50 border border-blue-100 px-3 py-1 text-xs font-bold text-blue-700 mb-6">
             <span className="flex h-1.5 w-1.5 rounded-full bg-blue-500 animate-pulse"></span>

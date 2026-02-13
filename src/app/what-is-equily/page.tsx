@@ -19,7 +19,7 @@ export default function WhatIsEquilyPage() {
       </div>
 
       {/* --- SECCIÓN PRINCIPAL (HERO 2 COLUMNAS) --- */}
-      <main className="relative z-10 pt-24 md:pt-32 pb-20">
+      <main className="relative z-10 pt-32 md:pt-40 pb-20">
         <div className="mx-auto max-w-7xl px-6">
           <div className="grid lg:grid-cols-2 gap-16 items-center">
             

@@ -44,7 +44,7 @@ export default function ContactPage() {
       </div>
 
       {/* --- SECCIÓN DE CONTACTO --- */}
-      <main className="relative z-10 pt-24 md:pt-32 pb-20 px-6">
+      <main className="relative z-10 pt-32 md:pt-40 pb-20 px-6">
         <div className="mx-auto max-w-5xl">
           <div className="text-center mb-12">
             <h1 className="text-5xl md:text-7xl font-bold tracking-tight text-slate-900 mb-6">

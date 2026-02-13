@@ -70,7 +70,7 @@ export default function GuidePage() {
         <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]" />
       </div>
 
-      <main className="relative z-10 pt-24 md:pt-32 pb-20 md:pb-28 px-6">
+      <main className="relative z-10 pt-32 md:pt-40 pb-20 md:pb-28 px-6">
         <div className="mx-auto max-w-2xl">
           <header className="text-center mb-12 md:mb-16">
             <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-slate-900 mb-4">
