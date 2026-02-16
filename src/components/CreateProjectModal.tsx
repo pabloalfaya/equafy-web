@@ -53,24 +53,25 @@ export function CreateProjectModal({ isOpen, onClose, onProjectCreated }: Create
   };
 
   const handlePayment = async () => {
-    alert("¡CLICK RECIBIDO!");
-    const priceId =
-      subscriptionPlan === "monthly"
-        ? (process.env.NEXT_PUBLIC_STRIPE_MONTHLY_PRICE_ID ?? selectedPriceId)
-        : subscriptionPlan === "annual"
-          ? (process.env.NEXT_PUBLIC_STRIPE_ANNUAL_PRICE_ID ?? selectedPriceId)
-          : "";
-    console.log("Price selected for payment:", priceId);
-    if (!priceId) return;
-
-    setLoading(true);
+    alert("CLICK RECIBIDO - INICIANDO FETCH");
 
     try {
+      const priceId =
+        subscriptionPlan === "monthly"
+          ? (process.env.NEXT_PUBLIC_STRIPE_MONTHLY_PRICE_ID ?? selectedPriceId)
+          : subscriptionPlan === "annual"
+            ? (process.env.NEXT_PUBLIC_STRIPE_ANNUAL_PRICE_ID ?? selectedPriceId)
+            : "";
+      if (!priceId) {
+        throw new Error("No priceId: selecciona un plan (Monthly o Annual).");
+      }
+
+      setLoading(true);
+
       const { data: { user }, error: authError } = await supabase.auth.getUser();
       if (authError || !user) {
-        alert("You must be logged in to continue.");
         setLoading(false);
-        return;
+        throw new Error("You must be logged in to continue.");
       }
 
       const apiUrl = "/api/stripe/checkout";
@@ -81,41 +82,36 @@ export function CreateProjectModal({ isOpen, onClose, onProjectCreated }: Create
         userId: user.id,
         email: user.email ?? "",
       };
-      console.log("INICIANDO PAGO PARA EL PROYECTO:", projectNameTrimmed);
-      console.log("ID que se enviará:", priceId);
 
-      const res = await fetch(apiUrl, {
+      alert("Voy a llamar a /api/stripe/checkout con plan: " + priceId);
+
+      const response = await fetch(apiUrl, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(body),
       });
 
+      if (!response.ok) {
+        throw new Error("Error del servidor: " + response.statusText);
+      }
+
       let data: { url?: string; error?: string };
       try {
-        data = await res.json();
+        data = await response.json();
       } catch {
         data = {};
       }
-      console.log("API response:", data);
-
-      if (!res.ok) {
-        const serverError = data?.error ?? `Server returned ${res.status}: ${JSON.stringify(data)}`;
-        alert(serverError);
-        setLoading(false);
-        return;
-      }
 
       if (data.url && typeof data.url === "string") {
-        console.log("Redirecting to:", data.url);
+        alert("Redirigiendo a: " + data.url);
         window.location.href = data.url;
         return;
       }
 
       throw new Error("API did not return a Stripe URL: " + JSON.stringify(data));
-    } catch (err) {
-      const message = err instanceof Error ? err.message : String(err);
-      console.error("[CreateProject] Error:", err);
-      alert(message);
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      alert("ERROR CRÍTICO: " + message);
     } finally {
       setLoading(false);
     }
