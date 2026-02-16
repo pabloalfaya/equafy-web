@@ -26,7 +26,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${inter.variable} font-sans antialiased`}>
         <ConditionalNavbar />
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
+        <div className="max-w-screen-2xl mx-auto px-6 md:px-12 lg:px-24 w-full">
           {children}
         </div>
         <ConditionalFooter />

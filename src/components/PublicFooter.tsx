@@ -5,8 +5,8 @@ import { Twitter, Linkedin, Mail } from "lucide-react";
 
 export function PublicFooter() {
   return (
-    <footer className="bg-white border-t border-slate-200 relative z-10">
-      <div className="mx-auto max-w-7xl px-6 pt-20 pb-10">
+    <footer className="bg-white border-t border-slate-200 relative z-10 w-full">
+      <div className="mx-auto max-w-screen-2xl px-6 md:px-12 lg:px-24 pt-20 pb-10">
         <div className="grid grid-cols-2 md:grid-cols-5 gap-12 mb-16">
           <div className="col-span-2">
             <Link href="/" className="inline-block mb-6">

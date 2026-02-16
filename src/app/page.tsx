@@ -31,8 +31,8 @@ export default function LandingPage() {
       </div>
 
       {/* --- HERO SECTION --- */}
-      <header className="relative pt-32 md:pt-40 pb-10 z-10">
-        <div className="mx-auto max-w-5xl px-6 text-center">
+      <header className="relative pt-32 md:pt-40 pb-10 z-10 w-full">
+        <div className="mx-auto max-w-screen-2xl px-6 md:px-12 lg:px-24 text-center">
           <h1 className="text-6xl md:text-8xl font-bold tracking-tighter text-slate-900 mb-4 leading-[1.1] md:leading-[1.1] py-2">
             Equity that <br className="hidden md:block" />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 to-teal-500">evolves with you.</span>
@@ -57,8 +57,8 @@ export default function LandingPage() {
       </header>
 
       {/* --- DASHBOARD PREVIEW SECTION --- */}
-      <section className="pb-16 relative z-10 px-4">
-        <div className="mx-auto max-w-6xl relative">
+      <section className="pb-16 relative z-10 w-full px-6 md:px-12 lg:px-24">
+        <div className="mx-auto max-w-screen-2xl relative">
           <div className="relative z-20 rounded-[32px] border border-slate-200/60 bg-white/80 backdrop-blur-2xl shadow-[0_40px_80px_-20px_rgba(0,0,0,0.1)] overflow-hidden ring-1 ring-slate-900/5">
             <div className="h-12 border-b border-slate-100 flex items-center px-6 gap-2 bg-slate-50/50">
               <div className="w-3 h-3 rounded-full bg-red-400/80"></div>
@@ -137,9 +137,9 @@ export default function LandingPage() {
       </div>
 
       {/* --- FRAMEWORK SELECTION --- */}
-      <section className="relative z-10 bg-[#0B0F19] text-white pt-16 pb-24">
+      <section className="relative z-10 w-full bg-[#0B0F19] text-white pt-16 pb-24">
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-emerald-900/20 via-[#0B0F19] to-[#0B0F19] pointer-events-none"></div>
-          <div className="mx-auto max-w-7xl relative px-6">
+          <div className="mx-auto max-w-screen-2xl relative px-6 md:px-12 lg:px-24">
             <div className="text-center mb-12 max-w-3xl mx-auto">
               <h2 className="text-4xl md:text-5xl font-bold tracking-tight mb-4 bg-clip-text text-transparent bg-gradient-to-b from-white to-white/60 py-2">
                 Choose your Equity Framework
@@ -149,7 +149,7 @@ export default function LandingPage() {
               </p>
             </div>
 
-            <div className="grid lg:grid-cols-3 gap-6 items-start">
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 items-start">
               
               {/* --- CUSTOM MODEL --- */}
               <div className="bg-white/[0.03] border border-white/10 rounded-[32px] p-8 hover:bg-white/[0.05] transition-all duration-300 group h-full flex flex-col">

@@ -15,8 +15,8 @@ export default function HowItWorksPage() {
       </div>
 
       {/* --- HERO SECTION --- */}
-      <main className="relative z-10 pt-32 md:pt-40 pb-20">
-        <div className="mx-auto max-w-4xl px-6 text-center">
+      <main className="relative z-10 pt-32 md:pt-40 pb-20 w-full">
+        <div className="mx-auto max-w-screen-2xl px-6 md:px-12 lg:px-24 text-center">
           <div className="inline-flex items-center gap-2 rounded-full bg-blue-50 border border-blue-100 px-3 py-1 text-xs font-bold text-blue-700 mb-6">
             <span className="flex h-1.5 w-1.5 rounded-full bg-blue-500 animate-pulse"></span>
             <span>The Methodology</span>
@@ -32,7 +32,7 @@ export default function HowItWorksPage() {
         </div>
 
         {/* --- PASOS DEL PROCESO --- */}
-        <div className="mx-auto max-w-6xl px-6 space-y-20 md:space-y-24">
+        <div className="mx-auto max-w-screen-2xl px-6 md:px-12 lg:px-24 space-y-20 md:space-y-24">
           
           {/* Paso 1: Track Contributions */}
           <div className="grid lg:grid-cols-2 gap-16 items-center">

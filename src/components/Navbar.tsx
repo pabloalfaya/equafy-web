@@ -35,7 +35,7 @@ export function Navbar() {
         isNavVisible ? "translate-y-0" : "-translate-y-full"
       }`}
     >
-      <div className="mx-auto flex max-w-7xl items-center justify-between px-4 sm:px-6 py-3">
+      <div className="mx-auto flex max-w-screen-2xl items-center justify-between px-6 md:px-12 lg:px-24 py-3">
         <div className="flex items-center gap-4 sm:gap-8 min-w-0">
           <Link href="/" className="relative group flex-shrink-0">
             <div className="absolute -inset-2 bg-gradient-to-r from-emerald-500/20 to-blue-500/20 rounded-lg blur opacity-0 group-hover:opacity-100 transition duration-500" />
@@ -206,7 +206,7 @@ export function Navbar() {
       {/* Mobile menu overlay (md and down) */}
       {isMobileMenuOpen && (
         <div className="md:hidden border-t border-gray-100/50 bg-white/95 backdrop-blur-md">
-          <div className="mx-auto max-w-7xl px-4 py-4 space-y-1">
+          <div className="mx-auto max-w-screen-2xl px-6 md:px-12 lg:px-24 py-4 space-y-1">
             <Link href="/login" onClick={() => setIsMobileMenuOpen(false)} className="block py-2 text-sm font-bold text-slate-600 hover:text-slate-900">
               Log in
             </Link>
@@ -231,7 +231,7 @@ export function Navbar() {
 
       {/* Mobile Product menu (accordion style) */}
       <div className="lg:hidden border-t border-gray-100/50 bg-white/90">
-        <div className="mx-auto max-w-7xl px-6 py-2">
+        <div className="mx-auto max-w-screen-2xl px-6 md:px-12 lg:px-24 py-2">
           <button
             type="button"
             onClick={() =>

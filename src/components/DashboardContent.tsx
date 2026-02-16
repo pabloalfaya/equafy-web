@@ -89,7 +89,8 @@ export function DashboardContent() {
 
   return (
     <div className="min-h-screen bg-[#F8FAFC] font-sans text-slate-900">
-      <nav className="border-b border-slate-200 bg-white px-4 sm:px-6 py-4 flex justify-between items-center sticky top-0 z-10">
+      <nav className="border-b border-slate-200 bg-white w-full sticky top-0 z-10">
+        <div className="max-w-screen-2xl mx-auto px-6 md:px-12 lg:px-24 py-4 flex justify-between items-center">
         <Link href="/" className="min-w-0 flex-shrink">
             <img src="/logo.png" alt="Equily" className="h-14 sm:h-20 w-auto opacity-80 hover:opacity-100 transition-opacity object-contain" />
         </Link>
@@ -99,9 +100,10 @@ export function DashboardContent() {
                 <LogOut className="w-5 h-5" />
             </button>
         </div>
+        </div>
       </nav>
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+      <main className="max-w-screen-2xl mx-auto px-6 md:px-12 lg:px-24 py-8 sm:py-12">
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6 mb-8 sm:mb-12">
             <div>
                 <h1 className="text-3xl font-black text-slate-900 mb-2">My Projects</h1>
@@ -135,7 +137,7 @@ export function DashboardContent() {
                 </button>
             </div>
         ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4 sm:gap-6">
                 {projects.map((project) => {
                   const isActive = project.subscription_status === "active";
                   if (isActive) {

@@ -79,8 +79,8 @@ export default function FeaturesPage() {
         <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]" />
       </div>
 
-      <main className="relative z-10 pt-32 md:pt-40 pb-20 md:pb-28 px-6">
-        <div className="mx-auto max-w-6xl">
+      <main className="relative z-10 pt-32 md:pt-40 pb-20 md:pb-28 px-6 md:px-12 lg:px-24">
+        <div className="mx-auto max-w-screen-2xl">
           <header className="text-center mb-12 md:mb-16">
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-slate-900 mb-6">
               Complete Control Over Your Equity
@@ -90,7 +90,7 @@ export default function FeaturesPage() {
             </p>
           </header>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-6">
             {FEATURES.map((feature) => {
               const Icon = feature.icon;
               return (

@@ -19,8 +19,8 @@ export default function WhatIsEquilyPage() {
       </div>
 
       {/* --- SECCIÓN PRINCIPAL (HERO 2 COLUMNAS) --- */}
-      <main className="relative z-10 pt-32 md:pt-40 pb-20">
-        <div className="mx-auto max-w-7xl px-6">
+      <main className="relative z-10 pt-32 md:pt-40 pb-20 w-full">
+        <div className="mx-auto max-w-screen-2xl px-6 md:px-12 lg:px-24">
           <div className="grid lg:grid-cols-2 gap-16 items-center">
             
             {/* Lado Izquierdo: Texto */}
@@ -71,17 +71,17 @@ export default function WhatIsEquilyPage() {
       </main>
 
       {/* --- SECCIÓN "CORE FEATURES" (Dark Mode) --- */}
-      <section className="py-20 md:py-24 relative z-10 bg-[#0B0F19] text-white overflow-hidden">
+      <section className="py-20 md:py-24 relative z-10 w-full bg-[#0B0F19] text-white overflow-hidden">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-emerald-900/20 via-[#0B0F19] to-[#0B0F19]"></div>
         <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-emerald-500/20 to-transparent"></div>
         
-        <div className="mx-auto max-w-7xl px-6 relative">
+        <div className="mx-auto max-w-screen-2xl px-6 md:px-12 lg:px-24 relative">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold tracking-tight mb-4">How it works under the hood</h2>
             <p className="text-slate-400 text-lg">A simple process for complex fairness.</p>
           </div>
           
-          <div className="grid md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
             {[
               { title: "Track Contributions", desc: "Automate the tracking of time, expertise, and capital.", icon: TrendingUp, color: "text-emerald-400", bg: "bg-emerald-400/10", border: "border-emerald-500/20" },
               { title: "Algorithm Runs", desc: "Our proprietary algorithm processes contributions fairly.", icon: PieChart, color: "text-blue-400", bg: "bg-blue-400/10", border: "border-blue-500/20" },

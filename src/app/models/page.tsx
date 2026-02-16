@@ -17,7 +17,7 @@ export default function ModelsPage() {
         <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]"></div>
       </div>
 
-      <main className="relative z-10 pt-48 pb-32 px-6 max-w-5xl mx-auto space-y-48">
+      <main className="relative z-10 pt-48 pb-32 px-6 md:px-12 lg:px-24 max-w-screen-2xl mx-auto space-y-48">
         
         {/* --- 1. JUST SPLIT MODEL --- */}
         <section id="standard" className="scroll-mt-48">
@@ -159,7 +159,7 @@ export default function ModelsPage() {
 
       {/* --- FOOTER COHERENTE --- */}
       <footer className="bg-white border-t border-slate-200 relative z-10 py-20">
-        <div className="mx-auto max-w-7xl px-6 flex flex-col md:flex-row justify-between items-center gap-6 text-slate-400 font-bold text-[10px] uppercase tracking-widest">
+        <div className="mx-auto max-w-screen-2xl px-6 md:px-12 lg:px-24 flex flex-col md:flex-row justify-between items-center gap-6 text-slate-400 font-bold text-[10px] uppercase tracking-widest">
           <p>© 2026 Equily. Built for modern co-founders.</p>
           <div className="flex gap-8">
             <Link href="/contact" className="hover:text-slate-900 transition-colors">Contact</Link>
