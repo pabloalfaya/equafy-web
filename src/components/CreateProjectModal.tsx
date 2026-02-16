@@ -11,25 +11,17 @@ interface CreateProjectModalProps {
   onProjectCreated: (project: Project) => void;
 }
 
-const MONTHLY_PRICE_ID = process.env.NEXT_PUBLIC_STRIPE_MONTHLY_PRICE_ID ?? "";
-const ANNUAL_PRICE_ID = process.env.NEXT_PUBLIC_STRIPE_ANNUAL_PRICE_ID ?? "";
-
 export function CreateProjectModal({ isOpen, onClose, onProjectCreated }: CreateProjectModalProps) {
+  console.log("ID Mensual detectado:", process.env.NEXT_PUBLIC_STRIPE_MONTHLY_PRICE_ID);
+
   const [step, setStep] = useState(1);
   const [name, setName] = useState("");
   const [model, setModel] = useState("just_split");
   const [subscriptionPlan, setSubscriptionPlan] = useState<"monthly" | "annual" | null>(null);
-  const [selectedPriceId, setSelectedPriceId] = useState<string>("");
   const [loading, setLoading] = useState(false);
 
-  const handleSelectMonthly = () => {
-    setSubscriptionPlan("monthly");
-    setSelectedPriceId(MONTHLY_PRICE_ID);
-  };
-  const handleSelectAnnual = () => {
-    setSubscriptionPlan("annual");
-    setSelectedPriceId(ANNUAL_PRICE_ID);
-  };
+  const handleSelectMonthly = () => setSubscriptionPlan("monthly");
+  const handleSelectAnnual = () => setSubscriptionPlan("annual");
   const isPaymentReady = subscriptionPlan !== null && !loading;
 
   const [mults, setMults] = useState({
@@ -54,17 +46,12 @@ export function CreateProjectModal({ isOpen, onClose, onProjectCreated }: Create
       alert("Please select a plan first.");
       return;
     }
-    if (!selectedPriceId) {
-      console.log("[CreateProject] Env vars being read:", {
-        NEXT_PUBLIC_STRIPE_MONTHLY_PRICE_ID: process.env.NEXT_PUBLIC_STRIPE_MONTHLY_PRICE_ID,
-        NEXT_PUBLIC_STRIPE_ANNUAL_PRICE_ID: process.env.NEXT_PUBLIC_STRIPE_ANNUAL_PRICE_ID,
-        MONTHLY_PRICE_ID,
-        ANNUAL_PRICE_ID,
-      });
-      alert("Stripe Price IDs are not configured. Add NEXT_PUBLIC_STRIPE_MONTHLY_PRICE_ID and NEXT_PUBLIC_STRIPE_ANNUAL_PRICE_ID to .env.local and restart the server.");
-      return;
-    }
-    console.log("Price ID being sent:", selectedPriceId);
+
+    const priceId =
+      subscriptionPlan === "monthly"
+        ? process.env.NEXT_PUBLIC_STRIPE_MONTHLY_PRICE_ID
+        : process.env.NEXT_PUBLIC_STRIPE_ANNUAL_PRICE_ID;
+    console.log("Price ID being sent:", priceId);
 
     setLoading(true);
 
@@ -79,11 +66,11 @@ export function CreateProjectModal({ isOpen, onClose, onProjectCreated }: Create
       const apiUrl = "/api/stripe/checkout";
       const body = {
         projectName: name.trim(),
-        priceId: selectedPriceId,
+        priceId: priceId ?? "",
         userId: user.id,
         email: user.email ?? "",
       };
-      console.log("Sending to API...", { apiUrl, projectName: name, priceId: selectedPriceId });
+      console.log("Sending to API...", { apiUrl, projectName: name, priceId });
       const res = await fetch(apiUrl, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
