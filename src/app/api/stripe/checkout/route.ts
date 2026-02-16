@@ -91,6 +91,14 @@ export async function POST(req: Request) {
       locale: "en",
     });
 
+    if (!session.url) {
+      console.error("Stripe session created but url is null", { sessionId: session.id });
+      return NextResponse.json(
+        { error: "Stripe did not return a checkout URL" },
+        { status: 500 }
+      );
+    }
+
     return NextResponse.json({ url: session.url });
   } catch (err) {
     console.error("Stripe checkout error:", err);

@@ -71,33 +71,44 @@ export function CreateProjectCheckoutModal({
       }
 
       // userId y email vienen de la sesión de Supabase (supabase.auth.getUser())
-      const res = await fetch("/api/stripe/checkout", {
+      const body = {
+        projectName: name,
+        priceId,
+        userId: user.id,
+        email: user.email ?? "",
+      };
+      const apiUrl = "/api/stripe/checkout";
+      console.log("[Checkout] Sending request to", apiUrl, { projectName: name, priceId, hasUserId: !!body.userId, hasEmail: !!body.email });
+      const res = await fetch(apiUrl, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          projectName: name,
-          priceId,
-          userId: user.id,
-          email: user.email ?? "",
-        }),
+        body: JSON.stringify(body),
       });
 
-      const data = await res.json();
+      const data = await res.json().catch(() => ({}));
 
       if (!res.ok) {
-        alert(data.error || "Error al iniciar el pago.");
+        console.error("[Checkout] API error:", {
+          status: res.status,
+          statusText: res.statusText,
+          url: apiUrl,
+          body: data,
+          error: data?.error,
+        });
+        alert(data?.error || "Error al iniciar el pago.");
         setLoading(false);
         return;
       }
 
-      if (data.url) {
+      if (data?.url && typeof data.url === "string") {
         window.location.href = data.url;
         return;
       }
 
+      console.error("[Checkout] API success but no url:", { data });
       alert("No se recibió URL de pago.");
     } catch (err) {
-      console.error("Checkout error:", err);
+      console.error("[Checkout] Error:", err);
       alert("Error de conexión. Inténtalo de nuevo.");
     } finally {
       setLoading(false);
