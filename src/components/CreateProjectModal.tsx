@@ -46,6 +46,25 @@ export function CreateProjectModal({ isOpen, onClose, onProjectCreated }: Create
 
   const supabase = createClient();
 
+  const JUST_SPLIT_MULTS = { cash: 4, work: 2, tangible: 1, intangible: 2, others: 1 };
+  const FLAT_MULTS = { cash: 1, work: 1, tangible: 1, intangible: 1, others: 1 };
+
+  const handleModelSelect = (modelType: "flat" | "just_split" | "custom") => {
+    setModel(modelType);
+    switch (modelType) {
+      case "flat":
+        setMults(FLAT_MULTS);
+        break;
+      case "just_split":
+        setMults(JUST_SPLIT_MULTS);
+        break;
+      case "custom":
+        break;
+      default:
+        break;
+    }
+  };
+
   if (!isOpen) return null;
 
   const handleNext = (e: React.FormEvent) => {
@@ -77,11 +96,18 @@ export function CreateProjectModal({ isOpen, onClose, onProjectCreated }: Create
 
       const apiUrl = "/api/stripe/checkout";
       const projectNameTrimmed = name.trim();
+      const modelTypeDb = model === "flat" ? "FLAT" : model === "just_split" ? "JUST_SPLIT" : "CUSTOM";
       const body = {
         projectName: projectNameTrimmed,
         priceId,
         userId: user.id,
         email: user.email ?? "",
+        model_type: modelTypeDb,
+        mult_cash: mults.cash,
+        mult_work: mults.work,
+        mult_tangible: mults.tangible,
+        mult_intangible: mults.intangible,
+        mult_others: mults.others,
       };
 
       alert("Voy a llamar a /api/stripe/checkout con plan: " + priceId);
@@ -157,7 +183,7 @@ export function CreateProjectModal({ isOpen, onClose, onProjectCreated }: Create
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
               
               {/* CARD: CUSTOM */}
-              <div onClick={() => setModel('custom')} className={`relative p-5 rounded-2xl border-2 transition-all cursor-pointer flex flex-col ${model === 'custom' ? 'border-blue-500 bg-blue-50/30 ring-1 ring-blue-500/20' : 'border-slate-100 bg-slate-50/50 hover:border-slate-200'}`}>
+              <div onClick={() => handleModelSelect("custom")} className={`relative p-5 rounded-2xl border-2 transition-all cursor-pointer flex flex-col ${model === 'custom' ? 'border-blue-500 bg-blue-50/30 ring-1 ring-blue-500/20' : 'border-slate-100 bg-slate-50/50 hover:border-slate-200'}`}>
                 <div className="flex items-center gap-3 mb-4">
                     <div className={`p-2 rounded-lg ${model === 'custom' ? 'bg-blue-500 text-white' : 'bg-white text-slate-400 shadow-sm'}`}><Settings className="w-4 h-4" /></div>
                     <span className="font-black text-slate-800">Custom</span>
@@ -183,7 +209,7 @@ export function CreateProjectModal({ isOpen, onClose, onProjectCreated }: Create
               </div>
 
               {/* CARD: JUST SPLIT */}
-              <div onClick={() => setModel('just_split')} className={`relative p-5 rounded-2xl border-2 transition-all cursor-pointer flex flex-col ${model === 'just_split' ? 'border-emerald-500 bg-emerald-50/40 ring-1 ring-emerald-500/20' : 'border-slate-100 bg-slate-50/50 hover:border-slate-200'}`}>
+              <div onClick={() => handleModelSelect("just_split")} className={`relative p-5 rounded-2xl border-2 transition-all cursor-pointer flex flex-col ${model === 'just_split' ? 'border-emerald-500 bg-emerald-50/40 ring-1 ring-emerald-500/20' : 'border-slate-100 bg-slate-50/50 hover:border-slate-200'}`}>
                 <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-emerald-500 text-white text-[9px] font-black px-3 py-1 rounded-full uppercase shadow-lg z-10">Best Choice</div>
                 <div className="flex items-center gap-3 mb-4">
                     <div className={`p-2 rounded-lg ${model === 'just_split' ? 'bg-emerald-500 text-white' : 'bg-white text-slate-400 shadow-sm'}`}><ShieldCheck className="w-4 h-4" /></div>
@@ -205,7 +231,7 @@ export function CreateProjectModal({ isOpen, onClose, onProjectCreated }: Create
               </div>
 
               {/* CARD: FLAT MODEL */}
-              <div onClick={() => setModel('flat')} className={`relative p-5 rounded-2xl border-2 transition-all cursor-pointer flex flex-col ${model === 'flat' ? 'border-purple-500 bg-purple-50/20 ring-1 ring-purple-500/20' : 'border-slate-100 bg-slate-50/50 hover:border-slate-200'}`}>
+              <div onClick={() => handleModelSelect("flat")} className={`relative p-5 rounded-2xl border-2 transition-all cursor-pointer flex flex-col ${model === 'flat' ? 'border-purple-500 bg-purple-50/20 ring-1 ring-purple-500/20' : 'border-slate-100 bg-slate-50/50 hover:border-slate-200'}`}>
                 <div className="flex items-center gap-3 mb-4">
                     <div className={`p-2 rounded-lg ${model === 'flat' ? 'bg-purple-500 text-white' : 'bg-white text-slate-400 shadow-sm'}`}><Scale className="w-4 h-4" /></div>
                     <span className="font-black text-slate-800">Flat Model</span>

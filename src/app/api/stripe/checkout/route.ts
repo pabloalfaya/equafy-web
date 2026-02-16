@@ -19,11 +19,28 @@ export async function POST(req: Request) {
     }
 
     const body = await req.json();
-    const { priceId, userId, email, projectName } = body as {
+    const {
+      priceId,
+      userId,
+      email,
+      projectName,
+      model_type: bodyModelType,
+      mult_cash: bodyMultCash,
+      mult_work: bodyMultWork,
+      mult_tangible: bodyMultTangible,
+      mult_intangible: bodyMultIntangible,
+      mult_others: bodyMultOthers,
+    } = body as {
       priceId?: string;
       userId?: string;
       email?: string;
       projectName?: string;
+      model_type?: string;
+      mult_cash?: number;
+      mult_work?: number;
+      mult_tangible?: number;
+      mult_intangible?: number;
+      mult_others?: number;
     };
 
     if (!priceId || typeof priceId !== "string") {
@@ -42,16 +59,26 @@ export async function POST(req: Request) {
     const userEmail = email;
     const supabase = await createClient();
 
+    const modelType =
+      bodyModelType === "FLAT" || bodyModelType === "JUST_SPLIT" || bodyModelType === "CUSTOM"
+        ? bodyModelType
+        : "JUST_SPLIT";
+    const mult_cash = typeof bodyMultCash === "number" ? bodyMultCash : 4;
+    const mult_work = typeof bodyMultWork === "number" ? bodyMultWork : 2;
+    const mult_tangible = typeof bodyMultTangible === "number" ? bodyMultTangible : 1;
+    const mult_intangible = typeof bodyMultIntangible === "number" ? bodyMultIntangible : 2;
+    const mult_others = typeof bodyMultOthers === "number" ? bodyMultOthers : 1;
+
     const payload = {
       name: projectName.trim(),
       owner_id: userId,
       subscription_status: "incomplete",
-      model_type: "JUST_SPLIT",
-      mult_cash: 4,
-      mult_work: 2,
-      mult_tangible: 1,
-      mult_intangible: 2,
-      mult_others: 1,
+      model_type: modelType,
+      mult_cash,
+      mult_work,
+      mult_tangible,
+      mult_intangible,
+      mult_others,
       use_log_risk: false,
     };
 
