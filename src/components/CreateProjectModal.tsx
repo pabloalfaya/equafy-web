@@ -52,13 +52,15 @@ export function CreateProjectModal({ isOpen, onClose, onProjectCreated }: Create
     if (name.trim()) setStep(2);
   };
 
-  const handleSubmit = async () => {
+  const handlePayment = async () => {
+    alert("¡CLICK RECIBIDO!");
     const priceId =
       subscriptionPlan === "monthly"
         ? (process.env.NEXT_PUBLIC_STRIPE_MONTHLY_PRICE_ID ?? selectedPriceId)
         : subscriptionPlan === "annual"
           ? (process.env.NEXT_PUBLIC_STRIPE_ANNUAL_PRICE_ID ?? selectedPriceId)
           : "";
+    console.log("Price selected for payment:", priceId);
     if (!priceId) return;
 
     setLoading(true);
@@ -262,7 +264,8 @@ export function CreateProjectModal({ isOpen, onClose, onProjectCreated }: Create
                     <ArrowLeft className="w-4 h-4" /> BACK
                 </button>
                 <button
-                  onClick={handleSubmit}
+                  type="button"
+                  onClick={handlePayment}
                   disabled={loading || subscriptionPlan === null}
                   className={`px-8 py-3.5 rounded-xl font-black transition-all flex items-center gap-2 shadow-lg active:scale-[0.98] ${
                     isPaymentReady
