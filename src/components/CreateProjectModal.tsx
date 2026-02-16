@@ -37,14 +37,14 @@ export function CreateProjectModal({ isOpen, onClose, onProjectCreated }: Create
   const [mults, setMults] = useState({
     cash: 4,
     work: 2,
-    tangible: 1,
+    tangible: 2,
     intangible: 2,
     others: 1
   });
 
   const supabase = createClient();
 
-  const JUST_SPLIT_MULTS = { cash: 4, work: 2, tangible: 1, intangible: 2, others: 1 };
+  const JUST_SPLIT_MULTS = { cash: 4, work: 2, tangible: 2, intangible: 2, others: 1 };
   const FLAT_MULTS = { cash: 1, work: 1, tangible: 1, intangible: 1, others: 1 };
 
   const handleModelSelect = (modelType: "flat" | "just_split" | "custom") => {
