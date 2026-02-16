@@ -49,7 +49,8 @@ export async function POST(req: Request) {
       use_log_risk: false,
     };
 
-    const { data: project, error: projectError } = await supabase
+    // 1. Insertar proyecto en Supabase y guardar el resultado
+    const { data: insertedProject, error: projectError } = await supabase
       .from("projects")
       .insert([payload])
       .select("id")
@@ -62,26 +63,27 @@ export async function POST(req: Request) {
         { status: 500 }
       );
     }
-    if (!project?.id) {
+    if (!insertedProject?.id) {
       return NextResponse.json(
         { error: "Project created but no ID returned" },
         { status: 500 }
       );
     }
+    const projectId = insertedProject.id;
 
+    // 2. Crear sesión de Stripe usando projectId y el priceId recibido en el POST
     const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
-
     const session = await stripe.checkout.sessions.create({
       mode: "subscription",
       line_items: [{ price: priceId, quantity: 1 }],
       customer_email: email,
       metadata: {
-        projectId: project.id,
+        projectId,
         userId,
       },
       subscription_data: {
         metadata: {
-          projectId: project.id,
+          projectId,
           userId,
         },
       },
@@ -99,6 +101,7 @@ export async function POST(req: Request) {
       );
     }
 
+    // 3. Devolver la URL de checkout al cliente
     return NextResponse.json({ url: session.url });
   } catch (err) {
     console.error("Stripe checkout error:", err);
