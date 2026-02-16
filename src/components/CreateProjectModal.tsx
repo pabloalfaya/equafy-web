@@ -19,14 +19,18 @@ export function CreateProjectModal({ isOpen, onClose, onProjectCreated }: Create
   const [name, setName] = useState("");
   const [model, setModel] = useState("just_split");
   const [subscriptionPlan, setSubscriptionPlan] = useState<"monthly" | "annual" | null>(null);
+  const [selectedPriceId, setSelectedPriceId] = useState<string>("");
   const [loading, setLoading] = useState(false);
 
-  const selectedPriceId =
-    subscriptionPlan === "monthly"
-      ? MONTHLY_PRICE_ID
-      : subscriptionPlan === "annual"
-        ? ANNUAL_PRICE_ID
-        : "";
+  const handleSelectMonthly = () => {
+    setSubscriptionPlan("monthly");
+    setSelectedPriceId(MONTHLY_PRICE_ID);
+  };
+  const handleSelectAnnual = () => {
+    setSubscriptionPlan("annual");
+    setSelectedPriceId(ANNUAL_PRICE_ID);
+  };
+  const isPaymentReady = subscriptionPlan !== null && !loading;
 
   const [mults, setMults] = useState({
     cash: 4,
@@ -46,8 +50,12 @@ export function CreateProjectModal({ isOpen, onClose, onProjectCreated }: Create
   };
 
   const handleSubmit = async () => {
-    if (!selectedPriceId) {
+    if (subscriptionPlan === null) {
       alert("Por favor, selecciona un plan primero.");
+      return;
+    }
+    if (!selectedPriceId) {
+      alert("Los Price IDs de Stripe no están configurados. Añade NEXT_PUBLIC_STRIPE_MONTHLY_PRICE_ID y NEXT_PUBLIC_STRIPE_ANNUAL_PRICE_ID en .env.local y reinicia el servidor.");
       return;
     }
     console.log("Price ID que voy a enviar:", selectedPriceId);
@@ -217,7 +225,7 @@ export function CreateProjectModal({ isOpen, onClose, onProjectCreated }: Create
               <div className="grid grid-cols-2 gap-3">
                 <button
                   type="button"
-                  onClick={() => setSubscriptionPlan("monthly")}
+                  onClick={handleSelectMonthly}
                   className={`rounded-xl p-4 text-left transition-all ${
                     subscriptionPlan === "monthly"
                       ? "border-[3px] border-blue-600 bg-blue-50 ring-2 ring-blue-600/40 shadow-md"
@@ -230,7 +238,7 @@ export function CreateProjectModal({ isOpen, onClose, onProjectCreated }: Create
                 </button>
                 <button
                   type="button"
-                  onClick={() => setSubscriptionPlan("annual")}
+                  onClick={handleSelectAnnual}
                   className={`rounded-xl p-4 text-left transition-all ${
                     subscriptionPlan === "annual"
                       ? "border-[3px] border-blue-600 bg-blue-50 ring-2 ring-blue-600/40 shadow-md"
@@ -250,8 +258,12 @@ export function CreateProjectModal({ isOpen, onClose, onProjectCreated }: Create
                 </button>
                 <button
                   onClick={handleSubmit}
-                  disabled={loading || !selectedPriceId}
-                  className="px-8 py-3.5 bg-slate-900 text-white rounded-xl font-black hover:bg-emerald-600 transition-all flex items-center gap-2 shadow-lg active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
+                  disabled={loading || subscriptionPlan === null}
+                  className={`px-8 py-3.5 rounded-xl font-black transition-all flex items-center gap-2 shadow-lg active:scale-[0.98] ${
+                    isPaymentReady
+                      ? "bg-emerald-600 text-white hover:bg-emerald-700 cursor-pointer"
+                      : "bg-slate-300 text-slate-500 cursor-not-allowed disabled:opacity-70"
+                  }`}
                 >
                   {loading ? <><Loader2 className="w-5 h-5 animate-spin" /> Redirigiendo...</> : <>Proceed to Payment <ArrowRight className="w-4 h-4" /></>}
                 </button>
