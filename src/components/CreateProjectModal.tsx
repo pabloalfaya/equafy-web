@@ -18,8 +18,15 @@ export function CreateProjectModal({ isOpen, onClose, onProjectCreated }: Create
   const [step, setStep] = useState(1);
   const [name, setName] = useState("");
   const [model, setModel] = useState("just_split");
-  const [subscriptionPriceId, setSubscriptionPriceId] = useState<string>("");
+  const [subscriptionPlan, setSubscriptionPlan] = useState<"monthly" | "annual" | null>(null);
   const [loading, setLoading] = useState(false);
+
+  const selectedPriceId =
+    subscriptionPlan === "monthly"
+      ? MONTHLY_PRICE_ID
+      : subscriptionPlan === "annual"
+        ? ANNUAL_PRICE_ID
+        : "";
 
   const [mults, setMults] = useState({
     cash: 4,
@@ -39,7 +46,6 @@ export function CreateProjectModal({ isOpen, onClose, onProjectCreated }: Create
   };
 
   const handleSubmit = async () => {
-    const selectedPriceId = subscriptionPriceId || "";
     if (!selectedPriceId) {
       alert("Por favor, selecciona un plan primero.");
       return;
@@ -211,28 +217,28 @@ export function CreateProjectModal({ isOpen, onClose, onProjectCreated }: Create
               <div className="grid grid-cols-2 gap-3">
                 <button
                   type="button"
-                  onClick={() => setSubscriptionPriceId(MONTHLY_PRICE_ID)}
-                  className={`rounded-xl border-2 p-4 text-left transition-all ${
-                    subscriptionPriceId === MONTHLY_PRICE_ID
-                      ? "border-blue-500 bg-blue-50/50 ring-1 ring-blue-500/30"
-                      : "border-slate-200 bg-slate-50/50 hover:border-slate-300"
+                  onClick={() => setSubscriptionPlan("monthly")}
+                  className={`rounded-xl p-4 text-left transition-all ${
+                    subscriptionPlan === "monthly"
+                      ? "border-[3px] border-blue-600 bg-blue-50 ring-2 ring-blue-600/40 shadow-md"
+                      : "border-2 border-slate-200 bg-slate-50/50 hover:border-slate-300"
                   }`}
                 >
                   <span className="font-bold text-slate-900 block">Mensual</span>
-                  <span className="text-lg font-black text-slate-800">15€</span>
+                  <span className="text-lg font-black text-slate-800">19,99€</span>
                   <span className="text-sm font-medium text-slate-500">/mes</span>
                 </button>
                 <button
                   type="button"
-                  onClick={() => setSubscriptionPriceId(ANNUAL_PRICE_ID)}
-                  className={`rounded-xl border-2 p-4 text-left transition-all ${
-                    subscriptionPriceId === ANNUAL_PRICE_ID
-                      ? "border-blue-500 bg-blue-50/50 ring-1 ring-blue-500/30"
-                      : "border-slate-200 bg-slate-50/50 hover:border-slate-300"
+                  onClick={() => setSubscriptionPlan("annual")}
+                  className={`rounded-xl p-4 text-left transition-all ${
+                    subscriptionPlan === "annual"
+                      ? "border-[3px] border-blue-600 bg-blue-50 ring-2 ring-blue-600/40 shadow-md"
+                      : "border-2 border-slate-200 bg-slate-50/50 hover:border-slate-300"
                   }`}
                 >
                   <span className="font-bold text-slate-900 block">Anual</span>
-                  <span className="text-lg font-black text-slate-800">150€</span>
+                  <span className="text-lg font-black text-slate-800">199,99€</span>
                   <span className="text-sm font-medium text-slate-500">/año</span>
                 </button>
               </div>
@@ -242,8 +248,12 @@ export function CreateProjectModal({ isOpen, onClose, onProjectCreated }: Create
                 <button onClick={() => setStep(1)} className="flex items-center gap-2 text-xs font-black text-slate-400 hover:text-slate-900 transition-colors">
                     <ArrowLeft className="w-4 h-4" /> BACK
                 </button>
-                <button onClick={handleSubmit} disabled={loading} className="px-8 py-3.5 bg-slate-900 text-white rounded-xl font-black hover:bg-emerald-600 transition-all flex items-center gap-2 shadow-lg active:scale-[0.98] disabled:opacity-50">
-                    {loading ? <><Loader2 className="w-5 h-5 animate-spin" /> Redirigiendo...</> : <>Proceed to Payment <ArrowRight className="w-4 h-4" /></>}
+                <button
+                  onClick={handleSubmit}
+                  disabled={loading || !selectedPriceId}
+                  className="px-8 py-3.5 bg-slate-900 text-white rounded-xl font-black hover:bg-emerald-600 transition-all flex items-center gap-2 shadow-lg active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {loading ? <><Loader2 className="w-5 h-5 animate-spin" /> Redirigiendo...</> : <>Proceed to Payment <ArrowRight className="w-4 h-4" /></>}
                 </button>
             </div>
           </div>
