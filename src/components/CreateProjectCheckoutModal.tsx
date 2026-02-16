@@ -4,9 +4,9 @@ import { useState } from "react";
 import { createClient } from "@/utils/supabase/client";
 import { X, Loader2, Check, Zap } from "lucide-react";
 
-// Price IDs from Stripe Dashboard – set in .env or replace with your IDs
-const MONTHLY_PRICE_ID = process.env.NEXT_PUBLIC_STRIPE_MONTHLY_PRICE_ID || "";
-const ANNUAL_PRICE_ID = process.env.NEXT_PUBLIC_STRIPE_ANNUAL_PRICE_ID || "";
+// Price IDs from Stripe Dashboard – usados directamente desde .env
+const MONTHLY_PRICE_ID = process.env.NEXT_PUBLIC_STRIPE_MONTHLY_PRICE_ID ?? "";
+const ANNUAL_PRICE_ID = process.env.NEXT_PUBLIC_STRIPE_ANNUAL_PRICE_ID ?? "";
 
 interface CreateProjectCheckoutModalProps {
   isOpen: boolean;
@@ -52,10 +52,7 @@ export function CreateProjectCheckoutModal({
       alert("Introduce un nombre para el proyecto.");
       return;
     }
-    if (priceId === undefined || priceId === null || priceId === "") {
-      alert("Selecciona un plan. Configura NEXT_PUBLIC_STRIPE_MONTHLY_PRICE_ID y NEXT_PUBLIC_STRIPE_ANNUAL_PRICE_ID en .env.local.");
-      return;
-    }
+    console.log("Mensual:", process.env.NEXT_PUBLIC_STRIPE_MONTHLY_PRICE_ID, "Anual:", process.env.NEXT_PUBLIC_STRIPE_ANNUAL_PRICE_ID);
 
     setLoading(true);
 
@@ -206,7 +203,7 @@ export function CreateProjectCheckoutModal({
           <button
             type="button"
             onClick={handleCheckout}
-            disabled={loading || !priceId || priceId === ""}
+            disabled={loading}
             className="w-full inline-flex items-center justify-center gap-2 bg-slate-900 hover:bg-slate-800 disabled:bg-slate-600 text-white py-4 rounded-xl font-bold text-lg transition-all shadow-lg"
           >
             {loading ? (

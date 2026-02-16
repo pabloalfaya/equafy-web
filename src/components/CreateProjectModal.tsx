@@ -35,12 +35,9 @@ export function CreateProjectModal({ isOpen, onClose, onProjectCreated }: Create
   };
 
   const priceId = process.env.NEXT_PUBLIC_STRIPE_ANNUAL_PRICE_ID || process.env.NEXT_PUBLIC_STRIPE_MONTHLY_PRICE_ID || "";
+  console.log("Mensual:", process.env.NEXT_PUBLIC_STRIPE_MONTHLY_PRICE_ID, "Anual:", process.env.NEXT_PUBLIC_STRIPE_ANNUAL_PRICE_ID);
 
   const handleSubmit = async () => {
-    if (!priceId) {
-      alert("Configura NEXT_PUBLIC_STRIPE_ANNUAL_PRICE_ID o NEXT_PUBLIC_STRIPE_MONTHLY_PRICE_ID en .env.local.");
-      return;
-    }
     setLoading(true);
 
     try {
