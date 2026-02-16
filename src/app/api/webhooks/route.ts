@@ -24,6 +24,7 @@ export async function POST(req: Request) {
 
   let event: Stripe.Event;
   try {
+    // Raw body as string required for Stripe signature verification (do not use req.json())
     const body = await req.text();
     event = stripe.webhooks.constructEvent(body, signature, webhookSecret);
   } catch (err) {
