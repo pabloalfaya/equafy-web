@@ -72,7 +72,7 @@ export function DashboardContent() {
       if (data?.url) window.location.href = data.url;
       else throw new Error("No checkout URL received");
     } catch (err) {
-      alert(err instanceof Error ? err.message : "Could not open payment");
+      console.error("Complete payment failed:", err instanceof Error ? err.message : "Could not open payment");
     }
   };
 
@@ -168,7 +168,7 @@ export function DashboardContent() {
                           <Folder className="w-5 h-5 text-amber-500" />
                         </div>
                         <span className="bg-amber-100 text-amber-800 text-[10px] font-bold px-2 py-1 rounded-full uppercase tracking-wider">
-                          Pago pendiente
+                          PAYMENT PENDING
                         </span>
                       </div>
                       <h3 className="text-xl font-bold text-slate-900 mb-1 truncate">
@@ -181,7 +181,7 @@ export function DashboardContent() {
                           onClick={() => handleFinishPayment(project)}
                           className="w-full inline-flex items-center justify-center gap-2 bg-slate-900 hover:bg-emerald-600 text-white py-2.5 px-4 rounded-xl font-bold text-sm transition-colors"
                         >
-                          <CreditCard className="w-4 h-4" /> Finalizar pago
+                          <CreditCard className="w-4 h-4" /> Complete payment
                         </button>
                       </div>
                     </div>

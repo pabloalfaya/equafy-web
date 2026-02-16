@@ -417,7 +417,7 @@ export default function ProjectDashboardPage() {
         if (data?.url) window.location.href = data.url;
         else throw new Error("No checkout URL received");
       } catch (err) {
-        alert(err instanceof Error ? err.message : "Could not open payment");
+        console.error("Complete payment failed:", err instanceof Error ? err.message : "Could not open payment");
       }
     };
     return (
@@ -434,19 +434,19 @@ export default function ProjectDashboardPage() {
           <div className="w-14 h-14 bg-amber-50 rounded-full flex items-center justify-center mx-auto mb-4">
             <CreditCard className="w-7 h-7 text-amber-600" />
           </div>
-          <h1 className="text-xl font-black text-slate-900 mb-2">Pago pendiente</h1>
+          <h1 className="text-xl font-black text-slate-900 mb-2">Payment pending</h1>
           <p className="text-slate-500 text-sm mb-6">
-            Este proyecto requiere completar el pago para poder acceder al dashboard.
+            Complete payment to access this project dashboard.
           </p>
           <button
             type="button"
             onClick={handleFinishPayment}
             className="w-full inline-flex items-center justify-center gap-2 bg-slate-900 hover:bg-emerald-600 text-white py-3 px-6 rounded-xl font-bold transition-colors"
           >
-            <CreditCard className="w-5 h-5" /> Finalizar pago
+            <CreditCard className="w-5 h-5" /> Complete payment
           </button>
           <Link href="/dashboard" className="mt-4 inline-block text-sm font-bold text-slate-400 hover:text-slate-600">
-            Volver al listado
+            Back to list
           </Link>
         </div>
       </div>

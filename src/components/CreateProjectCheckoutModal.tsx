@@ -17,19 +17,19 @@ const PLANS = [
   {
     id: "monthly",
     priceId: MONTHLY_PRICE_ID,
-    name: "Plan Mensual",
+    name: "Monthly Plan",
     price: "15",
-    period: "/mes",
-    description: "Facturación mensual",
+    period: "/month",
+    description: "Monthly billing",
     recommended: false,
   },
   {
     id: "annual",
     priceId: ANNUAL_PRICE_ID,
-    name: "Plan Anual",
+    name: "Annual Plan",
     price: "150",
-    period: "/año",
-    description: "Ahorra 2 meses",
+    period: "/year",
+    description: "Save 2 months",
     recommended: true,
   },
 ];
@@ -49,16 +49,14 @@ export function CreateProjectCheckoutModal({
   const handleCheckout = async () => {
     const name = projectName.trim();
     if (!name) {
-      alert("Introduce un nombre para el proyecto.");
+      console.error("Project name is required.");
       return;
     }
-    // priceId state = selected plan (monthly or annual from PLANS)
     const selectedPriceId = priceId ?? "";
     if (!selectedPriceId) {
-      alert("Por favor, selecciona un plan primero.");
+      console.error("Please select a plan first.");
       return;
     }
-    console.log("Price ID que voy a enviar:", selectedPriceId);
 
     setLoading(true);
 
@@ -68,7 +66,7 @@ export function CreateProjectCheckoutModal({
         error: authError,
       } = await supabase.auth.getUser();
       if (authError || !user) {
-        alert("Debes iniciar sesión para continuar.");
+        console.error("You must be logged in to continue.");
         setLoading(false);
         return;
       }
@@ -92,33 +90,27 @@ export function CreateProjectCheckoutModal({
       try {
         data = await res.json();
       } catch (parseErr) {
-        console.error("Error parseando respuesta JSON:", parseErr);
-        alert("La API no devolvió JSON válido. Revisa la consola.");
+        console.error("Invalid API response JSON:", parseErr);
         setLoading(false);
         return;
       }
 
-      console.log("Respuesta completa de la API:", data);
-
       if (!res.ok) {
-        const errMsg = data?.error || "Error al iniciar el pago.";
+        const errMsg = data?.error || "Payment could not be started.";
         console.error("[Checkout] API error:", res.status, data);
-        alert(errMsg);
         setLoading(false);
         return;
       }
 
       if (data.url && typeof data.url === "string") {
-        console.log("Redirigiendo a:", data.url);
         window.location.assign(data.url);
         return;
       }
 
-      throw new Error("La API no devolvió una URL de Stripe: " + JSON.stringify(data));
+      throw new Error("API did not return a Stripe URL: " + JSON.stringify(data));
     } catch (err) {
       const message = err instanceof Error ? err.message : String(err);
-      console.error("[Checkout] Error:", err);
-      alert(message);
+      console.error("[Checkout] Error:", message);
     } finally {
       setLoading(false);
     }
@@ -133,12 +125,12 @@ export function CreateProjectCheckoutModal({
       />
       <div className="relative w-full max-w-lg rounded-2xl border border-slate-200 bg-white shadow-xl">
         <div className="flex items-center justify-between border-b border-slate-100 px-6 py-4">
-          <h2 className="text-xl font-bold text-slate-900">Nuevo proyecto</h2>
+          <h2 className="text-xl font-bold text-slate-900">New project</h2>
           <button
             type="button"
             onClick={onClose}
             className="rounded-lg p-2 text-slate-400 hover:bg-slate-100 hover:text-slate-600 transition-colors"
-            aria-label="Cerrar"
+            aria-label="Close"
           >
             <X className="h-5 w-5" />
           </button>
@@ -147,13 +139,13 @@ export function CreateProjectCheckoutModal({
         <div className="px-6 py-6 space-y-6">
           <div>
             <label className="block text-sm font-bold text-slate-700 mb-2">
-              Nombre del Proyecto
+              Project name
             </label>
             <input
               type="text"
               value={projectName}
               onChange={(e) => setProjectName(e.target.value)}
-              placeholder="Ej. Mi startup"
+              placeholder="e.g. My startup"
               className="w-full rounded-xl border border-slate-200 px-4 py-3 font-medium text-slate-900 placeholder:text-slate-400 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 outline-none transition-all"
               disabled={loading}
             />
@@ -161,7 +153,7 @@ export function CreateProjectCheckoutModal({
 
           <div>
             <p className="block text-sm font-bold text-slate-700 mb-3">
-              Selecciona un plan
+              Select a plan
             </p>
             <div className="grid grid-cols-2 gap-3">
               {PLANS.map((plan) => {
@@ -181,7 +173,7 @@ export function CreateProjectCheckoutModal({
                   >
                     {plan.recommended && (
                       <span className="absolute -top-2 left-3 bg-emerald-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">
-                        Recomendado
+                        Recommended
                       </span>
                     )}
                     <div className="flex items-center gap-2 mb-1">
@@ -214,10 +206,10 @@ export function CreateProjectCheckoutModal({
           >
             {loading ? (
               <>
-                <Loader2 className="h-5 w-5 animate-spin" /> Redirigiendo...
+                <Loader2 className="h-5 w-5 animate-spin" /> Redirecting...
               </>
             ) : (
-              "Confirmar y proceder al pago"
+              "Confirm and proceed to payment"
             )}
           </button>
         </div>

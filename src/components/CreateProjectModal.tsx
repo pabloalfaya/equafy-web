@@ -15,8 +15,6 @@ interface CreateProjectModalProps {
 }
 
 export function CreateProjectModal({ isOpen, onClose, onProjectCreated }: CreateProjectModalProps) {
-  console.log("ID Mensual detectado:", STRIPE_MONTHLY_PRICE_ID);
-
   const [step, setStep] = useState(1);
   const [name, setName] = useState("");
   const [model, setModel] = useState("just_split");
@@ -27,12 +25,12 @@ export function CreateProjectModal({ isOpen, onClose, onProjectCreated }: Create
   const handleSelectMonthly = () => {
     setSubscriptionPlan("monthly");
     setSelectedPriceId("price_1SyaxgBmr0mjMQ09JTxc07Sh");
-    console.log("Plan seleccionado correctamente:", "price_1SyaxgBmr0mjMQ09JTxc07Sh");
+    console.log("Plan selected:", "price_1SyaxgBmr0mjMQ09JTxc07Sh");
   };
   const handleSelectAnnual = () => {
     setSubscriptionPlan("annual");
     setSelectedPriceId("price_1SyaxgBmr0mjMQ09DH21w1z3");
-    console.log("Plan seleccionado correctamente:", "price_1SyaxgBmr0mjMQ09DH21w1z3");
+    console.log("Plan selected:", "price_1SyaxgBmr0mjMQ09DH21w1z3");
   };
   const isPaymentReady = subscriptionPlan !== null && !loading;
 
@@ -73,8 +71,6 @@ export function CreateProjectModal({ isOpen, onClose, onProjectCreated }: Create
   };
 
   const handlePayment = async () => {
-    alert("CLICK RECIBIDO - INICIANDO FETCH");
-
     try {
       const priceId =
         subscriptionPlan === "monthly"
@@ -83,7 +79,7 @@ export function CreateProjectModal({ isOpen, onClose, onProjectCreated }: Create
             ? STRIPE_ANNUAL_PRICE_ID
             : selectedPriceId || "";
       if (!priceId) {
-        throw new Error("No priceId: selecciona un plan (Monthly o Annual).");
+        throw new Error("Please select a plan (Monthly or Annual).");
       }
 
       setLoading(true);
@@ -110,8 +106,6 @@ export function CreateProjectModal({ isOpen, onClose, onProjectCreated }: Create
         mult_others: mults.others,
       };
 
-      alert("Voy a llamar a /api/stripe/checkout con plan: " + priceId);
-
       const response = await fetch(apiUrl, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -119,7 +113,7 @@ export function CreateProjectModal({ isOpen, onClose, onProjectCreated }: Create
       });
 
       if (!response.ok) {
-        throw new Error("Error del servidor: " + response.statusText);
+        throw new Error("Server error: " + response.statusText);
       }
 
       let data: { url?: string; error?: string };
@@ -130,7 +124,6 @@ export function CreateProjectModal({ isOpen, onClose, onProjectCreated }: Create
       }
 
       if (data.url && typeof data.url === "string") {
-        alert("Redirigiendo a: " + data.url);
         window.location.href = data.url;
         return;
       }
@@ -138,7 +131,7 @@ export function CreateProjectModal({ isOpen, onClose, onProjectCreated }: Create
       throw new Error("API did not return a Stripe URL: " + JSON.stringify(data));
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
-      alert("ERROR CRÍTICO: " + message);
+      console.error("[CreateProject] Payment error:", message);
     } finally {
       setLoading(false);
     }
