@@ -52,8 +52,8 @@ export function CreateProjectCheckoutModal({
       alert("Introduce un nombre para el proyecto.");
       return;
     }
-    if (!priceId) {
-      alert("Selecciona un plan. Configura NEXT_PUBLIC_STRIPE_MONTHLY_PRICE_ID y NEXT_PUBLIC_STRIPE_ANNUAL_PRICE_ID.");
+    if (priceId === undefined || priceId === null || priceId === "") {
+      alert("Selecciona un plan. Configura NEXT_PUBLIC_STRIPE_MONTHLY_PRICE_ID y NEXT_PUBLIC_STRIPE_ANNUAL_PRICE_ID en .env.local.");
       return;
     }
 
@@ -70,7 +70,6 @@ export function CreateProjectCheckoutModal({
         return;
       }
 
-      // userId y email vienen de la sesión de Supabase (supabase.auth.getUser())
       const body = {
         projectName: name,
         priceId,
@@ -78,7 +77,8 @@ export function CreateProjectCheckoutModal({
         email: user.email ?? "",
       };
       const apiUrl = "/api/stripe/checkout";
-      console.log("[Checkout] Sending request to", apiUrl, { projectName: name, priceId, hasUserId: !!body.userId, hasEmail: !!body.email });
+
+      console.log("Enviando datos a la API...", { apiUrl, projectName: name, priceId, userId: user.id });
       const res = await fetch(apiUrl, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -88,35 +88,34 @@ export function CreateProjectCheckoutModal({
       let data: { url?: string; error?: string };
       try {
         data = await res.json();
-      } catch {
-        data = {};
+      } catch (parseErr) {
+        console.error("Error parseando respuesta JSON:", parseErr);
+        alert("La API no devolvió JSON válido. Revisa la consola.");
+        setLoading(false);
+        return;
       }
-      console.log("[Checkout] Response status:", res.status, "data:", data);
+
+      console.log("Respuesta completa de la API:", data);
 
       if (!res.ok) {
-        console.error("[Checkout] API error:", {
-          status: res.status,
-          statusText: res.statusText,
-          url: apiUrl,
-          body: data,
-          error: data?.error,
-        });
-        alert(data?.error || "Error al iniciar el pago.");
+        const errMsg = data?.error || "Error al iniciar el pago.";
+        console.error("[Checkout] API error:", res.status, data);
+        alert(errMsg);
         setLoading(false);
         return;
       }
 
       if (data.url && typeof data.url === "string") {
-        console.log("URL de Stripe recibida:", data.url);
-        window.location.href = data.url;
+        console.log("Redirigiendo a:", data.url);
+        window.location.assign(data.url);
         return;
       }
 
-      console.error("[Checkout] API OK pero sin url:", data);
-      alert("No se recibió URL de pago.");
+      throw new Error("La API no devolvió una URL de Stripe: " + JSON.stringify(data));
     } catch (err) {
+      const message = err instanceof Error ? err.message : String(err);
       console.error("[Checkout] Error:", err);
-      alert("Error de conexión. Inténtalo de nuevo.");
+      alert(message);
     } finally {
       setLoading(false);
     }
@@ -207,7 +206,7 @@ export function CreateProjectCheckoutModal({
           <button
             type="button"
             onClick={handleCheckout}
-            disabled={loading}
+            disabled={loading || !priceId || priceId === ""}
             className="w-full inline-flex items-center justify-center gap-2 bg-slate-900 hover:bg-slate-800 disabled:bg-slate-600 text-white py-4 rounded-xl font-bold text-lg transition-all shadow-lg"
           >
             {loading ? (
