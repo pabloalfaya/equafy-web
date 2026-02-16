@@ -34,10 +34,19 @@ export function CreateProjectModal({ isOpen, onClose, onProjectCreated }: Create
     if (name.trim()) setStep(2);
   };
 
-  const priceId = process.env.NEXT_PUBLIC_STRIPE_ANNUAL_PRICE_ID || process.env.NEXT_PUBLIC_STRIPE_MONTHLY_PRICE_ID || "";
-  console.log("Mensual:", process.env.NEXT_PUBLIC_STRIPE_MONTHLY_PRICE_ID, "Anual:", process.env.NEXT_PUBLIC_STRIPE_ANNUAL_PRICE_ID);
+  // Default: monthly, fallback to annual (this modal has no billing choice)
+  const selectedPriceId =
+    process.env.NEXT_PUBLIC_STRIPE_MONTHLY_PRICE_ID ||
+    process.env.NEXT_PUBLIC_STRIPE_ANNUAL_PRICE_ID ||
+    "";
 
   const handleSubmit = async () => {
+    if (selectedPriceId == null || selectedPriceId === "") {
+      alert("Por favor, selecciona un plan primero.");
+      return;
+    }
+    console.log("Price ID que voy a enviar:", selectedPriceId);
+
     setLoading(true);
 
     try {
@@ -51,11 +60,11 @@ export function CreateProjectModal({ isOpen, onClose, onProjectCreated }: Create
       const apiUrl = "/api/stripe/checkout";
       const body = {
         projectName: name.trim(),
-        priceId,
+        priceId: selectedPriceId,
         userId: user.id,
         email: user.email ?? "",
       };
-      console.log("Enviando datos a la API...", { apiUrl, projectName: name, priceId });
+      console.log("Enviando datos a la API...", { apiUrl, projectName: name, priceId: selectedPriceId });
       const res = await fetch(apiUrl, {
         method: "POST",
         headers: { "Content-Type": "application/json" },

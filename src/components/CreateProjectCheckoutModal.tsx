@@ -52,7 +52,13 @@ export function CreateProjectCheckoutModal({
       alert("Introduce un nombre para el proyecto.");
       return;
     }
-    console.log("Mensual:", process.env.NEXT_PUBLIC_STRIPE_MONTHLY_PRICE_ID, "Anual:", process.env.NEXT_PUBLIC_STRIPE_ANNUAL_PRICE_ID);
+    // priceId state = selected plan (monthly or annual from PLANS)
+    const selectedPriceId = priceId ?? "";
+    if (!selectedPriceId) {
+      alert("Por favor, selecciona un plan primero.");
+      return;
+    }
+    console.log("Price ID que voy a enviar:", selectedPriceId);
 
     setLoading(true);
 
@@ -69,13 +75,13 @@ export function CreateProjectCheckoutModal({
 
       const body = {
         projectName: name,
-        priceId,
+        priceId: selectedPriceId,
         userId: user.id,
         email: user.email ?? "",
       };
       const apiUrl = "/api/stripe/checkout";
 
-      console.log("Enviando datos a la API...", { apiUrl, projectName: name, priceId, userId: user.id });
+      console.log("Enviando datos a la API...", { apiUrl, projectName: name, priceId: selectedPriceId, userId: user.id });
       const res = await fetch(apiUrl, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
