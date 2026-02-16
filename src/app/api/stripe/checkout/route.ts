@@ -1,17 +1,71 @@
 import { NextResponse } from "next/server";
 import Stripe from "stripe";
+import { createClient } from "@/utils/supabase/server";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const { priceId } = body;
+    const { priceId, userId, email, projectName } = body;
 
     if (!priceId || typeof priceId !== "string") {
       return NextResponse.json(
         { error: "priceId is required" },
         { status: 400 }
+      );
+    }
+    if (!userId || typeof userId !== "string") {
+      return NextResponse.json(
+        { error: "userId is required" },
+        { status: 400 }
+      );
+    }
+    if (!email || typeof email !== "string") {
+      return NextResponse.json(
+        { error: "email is required" },
+        { status: 400 }
+      );
+    }
+    if (!projectName || typeof projectName !== "string") {
+      return NextResponse.json(
+        { error: "projectName is required" },
+        { status: 400 }
+      );
+    }
+
+    const supabase = await createClient();
+
+    const payload = {
+      name: projectName.trim(),
+      owner_id: userId,
+      subscription_status: "pending_payment",
+      model_type: "JUST_SPLIT",
+      mult_cash: 4,
+      mult_work: 2,
+      mult_tangible: 1,
+      mult_intangible: 2,
+      mult_others: 1,
+      use_log_risk: false,
+    };
+
+    const { data: project, error: projectError } = await supabase
+      .from("projects")
+      .insert([payload])
+      .select("id")
+      .single();
+
+    if (projectError) {
+      console.error("Error creating draft project:", projectError);
+      return NextResponse.json(
+        { error: "Failed to create project: " + projectError.message },
+        { status: 500 }
+      );
+    }
+    if (!project?.id) {
+      return NextResponse.json(
+        { error: "Project created but no ID returned" },
+        { status: 500 }
       );
     }
 
@@ -20,7 +74,17 @@ export async function POST(req: Request) {
     const session = await stripe.checkout.sessions.create({
       mode: "subscription",
       line_items: [{ price: priceId, quantity: 1 }],
-      subscription_data: { trial_period_days: 14 },
+      customer_email: email,
+      metadata: {
+        projectId: project.id,
+        userId,
+      },
+      subscription_data: {
+        metadata: {
+          projectId: project.id,
+          userId,
+        },
+      },
       success_url: `${baseUrl}/dashboard?payment=success`,
       cancel_url: `${baseUrl}/dashboard?payment=cancelled`,
       allow_promotion_codes: true,
