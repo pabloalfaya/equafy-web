@@ -22,14 +22,18 @@ export function CreateProjectModal({ isOpen, onClose, onProjectCreated }: Create
   const [loading, setLoading] = useState(false);
 
   const handleSelectMonthly = () => {
+    const id = process.env.NEXT_PUBLIC_STRIPE_MONTHLY_PRICE_ID ?? "";
     setSubscriptionPlan("monthly");
-    setSelectedPriceId(process.env.NEXT_PUBLIC_STRIPE_MONTHLY_PRICE_ID ?? "");
+    setSelectedPriceId(id);
+    console.log("Plan seleccionado correctamente:", id);
   };
   const handleSelectAnnual = () => {
+    const id = process.env.NEXT_PUBLIC_STRIPE_ANNUAL_PRICE_ID ?? "";
     setSubscriptionPlan("annual");
-    setSelectedPriceId(process.env.NEXT_PUBLIC_STRIPE_ANNUAL_PRICE_ID ?? "");
+    setSelectedPriceId(id);
+    console.log("Plan seleccionado correctamente:", id);
   };
-  const isPaymentReady = !!selectedPriceId && !loading;
+  const isPaymentReady = subscriptionPlan !== null && !loading;
 
   const [mults, setMults] = useState({
     cash: 4,
@@ -49,7 +53,13 @@ export function CreateProjectModal({ isOpen, onClose, onProjectCreated }: Create
   };
 
   const handleSubmit = async () => {
-    if (!selectedPriceId) return;
+    const priceId =
+      subscriptionPlan === "monthly"
+        ? (process.env.NEXT_PUBLIC_STRIPE_MONTHLY_PRICE_ID ?? selectedPriceId)
+        : subscriptionPlan === "annual"
+          ? (process.env.NEXT_PUBLIC_STRIPE_ANNUAL_PRICE_ID ?? selectedPriceId)
+          : "";
+    if (!priceId) return;
 
     setLoading(true);
 
@@ -64,11 +74,11 @@ export function CreateProjectModal({ isOpen, onClose, onProjectCreated }: Create
       const apiUrl = "/api/stripe/checkout";
       const body = {
         projectName: name.trim(),
-        priceId: selectedPriceId,
+        priceId,
         userId: user.id,
         email: user.email ?? "",
       };
-      console.log("ID que se enviará:", selectedPriceId);
+      console.log("ID que se enviará:", priceId);
       const res = await fetch(apiUrl, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -249,7 +259,7 @@ export function CreateProjectModal({ isOpen, onClose, onProjectCreated }: Create
                 </button>
                 <button
                   onClick={handleSubmit}
-                  disabled={loading || !selectedPriceId}
+                  disabled={loading || subscriptionPlan === null}
                   className={`px-8 py-3.5 rounded-xl font-black transition-all flex items-center gap-2 shadow-lg active:scale-[0.98] ${
                     isPaymentReady
                       ? "bg-emerald-600 text-white hover:bg-emerald-700 cursor-pointer"
