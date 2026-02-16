@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { createClient } from "@/utils/supabase/client";
-import { logAudit } from "@/utils/auditLog";
 import { X, Loader2, ShieldCheck, Scale, Settings, ArrowRight, ArrowLeft, Rocket } from "lucide-react";
 import type { Project } from "@/types/database";
 
@@ -35,84 +34,65 @@ export function CreateProjectModal({ isOpen, onClose, onProjectCreated }: Create
     if (name.trim()) setStep(2);
   };
 
+  const priceId = process.env.NEXT_PUBLIC_STRIPE_ANNUAL_PRICE_ID || process.env.NEXT_PUBLIC_STRIPE_MONTHLY_PRICE_ID || "";
+
   const handleSubmit = async () => {
+    if (!priceId) {
+      alert("Configura NEXT_PUBLIC_STRIPE_ANNUAL_PRICE_ID o NEXT_PUBLIC_STRIPE_MONTHLY_PRICE_ID en .env.local.");
+      return;
+    }
     setLoading(true);
-    
-    // 1. Verificamos usuario
-    const { data: { user }, error: authError } = await supabase.auth.getUser();
-    if (authError || !user) { 
-        alert("Error: User not authenticated. Please log in again.");
-        setLoading(false); 
-        return; 
-    }
 
-    // 2. Preparamos multiplicadores
-    let finalMults = { ...mults };
-    if (model === 'just_split') {
-        finalMults = { cash: 4, work: 2, tangible: 2, intangible: 2, others: 2 };
-    } else if (model === 'flat') {
-        finalMults = { cash: 1, work: 1, tangible: 1, intangible: 1, others: 1 };
-    }
-
-    // 3. Insertamos PROYECTO
-    const payload = { 
-        name, 
-        owner_id: user.id, 
-        model_type: model === 'just_split' ? 'JUST_SPLIT' : model === 'flat' ? 'FLAT' : 'CUSTOM',
-        mult_cash: finalMults.cash,
-        mult_work: finalMults.work,
-        mult_tangible: finalMults.tangible,
-        mult_intangible: finalMults.intangible,
-        mult_others: finalMults.others,
-        use_log_risk: false
-    };
-
-    const { data: project, error: projectError } = await supabase
-      .from("projects")
-      .insert([payload])
-      .select()
-      .single();
-
-    if (projectError) {
-        console.error("Error creating project:", projectError);
-        alert(`Error creating project: ${projectError.message}`); // AVISO VISUAL
+    try {
+      const { data: { user }, error: authError } = await supabase.auth.getUser();
+      if (authError || !user) {
+        alert("Debes iniciar sesión para continuar.");
         setLoading(false);
         return;
-    }
+      }
 
-    if (project) {
-        // 4. Insertamos MIEMBRO (Aquí es donde fallaba si no existía la tabla)
-        const { error: memberError } = await supabase.from("project_members").insert({
-            project_id: project.id,
-            user_id: user.id,
-            email: user.email!,
-            name: user.user_metadata?.full_name || user.email?.split("@")[0] || "Owner",
-            role: 'owner',
-            status: 'active',
-            access_level: 'editor'
-        });
+      const apiUrl = "/api/stripe/checkout";
+      const body = {
+        projectName: name.trim(),
+        priceId,
+        userId: user.id,
+        email: user.email ?? "",
+      };
+      console.log("Enviando datos a la API...", { apiUrl, projectName: name, priceId });
+      const res = await fetch(apiUrl, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      });
 
-        if (memberError) {
-            console.error("Error adding owner:", memberError);
-            alert(`Project created but failed to add owner: ${memberError.message}`);
-        } else {
-            try {
-              await logAudit({
-                supabase,
-                projectId: project.id,
-                actionType: "CREATE_PROJECT",
-                description: `Created project: ${name}`,
-              });
-            } catch (auditErr) {
-              console.error("Error saving audit log:", auditErr);
-            }
-            onProjectCreated(project);
-            setName("");
-            setStep(1);
-            onClose();
-        }
+      let data: { url?: string; error?: string };
+      try {
+        data = await res.json();
+      } catch {
+        data = {};
+      }
+      console.log("Respuesta completa de la API:", data);
+
+      if (!res.ok) {
+        alert(data?.error || "Error al iniciar el pago.");
+        setLoading(false);
+        return;
+      }
+
+      if (data.url && typeof data.url === "string") {
+        console.log("Redirigiendo a:", data.url);
+        window.location.assign(data.url);
+        return;
+      }
+
+      throw new Error("La API no devolvió una URL de Stripe: " + JSON.stringify(data));
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err);
+      console.error("[CreateProject] Error:", err);
+      alert(message);
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   return (
@@ -226,7 +206,7 @@ export function CreateProjectModal({ isOpen, onClose, onProjectCreated }: Create
                     <ArrowLeft className="w-4 h-4" /> BACK
                 </button>
                 <button onClick={handleSubmit} disabled={loading} className="px-8 py-3.5 bg-slate-900 text-white rounded-xl font-black hover:bg-emerald-600 transition-all flex items-center gap-2 shadow-lg active:scale-[0.98] disabled:opacity-50">
-                    {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <>Launch Project <Rocket className="w-4 h-4" /></>}
+                    {loading ? <><Loader2 className="w-5 h-5 animate-spin" /> Redirigiendo...</> : <>Proceed to Payment <ArrowRight className="w-4 h-4" /></>}
                 </button>
             </div>
           </div>
