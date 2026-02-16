@@ -2,13 +2,14 @@
 
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
-import { ArrowRight, ChevronDown, Sparkles, Cog, Zap, BookOpen } from "lucide-react";
+import { ArrowRight, ChevronDown, Sparkles, Cog, Zap, BookOpen, Menu, X } from "lucide-react";
 
 const PRODUCT_MENU_LEAVE_DELAY_MS = 120;
 
 export function Navbar() {
   const [isNavVisible, setIsNavVisible] = useState(true);
   const [isProductMenuOpen, setIsProductMenuOpen] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const lastScrollY = useRef(0);
   const productMenuLeaveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -34,14 +35,14 @@ export function Navbar() {
         isNavVisible ? "translate-y-0" : "-translate-y-full"
       }`}
     >
-      <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-3">
-        <div className="flex items-center gap-8">
-          <Link href="/" className="relative group">
+      <div className="mx-auto flex max-w-7xl items-center justify-between px-4 sm:px-6 py-3">
+        <div className="flex items-center gap-4 sm:gap-8 min-w-0">
+          <Link href="/" className="relative group flex-shrink-0">
             <div className="absolute -inset-2 bg-gradient-to-r from-emerald-500/20 to-blue-500/20 rounded-lg blur opacity-0 group-hover:opacity-100 transition duration-500" />
             <img
               src="/logo.png"
               alt="Equily Logo"
-              className="relative h-28 w-auto object-contain transition-transform duration-300 group-hover:scale-105"
+              className="relative h-16 sm:h-24 md:h-28 w-auto object-contain transition-transform duration-300 group-hover:scale-105"
             />
           </Link>
 
@@ -173,32 +174,60 @@ export function Navbar() {
           </div>
         </div>
 
-        <div className="flex items-center gap-4">
-          <Link
-            href="/login"
-            className="hidden md:block text-sm font-bold text-slate-600 hover:text-slate-900 transition-colors"
-          >
-            Log in
-          </Link>
-
-          <Link
-            href="/login?view=signup"
-            className="hidden md:block text-sm font-bold text-slate-600 hover:text-emerald-600 transition-colors"
-          >
-            Sign Up
-          </Link>
-
-          <Link href="/login?view=signup" className="relative group">
+        <div className="flex items-center gap-2 sm:gap-4">
+          <div className="hidden md:flex items-center gap-4">
+            <Link href="/login" className="text-sm font-bold text-slate-600 hover:text-slate-900 transition-colors">
+              Log in
+            </Link>
+            <Link href="/login?view=signup" className="text-sm font-bold text-slate-600 hover:text-emerald-600 transition-colors">
+              Sign Up
+            </Link>
+          </div>
+          <Link href="/login?view=signup" className="relative group hidden md:block">
             <div className="absolute -inset-0.5 bg-gradient-to-r from-emerald-500 to-emerald-400 rounded-full blur opacity-60 group-hover:opacity-100 transition duration-200" />
-            <div className="relative flex items-center bg-slate-900 rounded-full px-6 py-2.5 leading-none">
+            <div className="relative flex items-center bg-slate-900 rounded-full px-4 sm:px-6 py-2 sm:py-2.5 leading-none">
               <span className="text-sm font-bold text-white group-hover:text-emerald-50 transition duration-200">
                 Free Trial
               </span>
               <ArrowRight className="w-4 h-4 text-emerald-400 ml-2 group-hover:translate-x-1 transition-transform" />
             </div>
           </Link>
+          <button
+            type="button"
+            onClick={() => setIsMobileMenuOpen((o) => !o)}
+            className="md:hidden p-2 rounded-lg text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition-colors"
+            aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
+          >
+            {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+          </button>
         </div>
       </div>
+
+      {/* Mobile menu overlay (md and down) */}
+      {isMobileMenuOpen && (
+        <div className="md:hidden border-t border-gray-100/50 bg-white/95 backdrop-blur-md">
+          <div className="mx-auto max-w-7xl px-4 py-4 space-y-1">
+            <Link href="/login" onClick={() => setIsMobileMenuOpen(false)} className="block py-2 text-sm font-bold text-slate-600 hover:text-slate-900">
+              Log in
+            </Link>
+            <Link href="/login?view=signup" onClick={() => setIsMobileMenuOpen(false)} className="block py-2 text-sm font-bold text-emerald-600 hover:text-emerald-700">
+              Sign Up
+            </Link>
+            <Link href="/pricing" onClick={() => setIsMobileMenuOpen(false)} className="block py-2 text-sm font-bold text-slate-600 hover:text-slate-900">
+              Pricing
+            </Link>
+            <Link href="/legal" onClick={() => setIsMobileMenuOpen(false)} className="block py-2 text-sm font-bold text-slate-600 hover:text-slate-900">
+              Legal
+            </Link>
+            <Link href="/contact" onClick={() => setIsMobileMenuOpen(false)} className="block py-2 text-sm font-bold text-slate-600 hover:text-slate-900">
+              Contact
+            </Link>
+            <Link href="/login?view=signup" onClick={() => setIsMobileMenuOpen(false)} className="flex items-center justify-center gap-2 mt-4 py-3 rounded-xl bg-slate-900 text-white text-sm font-bold">
+              Free Trial <ArrowRight className="w-4 h-4" />
+            </Link>
+          </div>
+        </div>
+      )}
 
       {/* Mobile Product menu (accordion style) */}
       <div className="lg:hidden border-t border-gray-100/50 bg-white/90">

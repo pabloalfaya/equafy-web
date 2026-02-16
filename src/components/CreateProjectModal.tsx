@@ -144,11 +144,11 @@ export function CreateProjectModal({ isOpen, onClose, onProjectCreated }: Create
     }
   };
 
-  const modalWidth = step === 2 ? "max-w-5xl" : "max-w-lg";
+  const modalMaxWidth = step === 2 ? "md:max-w-5xl" : "md:max-w-2xl";
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4">
-      <div className={`relative w-full ${modalWidth} bg-white rounded-[32px] shadow-2xl p-6 md:p-8 text-slate-900 transition-all duration-300 overflow-y-auto max-h-[95vh]`}>
+    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-3 sm:p-4">
+      <div className={`relative w-[95%] max-w-full ${modalMaxWidth} mx-auto bg-white rounded-2xl sm:rounded-[32px] shadow-2xl p-4 sm:p-6 md:p-8 text-slate-900 transition-all duration-300 overflow-y-auto max-h-[95vh]`}>
         <button onClick={onClose} className="absolute top-6 right-6 text-slate-400 hover:text-slate-900 transition-colors z-20">
           <X className="w-5 h-5" />
         </button>
@@ -188,7 +188,7 @@ export function CreateProjectModal({ isOpen, onClose, onProjectCreated }: Create
               <h2 className="text-2xl font-black mb-1 uppercase tracking-tight text-slate-900">Equity model</h2>
               <p className="text-slate-600 font-bold text-sm">Select the multiplier set for your team.</p>
             </div>
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               <div onClick={() => handleModelSelect("custom")} className={`relative p-5 rounded-2xl border-2 transition-all cursor-pointer flex flex-col ${model === "custom" ? "border-blue-500 bg-blue-50/30 ring-1 ring-blue-500/20" : "border-slate-100 bg-slate-50/50 hover:border-slate-200"}`}>
                 <div className="flex items-center gap-3 mb-4">
                   <div className={`p-2 rounded-lg ${model === "custom" ? "bg-blue-500 text-white" : "bg-white text-slate-400 shadow-sm"}`}><Settings className="w-4 h-4" /></div>
@@ -245,11 +245,11 @@ export function CreateProjectModal({ isOpen, onClose, onProjectCreated }: Create
                 <p className="text-[9px] text-center text-purple-700 font-black uppercase tracking-widest mt-auto">Fixed split</p>
               </div>
             </div>
-            <div className="flex items-center justify-between pt-4 border-t border-slate-100">
-              <button type="button" onClick={goBack} className="flex items-center gap-2 text-xs font-black text-slate-400 hover:text-slate-900 transition-colors">
-                <ArrowLeft className="w-4 h-4" /> Back
+            <div className="flex items-center justify-between gap-3 pt-4 border-t border-slate-100">
+              <button type="button" onClick={goBack} className="flex items-center gap-2 text-xs font-black text-slate-400 hover:text-slate-900 transition-colors min-w-0">
+                <ArrowLeft className="w-4 h-4 flex-shrink-0" /> Back
               </button>
-              <button type="button" onClick={goNext} className="px-8 py-3.5 rounded-xl font-black bg-slate-900 text-white hover:bg-emerald-600 transition-all flex items-center gap-2 shadow-lg active:scale-[0.98]">
+              <button type="button" onClick={goNext} className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 sm:px-8 py-3.5 rounded-xl font-black bg-slate-900 text-white hover:bg-emerald-600 transition-all shadow-lg active:scale-[0.98]">
                 Next <ArrowRight className="w-4 h-4" />
               </button>
             </div>
@@ -291,15 +291,15 @@ export function CreateProjectModal({ isOpen, onClose, onProjectCreated }: Create
                 <span className="text-sm font-medium text-slate-500">/year</span>
               </button>
             </div>
-            <div className="flex items-center justify-between pt-4 border-t border-slate-100">
-              <button type="button" onClick={goBack} className="flex items-center gap-2 text-xs font-black text-slate-400 hover:text-slate-900 transition-colors">
-                <ArrowLeft className="w-4 h-4" /> Back
+            <div className="flex items-center justify-between gap-3 pt-4 border-t border-slate-100">
+              <button type="button" onClick={goBack} className="flex items-center gap-2 text-xs font-black text-slate-400 hover:text-slate-900 transition-colors min-w-0">
+                <ArrowLeft className="w-4 h-4 flex-shrink-0" /> Back
               </button>
               <button
                 type="button"
                 onClick={handlePayment}
                 disabled={loading || subscriptionPlan === null}
-                className={`px-8 py-3.5 rounded-xl font-black transition-all flex items-center gap-2 shadow-lg active:scale-[0.98] ${
+                className={`w-full sm:w-auto flex items-center justify-center gap-2 px-6 sm:px-8 py-3.5 rounded-xl font-black transition-all shadow-lg active:scale-[0.98] ${
                   isPaymentReady ? "bg-emerald-600 text-white hover:bg-emerald-700 cursor-pointer" : "bg-slate-300 text-slate-500 cursor-not-allowed disabled:opacity-70"
                 }`}
               >

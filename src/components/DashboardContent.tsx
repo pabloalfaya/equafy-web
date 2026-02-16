@@ -89,20 +89,20 @@ export function DashboardContent() {
 
   return (
     <div className="min-h-screen bg-[#F8FAFC] font-sans text-slate-900">
-      <nav className="border-b border-slate-200 bg-white px-6 py-4 flex justify-between items-center sticky top-0 z-10">
-        <Link href="/">
-            <img src="/logo.png" alt="Equily" className="h-20 w-auto opacity-80 hover:opacity-100 transition-opacity object-contain" />
+      <nav className="border-b border-slate-200 bg-white px-4 sm:px-6 py-4 flex justify-between items-center sticky top-0 z-10">
+        <Link href="/" className="min-w-0 flex-shrink">
+            <img src="/logo.png" alt="Equily" className="h-14 sm:h-20 w-auto opacity-80 hover:opacity-100 transition-opacity object-contain" />
         </Link>
-        <div className="flex items-center gap-4">
-            <span className="text-xs font-bold text-slate-400 hidden sm:block">{userEmail}</span>
+        <div className="flex items-center gap-2 sm:gap-4">
+            <span className="text-xs font-bold text-slate-400 truncate max-w-[120px] sm:max-w-none hidden sm:block">{userEmail}</span>
             <button onClick={handleLogout} className="p-2 hover:bg-slate-50 rounded-lg text-slate-400 hover:text-red-500 transition-colors" title="Log out">
                 <LogOut className="w-5 h-5" />
             </button>
         </div>
       </nav>
 
-      <main className="max-w-5xl mx-auto px-6 py-12">
-        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6 mb-12">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6 mb-8 sm:mb-12">
             <div>
                 <h1 className="text-3xl font-black text-slate-900 mb-2">My Projects</h1>
                 <p className="text-slate-500 font-medium">Select a project to manage equity or create a new one.</p>
@@ -135,7 +135,7 @@ export function DashboardContent() {
                 </button>
             </div>
         ) : (
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
                 {projects.map((project) => {
                   const isActive = project.subscription_status === "active";
                   if (isActive) {
