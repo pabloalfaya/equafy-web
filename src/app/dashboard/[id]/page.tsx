@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation"; 
 import Link from "next/link";
-import { Plus, TrendingUp, LayoutDashboard, PieChart, Users, Download, ArrowLeft, Settings, History, FileText, Flag } from "lucide-react";
+import { Plus, TrendingUp, LayoutDashboard, PieChart, Users, Download, ArrowLeft, Settings, History, FileText, Flag, CreditCard } from "lucide-react";
 import { createClient } from "@/utils/supabase/client";
 import { recalculateAndPersistProjectValuation } from "@/utils/projectRecalculator";
 import { logAudit } from "@/utils/auditLog";
@@ -392,6 +392,66 @@ export default function ProjectDashboardPage() {
   );
   
   if (!project) return null;
+
+  const subscriptionStatus = (project as ExtendedProject & { subscription_status?: string }).subscription_status;
+  if (subscriptionStatus !== "active") {
+    const handleFinishPayment = async () => {
+      const supabase = createClient();
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        router.push("/login");
+        return;
+      }
+      try {
+        const res = await fetch("/api/stripe/checkout/resume", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            projectId: project.id,
+            userId: user.id,
+            email: user.email ?? "",
+          }),
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data?.error || "Failed to start checkout");
+        if (data?.url) window.location.href = data.url;
+        else throw new Error("No checkout URL received");
+      } catch (err) {
+        alert(err instanceof Error ? err.message : "Could not open payment");
+      }
+    };
+    return (
+      <div className="min-h-screen bg-[#F8FAFC] flex flex-col items-center justify-center p-6">
+        <nav className="fixed top-0 inset-x-0 z-50 border-b border-slate-200 bg-white/80 backdrop-blur-md">
+          <div className="mx-auto max-w-7xl flex items-center justify-between px-6 py-2">
+            <Link href="/dashboard" className="p-2 hover:bg-slate-100 rounded-lg transition-colors">
+              <ArrowLeft className="w-5 h-5 text-slate-500" />
+            </Link>
+            <Link href="/"><img src="/logo.png" alt="Equily" className="h-20 w-auto object-contain" /></Link>
+          </div>
+        </nav>
+        <div className="bg-white border border-amber-200 rounded-2xl p-8 max-w-md w-full text-center shadow-lg">
+          <div className="w-14 h-14 bg-amber-50 rounded-full flex items-center justify-center mx-auto mb-4">
+            <CreditCard className="w-7 h-7 text-amber-600" />
+          </div>
+          <h1 className="text-xl font-black text-slate-900 mb-2">Pago pendiente</h1>
+          <p className="text-slate-500 text-sm mb-6">
+            Este proyecto requiere completar el pago para poder acceder al dashboard.
+          </p>
+          <button
+            type="button"
+            onClick={handleFinishPayment}
+            className="w-full inline-flex items-center justify-center gap-2 bg-slate-900 hover:bg-emerald-600 text-white py-3 px-6 rounded-xl font-bold transition-colors"
+          >
+            <CreditCard className="w-5 h-5" /> Finalizar pago
+          </button>
+          <Link href="/dashboard" className="mt-4 inline-block text-sm font-bold text-slate-400 hover:text-slate-600">
+            Volver al listado
+          </Link>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-[#F8FAFC] font-sans text-slate-900 overflow-x-hidden">

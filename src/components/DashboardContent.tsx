@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Plus, Folder, ArrowRight, Loader2, LogOut, User } from "lucide-react";
+import { Plus, Folder, ArrowRight, Loader2, LogOut, User, CreditCard } from "lucide-react";
 import { createClient } from "@/utils/supabase/client";
 import { CreateProjectModal } from "@/components/CreateProjectModal";
 import type { Project } from "@/types/database";
@@ -48,6 +48,32 @@ export function DashboardContent() {
     setProjects([newProject, ...projects]);
     setIsModalOpen(false);
     router.push(`/dashboard/${newProject.id}`);
+  };
+
+  const handleFinishPayment = async (project: Project) => {
+    const supabase = createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) {
+      router.push("/login");
+      return;
+    }
+    try {
+      const res = await fetch("/api/stripe/checkout/resume", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          projectId: project.id,
+          userId: user.id,
+          email: user.email ?? "",
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data?.error || "Failed to start checkout");
+      if (data?.url) window.location.href = data.url;
+      else throw new Error("No checkout URL received");
+    } catch (err) {
+      alert(err instanceof Error ? err.message : "Could not open payment");
+    }
   };
 
   if (loading) {
@@ -110,27 +136,57 @@ export function DashboardContent() {
             </div>
         ) : (
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {projects.map((project) => (
-                    <Link key={project.id} href={`/dashboard/${project.id}`} className="group relative bg-white border border-slate-200 hover:border-emerald-500/50 p-6 rounded-[24px] shadow-sm hover:shadow-xl hover:shadow-emerald-500/10 transition-all duration-300 flex flex-col h-48">
+                {projects.map((project) => {
+                  const isActive = project.subscription_status === "active";
+                  if (isActive) {
+                    return (
+                      <Link key={project.id} href={`/dashboard/${project.id}`} className="group relative bg-white border border-slate-200 hover:border-emerald-500/50 p-6 rounded-[24px] shadow-sm hover:shadow-xl hover:shadow-emerald-500/10 transition-all duration-300 flex flex-col h-48">
                         <div className="flex justify-between items-start mb-4">
-                            <div className="w-10 h-10 bg-slate-50 rounded-xl flex items-center justify-center group-hover:bg-emerald-50 transition-colors">
-                                <Folder className="w-5 h-5 text-slate-400 group-hover:text-emerald-50 transition-colors" />
-                            </div>
-                            <span className="bg-emerald-50 text-emerald-700 text-[10px] font-bold px-2 py-1 rounded-full uppercase tracking-wider">
-                                Active
-                            </span>
+                          <div className="w-10 h-10 bg-slate-50 rounded-xl flex items-center justify-center group-hover:bg-emerald-50 transition-colors">
+                            <Folder className="w-5 h-5 text-slate-400 group-hover:text-emerald-50 transition-colors" />
+                          </div>
+                          <span className="bg-emerald-50 text-emerald-700 text-[10px] font-bold px-2 py-1 rounded-full uppercase tracking-wider">
+                            Active
+                          </span>
                         </div>
                         <h3 className="text-xl font-bold text-slate-900 mb-1 group-hover:text-emerald-700 transition-colors truncate">
-                            {project.name}
+                          {project.name}
                         </h3>
                         <p className="text-xs text-slate-400 font-bold">Created {new Date(project.created_at || new Date()).toLocaleDateString()}</p>
                         <div className="mt-auto flex items-center justify-end">
-                            <span className="text-sm font-bold text-slate-300 group-hover:text-emerald-500 flex items-center gap-1 transition-colors">
-                                Open Dashboard <ArrowRight className="w-4 h-4" />
-                            </span>
+                          <span className="text-sm font-bold text-slate-300 group-hover:text-emerald-500 flex items-center gap-1 transition-colors">
+                            Open Dashboard <ArrowRight className="w-4 h-4" />
+                          </span>
                         </div>
-                    </Link>
-                ))}
+                      </Link>
+                    );
+                  }
+                  return (
+                    <div key={project.id} className="relative bg-white border border-amber-200 p-6 rounded-[24px] shadow-sm flex flex-col h-48 opacity-95">
+                      <div className="flex justify-between items-start mb-4">
+                        <div className="w-10 h-10 bg-amber-50 rounded-xl flex items-center justify-center">
+                          <Folder className="w-5 h-5 text-amber-500" />
+                        </div>
+                        <span className="bg-amber-100 text-amber-800 text-[10px] font-bold px-2 py-1 rounded-full uppercase tracking-wider">
+                          Pago pendiente
+                        </span>
+                      </div>
+                      <h3 className="text-xl font-bold text-slate-900 mb-1 truncate">
+                        {project.name}
+                      </h3>
+                      <p className="text-xs text-slate-400 font-bold">Created {new Date(project.created_at || new Date()).toLocaleDateString()}</p>
+                      <div className="mt-auto">
+                        <button
+                          type="button"
+                          onClick={() => handleFinishPayment(project)}
+                          className="w-full inline-flex items-center justify-center gap-2 bg-slate-900 hover:bg-emerald-600 text-white py-2.5 px-4 rounded-xl font-bold text-sm transition-colors"
+                        >
+                          <CreditCard className="w-4 h-4" /> Finalizar pago
+                        </button>
+                      </div>
+                    </div>
+                  );
+                })}
             </div>
         )}
       </main>

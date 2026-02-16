@@ -14,6 +14,7 @@ export interface Project {
   use_log_risk: boolean;
   current_valuation: number;
   created_at?: string;
+  subscription_status?: string;
 }
 
 export interface Contribution {
