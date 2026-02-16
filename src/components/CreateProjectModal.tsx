@@ -11,10 +11,14 @@ interface CreateProjectModalProps {
   onProjectCreated: (project: Project) => void;
 }
 
+const MONTHLY_PRICE_ID = process.env.NEXT_PUBLIC_STRIPE_MONTHLY_PRICE_ID ?? "";
+const ANNUAL_PRICE_ID = process.env.NEXT_PUBLIC_STRIPE_ANNUAL_PRICE_ID ?? "";
+
 export function CreateProjectModal({ isOpen, onClose, onProjectCreated }: CreateProjectModalProps) {
   const [step, setStep] = useState(1);
   const [name, setName] = useState("");
-  const [model, setModel] = useState("just_split"); 
+  const [model, setModel] = useState("just_split");
+  const [subscriptionPriceId, setSubscriptionPriceId] = useState<string>("");
   const [loading, setLoading] = useState(false);
 
   const [mults, setMults] = useState({
@@ -34,14 +38,9 @@ export function CreateProjectModal({ isOpen, onClose, onProjectCreated }: Create
     if (name.trim()) setStep(2);
   };
 
-  // Default: monthly, fallback to annual (this modal has no billing choice)
-  const selectedPriceId =
-    process.env.NEXT_PUBLIC_STRIPE_MONTHLY_PRICE_ID ||
-    process.env.NEXT_PUBLIC_STRIPE_ANNUAL_PRICE_ID ||
-    "";
-
   const handleSubmit = async () => {
-    if (selectedPriceId == null || selectedPriceId === "") {
+    const selectedPriceId = subscriptionPriceId || "";
+    if (!selectedPriceId) {
       alert("Por favor, selecciona un plan primero.");
       return;
     }
@@ -205,6 +204,38 @@ export function CreateProjectModal({ isOpen, onClose, onProjectCreated }: Create
                 <p className="text-[9px] text-center text-purple-700 font-black uppercase tracking-widest mt-auto">Fixed split</p>
               </div>
 
+            </div>
+
+            <div className="space-y-3 pt-2 border-t border-slate-100">
+              <p className="text-sm font-bold text-slate-700">Selecciona tu suscripción</p>
+              <div className="grid grid-cols-2 gap-3">
+                <button
+                  type="button"
+                  onClick={() => setSubscriptionPriceId(MONTHLY_PRICE_ID)}
+                  className={`rounded-xl border-2 p-4 text-left transition-all ${
+                    subscriptionPriceId === MONTHLY_PRICE_ID
+                      ? "border-blue-500 bg-blue-50/50 ring-1 ring-blue-500/30"
+                      : "border-slate-200 bg-slate-50/50 hover:border-slate-300"
+                  }`}
+                >
+                  <span className="font-bold text-slate-900 block">Mensual</span>
+                  <span className="text-lg font-black text-slate-800">15€</span>
+                  <span className="text-sm font-medium text-slate-500">/mes</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setSubscriptionPriceId(ANNUAL_PRICE_ID)}
+                  className={`rounded-xl border-2 p-4 text-left transition-all ${
+                    subscriptionPriceId === ANNUAL_PRICE_ID
+                      ? "border-blue-500 bg-blue-50/50 ring-1 ring-blue-500/30"
+                      : "border-slate-200 bg-slate-50/50 hover:border-slate-300"
+                  }`}
+                >
+                  <span className="font-bold text-slate-900 block">Anual</span>
+                  <span className="text-lg font-black text-slate-800">150€</span>
+                  <span className="text-sm font-medium text-slate-500">/año</span>
+                </button>
+              </div>
             </div>
 
             <div className="flex items-center justify-between pt-4 border-t border-slate-100">
