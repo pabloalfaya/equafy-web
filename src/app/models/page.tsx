@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { 
   ShieldCheck, Sliders, Scale, CheckCircle2, AlertTriangle, 
   Zap, ArrowRight, TrendingUp, Briefcase 
@@ -156,17 +155,6 @@ export default function ModelsPage() {
         </section>
 
       </main>
-
-      {/* --- FOOTER COHERENTE --- */}
-      <footer className="bg-white border-t border-slate-200 relative z-10 py-20">
-        <div className="mx-auto max-w-screen-2xl px-6 md:px-12 lg:px-24 flex flex-col md:flex-row justify-between items-center gap-6 text-slate-400 font-bold text-[10px] uppercase tracking-widest">
-          <p>© 2026 Equily. Built for modern co-founders.</p>
-          <div className="flex gap-8">
-            <Link href="/contact" className="hover:text-slate-900 transition-colors">Contact</Link>
-            <Link href="/pricing" className="hover:text-slate-900 transition-colors">Pricing</Link>
-          </div>
-        </div>
-      </footer>
     </div>
   );
 }
