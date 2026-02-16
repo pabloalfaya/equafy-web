@@ -45,7 +45,7 @@ export async function POST(req: Request) {
     const payload = {
       name: projectName.trim(),
       owner_id: userId,
-      subscription_status: "active",
+      subscription_status: "incomplete",
       model_type: "JUST_SPLIT",
       mult_cash: 4,
       mult_work: 2,
