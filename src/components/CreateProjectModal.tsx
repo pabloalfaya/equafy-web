@@ -72,13 +72,16 @@ export function CreateProjectModal({ isOpen, onClose, onProjectCreated }: Create
       }
 
       const apiUrl = "/api/stripe/checkout";
+      const projectNameTrimmed = name.trim();
       const body = {
-        projectName: name.trim(),
+        projectName: projectNameTrimmed,
         priceId,
         userId: user.id,
         email: user.email ?? "",
       };
+      console.log("INICIANDO PAGO PARA EL PROYECTO:", projectNameTrimmed);
       console.log("ID que se enviará:", priceId);
+
       const res = await fetch(apiUrl, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -94,14 +97,15 @@ export function CreateProjectModal({ isOpen, onClose, onProjectCreated }: Create
       console.log("API response:", data);
 
       if (!res.ok) {
-        alert(data?.error || "Payment could not be started. Please try again.");
+        const serverError = data?.error ?? `Server returned ${res.status}: ${JSON.stringify(data)}`;
+        alert(serverError);
         setLoading(false);
         return;
       }
 
       if (data.url && typeof data.url === "string") {
         console.log("Redirecting to:", data.url);
-        window.location.assign(data.url);
+        window.location.href = data.url;
         return;
       }
 
