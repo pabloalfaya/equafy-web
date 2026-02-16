@@ -46,7 +46,6 @@ export async function POST(req: Request) {
       name: projectName.trim(),
       owner_id: userId,
       subscription_status: "active",
-      is_active: true,
       model_type: "JUST_SPLIT",
       mult_cash: 4,
       mult_work: 2,
