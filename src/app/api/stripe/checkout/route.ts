@@ -45,7 +45,7 @@ export async function POST(req: Request) {
     const payload = {
       name: projectName.trim(),
       owner_id: userId,
-      subscription_status: "trialing",
+      subscription_status: "incomplete",
       model_type: "JUST_SPLIT",
       mult_cash: 4,
       mult_work: 2,
@@ -84,9 +84,15 @@ export async function POST(req: Request) {
       mode: "subscription",
       line_items: [{ price: priceId, quantity: 1 }],
       customer_email: userEmail,
-      metadata: { projectId, userId },
+      metadata: {
+        projectId: projectId,
+        userEmail: userEmail,
+      },
       subscription_data: {
-        metadata: { projectId, userId },
+        metadata: {
+          projectId: projectId,
+          userEmail: userEmail,
+        },
       },
       success_url: `${baseUrl}/dashboard?payment=success`,
       cancel_url: `${baseUrl}/dashboard?payment=cancelled`,
