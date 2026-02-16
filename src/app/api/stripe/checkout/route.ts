@@ -93,7 +93,8 @@ export async function POST(req: Request) {
       locale: "en",
     });
 
-    if (!session.url) {
+    const checkoutUrl = session.url ?? null;
+    if (!checkoutUrl) {
       console.error("Stripe session created but url is null", { sessionId: session.id });
       return NextResponse.json(
         { error: "Stripe did not return a checkout URL" },
@@ -101,8 +102,10 @@ export async function POST(req: Request) {
       );
     }
 
-    // 3. Devolver la URL de checkout al cliente
-    return NextResponse.json({ url: session.url });
+    // Siempre devolver la URL fuera de condicionales; session creada con éxito
+    const responseBody = { url: checkoutUrl };
+    console.log("[Stripe Checkout API] Returning URL to client");
+    return NextResponse.json(responseBody);
   } catch (err) {
     console.error("Stripe checkout error:", err);
     return NextResponse.json(

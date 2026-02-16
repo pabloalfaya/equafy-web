@@ -85,7 +85,13 @@ export function CreateProjectCheckoutModal({
         body: JSON.stringify(body),
       });
 
-      const data = await res.json().catch(() => ({}));
+      let data: { url?: string; error?: string };
+      try {
+        data = await res.json();
+      } catch {
+        data = {};
+      }
+      console.log("[Checkout] Response status:", res.status, "data:", data);
 
       if (!res.ok) {
         console.error("[Checkout] API error:", {
@@ -100,12 +106,13 @@ export function CreateProjectCheckoutModal({
         return;
       }
 
-      if (data?.url && typeof data.url === "string") {
+      if (data.url && typeof data.url === "string") {
+        console.log("URL de Stripe recibida:", data.url);
         window.location.href = data.url;
         return;
       }
 
-      console.error("[Checkout] API success but no url:", { data });
+      console.error("[Checkout] API OK pero sin url:", data);
       alert("No se recibió URL de pago.");
     } catch (err) {
       console.error("[Checkout] Error:", err);
