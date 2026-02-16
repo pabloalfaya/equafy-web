@@ -18,11 +18,18 @@ export function CreateProjectModal({ isOpen, onClose, onProjectCreated }: Create
   const [name, setName] = useState("");
   const [model, setModel] = useState("just_split");
   const [subscriptionPlan, setSubscriptionPlan] = useState<"monthly" | "annual" | null>(null);
+  const [selectedPriceId, setSelectedPriceId] = useState<string>("");
   const [loading, setLoading] = useState(false);
 
-  const handleSelectMonthly = () => setSubscriptionPlan("monthly");
-  const handleSelectAnnual = () => setSubscriptionPlan("annual");
-  const isPaymentReady = subscriptionPlan !== null && !loading;
+  const handleSelectMonthly = () => {
+    setSubscriptionPlan("monthly");
+    setSelectedPriceId(process.env.NEXT_PUBLIC_STRIPE_MONTHLY_PRICE_ID ?? "");
+  };
+  const handleSelectAnnual = () => {
+    setSubscriptionPlan("annual");
+    setSelectedPriceId(process.env.NEXT_PUBLIC_STRIPE_ANNUAL_PRICE_ID ?? "");
+  };
+  const isPaymentReady = !!selectedPriceId && !loading;
 
   const [mults, setMults] = useState({
     cash: 4,
@@ -42,16 +49,7 @@ export function CreateProjectModal({ isOpen, onClose, onProjectCreated }: Create
   };
 
   const handleSubmit = async () => {
-    if (subscriptionPlan === null) {
-      alert("Please select a plan first.");
-      return;
-    }
-
-    const priceId =
-      subscriptionPlan === "monthly"
-        ? process.env.NEXT_PUBLIC_STRIPE_MONTHLY_PRICE_ID
-        : process.env.NEXT_PUBLIC_STRIPE_ANNUAL_PRICE_ID;
-    console.log("Price ID being sent:", priceId);
+    if (!selectedPriceId) return;
 
     setLoading(true);
 
@@ -66,11 +64,11 @@ export function CreateProjectModal({ isOpen, onClose, onProjectCreated }: Create
       const apiUrl = "/api/stripe/checkout";
       const body = {
         projectName: name.trim(),
-        priceId: priceId ?? "",
+        priceId: selectedPriceId,
         userId: user.id,
         email: user.email ?? "",
       };
-      console.log("Sending to API...", { apiUrl, projectName: name, priceId });
+      console.log("ID que se enviará:", selectedPriceId);
       const res = await fetch(apiUrl, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -86,7 +84,7 @@ export function CreateProjectModal({ isOpen, onClose, onProjectCreated }: Create
       console.log("API response:", data);
 
       if (!res.ok) {
-        alert(data?.error || "Error starting payment.");
+        alert(data?.error || "Payment could not be started. Please try again.");
         setLoading(false);
         return;
       }
@@ -251,7 +249,7 @@ export function CreateProjectModal({ isOpen, onClose, onProjectCreated }: Create
                 </button>
                 <button
                   onClick={handleSubmit}
-                  disabled={loading || subscriptionPlan === null}
+                  disabled={loading || !selectedPriceId}
                   className={`px-8 py-3.5 rounded-xl font-black transition-all flex items-center gap-2 shadow-lg active:scale-[0.98] ${
                     isPaymentReady
                       ? "bg-emerald-600 text-white hover:bg-emerald-700 cursor-pointer"
