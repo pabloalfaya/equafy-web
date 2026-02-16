@@ -5,6 +5,9 @@ import { createClient } from "@/utils/supabase/client";
 import { X, Loader2, ShieldCheck, Scale, Settings, ArrowRight, ArrowLeft, Rocket } from "lucide-react";
 import type { Project } from "@/types/database";
 
+const STRIPE_MONTHLY_PRICE_ID = "price_1SyaxgBmr0mjMQ09JTxc07Sh";
+const STRIPE_ANNUAL_PRICE_ID = "price_1SyaxgBmr0mjMQ09DH21w1z3";
+
 interface CreateProjectModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -12,7 +15,7 @@ interface CreateProjectModalProps {
 }
 
 export function CreateProjectModal({ isOpen, onClose, onProjectCreated }: CreateProjectModalProps) {
-  console.log("ID Mensual detectado:", process.env.NEXT_PUBLIC_STRIPE_MONTHLY_PRICE_ID);
+  console.log("ID Mensual detectado:", STRIPE_MONTHLY_PRICE_ID);
 
   const [step, setStep] = useState(1);
   const [name, setName] = useState("");
@@ -22,16 +25,14 @@ export function CreateProjectModal({ isOpen, onClose, onProjectCreated }: Create
   const [loading, setLoading] = useState(false);
 
   const handleSelectMonthly = () => {
-    const id = process.env.NEXT_PUBLIC_STRIPE_MONTHLY_PRICE_ID ?? "";
     setSubscriptionPlan("monthly");
-    setSelectedPriceId(id);
-    console.log("Plan seleccionado correctamente:", id);
+    setSelectedPriceId("price_1SyaxgBmr0mjMQ09JTxc07Sh");
+    console.log("Plan seleccionado correctamente:", "price_1SyaxgBmr0mjMQ09JTxc07Sh");
   };
   const handleSelectAnnual = () => {
-    const id = process.env.NEXT_PUBLIC_STRIPE_ANNUAL_PRICE_ID ?? "";
     setSubscriptionPlan("annual");
-    setSelectedPriceId(id);
-    console.log("Plan seleccionado correctamente:", id);
+    setSelectedPriceId("price_1SyaxgBmr0mjMQ09DH21w1z3");
+    console.log("Plan seleccionado correctamente:", "price_1SyaxgBmr0mjMQ09DH21w1z3");
   };
   const isPaymentReady = subscriptionPlan !== null && !loading;
 
@@ -58,10 +59,10 @@ export function CreateProjectModal({ isOpen, onClose, onProjectCreated }: Create
     try {
       const priceId =
         subscriptionPlan === "monthly"
-          ? (process.env.NEXT_PUBLIC_STRIPE_MONTHLY_PRICE_ID ?? selectedPriceId)
+          ? STRIPE_MONTHLY_PRICE_ID
           : subscriptionPlan === "annual"
-            ? (process.env.NEXT_PUBLIC_STRIPE_ANNUAL_PRICE_ID ?? selectedPriceId)
-            : "";
+            ? STRIPE_ANNUAL_PRICE_ID
+            : selectedPriceId || "";
       if (!priceId) {
         throw new Error("No priceId: selecciona un plan (Monthly o Annual).");
       }
