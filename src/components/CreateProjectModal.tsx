@@ -51,21 +51,27 @@ export function CreateProjectModal({ isOpen, onClose, onProjectCreated }: Create
 
   const handleSubmit = async () => {
     if (subscriptionPlan === null) {
-      alert("Por favor, selecciona un plan primero.");
+      alert("Please select a plan first.");
       return;
     }
     if (!selectedPriceId) {
-      alert("Los Price IDs de Stripe no están configurados. Añade NEXT_PUBLIC_STRIPE_MONTHLY_PRICE_ID y NEXT_PUBLIC_STRIPE_ANNUAL_PRICE_ID en .env.local y reinicia el servidor.");
+      console.log("[CreateProject] Env vars being read:", {
+        NEXT_PUBLIC_STRIPE_MONTHLY_PRICE_ID: process.env.NEXT_PUBLIC_STRIPE_MONTHLY_PRICE_ID,
+        NEXT_PUBLIC_STRIPE_ANNUAL_PRICE_ID: process.env.NEXT_PUBLIC_STRIPE_ANNUAL_PRICE_ID,
+        MONTHLY_PRICE_ID,
+        ANNUAL_PRICE_ID,
+      });
+      alert("Stripe Price IDs are not configured. Add NEXT_PUBLIC_STRIPE_MONTHLY_PRICE_ID and NEXT_PUBLIC_STRIPE_ANNUAL_PRICE_ID to .env.local and restart the server.");
       return;
     }
-    console.log("Price ID que voy a enviar:", selectedPriceId);
+    console.log("Price ID being sent:", selectedPriceId);
 
     setLoading(true);
 
     try {
       const { data: { user }, error: authError } = await supabase.auth.getUser();
       if (authError || !user) {
-        alert("Debes iniciar sesión para continuar.");
+        alert("You must be logged in to continue.");
         setLoading(false);
         return;
       }
@@ -77,7 +83,7 @@ export function CreateProjectModal({ isOpen, onClose, onProjectCreated }: Create
         userId: user.id,
         email: user.email ?? "",
       };
-      console.log("Enviando datos a la API...", { apiUrl, projectName: name, priceId: selectedPriceId });
+      console.log("Sending to API...", { apiUrl, projectName: name, priceId: selectedPriceId });
       const res = await fetch(apiUrl, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -90,21 +96,21 @@ export function CreateProjectModal({ isOpen, onClose, onProjectCreated }: Create
       } catch {
         data = {};
       }
-      console.log("Respuesta completa de la API:", data);
+      console.log("API response:", data);
 
       if (!res.ok) {
-        alert(data?.error || "Error al iniciar el pago.");
+        alert(data?.error || "Error starting payment.");
         setLoading(false);
         return;
       }
 
       if (data.url && typeof data.url === "string") {
-        console.log("Redirigiendo a:", data.url);
+        console.log("Redirecting to:", data.url);
         window.location.assign(data.url);
         return;
       }
 
-      throw new Error("La API no devolvió una URL de Stripe: " + JSON.stringify(data));
+      throw new Error("API did not return a Stripe URL: " + JSON.stringify(data));
     } catch (err) {
       const message = err instanceof Error ? err.message : String(err);
       console.error("[CreateProject] Error:", err);
@@ -221,7 +227,7 @@ export function CreateProjectModal({ isOpen, onClose, onProjectCreated }: Create
             </div>
 
             <div className="space-y-3 pt-2 border-t border-slate-100">
-              <p className="text-sm font-bold text-slate-700">Selecciona tu suscripción</p>
+              <p className="text-sm font-bold text-slate-700">Select your subscription plan</p>
               <div className="grid grid-cols-2 gap-3">
                 <button
                   type="button"
@@ -232,9 +238,9 @@ export function CreateProjectModal({ isOpen, onClose, onProjectCreated }: Create
                       : "border-2 border-slate-200 bg-slate-50/50 hover:border-slate-300"
                   }`}
                 >
-                  <span className="font-bold text-slate-900 block">Mensual</span>
+                  <span className="font-bold text-slate-900 block">Monthly</span>
                   <span className="text-lg font-black text-slate-800">19,99€</span>
-                  <span className="text-sm font-medium text-slate-500">/mes</span>
+                  <span className="text-sm font-medium text-slate-500">/month</span>
                 </button>
                 <button
                   type="button"
@@ -245,9 +251,9 @@ export function CreateProjectModal({ isOpen, onClose, onProjectCreated }: Create
                       : "border-2 border-slate-200 bg-slate-50/50 hover:border-slate-300"
                   }`}
                 >
-                  <span className="font-bold text-slate-900 block">Anual</span>
+                  <span className="font-bold text-slate-900 block">Annual</span>
                   <span className="text-lg font-black text-slate-800">199,99€</span>
-                  <span className="text-sm font-medium text-slate-500">/año</span>
+                  <span className="text-sm font-medium text-slate-500">/year</span>
                 </button>
               </div>
             </div>
@@ -265,7 +271,7 @@ export function CreateProjectModal({ isOpen, onClose, onProjectCreated }: Create
                       : "bg-slate-300 text-slate-500 cursor-not-allowed disabled:opacity-70"
                   }`}
                 >
-                  {loading ? <><Loader2 className="w-5 h-5 animate-spin" /> Redirigiendo...</> : <>Proceed to Payment <ArrowRight className="w-4 h-4" /></>}
+                  {loading ? <><Loader2 className="w-5 h-5 animate-spin" /> Redirecting...</> : <>Proceed to Payment <ArrowRight className="w-4 h-4" /></>}
                 </button>
             </div>
           </div>
