@@ -54,10 +54,6 @@ export default function LegalPage() {
           </div>
         </div>
       </main>
-
-      <footer className="bg-white border-t border-slate-200 py-10 text-center text-slate-400 font-bold text-[10px] uppercase tracking-widest relative z-10">
-        © 2026 Equily. Built for modern co-founders.
-      </footer>
     </div>
   );
 }
