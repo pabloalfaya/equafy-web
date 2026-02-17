@@ -99,10 +99,17 @@ function getEquitySummaryForFinalize(
   if (totalAfter > 0) finalPct = finalPct.map((v) => (v / totalAfter) * 100);
 
   const totalPoints = memberRows.reduce((sum, r) => sum + r.points, 0);
+  const formatCap = (cap: number | null | undefined) => {
+    if (cap != null && cap !== undefined && Number(cap) > 0) return `${Number(cap).toFixed(2)}%`;
+    return "—";
+  };
   const rows: SummaryRow[] = memberRows.map((r, i) => ({
     name: r.name,
-    equityPct: finalPct[i],
+    role: members[i]?.role || "Member",
     points: r.points,
+    fixed: r.fixed,
+    capFormatted: formatCap(members[i]?.equity_cap),
+    equityPct: finalPct[i],
   }));
   return { rows, totalPoints };
 }
