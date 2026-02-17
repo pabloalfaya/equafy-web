@@ -34,9 +34,12 @@ export default function LegalPage() {
                 </div>
                 <h2 className="text-2xl font-black text-slate-900">Terms of Service</h2>
               </div>
-              <p className="text-slate-500 font-medium leading-relaxed">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Coming soon...
+              <p className="text-slate-500 font-medium leading-relaxed mb-4">
+                The terms and conditions that govern your use of Equily, including subscriptions, disclaimers, and applicable law.
               </p>
+              <Link href="/terms" className="inline-flex items-center gap-2 text-sm font-bold text-emerald-600 hover:text-emerald-700">
+                Read Terms of Service <ArrowRight className="w-4 h-4" />
+              </Link>
             </section>
 
             {/* Privacy Policy */}
@@ -47,9 +50,12 @@ export default function LegalPage() {
                 </div>
                 <h2 className="text-2xl font-black text-slate-900">Privacy Policy</h2>
               </div>
-              <p className="text-slate-500 font-medium leading-relaxed">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident. Coming soon...
+              <p className="text-slate-500 font-medium leading-relaxed mb-4">
+                How we collect, use, and protect your data, including your rights under GDPR and CCPA.
               </p>
+              <Link href="/privacy" className="inline-flex items-center gap-2 text-sm font-bold text-emerald-600 hover:text-emerald-700">
+                Read Privacy Policy <ArrowRight className="w-4 h-4" />
+              </Link>
             </section>
           </div>
         </div>
