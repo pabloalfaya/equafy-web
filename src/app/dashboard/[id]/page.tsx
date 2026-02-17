@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation"; 
 import Link from "next/link";
-import { Plus, TrendingUp, LayoutDashboard, PieChart, Users, Download, ArrowLeft, Settings, History, FileText, Flag, CreditCard, LockOpen } from "lucide-react";
+import { Plus, TrendingUp, LayoutDashboard, PieChart, Users, Download, ArrowLeft, Settings, History, FileText, Snowflake, CreditCard, LockOpen } from "lucide-react";
 import { createClient } from "@/utils/supabase/client";
 import { recalculateAndPersistProjectValuation } from "@/utils/projectRecalculator";
 import { logAudit } from "@/utils/auditLog";
@@ -215,7 +215,7 @@ export default function ProjectDashboardPage() {
   };
 
   const handleFinalizeProject = async () => {
-    const confirmed = window.confirm("Are you sure? This will freeze all contributions.");
+    const confirmed = window.confirm("Are you sure? This will freeze all contributions and lock the current equity state.");
     if (!confirmed) return;
 
     setIsFreezing(true);
@@ -690,17 +690,17 @@ export default function ProjectDashboardPage() {
                         className="flex flex-col items-center justify-center gap-2 rounded-xl border border-amber-200 bg-amber-50 px-3 py-4 font-bold text-amber-700 hover:bg-amber-100 transition-all"
                       >
                         <LockOpen className="h-5 w-5" />
-                        <span className="text-xs">Unlock Project</span>
+                        <span className="text-xs">Unfreeze Project</span>
                       </button>
                     ) : (
                       <button
                         type="button"
                         onClick={() => void handleFinalizeProject()}
                         disabled={isFreezing}
-                        className="flex flex-col items-center justify-center gap-2 rounded-xl border border-slate-200 bg-slate-50 px-3 py-4 font-bold text-slate-700 hover:bg-slate-100 transition-all disabled:opacity-60 disabled:cursor-not-allowed"
+                        className="flex flex-col items-center justify-center gap-2 rounded-xl border border-red-200 bg-red-600 px-3 py-4 font-bold text-white hover:bg-red-700 transition-all disabled:opacity-60 disabled:cursor-not-allowed"
                       >
-                        <Flag className="h-5 w-5" />
-                        <span className="text-xs">{isFreezing ? "Freezing…" : "Finalize Project"}</span>
+                        <Snowflake className="h-5 w-5" />
+                        <span className="text-xs">{isFreezing ? "Freezing…" : "Freeze Project"}</span>
                       </button>
                     )
                   )}
