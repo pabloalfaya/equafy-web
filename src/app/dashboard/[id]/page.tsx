@@ -216,23 +216,43 @@ export default function ProjectDashboardPage() {
     if (!project) return;
     const ok = window.confirm("Are you sure? This will freeze all contributions.");
     if (!ok) return;
-    const supabase = createClient();
-    const { error } = await supabase.from("projects").update({ status: "finalized" }).eq("id", projectId);
-    if (error) {
-      console.error("Error finalizing project:", error);
-      return;
+
+    try {
+      const supabase = createClient();
+      const { data, error } = await supabase
+        .from("projects")
+        .update({ status: "finalized" })
+        .eq("id", projectId)
+        .select("id, status")
+        .single();
+
+      if (error) {
+        console.error("[Finalize] Supabase update error:", error);
+        return;
+      }
+      console.log("[Finalize] Update result:", data);
+
+      // Optimistic UI: mark project as finalized so buttons/edits hide immediately
+      setProject((prev) => (prev ? { ...prev, status: "finalized" } : null));
+
+      // Compute cap table summary and open Official Project Summary modal
+      const { rows, totalPoints } = getEquitySummaryForFinalize(members, contributions, project);
+      const modelName = (project?.model_type || project?.equity_model || "custom").replace(/_/g, " ").toLowerCase();
+      setSummaryPayload({
+        projectName: project.name,
+        modelName,
+        finalizedAt: new Date().toISOString(),
+        totalPoints,
+        rows,
+      });
+      setSummaryModalOpen(true);
+
+      // Refresh data from server and re-render
+      await fetchData();
+      router.refresh();
+    } catch (err) {
+      console.error("[Finalize] Unexpected error:", err);
     }
-    await fetchData();
-    const { rows, totalPoints } = getEquitySummaryForFinalize(members, contributions, project);
-    const modelName = (project?.model_type || project?.equity_model || "custom").replace(/_/g, " ").toLowerCase();
-    setSummaryPayload({
-      projectName: project.name,
-      modelName,
-      finalizedAt: new Date().toISOString(),
-      totalPoints,
-      rows,
-    });
-    setSummaryModalOpen(true);
   };
 
   const handleUnlockProject = async () => {
