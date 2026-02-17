@@ -57,10 +57,10 @@ export default function LandingPage() {
       </header>
 
       {/* --- DASHBOARD PREVIEW SECTION --- */}
-      <section className="pb-16 relative z-10 w-full px-6 md:px-12 lg:px-24">
-        <div className="mx-auto max-w-screen-2xl relative">
+      <section className="pb-12 relative z-10 w-full px-6 md:px-12 lg:px-24">
+        <div className="mx-auto max-w-5xl relative">
           <div className="relative z-20 rounded-[32px] border border-slate-200/60 bg-white/80 backdrop-blur-2xl shadow-[0_40px_80px_-20px_rgba(0,0,0,0.1)] overflow-hidden ring-1 ring-slate-900/5">
-            <div className="h-12 border-b border-slate-100 flex items-center px-6 gap-2 bg-slate-50/50">
+            <div className="h-10 border-b border-slate-100 flex items-center px-4 gap-2 bg-slate-50/50">
               <div className="w-3 h-3 rounded-full bg-red-400/80"></div>
               <div className="w-3 h-3 rounded-full bg-amber-400/80"></div>
               <div className="w-3 h-3 rounded-full bg-emerald-400/80"></div>
@@ -70,43 +70,43 @@ export default function LandingPage() {
               </div>
             </div>
 
-            <div className="p-8 md:p-12">
-              <div className="grid lg:grid-cols-2 gap-16 items-center">
-                <div className="space-y-6">
-                  <div className="mb-8">
-                    <h2 className="text-2xl font-bold tracking-tight text-slate-900">Cap Table Status</h2>
-                    <p className="text-slate-500 font-medium">Real-time dynamic split based on contributions.</p>
+            <div className="p-6 md:p-8">
+              <div className="grid lg:grid-cols-2 gap-8 items-center">
+                <div className="space-y-4">
+                  <div className="mb-4">
+                    <h2 className="text-xl font-bold tracking-tight text-slate-900">Cap Table Status</h2>
+                    <p className="text-slate-500 text-sm font-medium">Real-time dynamic split based on contributions.</p>
                   </div>
-                  <div className="space-y-4">
+                  <div className="space-y-2">
                     {[
                       { name: "Alex (CEO)", type: "Time & IP", risk: "x4", ownership: "45.0%", img: "https://i.pravatar.cc/150?u=alex", color: "text-emerald-600", bg: "bg-emerald-50" },
                       { name: "Ben (CTO)", type: "Time", risk: "x4", ownership: "30.0%", img: "https://i.pravatar.cc/150?u=ben", color: "text-blue-600", bg: "bg-blue-50" },
                       { name: "VC Fund A", type: "Cash", risk: "x2", ownership: "18.75%", img: "https://i.pravatar.cc/150?u=vc", color: "text-orange-600", bg: "bg-orange-50" },
                       { name: "Sarah (Dev)", type: "Time", risk: "x1", ownership: "6.25%", img: "https://i.pravatar.cc/150?u=sarah", color: "text-purple-600", bg: "bg-purple-50" },
                     ].map((member, i) => (
-                      <div key={i} className="flex items-center justify-between p-3 rounded-2xl hover:bg-slate-50 transition-colors group cursor-default">
-                        <div className="flex items-center gap-4">
+                      <div key={i} className="flex items-center justify-between p-2 rounded-xl hover:bg-slate-50 transition-colors group cursor-default">
+                        <div className="flex items-center gap-3">
                           <div className="relative">
-                            <img src={member.img} className="h-12 w-12 rounded-xl object-cover ring-2 ring-white shadow-sm" alt={member.name} />
-                            <div className={`absolute -bottom-1 -right-1 w-5 h-5 rounded-full ${member.bg} flex items-center justify-center border-2 border-white`}>
-                              <div className={`w-1.5 h-1.5 rounded-full ${member.color.replace('text', 'bg')}`}></div>
+                            <img src={member.img} className="h-10 w-10 rounded-lg object-cover ring-2 ring-white shadow-sm" alt={member.name} />
+                            <div className={`absolute -bottom-0.5 -right-0.5 w-4 h-4 rounded-full ${member.bg} flex items-center justify-center border-2 border-white`}>
+                              <div className={`w-1 h-1 rounded-full ${member.color.replace('text', 'bg')}`}></div>
                             </div>
                           </div>
                           <div>
-                            <p className="font-bold text-slate-900 text-base">{member.name}</p>
-                            <p className="text-xs text-slate-400 font-bold uppercase tracking-wider">{member.type}</p>
+                            <p className="font-bold text-slate-900 text-sm">{member.name}</p>
+                            <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">{member.type}</p>
                           </div>
                         </div>
                         <div className="text-right">
-                          <p className={`text-xl font-bold ${member.color} tabular-nums`}>{member.ownership}</p>
-                          <span className="text-[10px] font-bold text-slate-400 bg-slate-100 px-2 py-0.5 rounded-full">{member.risk} Multiplier</span>
+                          <p className={`text-lg font-bold ${member.color} tabular-nums`}>{member.ownership}</p>
+                          <span className="text-[10px] font-bold text-slate-400 bg-slate-100 px-1.5 py-0.5 rounded-full">{member.risk} Multiplier</span>
                         </div>
                       </div>
                     ))}
                   </div>
                 </div>
-                <div className="relative flex items-center justify-center py-8">
-                  <div className="relative h-72 w-72">
+                <div className="relative flex items-center justify-center py-4">
+                  <div className="relative h-56 w-56">
                     <svg viewBox="0 0 36 36" className="h-full w-full transform -rotate-90 drop-shadow-2xl">
                       <circle cx="18" cy="18" r="16" fill="transparent" stroke="#e2e8f0" strokeWidth="3.8" />
                       <circle cx="18" cy="18" r="16" fill="transparent" stroke="#10b981" strokeWidth="3.8" strokeDasharray="45 100" className="animate-[spin_1s_ease-out_reverse]" style={{ transformOrigin: 'center' }} />
@@ -115,8 +115,8 @@ export default function LandingPage() {
                       <circle cx="18" cy="18" r="16" fill="transparent" stroke="#a855f7" strokeWidth="3.8" strokeDasharray="6.25 100" strokeDashoffset="-93.75" className="animate-[spin_1.6s_ease-out_reverse]" style={{ transformOrigin: 'center' }} />
                     </svg>
                     <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
-                      <p className="text-xs text-slate-400 font-bold uppercase tracking-widest mb-1">Valuation</p>
-                      <p className="text-4xl font-bold text-slate-900 tracking-tight">€1.37M</p>
+                      <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest mb-0.5">Valuation</p>
+                      <p className="text-3xl font-bold text-slate-900 tracking-tight">€1.37M</p>
                       <div className="flex items-center gap-1 mt-2 text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full text-[10px] font-bold">
                         <TrendingUp className="w-3 h-3" />
                         +12% vs last month
@@ -131,45 +131,45 @@ export default function LandingPage() {
       </section>
 
       {/* --- FRAMEWORK SELECTION --- */}
-      <section className="relative z-10 w-full py-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="relative z-10 w-full py-12">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="rounded-[40px] bg-[#0B0F19] text-white shadow-xl shadow-gray-900/10 overflow-hidden relative">
             <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-emerald-900/20 via-[#0B0F19] to-[#0B0F19] pointer-events-none rounded-[40px]"></div>
-            <div className="relative p-8 md:p-12">
-            <div className="text-center mb-12 max-w-3xl mx-auto">
-              <h2 className="text-4xl md:text-5xl font-bold tracking-tight mb-4 bg-clip-text text-transparent bg-gradient-to-b from-white to-white/60 py-2">
+            <div className="relative p-6 md:p-8">
+            <div className="text-center mb-8 max-w-3xl mx-auto">
+              <h2 className="text-3xl md:text-4xl font-bold tracking-tight mb-3 bg-clip-text text-transparent bg-gradient-to-b from-white to-white/60 py-1">
                 Choose your Equity Framework
               </h2>
-              <p className="text-slate-400 text-lg font-medium leading-relaxed">
+              <p className="text-slate-400 text-base font-medium leading-relaxed">
                 Every company is different. Select the mathematical logic that fits your stage, from bootstrap to Series A.
               </p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 items-start">
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 items-start">
               
               {/* --- CUSTOM MODEL --- */}
-              <div className="bg-white/[0.03] border border-white/10 rounded-[32px] p-10 hover:bg-white/[0.05] transition-all duration-300 group h-full flex flex-col gap-y-8">
-                <div className="flex-grow flex flex-col gap-y-8">
+              <div className="bg-white/[0.03] border border-white/10 rounded-[24px] p-6 hover:bg-white/[0.05] transition-all duration-300 group h-full flex flex-col gap-y-6">
+                <div className="flex-grow flex flex-col gap-y-6">
                   <div>
-                    <div className="w-12 h-12 rounded-2xl bg-slate-800 flex items-center justify-center mb-4 group-hover:bg-slate-700 transition-colors">
-                      <Sliders className="w-6 h-6 text-slate-300" />
+                    <div className="w-10 h-10 rounded-xl bg-slate-800 flex items-center justify-center mb-3 group-hover:bg-slate-700 transition-colors">
+                      <Sliders className="w-5 h-5 text-slate-300" />
                     </div>
-                    <h3 className="text-2xl font-bold text-white mb-2">Custom Model</h3>
-                    <p className="text-slate-400 text-sm font-medium">Total control for complex setups.</p>
+                    <h3 className="text-xl font-bold text-white mb-1">Custom Model</h3>
+                    <p className="text-slate-400 text-xs font-medium">Total control for complex setups.</p>
                   </div>
-                  <div className="space-y-4">
-                    <div className="flex items-center gap-3 text-slate-300 font-medium">
-                      <CheckCircle2 className="w-5 h-5 text-slate-500" /> Fully Editable Multipliers
+                  <div className="space-y-3">
+                    <div className="flex items-center gap-2 text-slate-300 text-sm font-medium">
+                      <CheckCircle2 className="w-4 h-4 text-slate-500 shrink-0" /> Fully Editable Multipliers
                     </div>
-                    <div className="flex items-center gap-3 text-slate-300 font-medium">
-                      <CheckCircle2 className="w-5 h-5 text-slate-500" /> Manual Configuration
+                    <div className="flex items-center gap-2 text-slate-300 text-sm font-medium">
+                      <CheckCircle2 className="w-4 h-4 text-slate-500 shrink-0" /> Manual Configuration
                     </div>
                   </div>
                 </div>
-                <div className={`mt-auto rounded-xl p-4 border flex items-center justify-between transition-colors ${customRisk ? 'border-emerald-500/30 bg-white/5' : 'border-white/10 bg-white/[0.04]'}`}>
+                <div className={`mt-auto rounded-lg p-3 border flex items-center justify-between transition-colors ${customRisk ? 'border-emerald-500/30 bg-white/5' : 'border-white/10 bg-white/[0.04]'}`}>
                   <div className="flex items-center gap-2">
                     <PieChart className={`w-4 h-4 transition-colors ${customRisk ? 'text-emerald-400' : 'text-slate-500'}`} />
-                    <span className={`text-sm font-semibold tracking-tight transition-colors ${customRisk ? 'text-white' : 'text-slate-400'}`}>
+                    <span className={`text-xs font-semibold tracking-tight transition-colors ${customRisk ? 'text-white' : 'text-slate-400'}`}>
                       Logarithmic Risk Recommendation
                     </span>
                   </div>
@@ -180,46 +180,46 @@ export default function LandingPage() {
                     <div className={`absolute top-0.5 w-3 h-3 bg-white rounded-full transition-all ${customRisk ? 'right-0.5' : 'left-0.5'}`}></div>
                   </button>
                 </div>
-                <Link href="/models#custom" className="w-full mt-4">
-                  <button className="w-full py-4 rounded-2xl border border-white/10 text-white font-bold hover:bg-white hover:text-slate-900 transition-all uppercase text-[11px] tracking-widest">
+                <Link href="/models#custom" className="w-full mt-3">
+                  <button className="w-full py-3 rounded-xl border border-white/10 text-white font-bold hover:bg-white hover:text-slate-900 transition-all uppercase text-[10px] tracking-widest">
                     Learn more about Custom Model
                   </button>
                 </Link>
               </div>
 
               {/* --- JUST SPLIT MODEL --- */}
-              <div className="relative bg-emerald-900/10 border border-emerald-500/50 rounded-[32px] p-10 transition-all duration-300 shadow-[0_0_80px_-20px_rgba(16,185,129,0.2)] h-full flex flex-col gap-y-8 transform lg:-translate-y-4 z-20">
-                <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-emerald-500 text-white px-4 py-1.5 rounded-full text-[10px] font-black tracking-widest uppercase shadow-lg border border-emerald-400">
+              <div className="relative bg-emerald-900/10 border border-emerald-500/50 rounded-[24px] p-6 transition-all duration-300 shadow-[0_0_80px_-20px_rgba(16,185,129,0.2)] h-full flex flex-col gap-y-6 transform lg:-translate-y-2 z-20">
+                <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-emerald-500 text-white px-3 py-1 rounded-full text-[9px] font-black tracking-widest uppercase shadow-lg border border-emerald-400">
                   Recommended
                 </div>
-                <div className="flex-grow flex flex-col gap-y-8">
+                <div className="flex-grow flex flex-col gap-y-6">
                 <div>
-                  <div className="w-12 h-12 rounded-2xl bg-emerald-500 flex items-center justify-center mb-4 shadow-lg shadow-emerald-500/30">
-                    <ShieldCheck className="w-6 h-6 text-white" />
+                  <div className="w-10 h-10 rounded-xl bg-emerald-500 flex items-center justify-center mb-3 shadow-lg shadow-emerald-500/30">
+                    <ShieldCheck className="w-5 h-5 text-white" />
                   </div>
-                  <h3 className="text-2xl font-bold text-white mb-2">Just Split Model</h3>
-                  <p className="text-emerald-400 text-sm font-bold">The Industry Standard</p>
+                  <h3 className="text-xl font-bold text-white mb-1">Just Split Model</h3>
+                  <p className="text-emerald-400 text-xs font-bold">The Industry Standard</p>
                 </div>
-                <div className="space-y-6">
-                  <div className="bg-emerald-500/10 border border-emerald-500/20 rounded-2xl p-4">
-                      <div className="flex justify-between items-center mb-1">
-                          <span className="text-xs font-bold text-emerald-400 uppercase tracking-widest">Capital (Cash)</span>
-                          <span className="text-xl font-bold text-white">x4</span>
+                <div className="space-y-3">
+                  <div className="bg-emerald-500/10 border border-emerald-500/20 rounded-xl p-3">
+                      <div className="flex justify-between items-center mb-0.5">
+                          <span className="text-[10px] font-bold text-emerald-400 uppercase tracking-widest">Capital (Cash)</span>
+                          <span className="text-lg font-bold text-white">x4</span>
                       </div>
                   </div>
-                  <div className="bg-blue-500/10 border border-blue-500/20 rounded-2xl p-4">
-                      <div className="flex justify-between items-center mb-1">
-                          <span className="text-xs font-bold text-blue-400 uppercase tracking-widest">Work & IP</span>
-                          <span className="text-xl font-bold text-white">x2</span>
+                  <div className="bg-blue-500/10 border border-blue-500/20 rounded-xl p-3">
+                      <div className="flex justify-between items-center mb-0.5">
+                          <span className="text-[10px] font-bold text-blue-400 uppercase tracking-widest">Work & IP</span>
+                          <span className="text-lg font-bold text-white">x2</span>
                       </div>
-                      <p className="text-xs text-blue-200/60 mt-2 font-medium">Tangible and intangible contributions</p>
+                      <p className="text-[10px] text-blue-200/60 mt-1 font-medium">Tangible and intangible contributions</p>
                   </div>
                 </div>
                 </div>
-                <div className={`mt-auto rounded-xl p-4 border flex items-center justify-between transition-colors ${standardRisk ? 'border-emerald-500/30 bg-white/5' : 'border-white/10 bg-white/[0.04]'}`}>
+                <div className={`mt-auto rounded-lg p-3 border flex items-center justify-between transition-colors ${standardRisk ? 'border-emerald-500/30 bg-white/5' : 'border-white/10 bg-white/[0.04]'}`}>
                   <div className="flex items-center gap-2">
                     <PieChart className={`w-4 h-4 transition-colors ${standardRisk ? 'text-emerald-400' : 'text-slate-500'}`} />
-                    <span className={`text-sm font-semibold tracking-tight transition-colors ${standardRisk ? 'text-white' : 'text-slate-400'}`}>
+                    <span className={`text-xs font-semibold tracking-tight transition-colors ${standardRisk ? 'text-white' : 'text-slate-400'}`}>
                       Logarithmic Risk Recommendation
                     </span>
                   </div>
@@ -230,36 +230,36 @@ export default function LandingPage() {
                     <div className={`absolute top-0.5 w-3 h-3 bg-white rounded-full transition-all ${standardRisk ? 'right-0.5' : 'left-0.5'}`}></div>
                   </button>
                 </div>
-                <Link href="/models#standard" className="w-full mt-4">
-                  <button className="w-full py-4 rounded-2xl bg-emerald-500 text-white font-bold hover:bg-emerald-400 hover:scale-[1.02] shadow-lg shadow-emerald-900/20 text-center transition-all uppercase text-[11px] tracking-widest">
+                <Link href="/models#standard" className="w-full mt-3">
+                  <button className="w-full py-3 rounded-xl bg-emerald-500 text-white font-bold hover:bg-emerald-400 hover:scale-[1.02] shadow-lg shadow-emerald-900/20 text-center transition-all uppercase text-[10px] tracking-widest">
                     Learn more about Just Split Model
                   </button>
                 </Link>
               </div>
 
               {/* --- FLAT MODEL --- */}
-              <div className="bg-white/[0.03] border border-white/10 rounded-[32px] p-10 hover:bg-white/[0.05] transition-all duration-300 group h-full flex flex-col gap-y-8">
-                <div className="flex-grow flex flex-col gap-y-8">
+              <div className="bg-white/[0.03] border border-white/10 rounded-[24px] p-6 hover:bg-white/[0.05] transition-all duration-300 group h-full flex flex-col gap-y-6">
+                <div className="flex-grow flex flex-col gap-y-6">
                 <div>
-                  <div className="w-12 h-12 rounded-2xl bg-slate-800 flex items-center justify-center mb-4 group-hover:bg-purple-900/30 transition-colors">
-                    <Scale className="w-6 h-6 text-purple-400" />
+                  <div className="w-10 h-10 rounded-xl bg-slate-800 flex items-center justify-center mb-3 group-hover:bg-purple-900/30 transition-colors">
+                    <Scale className="w-5 h-5 text-purple-400" />
                   </div>
-                  <h3 className="text-2xl font-bold text-white mb-2">Flat Model</h3>
-                  <p className="text-purple-400 text-sm font-medium">Simple fixed split.</p>
+                  <h3 className="text-xl font-bold text-white mb-1">Flat Model</h3>
+                  <p className="text-purple-400 text-xs font-medium">Simple fixed split.</p>
                 </div>
-                <div className="space-y-4">
-                    <div className="flex items-center gap-3 text-slate-300 font-medium">
-                    <CheckCircle2 className="w-5 h-5 text-slate-500" /> Equal Multipliers (x1)
+                <div className="space-y-3">
+                    <div className="flex items-center gap-2 text-slate-300 text-sm font-medium">
+                    <CheckCircle2 className="w-4 h-4 text-slate-500 shrink-0" /> Equal Multipliers (x1)
                   </div>
-                  <div className="flex items-center gap-3 text-slate-300 font-medium">
-                    <CheckCircle2 className="w-5 h-5 text-slate-500" /> Good for Service Agencies
+                  <div className="flex items-center gap-2 text-slate-300 text-sm font-medium">
+                    <CheckCircle2 className="w-4 h-4 text-slate-500 shrink-0" /> Good for Service Agencies
                   </div>
                 </div>
                 </div>
-                <div className={`mt-auto rounded-xl p-4 border flex items-center justify-between transition-colors ${flatRisk ? 'border-emerald-500/30 bg-white/5' : 'border-white/10 bg-white/[0.04]'}`}>
+                <div className={`mt-auto rounded-lg p-3 border flex items-center justify-between transition-colors ${flatRisk ? 'border-emerald-500/30 bg-white/5' : 'border-white/10 bg-white/[0.04]'}`}>
                   <div className="flex items-center gap-2">
                     <PieChart className={`w-4 h-4 transition-colors ${flatRisk ? 'text-emerald-400' : 'text-slate-500'}`} />
-                    <span className={`text-sm font-semibold tracking-tight transition-colors ${flatRisk ? 'text-white' : 'text-slate-400'}`}>
+                    <span className={`text-xs font-semibold tracking-tight transition-colors ${flatRisk ? 'text-white' : 'text-slate-400'}`}>
                       Logarithmic Risk Recommendation
                     </span>
                   </div>
@@ -270,8 +270,8 @@ export default function LandingPage() {
                     <div className={`absolute top-0.5 w-3 h-3 bg-white rounded-full transition-all ${flatRisk ? 'right-0.5' : 'left-0.5'}`}></div>
                   </button>
                 </div>
-                <Link href="/models#flat" className="w-full mt-4">
-                  <button className="w-full py-4 rounded-2xl border border-white/10 text-white font-bold hover:bg-white hover:text-slate-900 transition-all uppercase text-[11px] tracking-widest">
+                <Link href="/models#flat" className="w-full mt-3">
+                  <button className="w-full py-3 rounded-xl border border-white/10 text-white font-bold hover:bg-white hover:text-slate-900 transition-all uppercase text-[10px] tracking-widest">
                     Learn more about Flat Model
                   </button>
                 </Link>
