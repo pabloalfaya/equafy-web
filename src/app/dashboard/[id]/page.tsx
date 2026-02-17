@@ -656,7 +656,7 @@ export default function ProjectDashboardPage() {
             </div>
 
             <div className="grid lg:grid-cols-3 gap-8">
-                <div className="lg:col-span-2 flex flex-col">
+                <div className="lg:col-span-2 bg-white/70 backdrop-blur-xl border border-white/60 rounded-[32px] p-8 shadow-xl flex flex-col">
                     <div className="flex items-center gap-3 mb-6">
                         <div className="p-2 bg-blue-50 rounded-lg"><TrendingUp className="h-5 w-5 text-blue-600" /></div>
                         <h3 className="font-bold text-slate-900 text-xl">Contribution Log</h3>
@@ -667,7 +667,7 @@ export default function ProjectDashboardPage() {
                 </div>
                 
                 <div className="lg:col-span-1 flex flex-col gap-4">
-                <div className="flex flex-col h-fit sticky top-32">
+                <div className="bg-white/70 backdrop-blur-xl border border-white/60 rounded-[32px] p-8 shadow-xl flex flex-col h-fit sticky top-32">
                     <div className="flex items-center gap-3 mb-8">
                         <div className="p-2 bg-emerald-50 rounded-lg"><PieChart className="h-5 w-5 text-emerald-600" /></div>
                         <h3 className="font-bold text-slate-900 text-xl">Equity Distribution</h3>
