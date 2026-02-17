@@ -9,7 +9,6 @@ import {
   ArrowRight,
   Sliders,
   Scale,
-  AlertTriangle,
   CheckCircle2,
   TrendingUp
 } from "lucide-react";
@@ -254,15 +253,6 @@ export default function LandingPage() {
                   </div>
                   <div className="flex items-center gap-3 text-slate-300 font-medium">
                     <CheckCircle2 className="w-5 h-5 text-slate-500" /> Good for Service Agencies
-                  </div>
-                  <div className="p-4 rounded-xl bg-red-500/10 border border-red-500/20">
-                      <div className="flex gap-2 text-red-400 mb-1">
-                          <AlertTriangle className="w-4 h-4" />
-                          <span className="text-xs font-bold uppercase">Caution</span>
-                      </div>
-                      <p className="text-xs text-red-200/70 leading-relaxed">
-                          Discourages cash investment as it treats liquid capital equal to time.
-                      </p>
                   </div>
                 </div>
                 </div>
