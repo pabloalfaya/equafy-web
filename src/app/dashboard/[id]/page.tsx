@@ -704,9 +704,9 @@ export default function ProjectDashboardPage() {
                         type="button"
                         onClick={() => void handleFinalizeProject()}
                         disabled={isFreezing}
-                        className="flex flex-col items-center justify-center gap-2 rounded-xl border border-red-200 bg-red-600 px-3 py-4 font-bold text-white hover:bg-red-700 transition-all disabled:opacity-60 disabled:cursor-not-allowed"
+                        className="flex flex-col items-center justify-center gap-2 rounded-xl border border-red-200 bg-transparent px-3 py-4 font-bold text-red-600 hover:bg-red-50 hover:border-red-300 transition-colors duration-200 disabled:opacity-60 disabled:cursor-not-allowed"
                       >
-                        <Snowflake className="h-5 w-5" />
+                        <Snowflake className="h-5 w-5 text-red-600" />
                         <span className="text-xs">{isFreezing ? "Freezing…" : "Freeze Project"}</span>
                       </button>
                     )
