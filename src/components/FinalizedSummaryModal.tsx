@@ -148,7 +148,7 @@ export function FinalizedSummaryModal({
             onClick={handleDownloadPDF}
             className="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-slate-900 text-white font-bold py-4 px-6 hover:bg-emerald-600 transition-colors"
           >
-            <Download className="w-5 h-5" /> Download Official Certificate
+            <Download className="w-5 h-5" /> Export PDF
           </button>
         </div>
       </div>

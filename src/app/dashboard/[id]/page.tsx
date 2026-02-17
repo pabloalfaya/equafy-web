@@ -126,7 +126,9 @@ export default function ProjectDashboardPage() {
   const [currentUserEmail, setCurrentUserEmail] = useState<string | null>(null);
   const [isVisible, setIsVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
-  const [summaryModalOpen, setSummaryModalOpen] = useState(false);
+  const [showSummary, setShowSummary] = useState(false);
+  const [isFreezing, setIsFreezing] = useState(false);
+  const [finalizeToast, setFinalizeToast] = useState<string | null>(null);
   const [summaryPayload, setSummaryPayload] = useState<{
     projectName: string;
     modelName: string;
@@ -213,31 +215,33 @@ export default function ProjectDashboardPage() {
   };
 
   const handleFinalizeProject = async () => {
-    if (!project) return;
-    const ok = window.confirm("Are you sure? This will freeze all contributions.");
-    if (!ok) return;
+    const confirmed = window.confirm("Are you sure? This will freeze all contributions.");
+    if (!confirmed) return;
 
-    try {
-      const supabase = createClient();
-      const { data, error } = await supabase
-        .from("projects")
-        .update({ status: "finalized" })
-        .eq("id", projectId)
-        .select("id, status")
-        .single();
+    setIsFreezing(true);
+    const supabase = createClient();
 
-      if (error) {
-        console.error("[Finalize] Supabase update error:", error);
-        return;
-      }
-      console.log("[Finalize] Update result:", data);
+    const { error } = await supabase
+      .from("projects")
+      .update({ status: "finalized" })
+      .eq("id", projectId);
 
-      // Optimistic UI: mark project as finalized so buttons/edits hide immediately
-      setProject((prev) => (prev ? { ...prev, status: "finalized" } : null));
+    if (error) {
+      console.error("Error freezing project:", error);
+      alert("Error: Could not save the finalized state.");
+      setIsFreezing(false);
+      return;
+    }
 
-      // Compute cap table summary and open Official Project Summary modal
+    // Success: update local state so UI blocks immediately (isFinalized = true)
+    setProject((prev) => (prev ? { ...prev, status: "finalized" } : null));
+    console.log("Project frozen successfully. Status updated to 'finalized'.");
+    setFinalizeToast("Project frozen successfully.");
+    setTimeout(() => setFinalizeToast(null), 3000);
+
+    if (project) {
       const { rows, totalPoints } = getEquitySummaryForFinalize(members, contributions, project);
-      const modelName = (project?.model_type || project?.equity_model || "custom").replace(/_/g, " ").toLowerCase();
+      const modelName = (project.model_type || project.equity_model || "custom").replace(/_/g, " ").toLowerCase();
       setSummaryPayload({
         projectName: project.name,
         modelName,
@@ -245,14 +249,10 @@ export default function ProjectDashboardPage() {
         totalPoints,
         rows,
       });
-      setSummaryModalOpen(true);
-
-      // Refresh data from server and re-render
-      await fetchData();
-      router.refresh();
-    } catch (err) {
-      console.error("[Finalize] Unexpected error:", err);
     }
+    setShowSummary(true);
+    router.refresh();
+    setIsFreezing(false);
   };
 
   const handleUnlockProject = async () => {
@@ -264,7 +264,7 @@ export default function ProjectDashboardPage() {
       console.error("Error unlocking project:", error);
       return;
     }
-    setSummaryModalOpen(false);
+    setShowSummary(false);
     setSummaryPayload(null);
     await fetchData();
   };
@@ -605,6 +605,28 @@ export default function ProjectDashboardPage() {
                 <p className="mt-2 text-slate-500 font-medium italic capitalize">
                     Calculated using the {getModelName()} model.
                 </p>
+                {isFinalized && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (project) {
+                        const { rows, totalPoints } = getEquitySummaryForFinalize(members, contributions, project);
+                        const modelName = (project.model_type || project.equity_model || "custom").replace(/_/g, " ").toLowerCase();
+                        setSummaryPayload({
+                          projectName: project.name,
+                          modelName,
+                          finalizedAt: new Date().toISOString(),
+                          totalPoints,
+                          rows,
+                        });
+                        setShowSummary(true);
+                      }
+                    }}
+                    className="mt-2 text-sm font-bold text-emerald-600 hover:text-emerald-700"
+                  >
+                    View executive summary
+                  </button>
+                )}
               </div>
               <div className="flex gap-3 flex-wrap">
                 <button onClick={generatePDF} className="inline-flex items-center gap-2 rounded-xl bg-white border border-slate-200 px-5 py-3 font-bold text-slate-700 shadow-sm hover:bg-slate-50 transition-all">
@@ -672,11 +694,13 @@ export default function ProjectDashboardPage() {
                       </button>
                     ) : (
                       <button
-                        onClick={handleFinalizeProject}
-                        className="flex flex-col items-center justify-center gap-2 rounded-xl border border-slate-200 bg-slate-50 px-3 py-4 font-bold text-slate-700 hover:bg-slate-100 transition-all"
+                        type="button"
+                        onClick={() => void handleFinalizeProject()}
+                        disabled={isFreezing}
+                        className="flex flex-col items-center justify-center gap-2 rounded-xl border border-slate-200 bg-slate-50 px-3 py-4 font-bold text-slate-700 hover:bg-slate-100 transition-all disabled:opacity-60 disabled:cursor-not-allowed"
                       >
                         <Flag className="h-5 w-5" />
-                        <span className="text-xs">Finalize Project</span>
+                        <span className="text-xs">{isFreezing ? "Freezing…" : "Finalize Project"}</span>
                       </button>
                     )
                   )}
@@ -727,10 +751,19 @@ export default function ProjectDashboardPage() {
         projectName={project?.name}
       />
 
+      {finalizeToast && (
+        <div
+          role="alert"
+          className="fixed bottom-6 left-1/2 -translate-x-1/2 z-[150] px-4 py-3 rounded-xl font-bold text-sm bg-emerald-600 text-white shadow-lg"
+        >
+          {finalizeToast}
+        </div>
+      )}
+
       {summaryPayload && (
         <FinalizedSummaryModal
-          isOpen={summaryModalOpen}
-          onClose={() => { setSummaryModalOpen(false); setSummaryPayload(null); }}
+          isOpen={showSummary}
+          onClose={() => { setShowSummary(false); setSummaryPayload(null); }}
           projectName={summaryPayload.projectName}
           modelName={summaryPayload.modelName}
           finalizedAt={summaryPayload.finalizedAt}
