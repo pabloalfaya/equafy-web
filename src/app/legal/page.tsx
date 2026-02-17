@@ -90,6 +90,13 @@ export default function LegalPage() {
                 {COUNTRY_CONTENT[selectedCountry]}
               </p>
             </div>
+
+            {/* Legal disclaimer */}
+            <div className="mt-6 rounded-2xl border border-slate-200/80 bg-slate-100/60 px-5 py-4 md:px-6 md:py-5">
+              <p className="text-sm md:text-base font-medium leading-relaxed text-slate-700">
+                <span className="font-bold text-slate-800">Disclaimer:</span> While Equily provides resources and templates to facilitate your equity management, these do not constitute professional legal advice. We strongly recommend consulting with a qualified legal expert in your jurisdiction to review and adapt any document to your specific needs.
+              </p>
+            </div>
           </section>
 
           {/* Core Legal Documents (moved to bottom) */}

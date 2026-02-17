@@ -151,6 +151,13 @@ export default function ProjectLegalPage() {
               </div>
             </div>
           </div>
+
+          {/* Professional advice disclaimer — last thing before any download/action */}
+          <div className="mt-10 rounded-2xl border border-slate-200/80 bg-slate-100/60 px-5 py-4 md:px-6 md:py-5">
+            <p className="text-sm md:text-base font-medium leading-relaxed text-slate-700">
+              <span className="font-bold text-slate-800">Professional Advice:</span> The templates provided are starting points. For complex structures or specific legal assurance, talking to a legal professional is always recommended.
+            </p>
+          </div>
         </div>
       </main>
     </div>
