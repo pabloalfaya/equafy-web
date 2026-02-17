@@ -152,23 +152,25 @@ export default function LandingPage() {
               </p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 items-start">
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 items-stretch">
               
               {/* --- CUSTOM MODEL --- */}
-              <div className="bg-white/[0.03] border border-white/10 rounded-[32px] p-8 hover:bg-white/[0.05] transition-all duration-300 group h-full flex flex-col">
-                <div className="mb-8">
-                  <div className="w-12 h-12 rounded-2xl bg-slate-800 flex items-center justify-center mb-6 group-hover:bg-slate-700 transition-colors">
-                    <Sliders className="w-6 h-6 text-slate-300" />
+              <div className="bg-white/[0.03] border border-white/10 rounded-[32px] p-8 pb-10 hover:bg-white/[0.05] transition-all duration-300 group h-full flex flex-col">
+                <div className="flex-grow flex flex-col">
+                  <div className="mb-8">
+                    <div className="w-12 h-12 rounded-2xl bg-slate-800 flex items-center justify-center mb-6 group-hover:bg-slate-700 transition-colors">
+                      <Sliders className="w-6 h-6 text-slate-300" />
+                    </div>
+                    <h3 className="text-2xl font-bold text-white mb-2">Custom Model</h3>
+                    <p className="text-slate-400 text-sm font-medium">Total control for complex setups.</p>
                   </div>
-                  <h3 className="text-2xl font-bold text-white mb-2">Custom Model</h3>
-                  <p className="text-slate-400 text-sm font-medium">Total control for complex setups.</p>
-                </div>
-                <div className="space-y-4 flex-grow">
-                  <div className="flex items-center gap-3 text-slate-300 font-medium">
-                    <CheckCircle2 className="w-5 h-5 text-slate-500" /> Fully Editable Multipliers
-                  </div>
-                  <div className="flex items-center gap-3 text-slate-300 font-medium">
-                    <CheckCircle2 className="w-5 h-5 text-slate-500" /> Manual Configuration
+                  <div className="space-y-4">
+                    <div className="flex items-center gap-3 text-slate-300 font-medium">
+                      <CheckCircle2 className="w-5 h-5 text-slate-500" /> Fully Editable Multipliers
+                    </div>
+                    <div className="flex items-center gap-3 text-slate-300 font-medium">
+                      <CheckCircle2 className="w-5 h-5 text-slate-500" /> Manual Configuration
+                    </div>
                   </div>
                 </div>
                 <div className={`mt-auto mb-6 rounded-xl p-4 border flex items-center justify-between transition-colors ${customRisk ? 'border-emerald-500/30 bg-white/5' : 'border-white/5 bg-transparent'}`}>
@@ -193,10 +195,11 @@ export default function LandingPage() {
               </div>
 
               {/* --- JUST SPLIT MODEL --- */}
-              <div className="relative bg-emerald-900/10 border border-emerald-500/50 rounded-[32px] p-8 transition-all duration-300 shadow-[0_0_80px_-20px_rgba(16,185,129,0.2)] h-full flex flex-col transform lg:-translate-y-4 z-20">
+              <div className="relative bg-emerald-900/10 border border-emerald-500/50 rounded-[32px] p-8 pb-10 transition-all duration-300 shadow-[0_0_80px_-20px_rgba(16,185,129,0.2)] h-full flex flex-col transform lg:-translate-y-4 z-20">
                 <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-emerald-500 text-white px-4 py-1.5 rounded-full text-[10px] font-black tracking-widest uppercase shadow-lg border border-emerald-400">
                   Recommended
                 </div>
+                <div className="flex-grow flex flex-col">
                 <div className="mb-8">
                   <div className="w-12 h-12 rounded-2xl bg-emerald-500 flex items-center justify-center mb-6 shadow-lg shadow-emerald-500/30">
                     <ShieldCheck className="w-6 h-6 text-white" />
@@ -204,7 +207,7 @@ export default function LandingPage() {
                   <h3 className="text-2xl font-bold text-white mb-2">Just Split Model</h3>
                   <p className="text-emerald-400 text-sm font-bold">The Industry Standard</p>
                 </div>
-                <div className="space-y-6 flex-grow">
+                <div className="space-y-6">
                   <div className="bg-emerald-500/10 border border-emerald-500/20 rounded-2xl p-4">
                       <div className="flex justify-between items-center mb-1">
                           <span className="text-xs font-bold text-emerald-400 uppercase tracking-widest">Capital (Cash)</span>
@@ -218,6 +221,7 @@ export default function LandingPage() {
                       </div>
                       <p className="text-xs text-blue-200/60 mt-2 font-medium">Tangible and intangible contributions</p>
                   </div>
+                </div>
                 </div>
                 <div className={`mt-auto mb-6 rounded-xl p-4 border flex items-center justify-between transition-colors ${standardRisk ? 'border-emerald-500/30 bg-white/5' : 'border-white/5 bg-transparent'}`}>
                   <div className="flex items-center gap-2">
@@ -241,7 +245,8 @@ export default function LandingPage() {
               </div>
 
               {/* --- FLAT MODEL --- */}
-              <div className="bg-white/[0.03] border border-white/10 rounded-[32px] p-8 hover:bg-white/[0.05] transition-all duration-300 group h-full flex flex-col">
+              <div className="bg-white/[0.03] border border-white/10 rounded-[32px] p-8 pb-10 hover:bg-white/[0.05] transition-all duration-300 group h-full flex flex-col">
+                <div className="flex-grow flex flex-col">
                 <div className="mb-8">
                   <div className="w-12 h-12 rounded-2xl bg-slate-800 flex items-center justify-center mb-6 group-hover:bg-purple-900/30 transition-colors">
                     <Scale className="w-6 h-6 text-purple-400" />
@@ -249,7 +254,7 @@ export default function LandingPage() {
                   <h3 className="text-2xl font-bold text-white mb-2">Flat Model</h3>
                   <p className="text-purple-400 text-sm font-medium">Simple fixed split.</p>
                 </div>
-                <div className="space-y-4 flex-grow">
+                <div className="space-y-4">
                     <div className="flex items-center gap-3 text-slate-300 font-medium">
                     <CheckCircle2 className="w-5 h-5 text-slate-500" /> Equal Multipliers (x1)
                   </div>
@@ -265,6 +270,7 @@ export default function LandingPage() {
                           Discourages cash investment as it treats liquid capital equal to time.
                       </p>
                   </div>
+                </div>
                 </div>
                 <div className={`mt-auto mb-6 rounded-xl p-4 border flex items-center justify-between transition-colors ${flatRisk ? 'border-emerald-500/30 bg-white/5' : 'border-white/5 bg-transparent'}`}>
                   <div className="flex items-center gap-2">
