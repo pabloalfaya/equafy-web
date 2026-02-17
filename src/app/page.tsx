@@ -152,13 +152,13 @@ export default function LandingPage() {
               </p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 items-stretch">
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 items-start">
               
               {/* --- CUSTOM MODEL --- */}
-              <div className="bg-white/[0.03] border border-white/10 rounded-[32px] p-8 pb-10 hover:bg-white/[0.05] transition-all duration-300 group h-full flex flex-col">
-                <div className="flex-grow flex flex-col">
-                  <div className="mb-8">
-                    <div className="w-12 h-12 rounded-2xl bg-slate-800 flex items-center justify-center mb-6 group-hover:bg-slate-700 transition-colors">
+              <div className="bg-white/[0.03] border border-white/10 rounded-[32px] p-10 hover:bg-white/[0.05] transition-all duration-300 group h-full flex flex-col gap-y-8">
+                <div className="flex-grow flex flex-col gap-y-8">
+                  <div>
+                    <div className="w-12 h-12 rounded-2xl bg-slate-800 flex items-center justify-center mb-4 group-hover:bg-slate-700 transition-colors">
                       <Sliders className="w-6 h-6 text-slate-300" />
                     </div>
                     <h3 className="text-2xl font-bold text-white mb-2">Custom Model</h3>
@@ -173,7 +173,7 @@ export default function LandingPage() {
                     </div>
                   </div>
                 </div>
-                <div className={`mt-auto mb-6 rounded-xl p-4 border flex items-center justify-between transition-colors ${customRisk ? 'border-emerald-500/30 bg-white/5' : 'border-white/5 bg-transparent'}`}>
+                <div className={`mt-auto rounded-xl p-4 border flex items-center justify-between transition-colors ${customRisk ? 'border-emerald-500/30 bg-white/5' : 'border-white/10 bg-white/[0.04]'}`}>
                   <div className="flex items-center gap-2">
                     <PieChart className={`w-4 h-4 transition-colors ${customRisk ? 'text-emerald-400' : 'text-slate-500'}`} />
                     <span className={`text-sm font-semibold tracking-tight transition-colors ${customRisk ? 'text-white' : 'text-slate-400'}`}>
@@ -187,7 +187,7 @@ export default function LandingPage() {
                     <div className={`absolute top-0.5 w-3 h-3 bg-white rounded-full transition-all ${customRisk ? 'right-0.5' : 'left-0.5'}`}></div>
                   </button>
                 </div>
-                <Link href="/models#custom" className="w-full">
+                <Link href="/models#custom" className="w-full mt-4">
                   <button className="w-full py-4 rounded-2xl border border-white/10 text-white font-bold hover:bg-white hover:text-slate-900 transition-all uppercase text-[11px] tracking-widest">
                     Learn more about Custom Model
                   </button>
@@ -195,13 +195,13 @@ export default function LandingPage() {
               </div>
 
               {/* --- JUST SPLIT MODEL --- */}
-              <div className="relative bg-emerald-900/10 border border-emerald-500/50 rounded-[32px] p-8 pb-10 transition-all duration-300 shadow-[0_0_80px_-20px_rgba(16,185,129,0.2)] h-full flex flex-col transform lg:-translate-y-4 z-20">
+              <div className="relative bg-emerald-900/10 border border-emerald-500/50 rounded-[32px] p-10 transition-all duration-300 shadow-[0_0_80px_-20px_rgba(16,185,129,0.2)] h-full flex flex-col gap-y-8 transform lg:-translate-y-4 z-20">
                 <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-emerald-500 text-white px-4 py-1.5 rounded-full text-[10px] font-black tracking-widest uppercase shadow-lg border border-emerald-400">
                   Recommended
                 </div>
-                <div className="flex-grow flex flex-col">
-                <div className="mb-8">
-                  <div className="w-12 h-12 rounded-2xl bg-emerald-500 flex items-center justify-center mb-6 shadow-lg shadow-emerald-500/30">
+                <div className="flex-grow flex flex-col gap-y-8">
+                <div>
+                  <div className="w-12 h-12 rounded-2xl bg-emerald-500 flex items-center justify-center mb-4 shadow-lg shadow-emerald-500/30">
                     <ShieldCheck className="w-6 h-6 text-white" />
                   </div>
                   <h3 className="text-2xl font-bold text-white mb-2">Just Split Model</h3>
@@ -223,7 +223,7 @@ export default function LandingPage() {
                   </div>
                 </div>
                 </div>
-                <div className={`mt-auto mb-6 rounded-xl p-4 border flex items-center justify-between transition-colors ${standardRisk ? 'border-emerald-500/30 bg-white/5' : 'border-white/5 bg-transparent'}`}>
+                <div className={`mt-auto rounded-xl p-4 border flex items-center justify-between transition-colors ${standardRisk ? 'border-emerald-500/30 bg-white/5' : 'border-white/10 bg-white/[0.04]'}`}>
                   <div className="flex items-center gap-2">
                     <PieChart className={`w-4 h-4 transition-colors ${standardRisk ? 'text-emerald-400' : 'text-slate-500'}`} />
                     <span className={`text-sm font-semibold tracking-tight transition-colors ${standardRisk ? 'text-white' : 'text-slate-400'}`}>
@@ -237,7 +237,7 @@ export default function LandingPage() {
                     <div className={`absolute top-0.5 w-3 h-3 bg-white rounded-full transition-all ${standardRisk ? 'right-0.5' : 'left-0.5'}`}></div>
                   </button>
                 </div>
-                <Link href="/models#standard" className="w-full">
+                <Link href="/models#standard" className="w-full mt-4">
                   <button className="w-full py-4 rounded-2xl bg-emerald-500 text-white font-bold hover:bg-emerald-400 hover:scale-[1.02] shadow-lg shadow-emerald-900/20 text-center transition-all uppercase text-[11px] tracking-widest">
                     Learn more about Just Split Model
                   </button>
@@ -245,10 +245,10 @@ export default function LandingPage() {
               </div>
 
               {/* --- FLAT MODEL --- */}
-              <div className="bg-white/[0.03] border border-white/10 rounded-[32px] p-8 pb-10 hover:bg-white/[0.05] transition-all duration-300 group h-full flex flex-col">
-                <div className="flex-grow flex flex-col">
-                <div className="mb-8">
-                  <div className="w-12 h-12 rounded-2xl bg-slate-800 flex items-center justify-center mb-6 group-hover:bg-purple-900/30 transition-colors">
+              <div className="bg-white/[0.03] border border-white/10 rounded-[32px] p-10 hover:bg-white/[0.05] transition-all duration-300 group h-full flex flex-col gap-y-8">
+                <div className="flex-grow flex flex-col gap-y-8">
+                <div>
+                  <div className="w-12 h-12 rounded-2xl bg-slate-800 flex items-center justify-center mb-4 group-hover:bg-purple-900/30 transition-colors">
                     <Scale className="w-6 h-6 text-purple-400" />
                   </div>
                   <h3 className="text-2xl font-bold text-white mb-2">Flat Model</h3>
@@ -272,7 +272,7 @@ export default function LandingPage() {
                   </div>
                 </div>
                 </div>
-                <div className={`mt-auto mb-6 rounded-xl p-4 border flex items-center justify-between transition-colors ${flatRisk ? 'border-emerald-500/30 bg-white/5' : 'border-white/5 bg-transparent'}`}>
+                <div className={`mt-auto rounded-xl p-4 border flex items-center justify-between transition-colors ${flatRisk ? 'border-emerald-500/30 bg-white/5' : 'border-white/10 bg-white/[0.04]'}`}>
                   <div className="flex items-center gap-2">
                     <PieChart className={`w-4 h-4 transition-colors ${flatRisk ? 'text-emerald-400' : 'text-slate-500'}`} />
                     <span className={`text-sm font-semibold tracking-tight transition-colors ${flatRisk ? 'text-white' : 'text-slate-400'}`}>
@@ -286,7 +286,7 @@ export default function LandingPage() {
                     <div className={`absolute top-0.5 w-3 h-3 bg-white rounded-full transition-all ${flatRisk ? 'right-0.5' : 'left-0.5'}`}></div>
                   </button>
                 </div>
-                <Link href="/models#flat" className="w-full">
+                <Link href="/models#flat" className="w-full mt-4">
                   <button className="w-full py-4 rounded-2xl border border-white/10 text-white font-bold hover:bg-white hover:text-slate-900 transition-all uppercase text-[11px] tracking-widest">
                     Learn more about Flat Model
                   </button>
