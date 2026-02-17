@@ -3,9 +3,10 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Plus, Folder, ArrowRight, Loader2, LogOut, User, CreditCard } from "lucide-react";
+import { Plus, Folder, ArrowRight, Loader2, LogOut, User, CreditCard, Pencil } from "lucide-react";
 import { createClient } from "@/utils/supabase/client";
 import { CreateProjectModal } from "@/components/CreateProjectModal";
+import { EditProjectModal } from "@/components/EditProjectModal";
 import type { Project } from "@/types/database";
 
 export function DashboardContent() {
@@ -13,31 +14,42 @@ export function DashboardContent() {
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [userEmail, setUserEmail] = useState("");
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [projectToEdit, setProjectToEdit] = useState<Project | null>(null);
+  const [newName, setNewName] = useState("");
+  const [saving, setSaving] = useState(false);
+  const [toast, setToast] = useState<{ show: boolean; message: string; type: "success" | "error" }>({ show: false, message: "", type: "success" });
   const router = useRouter();
   const supabase = createClient();
 
+  const fetchProjects = async () => {
+    const { data: { user }, error: authError } = await supabase.auth.getUser();
+    if (authError || !user) {
+      router.push("/login");
+      return;
+    }
+    setUserEmail(user.email || "");
+
+    const { data, error } = await supabase
+      .from("projects")
+      .select("*")
+      .order("created_at", { ascending: false });
+
+    if (!error && data) {
+      setProjects(data);
+    }
+    setLoading(false);
+  };
+
   useEffect(() => {
-    const fetchData = async () => {
-      const { data: { user }, error: authError } = await supabase.auth.getUser();
-      if (authError || !user) {
-        router.push("/login");
-        return;
-      }
-      setUserEmail(user.email || "");
-
-      const { data, error } = await supabase
-        .from("projects")
-        .select("*")
-        .order("created_at", { ascending: false });
-
-      if (!error && data) {
-        setProjects(data);
-      }
-      setLoading(false);
-    };
-
-    fetchData();
+    fetchProjects();
   }, [router]);
+
+  useEffect(() => {
+    if (!toast.show) return;
+    const t = setTimeout(() => setToast((prev) => ({ ...prev, show: false })), 3000);
+    return () => clearTimeout(t);
+  }, [toast.show]);
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
@@ -48,6 +60,38 @@ export function DashboardContent() {
     setProjects([newProject, ...projects]);
     setIsModalOpen(false);
     router.push(`/dashboard/${newProject.id}`);
+  };
+
+  const handleOpenEdit = (project: Project, e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setProjectToEdit(project);
+    setNewName(project.name);
+    setIsEditModalOpen(true);
+  };
+
+  const handleUpdateProject = async () => {
+    if (!projectToEdit) return;
+    setSaving(true);
+    try {
+      const { error } = await supabase
+        .from("projects")
+        .update({ name: newName.trim() })
+        .eq("id", projectToEdit.id);
+      if (error) throw error;
+      setIsEditModalOpen(false);
+      setProjectToEdit(null);
+      setToast({ show: true, message: "Project updated successfully", type: "success" });
+      await fetchProjects();
+    } catch (err) {
+      setToast({
+        show: true,
+        message: err instanceof Error ? err.message : "Failed to update project",
+        type: "error",
+      });
+    } finally {
+      setSaving(false);
+    }
   };
 
   const handleFinishPayment = async (project: Project) => {
@@ -144,9 +188,14 @@ export function DashboardContent() {
                     return (
                       <Link key={project.id} href={`/dashboard/${project.id}`} className="group relative bg-white border border-slate-200 hover:border-emerald-500/50 p-6 rounded-[24px] shadow-sm hover:shadow-xl hover:shadow-emerald-500/10 transition-all duration-300 flex flex-col h-48">
                         <div className="flex justify-between items-start mb-4">
-                          <div className="w-10 h-10 bg-slate-50 rounded-xl flex items-center justify-center group-hover:bg-emerald-50 transition-colors">
-                            <Folder className="w-5 h-5 text-slate-400 group-hover:text-emerald-50 transition-colors" />
-                          </div>
+                          <button
+                            type="button"
+                            onClick={(e) => handleOpenEdit(project, e)}
+                            className="w-10 h-10 bg-slate-50 rounded-xl flex items-center justify-center group-hover:bg-emerald-50 text-slate-400 group-hover:text-emerald-600 hover:ring-2 hover:ring-emerald-200 transition-colors"
+                            title="Edit project"
+                          >
+                            <Pencil className="w-5 h-5" />
+                          </button>
                           <span className="bg-emerald-50 text-emerald-700 text-[10px] font-bold px-2 py-1 rounded-full uppercase tracking-wider">
                             Active
                           </span>
@@ -166,9 +215,14 @@ export function DashboardContent() {
                   return (
                     <div key={project.id} className="relative bg-white border border-amber-200 p-6 rounded-[24px] shadow-sm flex flex-col h-48 opacity-95">
                       <div className="flex justify-between items-start mb-4">
-                        <div className="w-10 h-10 bg-amber-50 rounded-xl flex items-center justify-center">
-                          <Folder className="w-5 h-5 text-amber-500" />
-                        </div>
+                        <button
+                          type="button"
+                          onClick={(e) => handleOpenEdit(project, e)}
+                          className="w-10 h-10 bg-amber-50 rounded-xl flex items-center justify-center text-amber-500 hover:ring-2 hover:ring-amber-200 transition-colors"
+                          title="Edit project"
+                        >
+                          <Pencil className="w-5 h-5" />
+                        </button>
                         <span className="bg-amber-100 text-amber-800 text-[10px] font-bold px-2 py-1 rounded-full uppercase tracking-wider">
                           PAYMENT PENDING
                         </span>
@@ -198,6 +252,31 @@ export function DashboardContent() {
         onClose={() => setIsModalOpen(false)}
         onProjectCreated={handleProjectCreated}
       />
+
+      <EditProjectModal
+        isOpen={isEditModalOpen}
+        onClose={() => {
+          setIsEditModalOpen(false);
+          setProjectToEdit(null);
+        }}
+        projectName={newName}
+        onProjectNameChange={setNewName}
+        onSave={handleUpdateProject}
+        saving={saving}
+      />
+
+      {toast.show && (
+        <div
+          role="alert"
+          className={`fixed bottom-6 left-1/2 -translate-x-1/2 z-[110] px-4 py-3 rounded-xl font-bold text-sm shadow-lg transition-opacity ${
+            toast.type === "success"
+              ? "bg-emerald-600 text-white"
+              : "bg-red-500 text-white"
+          }`}
+        >
+          {toast.message}
+        </div>
+      )}
     </div>
   );
 }
