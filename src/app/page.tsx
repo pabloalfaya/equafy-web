@@ -137,10 +137,11 @@ export default function LandingPage() {
       </div>
 
       {/* --- FRAMEWORK SELECTION --- */}
-      <section className="relative z-10 w-full bg-[#0B0F19] text-white pt-16 pb-24">
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-emerald-900/20 via-[#0B0F19] to-[#0B0F19] pointer-events-none"></div>
-          <div className="relative w-full">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="relative z-10 w-full py-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="rounded-[40px] bg-[#0B0F19] text-white shadow-2xl shadow-gray-900/20 overflow-hidden relative">
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-emerald-900/20 via-[#0B0F19] to-[#0B0F19] pointer-events-none rounded-[40px]"></div>
+            <div className="relative p-8 md:p-12">
             <div className="text-center mb-12 max-w-3xl mx-auto">
               <h2 className="text-4xl md:text-5xl font-bold tracking-tight mb-4 bg-clip-text text-transparent bg-gradient-to-b from-white to-white/60 py-2">
                 Choose your Equity Framework
@@ -277,6 +278,7 @@ export default function LandingPage() {
             </div>
             </div>
           </div>
+        </div>
       </section>
 
       <VideoDemoModal open={isVideoOpen} onClose={() => setIsVideoOpen(false)} />
