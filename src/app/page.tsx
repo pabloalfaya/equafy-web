@@ -18,6 +18,7 @@ import { VideoDemoModal } from "../components/VideoDemoModal";
 export default function LandingPage() {
   const [standardRisk, setStandardRisk] = useState(true);
   const [customRisk, setCustomRisk] = useState(false);
+  const [flatRisk, setFlatRisk] = useState(false);
   const [isVideoOpen, setIsVideoOpen] = useState(false);
 
   return (
@@ -162,28 +163,27 @@ export default function LandingPage() {
                   <h3 className="text-2xl font-bold text-white mb-2">Custom Model</h3>
                   <p className="text-slate-400 text-sm font-medium">Total control for complex setups.</p>
                 </div>
-                <div className="space-y-4 mb-8 flex-grow">
+                <div className="space-y-4 flex-grow">
                   <div className="flex items-center gap-3 text-slate-300 font-medium">
                     <CheckCircle2 className="w-5 h-5 text-slate-500" /> Fully Editable Multipliers
                   </div>
                   <div className="flex items-center gap-3 text-slate-300 font-medium">
                     <CheckCircle2 className="w-5 h-5 text-slate-500" /> Manual Configuration
                   </div>
-                  
-                  <div className={`mt-6 rounded-xl p-4 border flex items-center justify-between transition-colors ${customRisk ? 'border-emerald-500/30 bg-white/5' : 'border-white/5 bg-transparent'}`}>
-                    <div className="flex items-center gap-2">
-                      <PieChart className={`w-4 h-4 transition-colors ${customRisk ? 'text-emerald-400' : 'text-slate-500'}`} />
-                      <span className={`text-sm font-bold transition-colors ${customRisk ? 'text-white' : 'text-slate-400'}`}>
-                        Logarithmic Risk <span className="text-[10px] opacity-70 font-normal ml-1">(Optional)</span>
-                      </span>
-                    </div>
-                    <button 
-                      onClick={() => setCustomRisk(!customRisk)}
-                      className={`w-8 h-4 rounded-full relative transition-colors ${customRisk ? 'bg-emerald-500' : 'bg-slate-700'}`}
-                    >
-                      <div className={`absolute top-0.5 w-3 h-3 bg-white rounded-full transition-all ${customRisk ? 'right-0.5' : 'left-0.5'}`}></div>
-                    </button>
+                </div>
+                <div className={`mt-auto mb-6 rounded-xl p-4 border flex items-center justify-between transition-colors ${customRisk ? 'border-emerald-500/30 bg-white/5' : 'border-white/5 bg-transparent'}`}>
+                  <div className="flex items-center gap-2">
+                    <PieChart className={`w-4 h-4 transition-colors ${customRisk ? 'text-emerald-400' : 'text-slate-500'}`} />
+                    <span className={`text-sm font-semibold tracking-tight transition-colors ${customRisk ? 'text-white' : 'text-slate-400'}`}>
+                      Logarithmic Risk Recommendation
+                    </span>
                   </div>
+                  <button
+                    onClick={() => setCustomRisk(!customRisk)}
+                    className={`w-8 h-4 rounded-full relative transition-colors ${customRisk ? 'bg-emerald-500' : 'bg-slate-700'}`}
+                  >
+                    <div className={`absolute top-0.5 w-3 h-3 bg-white rounded-full transition-all ${customRisk ? 'right-0.5' : 'left-0.5'}`}></div>
+                  </button>
                 </div>
                 <Link href="/models#custom" className="w-full">
                   <button className="w-full py-4 rounded-2xl border border-white/10 text-white font-bold hover:bg-white hover:text-slate-900 transition-all uppercase text-[11px] tracking-widest">
@@ -204,7 +204,7 @@ export default function LandingPage() {
                   <h3 className="text-2xl font-bold text-white mb-2">Just Split Model</h3>
                   <p className="text-emerald-400 text-sm font-bold">The Industry Standard</p>
                 </div>
-                <div className="space-y-6 mb-8 flex-grow">
+                <div className="space-y-6 flex-grow">
                   <div className="bg-emerald-500/10 border border-emerald-500/20 rounded-2xl p-4">
                       <div className="flex justify-between items-center mb-1">
                           <span className="text-xs font-bold text-emerald-400 uppercase tracking-widest">Capital (Cash)</span>
@@ -218,21 +218,20 @@ export default function LandingPage() {
                       </div>
                       <p className="text-xs text-blue-200/60 mt-2 font-medium">Tangible and intangible contributions</p>
                   </div>
-                  
-                  <div className={`rounded-xl p-4 border flex items-center justify-between transition-colors ${standardRisk ? 'border-emerald-500/30 bg-white/5' : 'border-white/5 bg-transparent'}`}>
-                    <div className="flex items-center gap-2">
-                      <PieChart className={`w-4 h-4 transition-colors ${standardRisk ? 'text-emerald-400' : 'text-slate-500'}`} />
-                      <span className={`text-sm font-bold transition-colors ${standardRisk ? 'text-white' : 'text-slate-400'}`}>
-                        Logarithmic Risk <span className="text-[10px] opacity-70 font-normal ml-1">(Optional)</span>
-                      </span>
-                    </div>
-                    <button 
-                      onClick={() => setStandardRisk(!standardRisk)}
-                      className={`w-8 h-4 rounded-full relative transition-colors ${standardRisk ? 'bg-emerald-500' : 'bg-slate-700'}`}
-                    >
-                      <div className={`absolute top-0.5 w-3 h-3 bg-white rounded-full transition-all ${standardRisk ? 'right-0.5' : 'left-0.5'}`}></div>
-                    </button>
+                </div>
+                <div className={`mt-auto mb-6 rounded-xl p-4 border flex items-center justify-between transition-colors ${standardRisk ? 'border-emerald-500/30 bg-white/5' : 'border-white/5 bg-transparent'}`}>
+                  <div className="flex items-center gap-2">
+                    <PieChart className={`w-4 h-4 transition-colors ${standardRisk ? 'text-emerald-400' : 'text-slate-500'}`} />
+                    <span className={`text-sm font-semibold tracking-tight transition-colors ${standardRisk ? 'text-white' : 'text-slate-400'}`}>
+                      Logarithmic Risk Recommendation
+                    </span>
                   </div>
+                  <button
+                    onClick={() => setStandardRisk(!standardRisk)}
+                    className={`w-8 h-4 rounded-full relative transition-colors ${standardRisk ? 'bg-emerald-500' : 'bg-slate-700'}`}
+                  >
+                    <div className={`absolute top-0.5 w-3 h-3 bg-white rounded-full transition-all ${standardRisk ? 'right-0.5' : 'left-0.5'}`}></div>
+                  </button>
                 </div>
                 <Link href="/models#standard" className="w-full">
                   <button className="w-full py-4 rounded-2xl bg-emerald-500 text-white font-bold hover:bg-emerald-400 hover:scale-[1.02] shadow-lg shadow-emerald-900/20 text-center transition-all uppercase text-[11px] tracking-widest">
@@ -250,15 +249,14 @@ export default function LandingPage() {
                   <h3 className="text-2xl font-bold text-white mb-2">Flat Model</h3>
                   <p className="text-purple-400 text-sm font-medium">Simple fixed split.</p>
                 </div>
-                <div className="space-y-4 mb-8 flex-grow">
+                <div className="space-y-4 flex-grow">
                     <div className="flex items-center gap-3 text-slate-300 font-medium">
                     <CheckCircle2 className="w-5 h-5 text-slate-500" /> Equal Multipliers (x1)
                   </div>
                   <div className="flex items-center gap-3 text-slate-300 font-medium">
                     <CheckCircle2 className="w-5 h-5 text-slate-500" /> Good for Service Agencies
                   </div>
-                  
-                  <div className="mt-4 p-4 rounded-xl bg-red-500/10 border border-red-500/20">
+                  <div className="p-4 rounded-xl bg-red-500/10 border border-red-500/20">
                       <div className="flex gap-2 text-red-400 mb-1">
                           <AlertTriangle className="w-4 h-4" />
                           <span className="text-xs font-bold uppercase">Caution</span>
@@ -267,6 +265,20 @@ export default function LandingPage() {
                           Discourages cash investment as it treats liquid capital equal to time.
                       </p>
                   </div>
+                </div>
+                <div className={`mt-auto mb-6 rounded-xl p-4 border flex items-center justify-between transition-colors ${flatRisk ? 'border-emerald-500/30 bg-white/5' : 'border-white/5 bg-transparent'}`}>
+                  <div className="flex items-center gap-2">
+                    <PieChart className={`w-4 h-4 transition-colors ${flatRisk ? 'text-emerald-400' : 'text-slate-500'}`} />
+                    <span className={`text-sm font-semibold tracking-tight transition-colors ${flatRisk ? 'text-white' : 'text-slate-400'}`}>
+                      Logarithmic Risk Recommendation
+                    </span>
+                  </div>
+                  <button
+                    onClick={() => setFlatRisk(!flatRisk)}
+                    className={`w-8 h-4 rounded-full relative transition-colors ${flatRisk ? 'bg-emerald-500' : 'bg-slate-700'}`}
+                  >
+                    <div className={`absolute top-0.5 w-3 h-3 bg-white rounded-full transition-all ${flatRisk ? 'right-0.5' : 'left-0.5'}`}></div>
+                  </button>
                 </div>
                 <Link href="/models#flat" className="w-full">
                   <button className="w-full py-4 rounded-2xl border border-white/10 text-white font-bold hover:bg-white hover:text-slate-900 transition-all uppercase text-[11px] tracking-widest">
