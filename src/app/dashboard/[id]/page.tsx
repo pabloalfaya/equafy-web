@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation"; 
 import Link from "next/link";
-import { Plus, TrendingUp, LayoutDashboard, PieChart, Users, Download, ArrowLeft, Settings, History, FileText, Flag, CreditCard } from "lucide-react";
+import { Plus, TrendingUp, LayoutDashboard, PieChart, Users, Download, ArrowLeft, Settings, History, FileText, Flag, CreditCard, LockOpen } from "lucide-react";
 import { createClient } from "@/utils/supabase/client";
 import { recalculateAndPersistProjectValuation } from "@/utils/projectRecalculator";
 import { logAudit } from "@/utils/auditLog";
@@ -13,6 +13,7 @@ import { AddContributionModal } from "@/components/AddContributionModal";
 import { AddMemberModal } from "@/components/AddMemberModal";
 import { EquitySettingsModal } from "@/components/EquitySettingsModal";
 import { AuditLogModal } from "@/components/AuditLogModal";
+import { FinalizedSummaryModal, type SummaryRow } from "@/components/FinalizedSummaryModal";
 import type { Project, Contribution } from "@/types/database";
 
 import jsPDF from 'jspdf';
@@ -49,6 +50,63 @@ async function fetchProjectMembers(
   return rows.map((r) => ({ ...r, equity_cap: r.equity_cap ?? null }));
 }
 
+/** Returns normalized equity rows and total points (same logic as EquityPieChart / PDF). */
+function getEquitySummaryForFinalize(
+  members: Member[],
+  contributions: ExtendedContribution[],
+  _project: ExtendedProject | null
+): { rows: SummaryRow[]; totalPoints: number } {
+  const totalFixedEquity = members.reduce((sum, m) => sum + (Number(m.fixed_equity) || 0), 0);
+  const dynamicPool = Math.max(0, 100 - totalFixedEquity);
+  const totalRiskPoints = contributions.reduce((sum, c) => sum + (Number(c.risk_adjusted_value) || 0), 0);
+
+  const memberRows = members.map((member) => {
+    const memberFixedEquity = Number(member.fixed_equity) || 0;
+    const memberPoints = contributions
+      .filter((c) => c.contributor_name === member.name)
+      .reduce((sum, c) => sum + (Number(c.risk_adjusted_value) || 0), 0);
+    let dynamicShare = totalRiskPoints > 0
+      ? (memberPoints / totalRiskPoints) * dynamicPool
+      : members.length > 0 ? dynamicPool / members.length : 0;
+    const theoreticalEquity = memberFixedEquity + dynamicShare;
+    return { name: member.name, points: memberPoints, fixed: memberFixedEquity, equity: theoreticalEquity };
+  });
+
+  let rawEquitySum = memberRows.reduce((sum, r) => sum + r.equity, 0);
+  let theoreticalPct = rawEquitySum > 0 ? memberRows.map((r) => (r.equity / rawEquitySum) * 100) : memberRows.map(() => 0);
+  const caps = members.map((m) => (m.equity_cap != null && m.equity_cap !== undefined ? Number(m.equity_cap) : null));
+  let finalPct = theoreticalPct.slice();
+  let excess = 0;
+  for (let i = 0; i < finalPct.length; i++) {
+    const cap = caps[i];
+    if (cap != null && finalPct[i] > cap) {
+      excess += finalPct[i] - cap;
+      finalPct[i] = cap;
+    }
+  }
+  let uncappedTheoreticalSum = 0;
+  for (let i = 0; i < finalPct.length; i++) {
+    const cap = caps[i];
+    if (cap == null || theoreticalPct[i] <= cap) uncappedTheoreticalSum += theoreticalPct[i];
+  }
+  if (excess > 0 && uncappedTheoreticalSum > 0) {
+    for (let i = 0; i < finalPct.length; i++) {
+      const cap = caps[i];
+      if (cap == null || theoreticalPct[i] <= cap) finalPct[i] += excess * (theoreticalPct[i] / uncappedTheoreticalSum);
+    }
+  }
+  const totalAfter = finalPct.reduce((s, v) => s + v, 0);
+  if (totalAfter > 0) finalPct = finalPct.map((v) => (v / totalAfter) * 100);
+
+  const totalPoints = memberRows.reduce((sum, r) => sum + r.points, 0);
+  const rows: SummaryRow[] = memberRows.map((r, i) => ({
+    name: r.name,
+    equityPct: finalPct[i],
+    points: r.points,
+  }));
+  return { rows, totalPoints };
+}
+
 export default function ProjectDashboardPage() {
   const params = useParams(); 
   const projectId = params.id as string;
@@ -68,6 +126,14 @@ export default function ProjectDashboardPage() {
   const [currentUserEmail, setCurrentUserEmail] = useState<string | null>(null);
   const [isVisible, setIsVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
+  const [summaryModalOpen, setSummaryModalOpen] = useState(false);
+  const [summaryPayload, setSummaryPayload] = useState<{
+    projectName: string;
+    modelName: string;
+    finalizedAt: string;
+    totalPoints: number;
+    rows: SummaryRow[];
+  } | null>(null);
 
   const fetchData = async () => {
     if (!projectId) return;
@@ -144,6 +210,43 @@ export default function ProjectDashboardPage() {
   const handleEditContribution = (contribution: ExtendedContribution) => {
     setEditingContribution(contribution);
     setModalOpen(true);
+  };
+
+  const handleFinalizeProject = async () => {
+    if (!project) return;
+    const ok = window.confirm("Are you sure? This will freeze all contributions.");
+    if (!ok) return;
+    const supabase = createClient();
+    const { error } = await supabase.from("projects").update({ status: "finalized" }).eq("id", projectId);
+    if (error) {
+      console.error("Error finalizing project:", error);
+      return;
+    }
+    await fetchData();
+    const { rows, totalPoints } = getEquitySummaryForFinalize(members, contributions, project);
+    const modelName = (project?.model_type || project?.equity_model || "custom").replace(/_/g, " ").toLowerCase();
+    setSummaryPayload({
+      projectName: project.name,
+      modelName,
+      finalizedAt: new Date().toISOString(),
+      totalPoints,
+      rows,
+    });
+    setSummaryModalOpen(true);
+  };
+
+  const handleUnlockProject = async () => {
+    const ok = window.confirm("Unlock this project to allow editing again?");
+    if (!ok) return;
+    const supabase = createClient();
+    const { error } = await supabase.from("projects").update({ status: "active" }).eq("id", projectId);
+    if (error) {
+      console.error("Error unlocking project:", error);
+      return;
+    }
+    setSummaryModalOpen(false);
+    setSummaryPayload(null);
+    await fetchData();
   };
 
   // --- LÓGICA DE GENERACIÓN DE PDF PROFESIONAL ---
@@ -364,6 +467,8 @@ export default function ProjectDashboardPage() {
   );
   const isOwner = project?.owner_id === currentUserId || currentMember?.role === "owner";
   const canEdit = isOwner || currentMember?.access_level === "editor";
+  const isFinalized = (project as ExtendedProject & { status?: string })?.status === "finalized";
+  const canEditAndNotFinalized = canEdit && !isFinalized;
 
   const groupedContributionsForChart = contributions.reduce((acc, curr) => {
     const existingIndex = acc.findIndex((c) => c.contributor_name === curr.contributor_name);
@@ -485,7 +590,7 @@ export default function ProjectDashboardPage() {
                 <button onClick={generatePDF} className="inline-flex items-center gap-2 rounded-xl bg-white border border-slate-200 px-5 py-3 font-bold text-slate-700 shadow-sm hover:bg-slate-50 transition-all">
                     <Download className="h-5 w-5" /> Export PDF
                 </button>
-                {canEdit && (
+                {canEditAndNotFinalized && (
                   <>
                     <button onClick={() => setFixedEquityOpen(true)} className="inline-flex items-center gap-2 rounded-xl bg-white border border-slate-200 px-5 py-3 font-bold text-slate-700 shadow-sm hover:bg-slate-50 transition-all">
                         <Settings className="h-5 w-5" /> Equity Settings
@@ -508,7 +613,7 @@ export default function ProjectDashboardPage() {
                         <h3 className="font-bold text-slate-900 text-xl">Contribution Log</h3>
                     </div>
                     <div className="overflow-x-auto max-h-[600px] overflow-y-auto pr-2 custom-scrollbar">
-                        <ContributionsTable contributions={contributions} onDelete={handleContributionDeleted} onEdit={handleEditContribution} canEdit={canEdit} />
+                        <ContributionsTable contributions={contributions} onDelete={handleContributionDeleted} onEdit={handleEditContribution} canEdit={canEditAndNotFinalized} />
                     </div>
                 </div>
                 
@@ -536,13 +641,25 @@ export default function ProjectDashboardPage() {
                       <FileText className="h-5 w-5 text-slate-500" />
                       <span className="text-xs">Legal Docs</span>
                     </Link>
-                    <button
-                      disabled
-                      className="flex flex-col items-center justify-center gap-2 rounded-xl border border-red-200 bg-red-50/50 px-3 py-4 font-bold text-red-600 opacity-60 cursor-not-allowed"
-                    >
-                      <Flag className="h-5 w-5" />
-                      <span className="text-xs">Finalize Project</span>
-                    </button>
+                    {canEdit && (
+                    isFinalized ? (
+                      <button
+                        onClick={handleUnlockProject}
+                        className="flex flex-col items-center justify-center gap-2 rounded-xl border border-amber-200 bg-amber-50 px-3 py-4 font-bold text-amber-700 hover:bg-amber-100 transition-all"
+                      >
+                        <LockOpen className="h-5 w-5" />
+                        <span className="text-xs">Unlock Project</span>
+                      </button>
+                    ) : (
+                      <button
+                        onClick={handleFinalizeProject}
+                        className="flex flex-col items-center justify-center gap-2 rounded-xl border border-slate-200 bg-slate-50 px-3 py-4 font-bold text-slate-700 hover:bg-slate-100 transition-all"
+                      >
+                        <Flag className="h-5 w-5" />
+                        <span className="text-xs">Finalize Project</span>
+                      </button>
+                    )
+                  )}
                 </div>
             </div>
             </div>
@@ -589,6 +706,19 @@ export default function ProjectDashboardPage() {
         projectId={projectId}
         projectName={project?.name}
       />
+
+      {summaryPayload && (
+        <FinalizedSummaryModal
+          isOpen={summaryModalOpen}
+          onClose={() => { setSummaryModalOpen(false); setSummaryPayload(null); }}
+          projectName={summaryPayload.projectName}
+          modelName={summaryPayload.modelName}
+          finalizedAt={summaryPayload.finalizedAt}
+          totalPoints={summaryPayload.totalPoints}
+          rows={summaryPayload.rows}
+          onDownloadCertificate={() => {}}
+        />
+      )}
     </div>
   );
 }

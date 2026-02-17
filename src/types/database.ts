@@ -15,6 +15,8 @@ export interface Project {
   current_valuation: number;
   created_at?: string;
   subscription_status?: string;
+  /** 'active' | 'finalized'. Default in DB should be 'active'. */
+  status?: string;
 }
 
 export interface Contribution {
