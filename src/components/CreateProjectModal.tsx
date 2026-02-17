@@ -274,8 +274,9 @@ export function CreateProjectModal({ isOpen, onClose, onProjectCreated }: Create
                 }`}
               >
                 <span className="font-bold text-slate-900 block">Monthly</span>
-                <span className="text-lg font-black text-slate-800">19,99€</span>
-                <span className="text-sm font-medium text-slate-500">/month</span>
+                <span className="text-lg font-black text-slate-800 block">19,99€</span>
+                <span className="text-xs font-medium text-emerald-600 block">14-day free trial included</span>
+                <span className="text-sm font-medium text-slate-500">/month billed monthly</span>
               </button>
               <button
                 type="button"
@@ -287,8 +288,9 @@ export function CreateProjectModal({ isOpen, onClose, onProjectCreated }: Create
                 }`}
               >
                 <span className="font-bold text-slate-900 block">Annual</span>
-                <span className="text-lg font-black text-slate-800">199,99€</span>
-                <span className="text-sm font-medium text-slate-500">/year</span>
+                <span className="text-lg font-black text-slate-800 block">199,99€</span>
+                <span className="text-xs font-medium text-emerald-600 block">14-day free trial included</span>
+                <span className="text-sm font-medium text-slate-500">/year billed annually</span>
               </button>
             </div>
             <div className="flex items-center justify-between gap-3 pt-4 border-t border-slate-100">
