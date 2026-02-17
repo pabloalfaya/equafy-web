@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Printer } from "lucide-react";
 
 const LEGAL_NAME = "Pablo Alfaya Fernandez";
 const ADDRESS = "Calle La Santa Maria 86, Spain";
@@ -17,12 +17,22 @@ export default function PrivacyPage() {
 
       <main className="relative z-10 pt-32 md:pt-40 pb-20 px-6">
         <div className="mx-auto max-w-3xl">
-          <Link
-            href="/legal"
-            className="inline-flex items-center gap-2 text-sm font-bold text-slate-600 hover:text-slate-900 mb-8"
-          >
-            <ArrowLeft className="w-4 h-4" /> Back to Legal Center
-          </Link>
+          <div className="flex flex-wrap items-center justify-between gap-4 mb-8">
+            <Link
+              href="/legal"
+              className="inline-flex items-center gap-2 text-sm font-bold text-slate-600 hover:text-slate-900"
+            >
+              <ArrowLeft className="w-4 h-4" /> Back to Legal Center
+            </Link>
+            <button
+              type="button"
+              onClick={() => window.print()}
+              className="inline-flex items-center gap-2 text-sm font-bold text-slate-600 hover:text-slate-900 print:hidden"
+              aria-label="Print this page"
+            >
+              <Printer className="w-4 h-4" /> Print
+            </button>
+          </div>
 
           <p className="text-sm text-slate-500 font-medium mb-8">Last updated: February 2026</p>
 
