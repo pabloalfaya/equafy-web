@@ -213,7 +213,20 @@ export function Navbar() {
             <Link href="/login?view=signup" onClick={() => setIsMobileMenuOpen(false)} className="block py-2 text-sm font-bold text-emerald-600 hover:text-emerald-700">
               Sign Up
             </Link>
-            <Link href="/pricing" onClick={() => setIsMobileMenuOpen(false)} className="block py-2 text-sm font-bold text-slate-600 hover:text-slate-900">
+            <p className="pt-3 pb-1 text-[10px] font-bold text-slate-400 uppercase tracking-widest">Product</p>
+            <Link href="/what-is-equily" onClick={() => setIsMobileMenuOpen(false)} className="block py-1.5 pl-3 text-sm font-medium text-slate-600 hover:text-slate-900">
+              What is Equily?
+            </Link>
+            <Link href="/how-it-works" onClick={() => setIsMobileMenuOpen(false)} className="block py-1.5 pl-3 text-sm font-medium text-slate-600 hover:text-slate-900">
+              How does Equily work?
+            </Link>
+            <Link href="/guide" onClick={() => setIsMobileMenuOpen(false)} className="block py-1.5 pl-3 text-sm font-medium text-slate-600 hover:text-slate-900">
+              Guide
+            </Link>
+            <Link href="/features" onClick={() => setIsMobileMenuOpen(false)} className="block py-1.5 pl-3 text-sm font-medium text-slate-600 hover:text-slate-900">
+              Features
+            </Link>
+            <Link href="/pricing" onClick={() => setIsMobileMenuOpen(false)} className="block py-2 text-sm font-bold text-slate-600 hover:text-slate-900 pt-3">
               Pricing
             </Link>
             <Link href="/legal" onClick={() => setIsMobileMenuOpen(false)} className="block py-2 text-sm font-bold text-slate-600 hover:text-slate-900">
@@ -229,8 +242,8 @@ export function Navbar() {
         </div>
       )}
 
-      {/* Mobile Product menu (accordion style) */}
-      <div className="lg:hidden border-t border-gray-100/50 bg-white/90">
+      {/* Mobile/tablet Product bar: hidden on small mobile (Product is in hamburger), visible only md to lg */}
+      <div className="hidden md:block lg:hidden border-t border-gray-100/50 bg-white/90">
         <div className="mx-auto max-w-screen-2xl px-6 md:px-12 lg:px-24 py-2">
           <button
             type="button"
