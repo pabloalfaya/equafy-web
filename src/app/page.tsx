@@ -131,16 +131,10 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* --- TRANSICIÓN --- */}
-      <div className="relative z-0">
-        <div className="absolute -top-64 left-0 right-0 h-[500px] bg-gradient-to-b from-transparent via-[#0B0F19]/60 to-[#0B0F19] blur-3xl pointer-events-none"></div>
-        <div className="absolute -top-40 left-1/2 -translate-x-1/2 w-3/4 h-[400px] bg-emerald-900/20 blur-[100px] rounded-full pointer-events-none mix-blend-soft-light"></div>
-      </div>
-
       {/* --- FRAMEWORK SELECTION --- */}
       <section className="relative z-10 w-full py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="rounded-[40px] bg-[#0B0F19] text-white shadow-2xl shadow-gray-900/20 overflow-hidden relative">
+          <div className="rounded-[40px] bg-[#0B0F19] text-white shadow-xl shadow-gray-900/10 overflow-hidden relative">
             <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-emerald-900/20 via-[#0B0F19] to-[#0B0F19] pointer-events-none rounded-[40px]"></div>
             <div className="relative p-8 md:p-12">
             <div className="text-center mb-12 max-w-3xl mx-auto">
