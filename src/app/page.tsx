@@ -139,7 +139,8 @@ export default function LandingPage() {
       {/* --- FRAMEWORK SELECTION --- */}
       <section className="relative z-10 w-full bg-[#0B0F19] text-white pt-16 pb-24">
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-emerald-900/20 via-[#0B0F19] to-[#0B0F19] pointer-events-none"></div>
-          <div className="mx-auto max-w-screen-2xl relative px-6 md:px-12 lg:px-24">
+          <div className="relative w-full">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-12 max-w-3xl mx-auto">
               <h2 className="text-4xl md:text-5xl font-bold tracking-tight mb-4 bg-clip-text text-transparent bg-gradient-to-b from-white to-white/60 py-2">
                 Choose your Equity Framework
@@ -273,6 +274,7 @@ export default function LandingPage() {
                 </Link>
               </div>
 
+            </div>
             </div>
           </div>
       </section>
