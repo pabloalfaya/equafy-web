@@ -146,11 +146,6 @@ export function EquityPieChart({ contributions, members }: EquityPieChartProps) 
     maximumFractionDigits: 2,
   });
 
-  const centerText = formattedTotalPoints;
-  const centerTextLength = centerText.length;
-  const centerFontSizeClass =
-    centerTextLength < 10 ? "text-3xl" : centerTextLength < 14 ? "text-2xl" : "text-xl";
-
   // Si no hay datos, mostramos mensaje vacío
   if (data.length === 0 || totalValue === 0) {
     return (
@@ -194,15 +189,22 @@ export function EquityPieChart({ contributions, members }: EquityPieChartProps) 
           </PieChart>
         </ResponsiveContainer>
 
-        {/* Texto Central (Total) */}
+        {/* Centro del rosco: solo 100% */}
         <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-          <span className={`${centerFontSizeClass} font-black text-slate-800 whitespace-nowrap`}>
-            {centerText}
-          </span>
-          <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
-            Total Points
+          <span className="text-3xl font-black text-slate-800 whitespace-nowrap">
+            100%
           </span>
         </div>
+      </div>
+
+      {/* --- CAJA INFERIOR: Total Points (valor exacto) --- */}
+      <div className="mt-3 flex items-center justify-between px-3 py-2.5 bg-slate-50 rounded-xl border border-slate-100">
+        <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">
+          Total Points
+        </span>
+        <span className="text-sm font-black text-slate-800 tabular-nums">
+          {formattedTotalPoints}
+        </span>
       </div>
 
       {/* --- SECCIÓN LEYENDA (Debajo) --- */}
