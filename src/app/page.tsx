@@ -57,9 +57,9 @@ export default function LandingPage() {
       </header>
 
       {/* --- DASHBOARD PREVIEW SECTION --- */}
-      <section className="pb-16 relative z-10 w-full px-6 md:px-12 lg:px-24">
+      <section className="py-16 md:py-20 relative z-10 w-full px-6 md:px-12 lg:px-24">
         <div className="mx-auto max-w-screen-2xl relative">
-          <div className="relative z-20 rounded-[32px] border border-slate-200/60 bg-white/80 backdrop-blur-2xl shadow-[0_40px_80px_-20px_rgba(0,0,0,0.1)] overflow-hidden ring-1 ring-slate-900/5">
+          <div className="relative z-20">
             <div className="h-12 border-b border-slate-100 flex items-center px-6 gap-2 bg-slate-50/50">
               <div className="w-3 h-3 rounded-full bg-red-400/80"></div>
               <div className="w-3 h-3 rounded-full bg-amber-400/80"></div>
