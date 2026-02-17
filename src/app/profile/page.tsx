@@ -7,7 +7,6 @@ import {
   Loader2,
   LogOut,
   CreditCard,
-  Sparkles,
   User,
   Shield,
   Trash2,
@@ -156,26 +155,7 @@ export default function ProfilePage() {
           </div>
         </div>
 
-        {/* TARJETA 1: SUBSCRIPTION */}
-        <section className="bg-white border border-slate-200 rounded-2xl shadow-sm p-8 mb-6">
-          <h2 className="text-lg font-bold text-slate-900 flex items-center gap-2 mb-4">
-            <CreditCard className="w-5 h-5 text-slate-600" /> Subscription
-          </h2>
-          <div className="flex flex-wrap items-center gap-3 mb-4">
-            <span className="text-sm font-bold text-slate-500">Current Plan:</span>
-            <span className="inline-block bg-emerald-50 text-emerald-700 text-sm font-bold px-3 py-1 rounded-full">
-              Free Tier
-            </span>
-          </div>
-          <button
-            onClick={() => alert("Payments coming soon!")}
-            className="inline-flex items-center gap-2 bg-emerald-500 hover:bg-emerald-600 text-white px-6 py-3 rounded-xl font-bold transition-all shadow-lg shadow-emerald-500/20"
-          >
-            <Sparkles className="w-5 h-5" /> Upgrade to Pro
-          </button>
-        </section>
-
-        {/* TARJETA 2: PERSONAL INFORMATION */}
+        {/* 1. PERSONAL INFORMATION */}
         <section className="bg-white border border-slate-200 rounded-2xl shadow-sm p-8 mb-6">
           <h2 className="text-lg font-bold text-slate-900 flex items-center gap-2 mb-6">
             <User className="w-5 h-5 text-slate-600" /> Personal Information
@@ -237,7 +217,7 @@ export default function ProfilePage() {
           </form>
         </section>
 
-        {/* TARJETA 3: SECURITY */}
+        {/* 2. SECURITY */}
         <section className="bg-white border border-slate-200 rounded-2xl shadow-sm p-8 mb-6">
           <h2 className="text-lg font-bold text-slate-900 flex items-center gap-2 mb-4">
             <Shield className="w-5 h-5 text-slate-600" /> Security
@@ -255,7 +235,23 @@ export default function ProfilePage() {
           </button>
         </section>
 
-        {/* DANGER ZONE */}
+        {/* 3. PAYMENTS */}
+        <section className="bg-white border border-slate-200 rounded-2xl shadow-sm p-8 mb-6">
+          <h2 className="text-lg font-bold text-slate-900 flex items-center gap-2 mb-4">
+            <CreditCard className="w-5 h-5 text-slate-600" /> Payments
+          </h2>
+          <p className="text-slate-600 font-medium text-sm leading-relaxed mb-4">
+            Manage your project payments and invoices here. Select a project from your dashboard to view specific billing details.
+          </p>
+          {/* Reserved for future: list of invoices / project billing status */}
+          <div className="rounded-xl border border-dashed border-slate-200 bg-slate-50/50 p-6 text-center" aria-hidden="true">
+            <p className="text-slate-400 text-sm font-medium">
+              Billing details and invoices will appear here.
+            </p>
+          </div>
+        </section>
+
+        {/* 4. DANGER ZONE */}
         <section className="bg-red-50 border border-red-200 rounded-2xl p-8">
           <h2 className="text-lg font-bold text-red-800 flex items-center gap-2 mb-2">
             <Trash2 className="w-5 h-5" /> Danger Zone
