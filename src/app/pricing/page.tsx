@@ -34,6 +34,7 @@ export default function PricingPage() {
                 <span className="text-4xl font-black text-slate-900">19.99</span>
                 <span className="text-slate-400 font-bold">/mo</span>
               </div>
+              <p className="mt-1.5 text-sm font-medium text-emerald-500">14-day free trial included</p>
             </div>
             <ul className="space-y-4 mb-10">
               {[
@@ -66,6 +67,7 @@ export default function PricingPage() {
                 <span className="text-4xl font-black text-white">199.99</span>
                 <span className="text-slate-400 font-bold">/yr</span>
               </div>
+              <p className="mt-1.5 text-sm font-medium text-emerald-400">14-day free trial included</p>
             </div>
             <ul className="space-y-4 mb-10">
               {[

@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { createClient } from "@/utils/supabase/client";
-import { X, Loader2, ShieldCheck, Scale, Settings, ArrowRight, ArrowLeft, Rocket } from "lucide-react";
+import { X, Loader2, ShieldCheck, Scale, Settings, ArrowRight, ArrowLeft, Rocket, Info } from "lucide-react";
 import type { Project } from "@/types/database";
 
 const STRIPE_MONTHLY_PRICE_ID = "price_1SyaxgBmr0mjMQ09JTxc07Sh";
@@ -245,6 +245,10 @@ export function CreateProjectModal({ isOpen, onClose, onProjectCreated }: Create
                 <p className="text-[9px] text-center text-purple-700 font-black uppercase tracking-widest mt-auto">Fixed split</p>
               </div>
             </div>
+            <p className="text-center text-sm text-gray-500 flex items-center justify-center gap-2 flex-wrap">
+              <Info className="w-4 h-4 shrink-0 text-gray-400" />
+              <span>Note: Multipliers can be adjusted at any time after the project is created.</span>
+            </p>
             <div className="flex items-center justify-between gap-3 pt-4 border-t border-slate-100">
               <button type="button" onClick={goBack} className="flex items-center gap-2 text-xs font-black text-slate-400 hover:text-slate-900 transition-colors min-w-0">
                 <ArrowLeft className="w-4 h-4 flex-shrink-0" /> Back
