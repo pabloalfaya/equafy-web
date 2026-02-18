@@ -68,55 +68,55 @@ function LoginForm() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-[#F8FAFC] px-4 font-sans">
-      <div className="w-full max-w-md space-y-8 rounded-3xl bg-white p-10 shadow-xl border border-slate-100">
+    <div className="flex min-h-screen items-start justify-center bg-[#F8FAFC] px-4 pt-28 md:pt-32 pb-8 font-sans">
+      <div className="w-full max-w-[360px] md:max-w-md space-y-5 md:space-y-6 rounded-2xl md:rounded-3xl bg-white p-6 md:p-8 shadow-xl border border-slate-100">
         
-        <Link href="/" className="inline-flex items-center text-sm text-slate-400 hover:text-slate-600 mb-4 transition-colors">
-          <ArrowLeft className="mr-1 h-4 w-4" /> Back to Home
+        <Link href="/" className="inline-flex items-center text-xs md:text-sm text-slate-400 hover:text-slate-600 mb-2 md:mb-4 transition-colors">
+          <ArrowLeft className="mr-1 h-3.5 w-3.5 md:h-4 md:w-4" /> Back to Home
         </Link>
         
         <div className="text-center">
-          <img src="/logo.png" alt="Equily" className="mx-auto h-16 w-auto mb-4 object-contain" />
-          <h2 className="text-3xl font-black text-slate-900">
+          <img src="/logo.png" alt="Equily" className="mx-auto h-12 md:h-14 w-auto mb-3 md:mb-4 object-contain" />
+          <h2 className="text-2xl md:text-3xl font-black text-slate-900">
             {isSignUp ? "Create Account" : "Welcome Back"}
           </h2>
-          <p className="mt-2 text-slate-500">
+          <p className="mt-1.5 md:mt-2 text-sm md:text-base text-slate-500">
             {isSignUp ? "Start managing equity properly." : "Enter your details to access."}
           </p>
         </div>
 
         {message && (
-          <div className={`p-4 rounded-xl text-sm font-bold flex items-center justify-center ${message.type === 'error' ? 'bg-red-50 text-red-600 border border-red-100' : 'bg-emerald-50 text-emerald-600 border border-emerald-100'}`}>
+          <div className={`p-3 md:p-4 rounded-xl text-xs md:text-sm font-bold flex items-center justify-center ${message.type === 'error' ? 'bg-red-50 text-red-600 border border-red-100' : 'bg-emerald-50 text-emerald-600 border border-emerald-100'}`}>
             {message.text}
           </div>
         )}
 
-        <form className="mt-8 space-y-5" onSubmit={handleAuth}>
+        <form className="mt-5 md:mt-6 space-y-4" onSubmit={handleAuth}>
           <div>
-            <label className="block text-sm font-bold text-slate-700 mb-1">Email</label>
+            <label className="block text-xs md:text-sm font-bold text-slate-700 mb-1">Email</label>
             <div className="relative">
-              <Mail className="absolute left-3 top-3 h-5 w-5 text-slate-400" />
+              <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 md:h-5 md:w-5 text-slate-400" />
               <input
                 type="email"
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="block w-full rounded-xl border border-slate-200 py-3 pl-10 pr-3 text-slate-900 placeholder:text-slate-400 focus:border-emerald-500 focus:outline-none focus:ring-4 focus:ring-emerald-500/10 transition-all"
+                className="block w-full rounded-xl border border-slate-200 py-2.5 md:py-3 pl-9 md:pl-10 pr-3 text-sm text-slate-900 placeholder:text-slate-400 focus:border-emerald-500 focus:outline-none focus:ring-4 focus:ring-emerald-500/10 transition-all"
                 placeholder="founder@startup.com"
               />
             </div>
           </div>
 
           <div>
-            <label className="block text-sm font-bold text-slate-700 mb-1">Password</label>
+            <label className="block text-xs md:text-sm font-bold text-slate-700 mb-1">Password</label>
             <div className="relative">
-              <Lock className="absolute left-3 top-3 h-5 w-5 text-slate-400" />
+              <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 md:h-5 md:w-5 text-slate-400" />
               <input
                 type="password"
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="block w-full rounded-xl border border-slate-200 py-3 pl-10 pr-3 text-slate-900 placeholder:text-slate-400 focus:border-emerald-500 focus:outline-none focus:ring-4 focus:ring-emerald-500/10 transition-all"
+                className="block w-full rounded-xl border border-slate-200 py-2.5 md:py-3 pl-9 md:pl-10 pr-3 text-sm text-slate-900 placeholder:text-slate-400 focus:border-emerald-500 focus:outline-none focus:ring-4 focus:ring-emerald-500/10 transition-all"
                 placeholder="••••••••"
               />
             </div>
@@ -125,14 +125,14 @@ function LoginForm() {
           <button
             type="submit"
             disabled={loading}
-            className="group relative flex w-full justify-center rounded-xl bg-slate-900 py-3.5 px-4 text-sm font-bold text-white hover:bg-slate-800 disabled:opacity-70 transition-all shadow-lg hover:shadow-xl hover:-translate-y-0.5"
+            className="group relative flex w-full justify-center rounded-xl bg-slate-900 py-3 md:py-3.5 px-4 text-sm font-bold text-white hover:bg-slate-800 disabled:opacity-70 transition-all shadow-lg hover:shadow-xl hover:-translate-y-0.5"
           >
             {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
             {isSignUp ? "Create Free Account" : "Sign In"}
           </button>
         </form>
 
-        <div className="text-center mt-6 pt-6 border-t border-slate-50">
+        <div className="text-center mt-4 md:mt-6 pt-4 md:pt-6 border-t border-slate-50">
           <button
             type="button"
             // Al hacer clic manual, alternamos el estado y limpiamos la URL visualmente (opcional)
