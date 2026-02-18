@@ -526,7 +526,8 @@ export default function ProjectDashboardPage() {
   if (!project) return null;
 
   const subscriptionStatus = (project as ExtendedProject & { subscription_status?: string }).subscription_status;
-  if (subscriptionStatus !== "active") {
+  const canAccessProject = subscriptionStatus === "active" || subscriptionStatus === "trialing";
+  if (!canAccessProject) {
     const handleFinishPayment = async () => {
       const supabase = createClient();
       const { data: { user } } = await supabase.auth.getUser();

@@ -180,7 +180,7 @@ export function DashboardContent() {
         ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4 sm:gap-6">
                 {projects.map((project) => {
-                  const isActive = project.subscription_status === "active";
+                  const isActive = project.subscription_status === "active" || project.subscription_status === "trialing";
                   if (isActive) {
                     return (
                       <Link key={project.id} href={`/dashboard/${project.id}`} className="group relative bg-white border border-slate-200 hover:border-emerald-500/50 p-6 rounded-[24px] shadow-sm hover:shadow-xl hover:shadow-emerald-500/10 transition-all duration-300 flex flex-col h-48">

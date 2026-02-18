@@ -33,33 +33,47 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: `Webhook Error: ${message}` }, { status: 400 });
   }
 
+  const activateProject = async (projectId: string) => {
+    if (!projectId) return;
+    if (!supabaseUrl || !supabaseServiceRoleKey) {
+      console.error("Supabase URL or SERVICE_ROLE_KEY not set");
+      return;
+    }
+    const supabase = createClient(supabaseUrl, supabaseServiceRoleKey);
+    const { error } = await supabase
+      .from("projects")
+      .update({ subscription_status: "active" })
+      .eq("id", projectId);
+    if (error) {
+      console.error("Error updating project subscription_status:", error);
+      return;
+    }
+    console.log("Project activated:", projectId);
+  };
+
   if (event.type === "checkout.session.completed") {
     const session = event.data.object as Stripe.Checkout.Session;
-    const projectId = session.metadata?.projectId;
+    const projectId = session.metadata?.projectId as string | undefined;
 
     if (!projectId) {
       console.error("checkout.session.completed: missing projectId in metadata", session.metadata);
       return NextResponse.json({ received: true }, { status: 200 });
     }
 
-    if (!supabaseUrl || !supabaseServiceRoleKey) {
-      console.error("Supabase URL or SERVICE_ROLE_KEY not set");
-      return NextResponse.json({ error: "Supabase not configured" }, { status: 500 });
+    await activateProject(projectId);
+  }
+
+  if (event.type === "customer.subscription.created" || event.type === "customer.subscription.updated") {
+    const subscription = event.data.object as Stripe.Subscription;
+    const status = subscription.status;
+    if (status === "trialing" || status === "active") {
+      const projectId = subscription.metadata?.projectId as string | undefined;
+      if (!projectId) {
+        console.error("customer.subscription: missing projectId in metadata", subscription.metadata);
+        return NextResponse.json({ received: true }, { status: 200 });
+      }
+      await activateProject(projectId);
     }
-
-    const supabase = createClient(supabaseUrl, supabaseServiceRoleKey);
-
-    const { error } = await supabase
-      .from("projects")
-      .update({ subscription_status: "active" })
-      .eq("id", projectId);
-
-    if (error) {
-      console.error("Error updating project subscription_status:", error);
-      return NextResponse.json({ error: error.message }, { status: 500 });
-    }
-
-    console.log("Project activated:", projectId);
   }
 
   return NextResponse.json({ received: true }, { status: 200 });
