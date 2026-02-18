@@ -1,14 +1,13 @@
-// src/middleware.ts
 import { type NextRequest, NextResponse } from "next/server";
 import { updateSession } from "@/utils/supabase/middleware";
 
 export async function middleware(request: NextRequest) {
-  const pathname = request.nextUrl.pathname;
-
-  // URGENTE: Cualquier petición a /api/webhooks/* pasa SIN comprobar sesión. Evita 307 a /login.
-  if (pathname.startsWith("/api/webhooks") || pathname.includes("/api/webhooks")) {
+  // 1. Permitir siempre los Webhooks de Stripe sin autenticación (prioridad máxima)
+  if (request.nextUrl.pathname.startsWith("/api/webhooks")) {
     return NextResponse.next();
   }
+
+  const pathname = request.nextUrl.pathname;
 
   // Rutas públicas (sin requerir auth)
   const isPublicRoute =
@@ -23,18 +22,15 @@ export async function middleware(request: NextRequest) {
     pathname.startsWith("/how-it-works") ||
     pathname.startsWith("/legal");
 
-  // 2. Si es pública, dejamos que Next.js maneje la petición normalmente
   if (isPublicRoute) {
     return NextResponse.next();
   }
 
-  // 3. Para el resto de rutas (dashboard, etc.), ejecutamos la protección de sesión
+  // Resto: protección de sesión (dashboard, etc.)
   return await updateSession(request);
 }
 
 export const config = {
-  // No ejecutar middleware en estas rutas (Stripe webhook debe llegar sin 307)
-  matcher: [
-    "/((?!api/webhooks)(?!_next/static)(?!_next/image)(?!favicon\\.ico).*)",
-  ],
+  // Ejecutar middleware en todas las rutas; los webhooks salen en la primera línea sin auth
+  matcher: ["/((?!_next/static|_next/image|favicon\\.ico).*)"],
 };
