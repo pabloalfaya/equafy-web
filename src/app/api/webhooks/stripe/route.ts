@@ -33,13 +33,15 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: `Webhook Error: ${message}` }, { status: 400 });
   }
 
+  const supabaseAdmin = () => createClient(supabaseUrl, supabaseServiceRoleKey);
+
   const activateProject = async (projectId: string, source: string) => {
     if (!projectId) return;
     if (!supabaseUrl || !supabaseServiceRoleKey) {
       console.error("Supabase URL or SERVICE_ROLE_KEY not set");
       return;
     }
-    const supabase = createClient(supabaseUrl, supabaseServiceRoleKey);
+    const supabase = supabaseAdmin();
     const { error } = await supabase
       .from("projects")
       .update({ subscription_status: "active" })
@@ -49,6 +51,24 @@ export async function POST(req: Request) {
       return;
     }
     console.log(`[Webhook] Proyecto activado: ID=${projectId}, origen=${source}`);
+  };
+
+  const deactivateProject = async (projectId: string, source: string) => {
+    if (!projectId) return;
+    if (!supabaseUrl || !supabaseServiceRoleKey) {
+      console.error("Supabase URL or SERVICE_ROLE_KEY not set");
+      return;
+    }
+    const supabase = supabaseAdmin();
+    const { error } = await supabase
+      .from("projects")
+      .update({ subscription_status: "incomplete" })
+      .eq("id", projectId);
+    if (error) {
+      console.error("Error updating project subscription_status (deactivate):", error);
+      return;
+    }
+    console.log(`[Webhook] Proyecto desactivado (suscripción cancelada): ID=${projectId}, origen=${source}`);
   };
 
   const getProjectIdFromSession = (session: Stripe.Checkout.Session): string | null => {
@@ -125,6 +145,56 @@ export async function POST(req: Request) {
         return NextResponse.json({ received: true }, { status: 200 });
       }
       await activateProject(projectId, `customer.subscription.${event.type.split(".").pop()}`);
+    }
+  }
+
+  // --- customer.subscription.deleted: desactivar proyecto (suscripción cancelada) ---
+  if (event.type === "customer.subscription.deleted") {
+    const subscription = event.data.object as Stripe.Subscription;
+    const subscriptionId = subscription.id;
+
+    let projectId = (subscription.metadata?.projectId as string) || null;
+    if (!projectId) {
+      try {
+        const sessions = await stripe.checkout.sessions.list({ limit: 100, subscription: subscriptionId });
+        const sessionWithMeta = sessions.data.find((s) => s.metadata?.projectId);
+        if (sessionWithMeta?.metadata?.projectId) projectId = sessionWithMeta.metadata.projectId as string;
+      } catch (e) {
+        console.warn("[Webhook] customer.subscription.deleted: fallback session list:", e);
+      }
+    }
+
+    console.log(
+      `[Webhook] customer.subscription.deleted — subscription_id: ${subscriptionId}, Proyecto ID: ${projectId ?? "N/A"}`
+    );
+
+    if (projectId) {
+      await deactivateProject(projectId, "customer.subscription.deleted");
+    } else {
+      // Fallback opcional: si en el futuro guardas stripe_subscription_id en 'projects', se puede buscar por él
+      if (supabaseUrl && supabaseServiceRoleKey) {
+        try {
+          const supabase = supabaseAdmin();
+          const { data: projects, error } = await supabase
+            .from("projects")
+            .select("id")
+            .eq("stripe_subscription_id", subscriptionId)
+            .limit(1);
+          if (!error && projects?.length && projects[0]?.id) {
+            await deactivateProject(projects[0].id, "customer.subscription.deleted (by stripe_subscription_id)");
+          } else {
+            console.error("[Webhook] customer.subscription.deleted: no projectId en metadata (ni columna stripe_subscription_id)", {
+              subscription_id: subscriptionId,
+              metadata: subscription.metadata,
+            });
+          }
+        } catch (e) {
+          console.error("[Webhook] customer.subscription.deleted: no se pudo resolver proyecto", {
+            subscription_id: subscriptionId,
+            metadata: subscription.metadata,
+          });
+        }
+      }
     }
   }
 
