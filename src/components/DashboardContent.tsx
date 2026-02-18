@@ -133,7 +133,7 @@ export function DashboardContent() {
 
   return (
     <div className="min-h-screen bg-[#F8FAFC] font-sans text-slate-900">
-      <main className="max-w-screen-2xl mx-auto px-6 md:px-12 lg:px-24 py-8 sm:py-12">
+      <main className="max-w-screen-2xl mx-auto px-6 md:px-12 lg:px-24 py-6 sm:py-8">
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6 mb-8 sm:mb-12">
             <div>
                 <h1 className="text-3xl font-black text-slate-900 mb-1">My Projects</h1>
@@ -146,10 +146,10 @@ export function DashboardContent() {
             </div>
             <div className="flex flex-col gap-3 items-end">
                 <button 
-                    onClick={handleLogout}
-                    className="inline-flex items-center gap-2 bg-white hover:bg-red-50 text-red-600 border border-red-200 hover:border-red-300 px-6 py-3 rounded-xl font-bold text-sm transition-all"
+                    onClick={() => setIsModalOpen(true)}
+                    className="inline-flex items-center gap-2 bg-slate-900 hover:bg-slate-800 text-white px-6 py-3 rounded-xl font-bold transition-all shadow-lg hover:-translate-y-0.5"
                 >
-                    <LogOut className="w-5 h-5" /> Sign Out
+                    <Plus className="w-5 h-5" /> New Project
                 </button>
                 <Link
                     href="/profile"
@@ -158,10 +158,10 @@ export function DashboardContent() {
                     <User className="w-5 h-5" /> My Profile
                 </Link>
                 <button 
-                    onClick={() => setIsModalOpen(true)}
-                    className="inline-flex items-center gap-2 bg-slate-900 hover:bg-slate-800 text-white px-6 py-3 rounded-xl font-bold transition-all shadow-lg hover:-translate-y-0.5"
+                    onClick={handleLogout}
+                    className="inline-flex items-center gap-2 bg-white hover:bg-red-50 text-red-600 border border-red-200 hover:border-red-300 px-6 py-3 rounded-xl font-bold text-sm transition-all"
                 >
-                    <Plus className="w-5 h-5" /> New Project
+                    <LogOut className="w-5 h-5" /> Sign Out
                 </button>
             </div>
         </div>
