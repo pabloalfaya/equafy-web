@@ -313,7 +313,7 @@ export function EquitySettingsModal({
       onClick={onClose}
     >
       <div
-        className="w-full max-w-xl bg-white rounded-[32px] shadow-2xl p-8 animate-in zoom-in duration-200 font-sans"
+        className="w-full max-w-xl max-h-[80vh] bg-white rounded-[32px] shadow-2xl p-6 md:p-8 animate-in zoom-in duration-200 font-sans overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
@@ -384,7 +384,7 @@ export function EquitySettingsModal({
         {/* Tab Content */}
         {activeTab === "multipliers" && (
           <>
-            <div className="space-y-4 mb-6">
+            <div className="space-y-3 mb-5">
               {(
                 [
                   { key: "mult_cash", label: "Cash" },
@@ -410,7 +410,7 @@ export function EquitySettingsModal({
                       }))
                     }
                     disabled={!canEdit}
-                    className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 font-bold text-slate-800 outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 transition-all disabled:opacity-60 disabled:cursor-not-allowed"
+                    className="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-slate-50 font-bold text-slate-800 outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 transition-all disabled:opacity-60 disabled:cursor-not-allowed"
                   />
                 </div>
               ))}
