@@ -13,6 +13,8 @@ export function PublicFooter() {
               <img
                 src="/logo.png"
                 alt="Equily Logo"
+                width={120}
+                height={48}
                 className="h-16 w-auto grayscale hover:grayscale-0 transition-all opacity-80 hover:opacity-100"
               />
             </Link>

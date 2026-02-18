@@ -42,6 +42,8 @@ export function Navbar() {
             <img
               src="/logo.png"
               alt="Equily Logo"
+              width={140}
+              height={56}
               className="relative h-16 sm:h-24 md:h-28 w-auto object-contain transition-transform duration-300 group-hover:scale-105"
             />
           </Link>
