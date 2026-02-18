@@ -39,8 +39,8 @@ export function ContributionsTable({ contributions, onDelete, onEdit, canEdit = 
   }
 
   return (
-    <div className="overflow-x-auto">
-      <table className="w-full text-left border-collapse">
+    <div className="min-w-max w-full">
+      <table className="w-full text-left border-collapse min-w-[700px]">
         <thead>
           <tr className="text-[10px] font-bold text-slate-400 uppercase tracking-wider border-b border-slate-100">
             <th className="py-3 px-4">Date</th>

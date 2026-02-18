@@ -664,7 +664,7 @@ export default function ProjectDashboardPage() {
                         <div className="p-2 bg-blue-50 rounded-lg"><TrendingUp className="h-5 w-5 text-blue-600" /></div>
                         <h3 className="font-bold text-slate-900 text-xl">Contribution Log</h3>
                     </div>
-                    <div className="overflow-x-auto max-h-[600px] overflow-y-auto pr-2 custom-scrollbar">
+                    <div className="overflow-auto max-h-[600px] pr-2 pb-1 custom-scrollbar">
                         <ContributionsTable contributions={contributions} onDelete={handleContributionDeleted} onEdit={handleEditContribution} canEdit={canEditAndNotFinalized} />
                     </div>
                 </div>
