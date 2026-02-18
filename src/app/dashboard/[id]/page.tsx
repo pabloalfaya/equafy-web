@@ -586,20 +586,20 @@ export default function ProjectDashboardPage() {
 
   return (
     <div className="min-h-screen bg-[#F8FAFC] font-sans text-slate-900 overflow-x-hidden">
-      <main className="relative z-10 pt-16 pb-20 px-6 md:px-12 lg:px-24">
+      <main className="relative z-10 pt-12 md:pt-16 pb-12 md:pb-20 px-4 sm:px-6 md:px-12 lg:px-24">
         <div className="mx-auto max-w-screen-2xl">
-            <div className="mb-10 flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
-              <div className="flex items-start gap-4">
+            <div className="mb-6 md:mb-10 flex flex-col gap-4 sm:gap-6 sm:flex-row sm:items-end sm:justify-between">
+              <div className="flex items-start gap-3 md:gap-4">
                 <Link
                   href="/dashboard"
-                  className="mt-1 p-2 rounded-lg hover:bg-slate-100 transition-colors"
+                  className="mt-1 p-2 rounded-lg hover:bg-slate-100 transition-colors shrink-0"
                   aria-label="Back to projects"
                 >
                   <ArrowLeft className="w-5 h-5 text-slate-500" />
                 </Link>
-                <div>
-                <h1 className="text-4xl font-black text-slate-900 tracking-tight">{project.name}</h1>
-                <p className="mt-2 text-slate-500 font-medium italic capitalize">
+                <div className="min-w-0">
+                <h1 className="text-2xl sm:text-3xl md:text-4xl font-black text-slate-900 tracking-tight truncate">{project.name}</h1>
+                <p className="mt-1 md:mt-2 text-sm md:text-base text-slate-500 font-medium italic capitalize">
                     Calculated using the {getModelName()} model.
                 </p>
                 {isFinalized && (
@@ -626,44 +626,44 @@ export default function ProjectDashboardPage() {
                 )}
               </div>
               </div>
-              <div className="flex gap-3 flex-wrap">
-                <button onClick={generatePDF} className="inline-flex items-center gap-2 rounded-xl bg-white border border-slate-200 px-5 py-3 font-bold text-slate-700 shadow-sm hover:bg-slate-50 transition-all">
-                    <Download className="h-5 w-5" /> Export PDF
+              <div className="flex gap-2 sm:gap-3 flex-wrap">
+                <button onClick={generatePDF} className="inline-flex items-center gap-2 rounded-xl bg-white border border-slate-200 px-4 py-2.5 sm:px-5 sm:py-3 text-sm font-bold text-slate-700 shadow-sm hover:bg-slate-50 transition-all">
+                    <Download className="h-4 w-4 sm:h-5 sm:w-5" /> Export PDF
                 </button>
                 {canEditAndNotFinalized && (
                   <>
-                    <button onClick={() => setFixedEquityOpen(true)} className="inline-flex items-center gap-2 rounded-xl bg-white border border-slate-200 px-5 py-3 font-bold text-slate-700 shadow-sm hover:bg-slate-50 transition-all">
-                        <Settings className="h-5 w-5" /> Equity Settings
+                    <button onClick={() => setFixedEquityOpen(true)} className="inline-flex items-center gap-2 rounded-xl bg-white border border-slate-200 px-4 py-2.5 sm:px-5 sm:py-3 text-sm font-bold text-slate-700 shadow-sm hover:bg-slate-50 transition-all">
+                        <Settings className="h-4 w-4 sm:h-5 sm:w-5" /> <span className="hidden sm:inline">Equity Settings</span>
                     </button>
-                    <button onClick={() => setMemberModalOpen(true)} className="inline-flex items-center gap-2 rounded-xl bg-white border border-slate-200 px-5 py-3 font-bold text-slate-700 shadow-sm hover:bg-slate-50 transition-all">
-                        <Users className="h-5 w-5" /> Team
+                    <button onClick={() => setMemberModalOpen(true)} className="inline-flex items-center gap-2 rounded-xl bg-white border border-slate-200 px-4 py-2.5 sm:px-5 sm:py-3 text-sm font-bold text-slate-700 shadow-sm hover:bg-slate-50 transition-all">
+                        <Users className="h-4 w-4 sm:h-5 sm:w-5" /> <span className="hidden sm:inline">Team</span>
                     </button>
-                    <button onClick={() => { setEditingContribution(null); setModalOpen(true); }} className="inline-flex items-center gap-2 rounded-xl bg-slate-900 px-6 py-3 font-bold text-white shadow-lg hover:bg-slate-800 transition-all">
-                        <Plus className="h-5 w-5" /> Add Contribution
+                    <button onClick={() => { setEditingContribution(null); setModalOpen(true); }} className="inline-flex items-center gap-2 rounded-xl bg-slate-900 px-4 py-2.5 sm:px-6 sm:py-3 text-sm font-bold text-white shadow-lg hover:bg-slate-800 transition-all">
+                        <Plus className="h-4 w-4 sm:h-5 sm:w-5" /> Add Contribution
                     </button>
                   </>
                 )}
               </div>
             </div>
 
-            <div className="grid lg:grid-cols-3 gap-8">
-                <div className="lg:col-span-2 bg-white/70 backdrop-blur-xl border border-white/60 rounded-[32px] p-8 shadow-xl flex flex-col">
-                    <div className="flex items-center gap-3 mb-6">
-                        <div className="p-2 bg-blue-50 rounded-lg"><TrendingUp className="h-5 w-5 text-blue-600" /></div>
-                        <h3 className="font-bold text-slate-900 text-xl">Contribution Log</h3>
+            <div className="grid lg:grid-cols-3 gap-4 md:gap-6 lg:gap-8">
+                <div className="lg:col-span-2 bg-white/70 backdrop-blur-xl border border-white/60 rounded-2xl md:rounded-[32px] p-4 sm:p-6 md:p-8 shadow-xl flex flex-col min-w-0">
+                    <div className="flex items-center gap-3 mb-4 md:mb-6">
+                        <div className="p-2 bg-blue-50 rounded-lg shrink-0"><TrendingUp className="h-5 w-5 text-blue-600" /></div>
+                        <h3 className="font-bold text-slate-900 text-lg md:text-xl">Contribution Log</h3>
                     </div>
-                    <div className="overflow-x-auto max-h-[600px] overflow-y-auto pr-2 custom-scrollbar">
+                    <div className="min-w-0 max-h-[500px] md:max-h-[600px] overflow-y-auto overflow-x-hidden pr-2 custom-scrollbar">
                         <ContributionsTable contributions={contributions} onDelete={handleContributionDeleted} onEdit={handleEditContribution} canEdit={canEditAndNotFinalized} />
                     </div>
                 </div>
                 
-                <div className="lg:col-span-1 flex flex-col gap-4">
-                <div className="bg-white/70 backdrop-blur-xl border border-white/60 rounded-[32px] p-8 shadow-xl flex flex-col h-fit sticky top-32">
-                    <div className="flex items-center gap-3 mb-8">
-                        <div className="p-2 bg-emerald-50 rounded-lg"><PieChart className="h-5 w-5 text-emerald-600" /></div>
-                        <h3 className="font-bold text-slate-900 text-xl">Equity Distribution</h3>
+                <div className="lg:col-span-1 flex flex-col gap-4 min-w-0">
+                <div className="bg-white/70 backdrop-blur-xl border border-white/60 rounded-2xl md:rounded-[32px] p-4 sm:p-6 md:p-8 shadow-xl flex flex-col h-fit lg:sticky lg:top-24">
+                    <div className="flex items-center gap-3 mb-4 md:mb-8">
+                        <div className="p-2 bg-emerald-50 rounded-lg shrink-0"><PieChart className="h-5 w-5 text-emerald-600" /></div>
+                        <h3 className="font-bold text-slate-900 text-lg md:text-xl">Equity Distribution</h3>
                     </div>
-                    <div className="w-full aspect-square"><EquityPieChart contributions={contributions} members={members} /></div>
+                    <div className="w-full aspect-square min-h-[280px] max-h-[400px] lg:max-h-none"><EquityPieChart contributions={contributions} members={members} /></div>
                   </div>
 
                 <div className="grid grid-cols-3 gap-2 mt-2">
