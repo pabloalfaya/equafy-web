@@ -5,8 +5,8 @@ import { createClient } from "@/utils/supabase/client";
 import { X, Loader2, ShieldCheck, Scale, Settings, ArrowRight, ArrowLeft, Rocket, Info } from "lucide-react";
 import type { Project } from "@/types/database";
 
-const STRIPE_MONTHLY_PRICE_ID = "price_1SyaxgBmr0mjMQ09JTxc07Sh";
-const STRIPE_ANNUAL_PRICE_ID = "price_1SyaxgBmr0mjMQ09DH21w1z3";
+const STRIPE_MONTHLY_PRICE_ID = process.env.NEXT_PUBLIC_STRIPE_MONTHLY_PRICE_ID || "";
+const STRIPE_ANNUAL_PRICE_ID = process.env.NEXT_PUBLIC_STRIPE_ANNUAL_PRICE_ID || "";
 
 interface CreateProjectModalProps {
   isOpen: boolean;
@@ -24,13 +24,11 @@ export function CreateProjectModal({ isOpen, onClose, onProjectCreated }: Create
 
   const handleSelectMonthly = () => {
     setSubscriptionPlan("monthly");
-    setSelectedPriceId("price_1SyaxgBmr0mjMQ09JTxc07Sh");
-    console.log("Plan selected:", "price_1SyaxgBmr0mjMQ09JTxc07Sh");
+    setSelectedPriceId(STRIPE_MONTHLY_PRICE_ID);
   };
   const handleSelectAnnual = () => {
     setSubscriptionPlan("annual");
-    setSelectedPriceId("price_1SyaxgBmr0mjMQ09DH21w1z3");
-    console.log("Plan selected:", "price_1SyaxgBmr0mjMQ09DH21w1z3");
+    setSelectedPriceId(STRIPE_ANNUAL_PRICE_ID);
   };
   const isPaymentReady = subscriptionPlan !== null && !loading;
 

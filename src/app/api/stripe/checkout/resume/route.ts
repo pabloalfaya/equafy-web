@@ -7,7 +7,7 @@ const stripe = STRIPE_SECRET_KEY
   ? new Stripe(STRIPE_SECRET_KEY, { apiVersion: "2026-01-28.clover" as const })
   : null;
 
-const DEFAULT_PRICE_ID = "price_1SyaxgBmr0mjMQ09JTxc07Sh";
+const DEFAULT_PRICE_ID = process.env.NEXT_PUBLIC_STRIPE_MONTHLY_PRICE_ID || "";
 
 export async function POST(req: Request) {
   try {
