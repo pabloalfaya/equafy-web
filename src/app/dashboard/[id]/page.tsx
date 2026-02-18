@@ -626,19 +626,31 @@ export default function ProjectDashboardPage() {
                 )}
               </div>
               </div>
-              <div className="flex gap-3 flex-wrap">
-                <button onClick={generatePDF} className="inline-flex items-center gap-2 rounded-xl bg-white border border-slate-200 px-5 py-3 font-bold text-slate-700 shadow-sm hover:bg-slate-50 transition-all">
+              <div className="flex gap-2 sm:gap-3 flex-wrap sm:flex-nowrap">
+                <button
+                  onClick={generatePDF}
+                  className="inline-flex items-center gap-2 rounded-xl bg-white border border-slate-200 px-4 md:px-5 py-2.5 md:py-3 font-bold text-slate-700 shadow-sm hover:bg-slate-50 transition-all whitespace-nowrap text-sm md:text-base"
+                >
                     <Download className="h-5 w-5" /> Export PDF
                 </button>
                 {canEditAndNotFinalized && (
                   <>
-                    <button onClick={() => setFixedEquityOpen(true)} className="inline-flex items-center gap-2 rounded-xl bg-white border border-slate-200 px-5 py-3 font-bold text-slate-700 shadow-sm hover:bg-slate-50 transition-all">
+                    <button
+                      onClick={() => setFixedEquityOpen(true)}
+                      className="inline-flex items-center gap-2 rounded-xl bg-white border border-slate-200 px-4 md:px-5 py-2.5 md:py-3 font-bold text-slate-700 shadow-sm hover:bg-slate-50 transition-all whitespace-nowrap text-sm md:text-base"
+                    >
                         <Settings className="h-5 w-5" /> Equity Settings
                     </button>
-                    <button onClick={() => setMemberModalOpen(true)} className="inline-flex items-center gap-2 rounded-xl bg-white border border-slate-200 px-5 py-3 font-bold text-slate-700 shadow-sm hover:bg-slate-50 transition-all">
+                    <button
+                      onClick={() => setMemberModalOpen(true)}
+                      className="inline-flex items-center gap-2 rounded-xl bg-white border border-slate-200 px-4 md:px-5 py-2.5 md:py-3 font-bold text-slate-700 shadow-sm hover:bg-slate-50 transition-all whitespace-nowrap text-sm md:text-base"
+                    >
                         <Users className="h-5 w-5" /> Team
                     </button>
-                    <button onClick={() => { setEditingContribution(null); setModalOpen(true); }} className="inline-flex items-center gap-2 rounded-xl bg-slate-900 px-6 py-3 font-bold text-white shadow-lg hover:bg-slate-800 transition-all">
+                    <button
+                      onClick={() => { setEditingContribution(null); setModalOpen(true); }}
+                      className="inline-flex items-center gap-2 rounded-xl bg-slate-900 px-4 md:px-6 py-2.5 md:py-3 font-bold text-white shadow-lg hover:bg-slate-800 transition-all whitespace-nowrap text-sm md:text-base"
+                    >
                         <Plus className="h-5 w-5" /> Add Contribution
                     </button>
                   </>
