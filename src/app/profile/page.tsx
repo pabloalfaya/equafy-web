@@ -106,28 +106,6 @@ export default function ProfilePage() {
 
   return (
     <div className="min-h-screen bg-[#F8FAFC] font-sans text-slate-900">
-      <nav className="border-b border-slate-200 bg-white px-6 py-4 flex justify-between items-center sticky top-0 z-10">
-        <Link href="/dashboard">
-          <img
-            src="/logo.png"
-            alt="Equily"
-            className="h-20 w-auto opacity-80 hover:opacity-100 transition-opacity object-contain"
-          />
-        </Link>
-        <div className="flex items-center gap-4">
-          <span className="text-xs font-bold text-slate-400 hidden sm:block">
-            {email}
-          </span>
-          <button
-            onClick={handleSignOut}
-            className="p-2 hover:bg-slate-50 rounded-lg text-slate-400 hover:text-red-500 transition-colors"
-            title="Log out"
-          >
-            <LogOut className="w-5 h-5" />
-          </button>
-        </div>
-      </nav>
-
       <main className="max-w-2xl mx-auto px-6 py-12">
         {/* HEADER */}
         <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-4 mb-8">

@@ -133,27 +133,24 @@ export function DashboardContent() {
 
   return (
     <div className="min-h-screen bg-[#F8FAFC] font-sans text-slate-900">
-      <nav className="border-b border-slate-200 bg-white w-full sticky top-0 z-10">
-        <div className="max-w-screen-2xl mx-auto px-6 md:px-12 lg:px-24 py-4 flex justify-between items-center">
-        <Link href="/" className="min-w-0 flex-shrink">
-            <img src="/logo.png" alt="Equily" className="h-14 sm:h-20 w-auto opacity-80 hover:opacity-100 transition-opacity object-contain" />
-        </Link>
-        <div className="flex items-center gap-2 sm:gap-4">
-            <span className="text-xs font-bold text-slate-400 truncate max-w-[120px] sm:max-w-none hidden sm:block">{userEmail}</span>
-            <button onClick={handleLogout} className="p-2 hover:bg-slate-50 rounded-lg text-slate-400 hover:text-red-500 transition-colors" title="Log out">
-                <LogOut className="w-5 h-5" />
-            </button>
-        </div>
-        </div>
-      </nav>
-
       <main className="max-w-screen-2xl mx-auto px-6 md:px-12 lg:px-24 py-8 sm:py-12">
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6 mb-8 sm:mb-12">
             <div>
-                <h1 className="text-3xl font-black text-slate-900 mb-2">My Projects</h1>
+                <h1 className="text-3xl font-black text-slate-900 mb-1">My Projects</h1>
                 <p className="text-slate-500 font-medium">Select a project to manage equity or create a new one.</p>
+                {userEmail && (
+                  <p className="text-xs font-bold text-slate-400 mt-1">
+                    Signed in as {userEmail}
+                  </p>
+                )}
             </div>
             <div className="flex flex-col gap-3 items-end">
+                <button 
+                    onClick={handleLogout}
+                    className="inline-flex items-center gap-2 bg-white hover:bg-red-50 text-red-600 border border-red-200 hover:border-red-300 px-6 py-3 rounded-xl font-bold text-sm transition-all"
+                >
+                    <LogOut className="w-5 h-5" /> Sign Out
+                </button>
                 <Link
                     href="/profile"
                     className="inline-flex items-center gap-2 bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 hover:border-slate-300 px-6 py-3 rounded-xl font-bold transition-all"
