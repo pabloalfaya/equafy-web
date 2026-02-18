@@ -3,14 +3,14 @@ import { type NextRequest, NextResponse } from "next/server";
 import { updateSession } from "@/utils/supabase/middleware";
 
 export async function middleware(request: NextRequest) {
-  const { pathname } = request.nextUrl;
+  const pathname = request.nextUrl.pathname;
 
-  // 0. Webhook de Stripe: SIEMPRE público, no pasar por auth (evita 307 a /login)
-  if (pathname.startsWith("/api/webhooks") || pathname.includes("/api/webhooks")) {
+  // Stripe webhook: NUNCA ejecutar auth. Retorno inmediato para que Stripe no reciba 307 a /login.
+  if (pathname.startsWith("/api/webhooks")) {
     return NextResponse.next();
   }
 
-  // 1. Definimos las rutas que DEBEN ser públicas (sin requerir auth)
+  // Rutas públicas (sin requerir auth)
   const isPublicRoute =
     pathname === "/" ||
     pathname.startsWith("/login") ||
@@ -33,8 +33,6 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: [
-    // Excluir estáticos, imágenes y el webhook de Stripe (evita 307)
-    "/((?!_next/static|_next/image|favicon.ico|api/webhooks|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
-  ],
+  // No ejecutar middleware en webhooks, estáticos ni favicon (Stripe debe poder llamar /api/webhooks sin auth)
+  matcher: ["/((?!api/webhooks|_next/static|_next/image|favicon.ico).*)"],
 };
