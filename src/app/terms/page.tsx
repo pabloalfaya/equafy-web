@@ -61,7 +61,7 @@ export default function TermsPage() {
             <section>
               <h2 className="text-2xl font-bold text-slate-900 mb-4">3. Subscriptions and Payment</h2>
               <p className="mb-4">
-                Equily offers subscription plans, including monthly and annual options. A <strong>14-day free trial</strong> is included when you start a subscription. No payment is required during the trial period. After the trial, you will be charged according to the plan you selected.
+                Equily offers subscription plans, including monthly and annual options. A <strong>7-day free trial</strong> is included when you start a subscription. No payment is required during the trial period. After the trial, you will be charged according to the plan you selected.
               </p>
               <p>
                 Payments are processed securely through <strong>Stripe</strong>. By subscribing, you agree to Stripe&apos;s terms and to provide accurate billing information. You may cancel your subscription at any time; access continues until the end of the current billing period. Refunds are handled in accordance with our refund policy and applicable law.

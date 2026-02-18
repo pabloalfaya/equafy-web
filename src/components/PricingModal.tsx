@@ -68,7 +68,7 @@ export function PricingModal({ isOpen, onClose }: PricingModalProps) {
           <div className="flex items-center gap-2">
             <Sparkles className="w-5 h-5 text-emerald-600" />
             <h3 className="font-black text-slate-800 text-lg uppercase tracking-tight">
-              Start your 14-day free trial
+              Start your 7-day free trial
             </h3>
           </div>
           <button
@@ -126,7 +126,7 @@ export function PricingModal({ isOpen, onClose }: PricingModalProps) {
 
         {/* Highlight */}
         <p className="text-center font-bold text-slate-700 mb-6">
-          14-Day Free Trial. No charge today.
+          7-Day Free Trial. No charge today.
         </p>
 
         {error && (
