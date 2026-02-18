@@ -144,7 +144,7 @@ export function DashboardContent() {
                   </p>
                 )}
             </div>
-            <div className="flex flex-col gap-3 items-end">
+            <div className="flex flex-wrap gap-3 items-center justify-end">
                 <button 
                     onClick={() => setIsModalOpen(true)}
                     className="inline-flex items-center gap-2 bg-slate-900 hover:bg-slate-800 text-white px-6 py-3 rounded-xl font-bold transition-all shadow-lg hover:-translate-y-0.5"
