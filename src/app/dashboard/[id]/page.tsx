@@ -555,11 +555,10 @@ export default function ProjectDashboardPage() {
     return (
       <div className="min-h-screen bg-[#F8FAFC] flex flex-col items-center justify-center p-6">
         <nav className="fixed top-0 inset-x-0 z-50 border-b border-slate-200 bg-white/80 backdrop-blur-md">
-          <div className="mx-auto max-w-screen-2xl flex items-center justify-between px-6 md:px-12 lg:px-24 py-2">
-            <Link href="/dashboard" className="p-2 hover:bg-slate-100 rounded-lg transition-colors">
+          <div className="mx-auto max-w-screen-2xl flex items-center justify-start px-6 md:px-12 lg:px-24 py-2">
+            <Link href="/dashboard" className="p-2 hover:bg-slate-100 rounded-lg transition-colors" aria-label="Back to projects">
               <ArrowLeft className="w-5 h-5 text-slate-500" />
             </Link>
-            <Link href="/"><img src="/logo.png" alt="Equily" className="h-20 w-auto object-contain" /></Link>
           </div>
         </nav>
         <div className="bg-white border border-amber-200 rounded-2xl p-8 max-w-md w-full text-center shadow-lg">
@@ -587,27 +586,18 @@ export default function ProjectDashboardPage() {
 
   return (
     <div className="min-h-screen bg-[#F8FAFC] font-sans text-slate-900 overflow-x-hidden">
-      <nav
-        className={`fixed top-0 inset-x-0 z-50 border-b border-white/50 bg-white/60 backdrop-blur-xl transition-transform duration-300 ${
-          isVisible ? "translate-y-0" : "-translate-y-full"
-        }`}
-      >
-        <div className="mx-auto flex max-w-screen-2xl items-center justify-between px-6 md:px-12 lg:px-24 py-2">
-          <div className="flex items-center gap-4">
-             <Link href="/dashboard" className="p-2 hover:bg-slate-100 rounded-lg transition-colors"><ArrowLeft className="w-5 h-5 text-slate-500" /></Link>
-             <Link href="/"><img src="/logo.png" alt="Equily" className="h-20 w-auto object-contain" /></Link>
-          </div>
-          <div className="flex items-center gap-2 px-4 py-2 bg-slate-100 rounded-full border border-slate-200/50">
-             <LayoutDashboard className="h-4 w-4 text-emerald-500" />
-             <span className="text-sm font-bold text-slate-700">{project.name}</span>
-          </div>
-        </div>
-      </nav>
-
-      <main className="relative z-10 pt-32 pb-20 px-6 md:px-12 lg:px-24">
+      <main className="relative z-10 pt-16 pb-20 px-6 md:px-12 lg:px-24">
         <div className="mx-auto max-w-screen-2xl">
             <div className="mb-10 flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
-              <div>
+              <div className="flex items-start gap-4">
+                <Link
+                  href="/dashboard"
+                  className="mt-1 p-2 rounded-lg hover:bg-slate-100 transition-colors"
+                  aria-label="Back to projects"
+                >
+                  <ArrowLeft className="w-5 h-5 text-slate-500" />
+                </Link>
+                <div>
                 <h1 className="text-4xl font-black text-slate-900 tracking-tight">{project.name}</h1>
                 <p className="mt-2 text-slate-500 font-medium italic capitalize">
                     Calculated using the {getModelName()} model.
@@ -634,6 +624,7 @@ export default function ProjectDashboardPage() {
                     View executive summary
                   </button>
                 )}
+              </div>
               </div>
               <div className="flex gap-3 flex-wrap">
                 <button onClick={generatePDF} className="inline-flex items-center gap-2 rounded-xl bg-white border border-slate-200 px-5 py-3 font-bold text-slate-700 shadow-sm hover:bg-slate-50 transition-all">
