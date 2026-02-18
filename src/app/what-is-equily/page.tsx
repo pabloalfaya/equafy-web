@@ -25,16 +25,11 @@ export default function WhatIsEquilyPage() {
             
             {/* Lado Izquierdo: Texto */}
             <div className="relative z-10">
-              <div className="inline-flex items-center gap-2 rounded-full bg-emerald-50 border border-emerald-100 px-3 py-1 text-xs font-bold text-emerald-700 mb-6">
-                <span className="flex h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                <span>Dynamic Equity Split</span>
-              </div>
-              
               <h1 className="text-5xl md:text-6xl font-bold tracking-tight text-slate-900 mb-6 leading-[1.1]">
                 What is <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 to-teal-500">Equily?</span>
               </h1>
               
-              <p className="text-xl text-slate-600 leading-relaxed font-medium mb-6">
+              <p className="text-xl text-slate-600 leading-relaxed font-medium mb-6 mt-2">
                 Equily merges capital (Equity) with justice (Fairly). Through a dynamic algorithm, we calculate each partner's share of the company based on everyone's real contributions: from investment and working hours to knowledge and resources. We transform collective effort into a transparent and balanced distribution of ownership.
               </p>
 

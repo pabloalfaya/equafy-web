@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
-import { ArrowRight, ChevronDown, Sparkles, Cog, Zap, BookOpen, Menu, X } from "lucide-react";
+import { ArrowRight, ChevronDown, Sparkles, Cog, Zap, BookOpen, Plug, Menu, X } from "lucide-react";
 
 const PRODUCT_MENU_LEAVE_DELAY_MS = 120;
 
@@ -147,6 +147,23 @@ export function Navbar() {
                       </p>
                     </div>
                   </Link>
+                  <Link
+                    href="/apis"
+                    onClick={() => setIsProductMenuOpen(false)}
+                    className="flex items-start gap-3 px-3 py-2 rounded-lg hover:bg-gray-50 transition-colors"
+                  >
+                    <div className="mt-0.5 rounded-full bg-violet-50 p-2">
+                      <Plug className="w-4 h-4 text-violet-600" />
+                    </div>
+                    <div>
+                      <div className="text-sm font-semibold text-slate-900">
+                        APIs & Integrations
+                      </div>
+                      <p className="text-xs text-slate-500">
+                        Tools you can sync with Equily.
+                      </p>
+                    </div>
+                  </Link>
                   </div>
                 </div>
               )}
@@ -226,6 +243,9 @@ export function Navbar() {
             <Link href="/features" onClick={() => setIsMobileMenuOpen(false)} className="block py-1.5 pl-3 text-sm font-medium text-slate-600 hover:text-slate-900">
               Features
             </Link>
+            <Link href="/apis" onClick={() => setIsMobileMenuOpen(false)} className="block py-1.5 pl-3 text-sm font-medium text-slate-600 hover:text-slate-900">
+              APIs & Integrations
+            </Link>
             <Link href="/pricing" onClick={() => setIsMobileMenuOpen(false)} className="block py-2 text-sm font-bold text-slate-600 hover:text-slate-900 pt-3">
               Pricing
             </Link>
@@ -288,6 +308,13 @@ export function Navbar() {
                 className="block text-sm text-slate-600 py-1 pl-2 border-l border-slate-200 hover:text-slate-900"
               >
                 Features
+              </Link>
+              <Link
+                href="/apis"
+                onClick={() => setIsProductMenuOpen(false)}
+                className="block text-sm text-slate-600 py-1 pl-2 border-l border-slate-200 hover:text-slate-900"
+              >
+                APIs & Integrations
               </Link>
             </div>
           )}

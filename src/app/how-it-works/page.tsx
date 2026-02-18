@@ -17,15 +17,10 @@ export default function HowItWorksPage() {
       {/* --- HERO SECTION --- */}
       <main className="relative z-10 pt-32 md:pt-40 pb-20 w-full">
         <div className="mx-auto max-w-screen-2xl px-6 md:px-12 lg:px-24 text-center">
-          <div className="inline-flex items-center gap-2 rounded-full bg-blue-50 border border-blue-100 px-3 py-1 text-xs font-bold text-blue-700 mb-6">
-            <span className="flex h-1.5 w-1.5 rounded-full bg-blue-500 animate-pulse"></span>
-            <span>The Methodology</span>
-          </div>
-          
           <h1 className="text-5xl md:text-7xl font-bold tracking-tight mb-8 leading-tight text-slate-900">
             How <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 to-blue-600">Equily</span> works?
           </h1>
-          <p className="text-xl text-slate-500 font-medium leading-relaxed mb-10 max-w-2xl mx-auto">
+          <p className="text-xl text-slate-500 font-medium leading-relaxed mb-10 max-w-2xl mx-auto mt-2">
             Our platform transforms emotional subjectivity into an exact mathematical formula. 
             <span className="block mt-2 text-slate-800 font-bold">Risk assumed = Ownership earned.</span>
           </p>

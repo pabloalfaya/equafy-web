@@ -33,7 +33,7 @@ export function PublicFooter() {
             <ul className="space-y-4 text-sm font-medium text-slate-500">
               <li><Link href="/guide" className="hover:text-emerald-600 transition-colors">Documentation</Link></li>
               <li><Link href="/guide" className="hover:text-emerald-600 transition-colors">Guides</Link></li>
-              <li><Link href="/contact" className="hover:text-emerald-600 transition-colors">API Status</Link></li>
+              <li><Link href="/apis" className="hover:text-emerald-600 transition-colors">APIs & Integrations</Link></li>
             </ul>
           </div>
           <div>
