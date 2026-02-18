@@ -5,8 +5,8 @@ import { updateSession } from "@/utils/supabase/middleware";
 export async function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
 
-  // Stripe webhook: NUNCA ejecutar auth. Retorno inmediato para que Stripe no reciba 307 a /login.
-  if (pathname.startsWith("/api/webhooks")) {
+  // /api/webhooks(.*) = TOTALMENTE PÚBLICO. Sin auth, sin redirecciones. Stripe debe poder llamar sin 307.
+  if (pathname.startsWith("/api/webhooks") || pathname === "/api/webhooks") {
     return NextResponse.next();
   }
 
@@ -33,6 +33,6 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  // No ejecutar middleware en webhooks, estáticos ni favicon (Stripe debe poder llamar /api/webhooks sin auth)
-  matcher: ["/((?!api/webhooks|_next/static|_next/image|favicon.ico).*)"],
+  // Excluir /api/webhooks(.*) para que el middleware NO se ejecute ahí (evita 307 a /login)
+  matcher: ["/((?!api/webhooks|_next/static|_next/image|favicon\\.ico).*)"],
 };
