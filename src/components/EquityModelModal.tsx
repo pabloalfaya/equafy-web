@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import { X, ShieldCheck, Scale, Settings, Info } from "lucide-react";
 import { createClient } from "@/utils/supabase/client";
 
-const JUST_SPLIT_MULTS = { cash: 4, work: 2, tangible: 2, intangible: 2, others: 1 }; //
+const JUST_SPLIT_MULTS = { cash: 4, work: 2, tangible: 2, intangible: 2, others: 1 };
 const FLAT_MULTS = { cash: 1, work: 1, tangible: 1, intangible: 1, others: 1 };
 
 interface EquityModelModalProps {
@@ -46,15 +46,17 @@ export function EquityModelModal({
   }, [isOpen, currentModel, currentMults]);
 
   const handleModelSelect = (modelType: "flat" | "just_split" | "custom") => {
-    setModel(modelType);
     switch (modelType) {
       case "flat":
-        setMults(FLAT_MULTS);
+        setMults({ ...FLAT_MULTS });
+        setModel("flat");
         break;
       case "just_split":
-        setMults(JUST_SPLIT_MULTS);
+        setMults({ ...JUST_SPLIT_MULTS });
+        setModel("just_split");
         break;
       case "custom":
+        setModel("custom");
         break;
       default:
         break;
@@ -135,18 +137,23 @@ export function EquityModelModal({
                 <span className="font-black text-sm text-slate-800">Custom</span>
               </div>
               <div className="space-y-1 mb-2 flex-1">
-                {["Cash", "Work", "Intangible", "Tangible", "Others"].map((label) => (
-                  <div key={label} className="flex items-center justify-between p-1.5 sm:p-2 bg-white rounded-md border border-slate-100 shadow-sm">
-                    <span className="text-[8px] sm:text-[9px] font-black uppercase text-slate-500">{label}</span>
-                    <input
-                      type="number"
-                      value={mults[label.toLowerCase() as keyof typeof mults]}
-                      onClick={(e) => e.stopPropagation()}
-                      onChange={(e) => setMults({ ...mults, [label.toLowerCase()]: parseFloat(e.target.value) || 0 })}
-                      className="w-9 bg-transparent text-right font-black text-sm text-blue-700 outline-none rounded"
-                    />
-                  </div>
-                ))}
+                {["Cash", "Work", "Intangible", "Tangible", "Others"].map((label) => {
+                  const key = label.toLowerCase() as keyof typeof mults;
+                  const val = mults[key] ?? 1;
+                  return (
+                    <div key={label} className="flex items-center justify-between p-1.5 sm:p-2 bg-white rounded-md border border-slate-100 shadow-sm">
+                      <span className="text-[8px] sm:text-[9px] font-black uppercase text-slate-500">{label}</span>
+                      <input
+                        type="number"
+                        key={`${label}-${model}-${val}`}
+                        value={val}
+                        onClick={(e) => e.stopPropagation()}
+                        onChange={(e) => setMults((prev) => ({ ...prev, [key]: parseFloat(e.target.value) || 0 }))}
+                        className="w-9 bg-transparent text-right font-black text-sm text-blue-700 outline-none rounded"
+                      />
+                    </div>
+                  );
+                })}
               </div>
               <p className="text-[8px] sm:text-[9px] font-black text-slate-800 uppercase tracking-wider text-center">Manual control</p>
             </div>
