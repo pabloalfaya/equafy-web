@@ -157,8 +157,9 @@ export default function ProjectDashboardPage() {
     setCurrentUserId(user?.id ?? null);
     setCurrentUserEmail(user?.email ?? null);
     
-    // Cargar Proyecto
+    // Cargar Proyecto (incl. is_setup_completed para onboarding)
     const { data: projectData, error: projectError } = await supabase.from("projects").select("*").eq("id", projectId).single();
+    if (projectData) console.log("[Dashboard] Proyecto cargado - is_setup_completed:", projectData.is_setup_completed);
     if (projectError || !projectData) { router.push("/dashboard"); return; }
     setProject(projectData as ExtendedProject);
 
@@ -493,10 +494,19 @@ export default function ProjectDashboardPage() {
 
   // Onboarding: show Equity Settings (Default Models tab) on first dashboard visit
   useEffect(() => {
+    const proj = project as ExtendedProject | null;
+    console.log("[Onboarding] Datos del proyecto:", proj);
+    console.log("[Onboarding] Estado de setup:", proj?.is_setup_completed);
+    console.log("[Onboarding] loading:", loading, "subscription:", proj?.subscription_status);
+
     if (!project || loading) return;
-    const sub = (project as ExtendedProject).subscription_status;
+    const sub = proj?.subscription_status;
     if (sub !== "active" && sub !== "trialing") return;
-    if ((project as ExtendedProject).is_setup_completed === false) {
+
+    // Mostrar onboarding si is_setup_completed es false, o si no existe la columna pero model_onboarding_dismissed es false (proyecto nuevo)
+    const needsOnboarding = proj?.is_setup_completed === false || (proj?.is_setup_completed === undefined && proj?.model_onboarding_dismissed === false);
+    if (needsOnboarding) {
+      console.log("[Onboarding] Abriendo modal Equity Settings (Default Models)");
       setFixedEquityOpen(true);
     }
   }, [project, loading]);

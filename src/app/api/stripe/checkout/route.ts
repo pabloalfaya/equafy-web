@@ -81,8 +81,9 @@ export async function POST(req: Request) {
       mult_others,
       use_log_risk: false,
       model_onboarding_dismissed: false,
-      is_setup_completed: false,
+      is_setup_completed: false, // false = mostrar onboarding al entrar al Dashboard por primera vez
     };
+    console.log("[Checkout] Creando proyecto con is_setup_completed=false:", payload.is_setup_completed);
 
     let insertedProject: { id: string } | null = null;
     let projectError: { message: string } | null = null;
