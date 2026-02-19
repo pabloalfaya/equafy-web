@@ -131,8 +131,9 @@ export default function LandingPage() {
       </section>
 
       {/* --- FRAMEWORK SELECTION --- */}
-      <section className="relative z-10 w-full bg-[#0B0F19] text-white pt-16 pb-24 rounded-[32px] mx-4 sm:mx-6 lg:mx-8 mb-12 overflow-hidden">
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-emerald-900/20 via-[#0B0F19] to-[#0B0F19] pointer-events-none"></div>
+      <div className="mx-4 sm:mx-6 lg:mx-8 mb-12 rounded-[32px] overflow-hidden">
+      <section className="relative z-10 w-full bg-[#0B0F19] text-white pt-16 pb-24">
+          <div className="absolute inset-0 rounded-[32px] bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-emerald-900/20 via-[#0B0F19] to-[#0B0F19] pointer-events-none"></div>
           <div className="relative w-full">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-12 max-w-3xl mx-auto">
@@ -272,6 +273,7 @@ export default function LandingPage() {
             </div>
           </div>
       </section>
+      </div>
 
       <VideoDemoModal open={isVideoOpen} onClose={() => setIsVideoOpen(false)} />
     </div>
