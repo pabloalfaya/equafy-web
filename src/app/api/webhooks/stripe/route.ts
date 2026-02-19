@@ -35,22 +35,21 @@ export async function POST(req: Request) {
 
   const supabaseAdmin = () => createClient(supabaseUrl, supabaseServiceRoleKey);
 
-  const activateProject = async (projectId: string, source: string) => {
+  const activateProject = async (projectId: string, source: string, subscriptionId?: string) => {
     if (!projectId) return;
     if (!supabaseUrl || !supabaseServiceRoleKey) {
       console.error("Supabase URL or SERVICE_ROLE_KEY not set");
       return;
     }
     const supabase = supabaseAdmin();
-    const { error } = await supabase
-      .from("projects")
-      .update({ subscription_status: "active" })
-      .eq("id", projectId);
+    const updatePayload: { subscription_status: string; stripe_subscription_id?: string } = { subscription_status: "active" };
+    if (subscriptionId) updatePayload.stripe_subscription_id = subscriptionId;
+    const { error } = await supabase.from("projects").update(updatePayload).eq("id", projectId);
     if (error) {
       console.error("Error updating project subscription_status:", error);
       return;
     }
-    console.log(`[Webhook] Proyecto activado: ID=${projectId}, origen=${source}`);
+    console.log(`[Webhook] Proyecto activado: ID=${projectId}, origen=${source}${subscriptionId ? `, stripe_sub=${subscriptionId}` : ""}`);
   };
 
   const deactivateProject = async (projectId: string, source: string) => {
@@ -114,7 +113,7 @@ export async function POST(req: Request) {
     }
 
     if (shouldActivate) {
-      await activateProject(projectId, "checkout.session.completed");
+      await activateProject(projectId, "checkout.session.completed", subId ?? undefined);
     } else {
       console.log(`[Webhook] checkout.session.completed: no se activa (payment_status=${paymentStatus}), se esperará customer.subscription.*`);
     }
@@ -144,7 +143,7 @@ export async function POST(req: Request) {
         console.error("[Webhook] customer.subscription: sin projectId en metadata ni en sesión", subscription.metadata);
         return NextResponse.json({ received: true }, { status: 200 });
       }
-      await activateProject(projectId, `customer.subscription.${event.type.split(".").pop()}`);
+      await activateProject(projectId, `customer.subscription.${event.type.split(".").pop()}`, subscription.id);
     }
   }
 

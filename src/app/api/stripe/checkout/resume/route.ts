@@ -39,7 +39,7 @@ export async function POST(req: Request) {
     const supabase = await createClient();
     const { data: project, error: projectError } = await supabase
       .from("projects")
-      .select("id, owner_id")
+      .select("id, owner_id, stripe_subscription_id")
       .eq("id", projectId)
       .single();
 
@@ -50,9 +50,21 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
 
+    const hasUsedTrialBefore = !!(project as { stripe_subscription_id?: string }).stripe_subscription_id;
+
     const userEmail = email;
     const priceIdToUse = typeof priceId === "string" && priceId ? priceId : DEFAULT_PRICE_ID;
     const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
+
+    const subscriptionData: {
+      trial_period_days?: number;
+      metadata: { projectId: string; userEmail: string };
+    } = {
+      metadata: { projectId: projectId, userEmail: userEmail },
+    };
+    if (!hasUsedTrialBefore) {
+      subscriptionData.trial_period_days = 7;
+    }
 
     const session = await stripe.checkout.sessions.create({
       mode: "subscription",
@@ -62,13 +74,7 @@ export async function POST(req: Request) {
         projectId: projectId,
         userEmail: userEmail,
       },
-      subscription_data: {
-        trial_period_days: 7,
-        metadata: {
-          projectId: projectId,
-          userEmail: userEmail,
-        },
-      },
+      subscription_data: subscriptionData,
       success_url: `${baseUrl}/dashboard?payment=success`,
       cancel_url: `${baseUrl}/dashboard?payment=cancelled`,
       allow_promotion_codes: true,

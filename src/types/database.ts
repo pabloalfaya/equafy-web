@@ -15,6 +15,8 @@ export interface Project {
   current_valuation: number;
   created_at?: string;
   subscription_status?: string;
+  /** Stripe subscription ID; set when project was ever activated. Used to deny trial on reactivation. */
+  stripe_subscription_id?: string | null;
   /** 'active' | 'finalized'. Default in DB should be 'active'. */
   status?: string;
 }
