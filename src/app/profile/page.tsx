@@ -219,14 +219,8 @@ export default function ProfilePage() {
             <CreditCard className="w-5 h-5 text-slate-600" /> Payments
           </h2>
           <p className="text-slate-600 font-medium text-sm leading-relaxed mb-4">
-            Manage your project payments and invoices here. Select a project from your dashboard to view specific billing details.
+            Payments and invoices are managed per project. Click the gear icon on each project card in your dashboard to manage billing and subscriptions.
           </p>
-          {/* Reserved for future: list of invoices / project billing status */}
-          <div className="rounded-xl border border-dashed border-slate-200 bg-slate-50/50 p-6 text-center" aria-hidden="true">
-            <p className="text-slate-400 text-sm font-medium">
-              Billing details and invoices will appear here.
-            </p>
-          </div>
         </section>
 
         {/* 4. DANGER ZONE */}
