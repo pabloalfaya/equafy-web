@@ -80,6 +80,7 @@ export async function POST(req: Request) {
       mult_intangible,
       mult_others,
       use_log_risk: false,
+      model_onboarding_dismissed: false,
     };
 
     const { data: insertedProject, error: projectError } = await supabase

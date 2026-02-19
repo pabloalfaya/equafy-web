@@ -12,6 +12,7 @@ import { ContributionsTable } from "@/components/ContributionsTable";
 import { AddContributionModal } from "@/components/AddContributionModal";
 import { AddMemberModal } from "@/components/AddMemberModal";
 import { EquitySettingsModal } from "@/components/EquitySettingsModal";
+import { EquityModelModal } from "@/components/EquityModelModal";
 import { AuditLogModal } from "@/components/AuditLogModal";
 import { FinalizedSummaryModal, type SummaryRow } from "@/components/FinalizedSummaryModal";
 import type { Project, Contribution } from "@/types/database";
@@ -23,6 +24,7 @@ import autoTable from 'jspdf-autotable';
 type ExtendedProject = Project & { 
     equity_model?: string; 
     model_type?: string; 
+    model_onboarding_dismissed?: boolean;
 };
 type ExtendedContribution = Contribution & { date?: string; concept?: string; multiplier?: number; [key: string]: any };
 
@@ -134,6 +136,7 @@ export default function ProjectDashboardPage() {
   const [isVisible, setIsVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
   const [showSummary, setShowSummary] = useState(false);
+  const [equityModelModalOpen, setEquityModelModalOpen] = useState(false);
   const [isFreezing, setIsFreezing] = useState(false);
   const [finalizeToast, setFinalizeToast] = useState<string | null>(null);
   const [summaryPayload, setSummaryPayload] = useState<{
@@ -487,6 +490,16 @@ export default function ProjectDashboardPage() {
 
   useEffect(() => { fetchData(); }, [projectId]);
 
+  // Onboarding: show equity model modal on first dashboard visit
+  useEffect(() => {
+    if (!project || loading) return;
+    const sub = (project as ExtendedProject).subscription_status;
+    if (sub !== "active" && sub !== "trialing") return;
+    if ((project as ExtendedProject).model_onboarding_dismissed === false) {
+      setEquityModelModalOpen(true);
+    }
+  }, [project, loading]);
+
   const currentMember = members.find(
     (m) =>
       m.user_id === currentUserId ||
@@ -637,6 +650,12 @@ export default function ProjectDashboardPage() {
                 {canEditAndNotFinalized && (
                   <>
                     <button
+                      onClick={() => setEquityModelModalOpen(true)}
+                      className="inline-flex items-center gap-2 rounded-xl bg-white border border-slate-200 px-4 md:px-5 py-2.5 md:py-3 font-bold text-slate-700 shadow-sm hover:bg-slate-50 transition-all whitespace-nowrap text-sm md:text-base"
+                    >
+                        Change Model
+                    </button>
+                    <button
                       onClick={() => setFixedEquityOpen(true)}
                       className="inline-flex items-center gap-2 rounded-xl bg-white border border-slate-200 px-4 md:px-5 py-2.5 md:py-3 font-bold text-slate-700 shadow-sm hover:bg-slate-50 transition-all whitespace-nowrap text-sm md:text-base"
                     >
@@ -760,6 +779,22 @@ export default function ProjectDashboardPage() {
         onClose={() => setAuditLogModalOpen(false)}
         projectId={projectId}
         projectName={project?.name}
+      />
+
+      <EquityModelModal
+        isOpen={equityModelModalOpen}
+        onClose={() => setEquityModelModalOpen(false)}
+        projectId={projectId}
+        currentModel={project?.model_type}
+        currentMults={{
+          cash: project?.mult_cash ?? 4,
+          work: project?.mult_work ?? 2,
+          tangible: project?.mult_tangible ?? 2,
+          intangible: project?.mult_intangible ?? 2,
+          others: project?.mult_others ?? 1,
+        }}
+        onSuccess={fetchData}
+        isOnboarding={(project as ExtendedProject)?.model_onboarding_dismissed === false}
       />
 
       {finalizeToast && (

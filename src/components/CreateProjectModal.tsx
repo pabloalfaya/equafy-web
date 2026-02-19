@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { createClient } from "@/utils/supabase/client";
-import { X, Loader2, ShieldCheck, Scale, Settings, ArrowRight, ArrowLeft, Rocket, Info } from "lucide-react";
+import { X, Loader2, ArrowRight, ArrowLeft, Rocket } from "lucide-react";
 import type { Project } from "@/types/database";
 
 const STRIPE_MONTHLY_PRICE_ID = process.env.NEXT_PUBLIC_STRIPE_MONTHLY_PRICE_ID || "";
@@ -14,10 +14,11 @@ interface CreateProjectModalProps {
   onProjectCreated: (project: Project) => void;
 }
 
+const JUST_SPLIT_MULTS = { cash: 4, work: 2, tangible: 2, intangible: 2, others: 1 };
+
 export function CreateProjectModal({ isOpen, onClose, onProjectCreated }: CreateProjectModalProps) {
   const [step, setStep] = useState(1);
   const [name, setName] = useState("");
-  const [model, setModel] = useState("just_split");
   const [subscriptionPlan, setSubscriptionPlan] = useState<"monthly" | "annual" | null>(null);
   const [selectedPriceId, setSelectedPriceId] = useState<string>("");
   const [loading, setLoading] = useState(false);
@@ -32,39 +33,12 @@ export function CreateProjectModal({ isOpen, onClose, onProjectCreated }: Create
   };
   const isPaymentReady = subscriptionPlan !== null && !loading;
 
-  const [mults, setMults] = useState({
-    cash: 4,
-    work: 2,
-    tangible: 2,
-    intangible: 2,
-    others: 1
-  });
-
   const supabase = createClient();
-
-  const JUST_SPLIT_MULTS = { cash: 4, work: 2, tangible: 2, intangible: 2, others: 1 };
-  const FLAT_MULTS = { cash: 1, work: 1, tangible: 1, intangible: 1, others: 1 };
-
-  const handleModelSelect = (modelType: "flat" | "just_split" | "custom") => {
-    setModel(modelType);
-    switch (modelType) {
-      case "flat":
-        setMults(FLAT_MULTS);
-        break;
-      case "just_split":
-        setMults(JUST_SPLIT_MULTS);
-        break;
-      case "custom":
-        break;
-      default:
-        break;
-    }
-  };
 
   if (!isOpen) return null;
 
   const goNext = () => {
-    if (step < 3) setStep((s) => s + 1);
+    if (step < 2) setStep((s) => s + 1);
   };
   const goBack = () => {
     if (step > 1) setStep((s) => s - 1);
@@ -97,18 +71,17 @@ export function CreateProjectModal({ isOpen, onClose, onProjectCreated }: Create
 
       const apiUrl = "/api/stripe/checkout";
       const projectNameTrimmed = name.trim();
-      const modelTypeDb = model === "flat" ? "FLAT" : model === "just_split" ? "JUST_SPLIT" : "CUSTOM";
       const body = {
         projectName: projectNameTrimmed,
         priceId,
         userId: user.id,
         email: user.email ?? "",
-        model_type: modelTypeDb,
-        mult_cash: mults.cash,
-        mult_work: mults.work,
-        mult_tangible: mults.tangible,
-        mult_intangible: mults.intangible,
-        mult_others: mults.others,
+        model_type: "JUST_SPLIT",
+        mult_cash: JUST_SPLIT_MULTS.cash,
+        mult_work: JUST_SPLIT_MULTS.work,
+        mult_tangible: JUST_SPLIT_MULTS.tangible,
+        mult_intangible: JUST_SPLIT_MULTS.intangible,
+        mult_others: JUST_SPLIT_MULTS.others,
       };
 
       const response = await fetch(apiUrl, {
@@ -142,8 +115,8 @@ export function CreateProjectModal({ isOpen, onClose, onProjectCreated }: Create
     }
   };
 
-  const modalMaxWidth = step === 2 ? "md:max-w-4xl lg:max-w-5xl" : "md:max-w-2xl";
-  const modalPadding = step === 2 ? "p-3 sm:p-4 md:p-5" : "p-4 sm:p-6 md:p-8";
+  const modalMaxWidth = "md:max-w-2xl";
+  const modalPadding = "p-4 sm:p-6 md:p-8";
 
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-2 sm:p-4">
@@ -180,85 +153,8 @@ export function CreateProjectModal({ isOpen, onClose, onProjectCreated }: Create
           </form>
         )}
 
-        {/* STEP 2: EQUITY MODEL (LOGIC) */}
+        {/* STEP 2: PAYMENT PLAN */}
         {step === 2 && (
-          <div className="space-y-3 sm:space-y-4 animate-in slide-in-from-right-4 duration-300">
-            <div className="text-center pt-0 sm:pt-1">
-              <h2 className="text-lg sm:text-xl font-black mb-0.5 uppercase tracking-tight text-slate-900">Equity model</h2>
-              <p className="text-slate-600 font-bold text-xs sm:text-sm">Select the multiplier set for your team.</p>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-3">
-              <div onClick={() => handleModelSelect("custom")} className={`relative p-3 sm:p-4 rounded-xl border-2 transition-all cursor-pointer flex flex-col ${model === "custom" ? "border-blue-500 bg-blue-50/30 ring-1 ring-blue-500/20" : "border-slate-100 bg-slate-50/50 hover:border-slate-200"}`}>
-                <div className="flex items-center gap-2 mb-2">
-                  <div className={`p-1.5 rounded-md ${model === "custom" ? "bg-blue-500 text-white" : "bg-white text-slate-400 shadow-sm"}`}><Settings className="w-3.5 h-3.5" /></div>
-                  <span className="font-black text-sm text-slate-800">Custom</span>
-                </div>
-                <div className="space-y-1 sm:space-y-1.5 mb-2 flex-1">
-                  {["Cash", "Work", "Intangible", "Tangible", "Others"].map((label) => (
-                    <div key={label} className="flex items-center justify-between p-1.5 sm:p-2 bg-white rounded-md border border-slate-100 shadow-sm">
-                      <span className="text-[8px] sm:text-[9px] font-black uppercase text-slate-500">{label}</span>
-                      <input
-                        type="number"
-                        value={mults[label.toLowerCase() as keyof typeof mults]}
-                        onClick={(e) => e.stopPropagation()}
-                        onChange={(e) => setMults({ ...mults, [label.toLowerCase()]: parseFloat(e.target.value) || 0 })}
-                        className="w-9 bg-transparent text-right font-black text-sm text-blue-700 outline-none rounded"
-                      />
-                    </div>
-                  ))}
-                </div>
-                <p className="text-[8px] sm:text-[9px] font-black text-slate-800 uppercase tracking-wider text-center">Manual control</p>
-              </div>
-              <div onClick={() => handleModelSelect("just_split")} className={`relative p-3 sm:p-4 rounded-xl border-2 transition-all cursor-pointer flex flex-col ${model === "just_split" ? "border-emerald-500 bg-emerald-50/40 ring-1 ring-emerald-500/20" : "border-slate-100 bg-slate-50/50 hover:border-slate-200"}`}>
-                <div className="absolute -top-2.5 left-1/2 -translate-x-1/2 bg-emerald-500 text-white text-[8px] font-black px-2 py-0.5 rounded-full uppercase shadow-lg z-10">Best choice</div>
-                <div className="flex items-center gap-2 mb-2">
-                  <div className={`p-1.5 rounded-md ${model === "just_split" ? "bg-emerald-500 text-white" : "bg-white text-slate-400 shadow-sm"}`}><ShieldCheck className="w-3.5 h-3.5" /></div>
-                  <span className="font-black text-sm text-slate-800">Just Split Model</span>
-                </div>
-                <div className="grid grid-cols-2 gap-1.5 sm:gap-2 mb-2 flex-1">
-                  {[{ l: "CASH", v: "x4" }, { l: "WORK", v: "x2" }, { l: "ASSETS", v: "x2" }, { l: "IP", v: "x2" }].map((item) => (
-                    <div key={item.l} className="p-2 sm:p-2.5 bg-white rounded-md border border-slate-100 text-center shadow-sm">
-                      <span className="text-[7px] sm:text-[8px] font-black text-emerald-600 uppercase block mb-0.5">{item.l}</span>
-                      <span className="text-base sm:text-lg font-black tracking-tighter text-slate-900">{item.v}</span>
-                    </div>
-                  ))}
-                </div>
-                <p className="text-[8px] sm:text-[9px] text-center text-emerald-700 font-black uppercase tracking-widest">Recommended</p>
-              </div>
-              <div onClick={() => handleModelSelect("flat")} className={`relative p-3 sm:p-4 rounded-xl border-2 transition-all cursor-pointer flex flex-col ${model === "flat" ? "border-purple-500 bg-purple-50/20 ring-1 ring-purple-500/20" : "border-slate-100 bg-slate-50/50 hover:border-slate-200"}`}>
-                <div className="flex items-center gap-2 mb-2">
-                  <div className={`p-1.5 rounded-md ${model === "flat" ? "bg-purple-500 text-white" : "bg-white text-slate-400 shadow-sm"}`}><Scale className="w-3.5 h-3.5" /></div>
-                  <span className="font-black text-sm text-slate-800">Flat Model</span>
-                </div>
-                <div className="space-y-2 mb-2 flex-1">
-                  <div className="p-2.5 sm:p-3 bg-white rounded-lg border border-slate-100 text-center shadow-sm">
-                    <span className="text-[7px] sm:text-[8px] font-black text-purple-600 uppercase block mb-0.5">All contributions</span>
-                    <span className="text-xl sm:text-2xl font-black tracking-tighter text-slate-900">x1</span>
-                  </div>
-                  <p className="p-2 bg-slate-50/50 rounded-md border border-dashed border-slate-200 text-[8px] font-bold italic text-slate-500 text-center leading-tight">
-                    Simple linear split where every unit is treated as equal.
-                  </p>
-                </div>
-                <p className="text-[8px] sm:text-[9px] text-center text-purple-700 font-black uppercase tracking-widest mt-auto">Fixed split</p>
-              </div>
-            </div>
-            <p className="text-center text-xs sm:text-sm text-gray-500 flex items-center justify-center gap-1.5 flex-wrap">
-              <Info className="w-3.5 h-3.5 shrink-0 text-gray-400" />
-              <span>Note: Multipliers can be adjusted at any time after the project is created.</span>
-            </p>
-            <div className="flex items-center justify-between gap-3 pt-3 border-t border-slate-100">
-              <button type="button" onClick={goBack} className="flex items-center gap-2 text-xs font-black text-slate-400 hover:text-slate-900 transition-colors min-w-0">
-                <ArrowLeft className="w-4 h-4 flex-shrink-0" /> Back
-              </button>
-              <button type="button" onClick={goNext} className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 sm:px-8 py-3.5 rounded-xl font-black bg-slate-900 text-white hover:bg-emerald-600 transition-all shadow-lg active:scale-[0.98]">
-                Next <ArrowRight className="w-4 h-4" />
-              </button>
-            </div>
-          </div>
-        )}
-
-        {/* STEP 3: PAYMENT PLAN */}
-        {step === 3 && (
           <div className="space-y-6 animate-in slide-in-from-right-4 duration-300">
             <div className="text-center pt-2">
               <h2 className="text-2xl font-black mb-1 uppercase tracking-tight text-slate-900">Payment plan</h2>

@@ -19,6 +19,8 @@ export interface Project {
   stripe_subscription_id?: string | null;
   /** 'active' | 'finalized'. Default in DB should be 'active'. */
   status?: string;
+  /** If false, show the equity model onboarding modal on first dashboard visit. */
+  model_onboarding_dismissed?: boolean;
 }
 
 export interface Contribution {
