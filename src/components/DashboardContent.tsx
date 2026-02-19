@@ -282,10 +282,10 @@ export function DashboardContent() {
                             Active
                           </span>
                         </div>
-                        <h3 className="text-xl font-bold text-slate-900 mb-1 group-hover:text-emerald-700 transition-colors truncate">
-                          {project.name}
+                        <h3 className="text-xl font-bold text-slate-900 mb-1 group-hover:text-emerald-700 transition-colors truncate shrink-0">
+                          {project.name || "Untitled project"}
                         </h3>
-                        <p className="text-xs text-slate-400 font-bold">Created {new Date(project.created_at || new Date()).toLocaleDateString()}</p>
+                        <p className="text-xs text-slate-400 font-bold shrink-0">Created {new Date(project.created_at || new Date()).toLocaleDateString()}</p>
                         <div className="mt-auto flex items-center justify-end">
                           <span className="text-sm font-bold text-slate-300 group-hover:text-emerald-500 flex items-center gap-1 transition-colors">
                             Open Dashboard <ArrowRight className="w-4 h-4" />
@@ -324,10 +324,10 @@ export function DashboardContent() {
                           PAYMENT PENDING
                         </span>
                       </div>
-                      <h3 className="text-xl font-bold text-slate-900 mb-1 truncate">
-                        {project.name}
+                      <h3 className="text-xl font-bold text-slate-900 mb-1 truncate shrink-0">
+                        {project.name || "Untitled project"}
                       </h3>
-                      <p className="text-xs text-slate-400 font-bold">Created {new Date(project.created_at || new Date()).toLocaleDateString()}</p>
+                      <p className="text-xs text-slate-400 font-bold shrink-0">Created {new Date(project.created_at || new Date()).toLocaleDateString()}</p>
                       <div className="mt-auto pt-8">
                         <button
                           type="button"
