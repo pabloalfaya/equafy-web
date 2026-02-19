@@ -9,11 +9,34 @@ const inter = Inter({
   variable: "--font-inter",
 });
 
+const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://equily.app";
+
 export const metadata: Metadata = {
-  title: "Equily - Equity Split Calculator",
-  description: "Split your startup equity fairly with a dynamic, contribution-based model.",
+  title: {
+    default: "Equily - Gestión Dinámica de Equity para Startups",
+    template: "%s | Equily",
+  },
+  description:
+    "Gestión dinámica de equity para startups basada en aportaciones (cash, work, tangibles e intangibles). Modelos Just Split, Flat y Custom. Reparte el equity de forma justa con Slicing Pie.",
+  keywords: ["equity", "startup", "slicing pie", "gestión equity", "aportaciones", "Just Split", "Flat model"],
+  authors: [{ name: "Equily" }],
+  creator: "Equily",
+  openGraph: {
+    type: "website",
+    locale: "es_ES",
+    url: baseUrl,
+    siteName: "Equily",
+    title: "Equily - Gestión Dinámica de Equity para Startups",
+    description:
+      "Gestión dinámica de equity basada en aportaciones. Modelos Just Split, Flat y Custom.",
+  },
+  metadataBase: new URL(baseUrl),
   icons: {
     icon: "/favicon.ico",
+  },
+  verification: {
+    // Pega aquí la clave que te dé Google Search Console (p. ej. "abc123...")
+    google: process.env.GOOGLE_SITE_VERIFICATION || undefined,
   },
 };
 
