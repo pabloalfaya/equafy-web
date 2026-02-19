@@ -68,7 +68,7 @@ function LoginForm() {
   };
 
   return (
-    <div className="flex min-h-screen items-start justify-center bg-[#F8FAFC] px-4 pt-36 md:pt-44 pb-8 font-sans">
+    <div className="flex min-h-screen items-start justify-center bg-[#F8FAFC] px-4 pt-40 md:pt-48 pb-8 font-sans">
       <div className="w-full max-w-[360px] md:max-w-md space-y-5 md:space-y-6 rounded-2xl md:rounded-3xl bg-white p-6 md:p-8 shadow-xl border border-slate-100">
         
         <Link href="/" className="inline-flex items-center text-xs md:text-sm text-slate-400 hover:text-slate-600 mb-2 md:mb-4 transition-colors">
