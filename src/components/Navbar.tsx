@@ -40,11 +40,12 @@ export function Navbar() {
           <Link href="/" className="relative group flex-shrink-0">
             <div className="absolute -inset-2 bg-gradient-to-r from-emerald-500/20 to-blue-500/20 rounded-lg blur opacity-0 group-hover:opacity-100 transition duration-500" />
             <img
-              src="/logo.png"
+              src="/brand-equily.png"
               alt="Equily Logo"
               width={140}
               height={56}
-              className="relative h-16 sm:h-24 md:h-28 w-auto object-contain transition-transform duration-300 group-hover:scale-105"
+              style={{ minWidth: 80, display: "block" }}
+              className="relative h-16 sm:h-24 md:h-28 w-auto object-contain shrink-0 transition-transform duration-300 group-hover:scale-105"
             />
           </Link>
 
