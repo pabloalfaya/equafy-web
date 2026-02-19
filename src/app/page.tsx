@@ -33,36 +33,26 @@ export default function LandingPage() {
       {/* --- HERO SECTION --- */}
       <header className="relative pt-32 md:pt-40 pb-10 z-10 w-full overflow-hidden">
         <div className="mx-auto max-w-screen-2xl px-6 md:px-12 lg:px-24 text-center relative">
-          {/* Semi-circle Cap Table SVG de fondo */}
-          <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-[55%] w-[min(90vw,680px)] aspect-[2/1] -z-10 pointer-events-none">
-            <svg viewBox="0 0 200 100" className="w-full h-full" preserveAspectRatio="xMidYMax meet">
+          {/* Semi-donut Cap Table SVG: matemático, simétrico (stroke + stroke-dasharray) */}
+          <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-[52%] w-[min(88vw,600px)] aspect-[2/1] -z-10 pointer-events-none">
+            <svg viewBox="0 0 200 100" className="w-full h-full" preserveAspectRatio="xMidYMid meet" aria-hidden>
               <defs>
-                <linearGradient id="cap-emerald" x1="0%" y1="0%" x2="100%" y2="0%">
-                  <stop offset="0%" stopColor="#10b981" stopOpacity="0.4" />
-                  <stop offset="100%" stopColor="#059669" stopOpacity="0.6" />
-                </linearGradient>
-                <linearGradient id="cap-blue" x1="0%" y1="0%" x2="100%" y2="0%">
-                  <stop offset="0%" stopColor="#3b82f6" stopOpacity="0.35" />
-                  <stop offset="100%" stopColor="#2563eb" stopOpacity="0.5" />
-                </linearGradient>
-                <linearGradient id="cap-orange" x1="0%" y1="0%" x2="100%" y2="0%">
-                  <stop offset="0%" stopColor="#f97316" stopOpacity="0.3" />
-                  <stop offset="100%" stopColor="#ea580c" stopOpacity="0.45" />
-                </linearGradient>
-                <linearGradient id="cap-purple" x1="0%" y1="0%" x2="100%" y2="0%">
-                  <stop offset="0%" stopColor="#a855f7" stopOpacity="0.25" />
-                  <stop offset="100%" stopColor="#9333ea" stopOpacity="0.4" />
-                </linearGradient>
+                <clipPath id="hero-semi-clip">
+                  <rect x="0" y="0" width="200" height="100" />
+                </clipPath>
               </defs>
-              {/* Semi-donut: segmentos 45%, 30%, 18.75%, 6.25% (emerald, blue, orange, purple) */}
-              <path d="M 20 80 A 80 80 0 0 1 87.5 1 L 92 31 A 50 50 0 0 0 50 80 Z" fill="url(#cap-emerald)" />
-              <path d="M 87.5 1 A 80 80 0 0 1 141 46 L 138 58 A 50 50 0 0 0 92 31 Z" fill="url(#cap-blue)" />
-              <path d="M 141 46 A 80 80 0 0 1 175 75 L 172 78 A 50 50 0 0 0 138 58 Z" fill="url(#cap-orange)" />
-              <path d="M 175 75 A 80 80 0 0 1 20 80 L 50 80 A 50 50 0 0 0 172 78 Z" fill="url(#cap-purple)" />
+              <g clipPath="url(#hero-semi-clip)" transform="translate(100, 88)">
+                {/* Círculo r=70, circunferencia ≈440. Semicírculo superior (180°)=220. Segmentos 45/30/18.75/6.25% → 99, 66, 41, 14 */}
+                {/* Inicio del arco superior en 270° (9h) → offset 330 */}
+                <circle cx="0" cy="0" r="70" fill="none" stroke="#10b981" strokeWidth="18" strokeLinecap="round" strokeDasharray="99 500" strokeDashoffset="330" opacity="0.5" transform="rotate(-90)" />
+                <circle cx="0" cy="0" r="70" fill="none" stroke="#3b82f6" strokeWidth="18" strokeLinecap="round" strokeDasharray="66 500" strokeDashoffset="429" opacity="0.45" transform="rotate(-90)" />
+                <circle cx="0" cy="0" r="70" fill="none" stroke="#a855f7" strokeWidth="18" strokeLinecap="round" strokeDasharray="41 500" strokeDashoffset="55" opacity="0.45" transform="rotate(-90)" />
+                <circle cx="0" cy="0" r="70" fill="none" stroke="#f97316" strokeWidth="18" strokeLinecap="round" strokeDasharray="14 500" strokeDashoffset="96" opacity="0.45" transform="rotate(-90)" />
+              </g>
             </svg>
           </div>
 
-          <h1 className="relative z-10 text-6xl md:text-8xl font-bold tracking-tighter text-slate-900 mb-4 leading-[1.1] md:leading-[1.1] py-2">
+          <h1 className="relative z-10 text-6xl md:text-8xl font-bold tracking-tighter text-slate-900 mb-5 leading-[1.1] md:leading-[1.1] py-2">
             Equity that <br className="hidden md:block" />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 to-teal-500">evolves with you.</span>
           </h1>
@@ -84,7 +74,7 @@ export default function LandingPage() {
           </div>
 
           {/* Infinite Marquee de funcionalidades */}
-          <div className="relative z-10 mt-16 w-full overflow-hidden">
+          <div className="relative z-10 mt-20 w-full overflow-hidden">
             <div className="animate-marquee flex gap-4 w-max" role="marquee">
               {[...Array(2)].map((_, dup) => (
                 <div key={dup} className="flex gap-4 shrink-0">
