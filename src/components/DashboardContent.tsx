@@ -228,7 +228,7 @@ export function DashboardContent() {
                         {project.name}
                       </h3>
                       <p className="text-xs text-slate-400 font-bold">Created {new Date(project.created_at || new Date()).toLocaleDateString()}</p>
-                      <div className="mt-auto pt-5">
+                      <div className="mt-auto pt-8">
                         <button
                           type="button"
                           onClick={() => handleFinishPayment(project)}
