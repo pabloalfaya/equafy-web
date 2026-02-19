@@ -81,9 +81,7 @@ export async function POST(req: Request) {
       mult_others,
       use_log_risk: false,
       model_onboarding_dismissed: false,
-      is_setup_completed: false, // false = mostrar onboarding al entrar al Dashboard por primera vez
     };
-    console.log("[Checkout] Creando proyecto con is_setup_completed=false:", payload.is_setup_completed);
 
     let insertedProject: { id: string } | null = null;
     let projectError: { message: string } | null = null;
@@ -96,9 +94,8 @@ export async function POST(req: Request) {
 
     if (insertErr) {
       projectError = insertErr;
-      if (insertErr.message?.includes("model_onboarding_dismissed") || insertErr.message?.includes("is_setup_completed")) {
+      if (insertErr.message?.includes("model_onboarding_dismissed")) {
         delete payload.model_onboarding_dismissed;
-        delete payload.is_setup_completed;
         const { data: retryData, error: retryErr } = await supabase
           .from("projects")
           .insert([payload])

@@ -25,7 +25,6 @@ type ExtendedProject = Project & {
     equity_model?: string; 
     model_type?: string; 
     model_onboarding_dismissed?: boolean;
-    is_setup_completed?: boolean;
 };
 type ExtendedContribution = Contribution & { date?: string; concept?: string; multiplier?: number; [key: string]: any };
 
@@ -157,26 +156,10 @@ export default function ProjectDashboardPage() {
     setCurrentUserId(user?.id ?? null);
     setCurrentUserEmail(user?.email ?? null);
     
-    // Cargar Proyecto (select("*") trae todas las columnas, incl. is_setup_completed si existe en la BD)
-    const { data: projectData, error: projectError } = await supabase
-      .from("projects")
-      .select("*")
-      .eq("id", projectId)
-      .single();
-
+    // Cargar Proyecto
+    const { data: projectData, error: projectError } = await supabase.from("projects").select("*").eq("id", projectId).single();
     if (projectError || !projectData) { router.push("/dashboard"); return; }
-
-    // Normalizar is_setup_completed: si la columna no existe en la BD (migración no aplicada), viene undefined → tratamos como false para mostrar onboarding
-    const raw = projectData as Record<string, unknown>;
-    const isSetupCompleted = raw.is_setup_completed;
-    if (isSetupCompleted === undefined) {
-      console.warn("[Dashboard] is_setup_completed no existe en la BD. Ejecuta: npx supabase db push");
-    }
-    const normalizedProject: ExtendedProject = {
-      ...projectData,
-      is_setup_completed: isSetupCompleted === true,
-    } as ExtendedProject;
-    setProject(normalizedProject);
+    setProject(projectData as ExtendedProject);
 
     // Cargar Aportaciones
     const { data: contributionsData } = await supabase.from("contributions").select("*").eq("project_id", projectId).order("created_at", { ascending: false });
@@ -507,25 +490,6 @@ export default function ProjectDashboardPage() {
 
   useEffect(() => { fetchData(); }, [projectId]);
 
-  // Onboarding: show Equity Settings (Default Models tab) on first dashboard visit
-  useEffect(() => {
-    const proj = project as ExtendedProject | null;
-    console.log("[Onboarding] Datos del proyecto:", proj);
-    console.log("[Onboarding] Estado de setup:", proj?.is_setup_completed);
-    console.log("[Onboarding] loading:", loading, "subscription:", proj?.subscription_status);
-
-    if (!project || loading) return;
-    const sub = proj?.subscription_status;
-    if (sub !== "active" && sub !== "trialing") return;
-
-    // Mostrar onboarding si is_setup_completed es false, o si no existe la columna pero model_onboarding_dismissed es false (proyecto nuevo)
-    const needsOnboarding = proj?.is_setup_completed === false || (proj?.is_setup_completed === undefined && proj?.model_onboarding_dismissed === false);
-    if (needsOnboarding) {
-      console.log("[Onboarding] Abriendo modal Equity Settings (Default Models)");
-      setFixedEquityOpen(true);
-    }
-  }, [project, loading]);
-
   const currentMember = members.find(
     (m) =>
       m.user_id === currentUserId ||
@@ -783,20 +747,7 @@ export default function ProjectDashboardPage() {
 
       <EquitySettingsModal
         isOpen={fixedEquityOpen}
-        onClose={async () => {
-          const needsSetupComplete = (project as ExtendedProject)?.is_setup_completed === false;
-          if (needsSetupComplete) {
-            try {
-              const supabase = createClient();
-              const { error } = await supabase.from("projects").update({ is_setup_completed: true }).eq("id", projectId);
-              if (error) console.warn("[Dashboard] No se pudo actualizar is_setup_completed (¿migración aplicada?):", error.message);
-              await fetchData();
-            } catch (e) {
-              console.warn("[Dashboard] Error al marcar setup completado:", e);
-            }
-          }
-          setFixedEquityOpen(false);
-        }}
+        onClose={() => setFixedEquityOpen(false)}
         projectId={projectId}
         project={project}
         members={members}
@@ -805,7 +756,6 @@ export default function ProjectDashboardPage() {
           fetchData();
         }}
         onOpenDefaultModels={() => setEquityModelModalOpen(true)}
-        initialTab={(project as ExtendedProject)?.is_setup_completed === false ? "default_models" : undefined}
         canEdit={canEdit}
       />
 
@@ -829,7 +779,6 @@ export default function ProjectDashboardPage() {
           others: project?.mult_others ?? 1,
         }}
         onSuccess={fetchData}
-        isOnboarding={(project as ExtendedProject)?.model_onboarding_dismissed === false}
       />
 
       {finalizeToast && (
