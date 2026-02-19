@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Plus, Folder, ArrowRight, Loader2, LogOut, User, CreditCard, Pencil, Receipt } from "lucide-react";
+import { Plus, Folder, ArrowRight, Loader2, LogOut, User, CreditCard, Settings, Receipt } from "lucide-react";
 import { createClient } from "@/utils/supabase/client";
 import { CreateProjectModal } from "@/components/CreateProjectModal";
 import { EditProjectModal } from "@/components/EditProjectModal";
@@ -20,8 +20,23 @@ export function DashboardContent() {
   const [saving, setSaving] = useState(false);
   const [toast, setToast] = useState<{ show: boolean; message: string; type: "success" | "error" }>({ show: false, message: "", type: "success" });
   const [portalLoadingId, setPortalLoadingId] = useState<string | null>(null);
+  const [menuOpenProjectId, setMenuOpenProjectId] = useState<string | null>(null);
   const router = useRouter();
   const supabase = createClient();
+
+  useEffect(() => {
+    if (!menuOpenProjectId) return;
+    const closeMenu = () => setMenuOpenProjectId(null);
+    const onDocClick = () => {
+      closeMenu();
+      document.removeEventListener("click", onDocClick);
+    };
+    const t = setTimeout(() => document.addEventListener("click", onDocClick), 0);
+    return () => {
+      clearTimeout(t);
+      document.removeEventListener("click", onDocClick);
+    };
+  }, [menuOpenProjectId]);
 
   const fetchProjects = async () => {
     const { data: { user }, error: authError } = await supabase.auth.getUser();
@@ -63,12 +78,17 @@ export function DashboardContent() {
     router.push(`/dashboard/${newProject.id}`);
   };
 
-  const handleOpenEdit = (project: Project, e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
+  const openEditModal = (project: Project) => {
     setProjectToEdit(project);
     setNewName(project.name);
     setIsEditModalOpen(true);
+    setMenuOpenProjectId(null);
+  };
+
+  const toggleProjectMenu = (projectId: string, e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setMenuOpenProjectId((id) => (id === projectId ? null : projectId));
   };
 
   const handleUpdateProject = async () => {
@@ -215,15 +235,43 @@ export function DashboardContent() {
                   if (isActive) {
                     return (
                       <Link key={project.id} href={`/dashboard/${project.id}`} className="group relative bg-white border border-slate-200 hover:border-emerald-500/50 p-6 rounded-[24px] shadow-sm hover:shadow-xl hover:shadow-emerald-500/10 transition-all duration-300 flex flex-col h-48">
-                        <div className="flex justify-between items-start mb-4">
+                        <div className="flex justify-between items-start mb-4 relative" onClick={(e) => e.stopPropagation()}>
                           <button
                             type="button"
-                            onClick={(e) => handleOpenEdit(project, e)}
+                            onClick={(e) => toggleProjectMenu(project.id, e)}
                             className="w-10 h-10 bg-slate-50 rounded-xl flex items-center justify-center group-hover:bg-emerald-50 text-slate-400 group-hover:text-emerald-600 hover:ring-2 hover:ring-emerald-200 transition-colors"
-                            title="Edit project"
+                            title="Project options"
                           >
-                            <Pencil className="w-5 h-5" />
+                            <Settings className="w-5 h-5" />
                           </button>
+                          {menuOpenProjectId === project.id && (
+                            <div className="absolute left-0 top-12 z-20 min-w-[200px] rounded-xl border border-slate-200 bg-white py-1 shadow-lg">
+                              <button
+                                type="button"
+                                onClick={() => openEditModal(project)}
+                                className="w-full px-4 py-2.5 text-left text-sm font-bold text-slate-700 hover:bg-slate-50 flex items-center gap-2"
+                              >
+                                Change project name
+                              </button>
+                              {(project as Project & { stripe_subscription_id?: string | null }).stripe_subscription_id && (
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    setMenuOpenProjectId(null);
+                                    handleManageSubscription(project, { preventDefault: () => {}, stopPropagation: () => {} } as React.MouseEvent);
+                                  }}
+                                  disabled={portalLoadingId === project.id}
+                                  className="w-full px-4 py-2.5 text-left text-sm font-bold text-slate-700 hover:bg-slate-50 flex items-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed"
+                                >
+                                  {portalLoadingId === project.id ? (
+                                    <><Loader2 className="w-4 h-4 animate-spin" /> Redirecting…</>
+                                  ) : (
+                                    <><Receipt className="w-4 h-4" /> Manage payments</>
+                                  )}
+                                </button>
+                              )}
+                            </div>
+                          )}
                           <span className="bg-emerald-50 text-emerald-700 text-[10px] font-bold px-2 py-1 rounded-full uppercase tracking-wider">
                             Active
                           </span>
@@ -232,47 +280,36 @@ export function DashboardContent() {
                           {project.name}
                         </h3>
                         <p className="text-xs text-slate-400 font-bold">Created {new Date(project.created_at || new Date()).toLocaleDateString()}</p>
-                        <div className="mt-auto flex flex-col gap-2">
-                          {(project as Project & { stripe_subscription_id?: string | null }).stripe_subscription_id && (
-                            <button
-                              type="button"
-                              onClick={(e) => handleManageSubscription(project, e)}
-                              disabled={portalLoadingId === project.id}
-                              className="w-full inline-flex items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white py-2 px-3 text-sm font-bold text-slate-700 hover:bg-slate-50 transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
-                            >
-                              {portalLoadingId === project.id ? (
-                                <>
-                                  <Loader2 className="w-4 h-4 animate-spin" /> Redirecting…
-                                </>
-                              ) : (
-                                <>
-                                  <Receipt className="w-4 h-4" /> Billing &amp; Invoices
-                                </>
-                              )}
-                            </button>
-                          )}
-                          <Link
-                            href={`/dashboard/${project.id}`}
-                            onClick={(e) => e.stopPropagation()}
-                            className="text-sm font-bold text-slate-300 group-hover:text-emerald-500 flex items-center justify-end gap-1 transition-colors"
-                          >
+                        <div className="mt-auto flex items-center justify-end">
+                          <span className="text-sm font-bold text-slate-300 group-hover:text-emerald-500 flex items-center gap-1 transition-colors">
                             Open Dashboard <ArrowRight className="w-4 h-4" />
-                          </Link>
+                          </span>
                         </div>
                       </Link>
                     );
                   }
                   return (
                     <div key={project.id} className="relative bg-white border border-amber-200 p-6 rounded-[24px] shadow-sm flex flex-col h-48 opacity-95">
-                      <div className="flex justify-between items-start mb-4">
+                      <div className="flex justify-between items-start mb-4 relative" onClick={(e) => e.stopPropagation()}>
                         <button
                           type="button"
-                          onClick={(e) => handleOpenEdit(project, e)}
+                          onClick={(e) => toggleProjectMenu(project.id, e)}
                           className="w-10 h-10 bg-amber-50 rounded-xl flex items-center justify-center text-amber-500 hover:ring-2 hover:ring-amber-200 transition-colors"
-                          title="Edit project"
+                          title="Project options"
                         >
-                          <Pencil className="w-5 h-5" />
+                          <Settings className="w-5 h-5" />
                         </button>
+                        {menuOpenProjectId === project.id && (
+                          <div className="absolute left-0 top-12 z-20 min-w-[200px] rounded-xl border border-slate-200 bg-white py-1 shadow-lg">
+                            <button
+                              type="button"
+                              onClick={() => openEditModal(project)}
+                              className="w-full px-4 py-2.5 text-left text-sm font-bold text-slate-700 hover:bg-slate-50 flex items-center gap-2"
+                            >
+                              Change project name
+                            </button>
+                          </div>
+                        )}
                         <span className="bg-amber-100 text-amber-800 text-[10px] font-bold px-2 py-1 rounded-full uppercase tracking-wider">
                           PAYMENT PENDING
                         </span>
