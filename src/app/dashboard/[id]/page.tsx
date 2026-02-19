@@ -25,6 +25,7 @@ type ExtendedProject = Project & {
     equity_model?: string; 
     model_type?: string; 
     model_onboarding_dismissed?: boolean;
+    is_setup_completed?: boolean;
 };
 type ExtendedContribution = Contribution & { date?: string; concept?: string; multiplier?: number; [key: string]: any };
 
@@ -490,13 +491,13 @@ export default function ProjectDashboardPage() {
 
   useEffect(() => { fetchData(); }, [projectId]);
 
-  // Onboarding: show equity model modal on first dashboard visit
+  // Onboarding: show Equity Settings (Default Models tab) on first dashboard visit
   useEffect(() => {
     if (!project || loading) return;
     const sub = (project as ExtendedProject).subscription_status;
     if (sub !== "active" && sub !== "trialing") return;
-    if ((project as ExtendedProject).model_onboarding_dismissed === false) {
-      setEquityModelModalOpen(true);
+    if ((project as ExtendedProject).is_setup_completed === false) {
+      setFixedEquityOpen(true);
     }
   }, [project, loading]);
 
@@ -757,7 +758,15 @@ export default function ProjectDashboardPage() {
 
       <EquitySettingsModal
         isOpen={fixedEquityOpen}
-        onClose={() => setFixedEquityOpen(false)}
+        onClose={async () => {
+          const needsSetupComplete = (project as ExtendedProject)?.is_setup_completed === false;
+          if (needsSetupComplete) {
+            const supabase = createClient();
+            await supabase.from("projects").update({ is_setup_completed: true }).eq("id", projectId);
+            await fetchData();
+          }
+          setFixedEquityOpen(false);
+        }}
         projectId={projectId}
         project={project}
         members={members}
@@ -766,6 +775,7 @@ export default function ProjectDashboardPage() {
           fetchData();
         }}
         onOpenDefaultModels={() => setEquityModelModalOpen(true)}
+        initialTab={(project as ExtendedProject)?.is_setup_completed === false ? "default_models" : undefined}
         canEdit={canEdit}
       />
 

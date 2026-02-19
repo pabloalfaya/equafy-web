@@ -75,6 +75,7 @@ export function EquityModelModal({
         mult_intangible: mults.intangible,
         mult_others: mults.others,
         model_onboarding_dismissed: true,
+        is_setup_completed: true,
       })
       .eq("id", projectId);
     setLoading(false);
@@ -91,7 +92,7 @@ export function EquityModelModal({
     setLoading(true);
     const { error } = await supabase
       .from("projects")
-      .update({ model_onboarding_dismissed: true })
+      .update({ model_onboarding_dismissed: true, is_setup_completed: true })
       .eq("id", projectId);
     setLoading(false);
     if (!error) onSuccess?.();

@@ -81,6 +81,7 @@ export async function POST(req: Request) {
       mult_others,
       use_log_risk: false,
       model_onboarding_dismissed: false,
+      is_setup_completed: false,
     };
 
     let insertedProject: { id: string } | null = null;
@@ -94,8 +95,9 @@ export async function POST(req: Request) {
 
     if (insertErr) {
       projectError = insertErr;
-      if (insertErr.message?.includes("model_onboarding_dismissed")) {
+      if (insertErr.message?.includes("model_onboarding_dismissed") || insertErr.message?.includes("is_setup_completed")) {
         delete payload.model_onboarding_dismissed;
+        delete payload.is_setup_completed;
         const { data: retryData, error: retryErr } = await supabase
           .from("projects")
           .insert([payload])

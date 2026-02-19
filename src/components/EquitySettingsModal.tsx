@@ -53,6 +53,8 @@ interface EquitySettingsModalProps {
   members: Member[];
   onSuccess?: () => void;
   onOpenDefaultModels?: () => void;
+  /** When provided, opens the modal on this tab (e.g. "default_models" for onboarding). */
+  initialTab?: TabType;
   canEdit?: boolean;
 }
 
@@ -75,6 +77,7 @@ export function EquitySettingsModal({
   members,
   onSuccess,
   onOpenDefaultModels,
+  initialTab,
   canEdit = true,
 }: EquitySettingsModalProps) {
   const [activeTab, setActiveTab] = useState<TabType>("multipliers");
@@ -125,6 +128,13 @@ export function EquitySettingsModal({
       });
     }
   }, [isOpen, project]);
+
+  // When opened with initialTab (e.g. onboarding), switch to that tab
+  useEffect(() => {
+    if (isOpen && initialTab) {
+      setActiveTab(initialTab);
+    }
+  }, [isOpen, initialTab]);
 
   const totalFixed = Object.values(values).reduce((sum, v) => sum + (Number.isNaN(v) ? 0 : v), 0);
   const totalDynamic = Math.max(0, 100 - totalFixed);
