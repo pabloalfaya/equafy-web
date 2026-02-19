@@ -55,10 +55,10 @@ export default function ContactPage() {
             </p>
           </div>
 
-          <div className="relative max-w-2xl mx-auto">
-            <div className="absolute -inset-4 bg-gradient-to-r from-emerald-400/20 to-blue-400/20 rounded-[48px] blur-2xl opacity-50"></div>
+          <div className="relative max-w-xl mx-auto">
+            <div className="absolute -inset-4 bg-gradient-to-r from-emerald-400/20 to-blue-400/20 rounded-[40px] blur-2xl opacity-50"></div>
             
-            <div className="relative bg-white/70 backdrop-blur-xl border border-white/60 rounded-[40px] p-10 md:p-14 shadow-2xl">
+            <div className="relative bg-white/70 backdrop-blur-xl border border-white/60 rounded-[32px] p-8 md:p-10 shadow-2xl">
               {submitted ? (
                 <div className="text-center py-10 animate-in fade-in zoom-in duration-500">
                   <div className="w-20 h-20 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-6">
@@ -69,8 +69,8 @@ export default function ContactPage() {
                   <button onClick={() => setSubmitted(false)} className="text-emerald-600 font-bold hover:underline">Send another message</button>
                 </div>
               ) : (
-                <form onSubmit={handleSubmit} className="space-y-8">
-                  <div className="grid md:grid-cols-2 gap-8">
+                <form onSubmit={handleSubmit} className="space-y-6">
+                  <div className="grid md:grid-cols-2 gap-6">
                     <div className="space-y-2">
                       <label className="text-xs font-bold uppercase text-slate-400 ml-1">Full Name</label>
                       <input required type="text" placeholder="John Doe" value={formData.name} onChange={(e) => setFormData({...formData, name: e.target.value})} className="w-full bg-white/50 border border-slate-200 rounded-2xl px-6 py-4 font-semibold text-slate-800 focus:border-emerald-500 outline-none transition-all" />
