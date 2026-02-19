@@ -9,8 +9,10 @@ export async function middleware(request: NextRequest) {
 
   const pathname = request.nextUrl.pathname;
 
-  // Rutas públicas (sin requerir auth)
+  // Rutas públicas (sin requerir auth) - incluir sitemap y robots para SEO
   const isPublicRoute =
+    pathname === "/sitemap.xml" ||
+    pathname === "/robots.txt" ||
     pathname === "/" ||
     pathname.startsWith("/login") ||
     pathname.startsWith("/models") ||

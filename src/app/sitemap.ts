@@ -1,29 +1,87 @@
-import { MetadataRoute } from "next";
+import type { MetadataRoute } from "next";
 
-// Usa NEXT_PUBLIC_BASE_URL en .env (ej: https://equily.app) para producción
-const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://equily.app";
+// Usa NEXT_PUBLIC_BASE_URL en .env (ej: https://www.getequily.com o https://equily.app)
+const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://www.getequily.com";
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const publicPaths = [
-    "",
-    "/what-is-equily",
-    "/how-it-works",
-    "/guide",
-    "/features",
-    "/pricing",
-    "/contact",
-    "/legal",
-    "/terms",
-    "/privacy",
-    "/login",
-    "/models",
-    "/apis",
+  return [
+    {
+      url: baseUrl,
+      lastModified: new Date(),
+      changeFrequency: "weekly" as const,
+      priority: 1,
+    },
+    {
+      url: `${baseUrl}/what-is-equily`,
+      lastModified: new Date(),
+      changeFrequency: "monthly" as const,
+      priority: 0.8,
+    },
+    {
+      url: `${baseUrl}/how-it-works`,
+      lastModified: new Date(),
+      changeFrequency: "monthly" as const,
+      priority: 0.8,
+    },
+    {
+      url: `${baseUrl}/guide`,
+      lastModified: new Date(),
+      changeFrequency: "monthly" as const,
+      priority: 0.8,
+    },
+    {
+      url: `${baseUrl}/features`,
+      lastModified: new Date(),
+      changeFrequency: "monthly" as const,
+      priority: 0.8,
+    },
+    {
+      url: `${baseUrl}/pricing`,
+      lastModified: new Date(),
+      changeFrequency: "weekly" as const,
+      priority: 0.9,
+    },
+    {
+      url: `${baseUrl}/contact`,
+      lastModified: new Date(),
+      changeFrequency: "monthly" as const,
+      priority: 0.8,
+    },
+    {
+      url: `${baseUrl}/legal`,
+      lastModified: new Date(),
+      changeFrequency: "yearly" as const,
+      priority: 0.5,
+    },
+    {
+      url: `${baseUrl}/terms`,
+      lastModified: new Date(),
+      changeFrequency: "yearly" as const,
+      priority: 0.5,
+    },
+    {
+      url: `${baseUrl}/privacy`,
+      lastModified: new Date(),
+      changeFrequency: "yearly" as const,
+      priority: 0.5,
+    },
+    {
+      url: `${baseUrl}/login`,
+      lastModified: new Date(),
+      changeFrequency: "monthly" as const,
+      priority: 0.6,
+    },
+    {
+      url: `${baseUrl}/models`,
+      lastModified: new Date(),
+      changeFrequency: "monthly" as const,
+      priority: 0.8,
+    },
+    {
+      url: `${baseUrl}/apis`,
+      lastModified: new Date(),
+      changeFrequency: "monthly" as const,
+      priority: 0.7,
+    },
   ];
-
-  return publicPaths.map((path) => ({
-    url: `${baseUrl}${path}`,
-    lastModified: new Date(),
-    changeFrequency: path === "" ? "weekly" : ("monthly" as const),
-    priority: path === "" ? 1 : 0.8,
-  }));
 }
