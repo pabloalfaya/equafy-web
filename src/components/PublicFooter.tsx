@@ -11,7 +11,7 @@ export function PublicFooter() {
           <div className="col-span-2">
             <Link href="/" className="inline-block mb-6">
               <img
-                src="/logo.png"
+                src="/logo-web.png"
                 alt="Equily Logo"
                 width={120}
                 height={48}

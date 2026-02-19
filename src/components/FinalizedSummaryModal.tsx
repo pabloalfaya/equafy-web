@@ -49,7 +49,7 @@ function loadLogoAsDataUrl(): Promise<string | null> {
       }
     };
     img.onerror = () => resolve(null);
-    img.src = "/logo.png";
+    img.src = "/logo-web.png";
   });
 }
 

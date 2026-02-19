@@ -40,7 +40,7 @@ export function Navbar() {
           <Link href="/" className="relative group flex-shrink-0">
             <div className="absolute -inset-2 bg-gradient-to-r from-emerald-500/20 to-blue-500/20 rounded-lg blur opacity-0 group-hover:opacity-100 transition duration-500" />
             <img
-              src="/logo.png"
+              src="/logo-web.png"
               alt="Equily Logo"
               width={140}
               height={56}
