@@ -101,7 +101,7 @@ export function EquityModelModal({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-3 sm:p-4">
+    <div className="fixed inset-0 z-[120] flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-3 sm:p-4">
       <div className="relative w-[95%] max-w-full md:max-w-4xl lg:max-w-5xl mx-auto bg-white rounded-2xl sm:rounded-[32px] shadow-2xl p-4 sm:p-5 md:p-6 text-slate-900 overflow-y-auto max-h-[95vh]">
         <button onClick={isOnboarding ? handleDismiss : onClose} className="absolute top-6 right-6 text-slate-400 hover:text-slate-900 transition-colors z-20">
           <X className="w-5 h-5" />

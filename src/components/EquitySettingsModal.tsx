@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { X, Percent, Save, Settings2, Sparkles, Calculator, BookOpen, Info } from "lucide-react";
+import { X, Percent, Save, Settings2, Sparkles, Calculator, BookOpen, Info, ShieldCheck } from "lucide-react";
 import { createClient } from "@/utils/supabase/client";
 import { logAudit } from "@/utils/auditLog";
 import { calculateDynamicMultiplier } from "@/utils/riskEngine";
@@ -52,6 +52,7 @@ interface EquitySettingsModalProps {
   project?: any;
   members: Member[];
   onSuccess?: () => void;
+  onOpenDefaultModels?: () => void;
   canEdit?: boolean;
 }
 
@@ -64,7 +65,7 @@ function parseWithComma(str: string): number {
   return parseFloat(normalized) || 0;
 }
 
-type TabType = "fixed" | "multipliers" | "smart" | "limited";
+type TabType = "fixed" | "multipliers" | "smart" | "limited" | "default_models";
 
 export function EquitySettingsModal({
   isOpen,
@@ -73,6 +74,7 @@ export function EquitySettingsModal({
   project,
   members,
   onSuccess,
+  onOpenDefaultModels,
   canEdit = true,
 }: EquitySettingsModalProps) {
   const [activeTab, setActiveTab] = useState<TabType>("multipliers");
@@ -333,8 +335,19 @@ export function EquitySettingsModal({
           </button>
         </div>
 
-        {/* Tabs: 1. Multipliers 2. Fixed Equity 3. Limited Equity 4. Smart Multipliers */}
-        <div className="flex gap-2 mb-6 p-1 rounded-xl bg-slate-100 border border-slate-200">
+        {/* Tabs: 1. Default Models 2. Multipliers 3. Fixed Equity 4. Limited Equity 5. Smart Multipliers */}
+        <div className="flex flex-wrap gap-2 mb-6 p-1 rounded-xl bg-slate-100 border border-slate-200">
+          <button
+            type="button"
+            onClick={() => setActiveTab("default_models")}
+            className={`py-2.5 px-3 rounded-lg text-sm font-bold transition-all ${
+              activeTab === "default_models"
+                ? "bg-white text-slate-800 shadow-sm"
+                : "text-slate-600 hover:text-slate-800"
+            }`}
+          >
+            Default Models
+          </button>
           <button
             type="button"
             onClick={() => setActiveTab("multipliers")}
@@ -382,6 +395,38 @@ export function EquitySettingsModal({
         </div>
 
         {/* Tab Content */}
+        {activeTab === "default_models" && (
+          <div className="space-y-4">
+            <p className="text-sm text-slate-600 leading-relaxed">
+              Choose a preset model (Just Split, Flat, or Custom) to set default multipliers for contributions.
+            </p>
+            <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-between gap-4">
+              <div className="flex items-center gap-3">
+                <div className="p-2 bg-emerald-100 rounded-lg">
+                  <ShieldCheck className="w-5 h-5 text-emerald-600" />
+                </div>
+                <div>
+                  <p className="font-bold text-slate-800">
+                    {(project?.model_type || "JUST_SPLIT").replace(/_/g, " ")}
+                  </p>
+                  <p className="text-xs text-slate-500">
+                    Current model · Multipliers: Cash x{project?.mult_cash ?? 4}, Work x{project?.mult_work ?? 2}, etc.
+                  </p>
+                </div>
+              </div>
+              {canEdit && onOpenDefaultModels && (
+                <button
+                  type="button"
+                  onClick={onOpenDefaultModels}
+                  className="px-4 py-2.5 rounded-xl font-bold text-slate-800 bg-white border border-slate-200 hover:bg-slate-50 hover:border-slate-300 transition-all"
+                >
+                  Change default model
+                </button>
+              )}
+            </div>
+          </div>
+        )}
+
         {activeTab === "multipliers" && (
           <>
             <div className="space-y-3 mb-5">

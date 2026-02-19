@@ -650,12 +650,6 @@ export default function ProjectDashboardPage() {
                 {canEditAndNotFinalized && (
                   <>
                     <button
-                      onClick={() => setEquityModelModalOpen(true)}
-                      className="inline-flex items-center gap-2 rounded-xl bg-white border border-slate-200 px-4 md:px-5 py-2.5 md:py-3 font-bold text-slate-700 shadow-sm hover:bg-slate-50 transition-all whitespace-nowrap text-sm md:text-base"
-                    >
-                        Change Model
-                    </button>
-                    <button
                       onClick={() => setFixedEquityOpen(true)}
                       className="inline-flex items-center gap-2 rounded-xl bg-white border border-slate-200 px-4 md:px-5 py-2.5 md:py-3 font-bold text-slate-700 shadow-sm hover:bg-slate-50 transition-all whitespace-nowrap text-sm md:text-base"
                     >
@@ -771,6 +765,7 @@ export default function ProjectDashboardPage() {
           refreshMembers();
           fetchData();
         }}
+        onOpenDefaultModels={() => setEquityModelModalOpen(true)}
         canEdit={canEdit}
       />
 
