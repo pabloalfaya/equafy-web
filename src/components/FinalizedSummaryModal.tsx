@@ -49,7 +49,7 @@ function loadLogoAsDataUrl(): Promise<string | null> {
       }
     };
     img.onerror = () => resolve(null);
-    img.src = "/equily-mark.png";
+    img.src = "/logo.png";
   });
 }
 
