@@ -296,8 +296,8 @@ export function DashboardContent() {
                     );
                   }
                   return (
-                    <div key={project.id} className="relative bg-white border border-amber-200 p-6 rounded-[24px] shadow-sm flex flex-col h-48 opacity-95">
-                      <div className="flex justify-between items-start mb-4 relative" onClick={(e) => e.stopPropagation()}>
+                    <div key={project.id} className="relative bg-white border border-amber-200 p-6 rounded-[24px] shadow-sm flex flex-col min-h-48 overflow-hidden opacity-95">
+                      <div className="flex justify-between items-start mb-3 relative shrink-0" onClick={(e) => e.stopPropagation()}>
                         <button
                           type="button"
                           onClick={(e) => toggleProjectMenu(project.id, e)}
@@ -328,8 +328,8 @@ export function DashboardContent() {
                       <h3 className="text-xl font-bold text-slate-900 mb-1 truncate shrink-0">
                         {project.name || "Untitled project"}
                       </h3>
-                      <p className="text-xs text-slate-400 font-bold shrink-0">Created {new Date(project.created_at || new Date()).toLocaleDateString()}</p>
-                      <div className="mt-auto pt-8">
+                      <p className="text-xs text-slate-400 font-bold shrink-0 mb-4">Created {new Date(project.created_at || new Date()).toLocaleDateString()}</p>
+                      <div className="mt-auto shrink-0">
                         <button
                           type="button"
                           onClick={() => handleFinishPayment(project)}
