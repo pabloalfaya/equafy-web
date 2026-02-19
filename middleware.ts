@@ -18,6 +18,7 @@ export async function middleware(request: NextRequest) {
     pathname.startsWith("/features") ||
     pathname.startsWith("/pricing") ||
     pathname.startsWith("/contact") ||
+    pathname.startsWith("/apis") ||
     pathname.startsWith("/what-is-equily") ||
     pathname.startsWith("/how-it-works") ||
     pathname.startsWith("/legal");
