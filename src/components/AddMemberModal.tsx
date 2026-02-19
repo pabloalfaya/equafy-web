@@ -48,7 +48,7 @@ export function AddMemberModal({
   onUpdate,
   canEdit = true,
 }: AddMemberModalProps) {
-  const [activeTab, setActiveTab] = useState<TabType>("members");
+  const [activeTab, setActiveTab] = useState<TabType>("add");
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [role, setRole] = useState("");
@@ -174,17 +174,8 @@ export function AddMemberModal({
           </button>
         </div>
 
-        {/* Tabs: 1. Members 2. Add Member 3. Edit Team */}
+        {/* Tabs: 1. Add Member 2. Members 3. Edit Team */}
         <div className="flex gap-2 mb-6 p-1 rounded-xl bg-slate-100 border border-slate-200 shrink-0">
-          <button
-            type="button"
-            onClick={() => setActiveTab("members")}
-            className={`flex-1 py-2.5 px-4 rounded-lg text-sm font-bold transition-all ${
-              activeTab === "members" ? "bg-white text-slate-800 shadow-sm" : "text-slate-600 hover:text-slate-800"
-            }`}
-          >
-            Members
-          </button>
           <button
             type="button"
             onClick={() => setActiveTab("add")}
@@ -193,6 +184,15 @@ export function AddMemberModal({
             }`}
           >
             Add Member
+          </button>
+          <button
+            type="button"
+            onClick={() => setActiveTab("members")}
+            className={`flex-1 py-2.5 px-4 rounded-lg text-sm font-bold transition-all ${
+              activeTab === "members" ? "bg-white text-slate-800 shadow-sm" : "text-slate-600 hover:text-slate-800"
+            }`}
+          >
+            Members
           </button>
           <button
             type="button"
