@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Plus, Folder, ArrowRight, Loader2, LogOut, User, CreditCard, Pencil } from "lucide-react";
+import { Plus, Folder, ArrowRight, Loader2, LogOut, User, CreditCard, Pencil, Receipt } from "lucide-react";
 import { createClient } from "@/utils/supabase/client";
 import { CreateProjectModal } from "@/components/CreateProjectModal";
 import { EditProjectModal } from "@/components/EditProjectModal";
@@ -19,8 +19,12 @@ export function DashboardContent() {
   const [newName, setNewName] = useState("");
   const [saving, setSaving] = useState(false);
   const [toast, setToast] = useState<{ show: boolean; message: string; type: "success" | "error" }>({ show: false, message: "", type: "success" });
+  const [portalLoading, setPortalLoading] = useState(false);
   const router = useRouter();
   const supabase = createClient();
+
+  const firstProjectWithSubscription = projects.find((p) => (p as Project & { stripe_subscription_id?: string | null }).stripe_subscription_id);
+  const hasAnySubscription = !!firstProjectWithSubscription;
 
   const fetchProjects = async () => {
     const { data: { user }, error: authError } = await supabase.auth.getUser();
@@ -94,6 +98,33 @@ export function DashboardContent() {
     }
   };
 
+  const handleManageSubscription = async () => {
+    if (!firstProjectWithSubscription) return;
+    setPortalLoading(true);
+    try {
+      const res = await fetch("/api/stripe/portal", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ projectId: firstProjectWithSubscription.id }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data?.error ?? "Failed to open billing portal");
+      if (data?.url) {
+        window.location.href = data.url;
+        return;
+      }
+      throw new Error("No portal URL received");
+    } catch (err) {
+      setToast({
+        show: true,
+        message: err instanceof Error ? err.message : "Could not open billing portal",
+        type: "error",
+      });
+    } finally {
+      setPortalLoading(false);
+    }
+  };
+
   const handleFinishPayment = async (project: Project) => {
     const supabase = createClient();
     const { data: { user } } = await supabase.auth.getUser();
@@ -145,6 +176,24 @@ export function DashboardContent() {
                 )}
             </div>
             <div className="flex flex-wrap gap-3 items-center justify-end">
+                {hasAnySubscription && (
+                  <button
+                    type="button"
+                    onClick={handleManageSubscription}
+                    disabled={portalLoading}
+                    className="inline-flex items-center gap-2 bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 hover:border-slate-300 px-6 py-3 rounded-xl font-bold transition-all disabled:opacity-60 disabled:cursor-not-allowed"
+                  >
+                    {portalLoading ? (
+                      <>
+                        <Loader2 className="w-5 h-5 animate-spin" /> Redirecting…
+                      </>
+                    ) : (
+                      <>
+                        <Receipt className="w-5 h-5" /> Billing &amp; Invoices
+                      </>
+                    )}
+                  </button>
+                )}
                 <button 
                     onClick={() => setIsModalOpen(true)}
                     className="inline-flex items-center gap-2 bg-slate-900 hover:bg-slate-800 text-white px-6 py-3 rounded-xl font-bold transition-all shadow-lg hover:-translate-y-0.5"

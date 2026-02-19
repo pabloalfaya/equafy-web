@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { X, Percent, Save, Settings2, Sparkles, Calculator, BookOpen, Info, ShieldCheck, CreditCard, Loader2 } from "lucide-react";
+import { X, Percent, Save, Settings2, Sparkles, Calculator, BookOpen, Info, ShieldCheck } from "lucide-react";
 import { createClient } from "@/utils/supabase/client";
 import { logAudit } from "@/utils/auditLog";
 import { calculateDynamicMultiplier } from "@/utils/riskEngine";
@@ -87,12 +87,9 @@ export function EquitySettingsModal({
     mult_others: 1,
   });
   const [loading, setLoading] = useState(false);
-  const [portalLoading, setPortalLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [equityCaps, setEquityCaps] = useState<Record<string, number | null>>({});
-
-  const hasSubscription = !!(project as { stripe_subscription_id?: string | null } | undefined)?.stripe_subscription_id;
 
   const localMembers = members;
 
@@ -193,28 +190,6 @@ export function EquitySettingsModal({
       setError(err instanceof Error ? err.message : "Error saving changes.");
     } finally {
       setLoading(false);
-    }
-  };
-
-  const handleManageSubscription = async () => {
-    setPortalLoading(true);
-    setError(null);
-    try {
-      const res = await fetch("/api/stripe/portal", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ projectId }),
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data?.error ?? "Failed to open billing portal");
-      if (data?.url) {
-        window.location.href = data.url;
-        return;
-      }
-      throw new Error("No portal URL received");
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Could not open billing portal");
-      setPortalLoading(false);
     }
   };
 
@@ -418,29 +393,6 @@ export function EquitySettingsModal({
             Smart Multipliers
           </button>
         </div>
-
-        {hasSubscription && (
-          <div className="flex justify-center pt-1">
-            <button
-              type="button"
-              onClick={handleManageSubscription}
-              disabled={portalLoading}
-              className="inline-flex items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-bold text-slate-700 shadow-sm hover:bg-slate-50 hover:border-slate-300 transition-all disabled:opacity-60 disabled:cursor-not-allowed"
-            >
-              {portalLoading ? (
-                <>
-                  <Loader2 className="h-4 w-4 animate-spin" />
-                  Redirecting…
-                </>
-              ) : (
-                <>
-                  <CreditCard className="h-4 w-4" />
-                  Billing &amp; Invoices
-                </>
-              )}
-            </button>
-          </div>
-        )}
 
         {/* Tab Content */}
         {activeTab === "default_models" && (
