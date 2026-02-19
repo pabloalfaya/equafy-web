@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Plus, Folder, ArrowRight, Loader2, LogOut, User, CreditCard, Settings, Receipt } from "lucide-react";
+import { Plus, Folder, ArrowRight, Loader2, LogOut, User, CreditCard, Settings, Receipt, Pencil } from "lucide-react";
 import { createClient } from "@/utils/supabase/client";
 import { CreateProjectModal } from "@/components/CreateProjectModal";
 import { EditProjectModal } from "@/components/EditProjectModal";
@@ -255,7 +255,7 @@ export function DashboardContent() {
                                 }}
                                 className="w-full px-4 py-2.5 text-left text-sm font-bold text-slate-700 hover:bg-slate-50 flex items-center gap-2"
                               >
-                                Change project name
+                                <Pencil className="w-4 h-4" /> Change project name
                               </button>
                               {(project as Project & { stripe_subscription_id?: string | null }).stripe_subscription_id && (
                                 <button
@@ -316,7 +316,7 @@ export function DashboardContent() {
                               }}
                               className="w-full px-4 py-2.5 text-left text-sm font-bold text-slate-700 hover:bg-slate-50 flex items-center gap-2"
                             >
-                              Change project name
+                              <Pencil className="w-4 h-4" /> Change project name
                             </button>
                           </div>
                         )}
