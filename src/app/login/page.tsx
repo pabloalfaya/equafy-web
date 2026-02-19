@@ -76,7 +76,6 @@ function LoginForm() {
         </Link>
         
         <div className="text-center">
-          <img src="/logo-web.png" alt="Equily" width={120} height={48} className="mx-auto h-12 md:h-14 w-auto mb-3 md:mb-4 object-contain" />
           <h2 className="text-2xl md:text-3xl font-black text-slate-900">
             {isSignUp ? "Create Account" : "Welcome Back"}
           </h2>
