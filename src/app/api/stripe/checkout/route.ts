@@ -69,7 +69,7 @@ export async function POST(req: Request) {
     const mult_intangible = typeof bodyMultIntangible === "number" ? bodyMultIntangible : 2;
     const mult_others = typeof bodyMultOthers === "number" ? bodyMultOthers : 1;
 
-    const payload = {
+    const payload: Record<string, unknown> = {
       name: projectName.trim(),
       owner_id: userId,
       subscription_status: "incomplete",
@@ -83,16 +83,39 @@ export async function POST(req: Request) {
       model_onboarding_dismissed: false,
     };
 
-    const { data: insertedProject, error: projectError } = await supabase
+    let insertedProject: { id: string } | null = null;
+    let projectError: { message: string } | null = null;
+
+    const { data: insertData, error: insertErr } = await supabase
       .from("projects")
       .insert([payload])
       .select("id")
       .single();
 
-    if (projectError) {
+    if (insertErr) {
+      projectError = insertErr;
+      if (insertErr.message?.includes("model_onboarding_dismissed")) {
+        delete payload.model_onboarding_dismissed;
+        const { data: retryData, error: retryErr } = await supabase
+          .from("projects")
+          .insert([payload])
+          .select("id")
+          .single();
+        if (!retryErr) {
+          insertedProject = retryData;
+          projectError = null;
+        } else {
+          projectError = retryErr;
+        }
+      }
+    } else {
+      insertedProject = insertData;
+    }
+
+    if (projectError || !insertedProject) {
       console.error("Error creating draft project:", projectError);
       return NextResponse.json(
-        { error: "Failed to create project: " + projectError.message },
+        { error: "Failed to create project: " + (projectError?.message ?? "Unknown error") },
         { status: 500 }
       );
     }

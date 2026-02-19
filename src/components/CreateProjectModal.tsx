@@ -90,15 +90,22 @@ export function CreateProjectModal({ isOpen, onClose, onProjectCreated }: Create
         body: JSON.stringify(body),
       });
 
-      if (!response.ok) {
-        throw new Error("Server error: " + response.statusText);
-      }
-
-      let data: { url?: string; error?: string };
+      let data: { url?: string; error?: string } = {};
       try {
         data = await response.json();
       } catch {
         data = {};
+      }
+
+      if (!response.ok) {
+        const errorMsg = data?.error || response.statusText;
+        console.error("[CreateProject] Checkout API failed:", {
+          status: response.status,
+          statusText: response.statusText,
+          error: errorMsg,
+          body: data,
+        });
+        throw new Error(errorMsg || `Server error: ${response.status}`);
       }
 
       if (data.url && typeof data.url === "string") {
@@ -106,10 +113,11 @@ export function CreateProjectModal({ isOpen, onClose, onProjectCreated }: Create
         return;
       }
 
+      console.error("[CreateProject] API OK but no checkout URL returned:", data);
       throw new Error("API did not return a Stripe URL: " + JSON.stringify(data));
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
-      console.error("[CreateProject] Payment error:", message);
+      console.error("[CreateProject] Payment error:", message, error);
     } finally {
       setLoading(false);
     }
