@@ -245,10 +245,14 @@ export function DashboardContent() {
                             <Settings className="w-5 h-5" />
                           </button>
                           {menuOpenProjectId === project.id && (
-                            <div className="absolute left-0 top-12 z-20 min-w-[200px] rounded-xl border border-slate-200 bg-white py-1 shadow-lg">
+                            <div className="absolute left-0 top-12 z-20 min-w-[200px] rounded-xl border border-slate-200 bg-white py-1 shadow-lg" onClick={(e) => e.stopPropagation()}>
                               <button
                                 type="button"
-                                onClick={() => openEditModal(project)}
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  e.stopPropagation();
+                                  openEditModal(project);
+                                }}
                                 className="w-full px-4 py-2.5 text-left text-sm font-bold text-slate-700 hover:bg-slate-50 flex items-center gap-2"
                               >
                                 Change project name
@@ -256,9 +260,11 @@ export function DashboardContent() {
                               {(project as Project & { stripe_subscription_id?: string | null }).stripe_subscription_id && (
                                 <button
                                   type="button"
-                                  onClick={() => {
+                                  onClick={(e) => {
+                                    e.preventDefault();
+                                    e.stopPropagation();
                                     setMenuOpenProjectId(null);
-                                    handleManageSubscription(project, { preventDefault: () => {}, stopPropagation: () => {} } as React.MouseEvent);
+                                    handleManageSubscription(project, e);
                                   }}
                                   disabled={portalLoadingId === project.id}
                                   className="w-full px-4 py-2.5 text-left text-sm font-bold text-slate-700 hover:bg-slate-50 flex items-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed"
@@ -300,10 +306,14 @@ export function DashboardContent() {
                           <Settings className="w-5 h-5" />
                         </button>
                         {menuOpenProjectId === project.id && (
-                          <div className="absolute left-0 top-12 z-20 min-w-[200px] rounded-xl border border-slate-200 bg-white py-1 shadow-lg">
+                          <div className="absolute left-0 top-12 z-20 min-w-[200px] rounded-xl border border-slate-200 bg-white py-1 shadow-lg" onClick={(e) => e.stopPropagation()}>
                             <button
                               type="button"
-                              onClick={() => openEditModal(project)}
+                              onClick={(e) => {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                openEditModal(project);
+                              }}
                               className="w-full px-4 py-2.5 text-left text-sm font-bold text-slate-700 hover:bg-slate-50 flex items-center gap-2"
                             >
                               Change project name
