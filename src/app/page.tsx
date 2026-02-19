@@ -33,34 +33,33 @@ export default function LandingPage() {
       {/* --- HERO SECTION --- */}
       <header className="relative pt-32 md:pt-40 pb-10 z-10 w-full overflow-hidden">
         <div className="mx-auto max-w-screen-2xl px-6 md:px-12 lg:px-24 text-center relative">
-          {/* Semi-donut Cap Table SVG: matemático, simétrico (stroke + stroke-dasharray) */}
-          <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-[52%] w-[min(88vw,600px)] aspect-[2/1] -z-10 pointer-events-none">
+          {/* Semi-círculo Cap Table: suave, detrás del texto, matemáticamente perfecto */}
+          <div className="absolute left-1/2 top-[38%] -translate-x-1/2 -translate-y-1/2 w-[min(100vw,820px)] aspect-[2/1] z-0 pointer-events-none">
             <svg viewBox="0 0 200 100" className="w-full h-full" preserveAspectRatio="xMidYMid meet" aria-hidden>
               <defs>
                 <clipPath id="hero-semi-clip">
                   <rect x="0" y="0" width="200" height="100" />
                 </clipPath>
               </defs>
-              <g clipPath="url(#hero-semi-clip)" transform="translate(100, 88)">
-                {/* Círculo r=70, circunferencia ≈440. Semicírculo superior (180°)=220. Segmentos 45/30/18.75/6.25% → 99, 66, 41, 14 */}
-                {/* Inicio del arco superior en 270° (9h) → offset 330 */}
-                <circle cx="0" cy="0" r="70" fill="none" stroke="#10b981" strokeWidth="18" strokeLinecap="round" strokeDasharray="99 500" strokeDashoffset="330" opacity="0.5" transform="rotate(-90)" />
-                <circle cx="0" cy="0" r="70" fill="none" stroke="#3b82f6" strokeWidth="18" strokeLinecap="round" strokeDasharray="66 500" strokeDashoffset="429" opacity="0.45" transform="rotate(-90)" />
-                <circle cx="0" cy="0" r="70" fill="none" stroke="#a855f7" strokeWidth="18" strokeLinecap="round" strokeDasharray="41 500" strokeDashoffset="55" opacity="0.45" transform="rotate(-90)" />
-                <circle cx="0" cy="0" r="70" fill="none" stroke="#f97316" strokeWidth="18" strokeLinecap="round" strokeDasharray="14 500" strokeDashoffset="96" opacity="0.45" transform="rotate(-90)" />
+              <g clipPath="url(#hero-semi-clip)" transform="translate(100, 92)">
+                {/* Círculos con stroke-dasharray: arcos perfectos y suaves. r=60, semicírculo≈188. 45%→85, 30%→56, 18.75%→35, 6.25%→12 */}
+                <circle cx="0" cy="0" r="60" fill="none" stroke="#10b981" strokeWidth="18" strokeLinecap="butt" strokeDasharray="85 400" strokeDashoffset="188" opacity="0.45" transform="rotate(-90)" />
+                <circle cx="0" cy="0" r="60" fill="none" stroke="#3b82f6" strokeWidth="18" strokeLinecap="butt" strokeDasharray="56 400" strokeDashoffset="273" opacity="0.4" transform="rotate(-90)" />
+                <circle cx="0" cy="0" r="60" fill="none" stroke="#a855f7" strokeWidth="18" strokeLinecap="butt" strokeDasharray="35 400" strokeDashoffset="329" opacity="0.4" transform="rotate(-90)" />
+                <circle cx="0" cy="0" r="60" fill="none" stroke="#f97316" strokeWidth="18" strokeLinecap="butt" strokeDasharray="12 400" strokeDashoffset="364" opacity="0.4" transform="rotate(-90)" />
               </g>
             </svg>
           </div>
 
-          <h1 className="relative z-10 text-6xl md:text-8xl font-bold tracking-tighter text-slate-900 mb-5 leading-[1.1] md:leading-[1.1] py-2">
+          <h1 className="relative z-20 text-6xl md:text-8xl font-bold tracking-tighter text-slate-900 mb-5 leading-[1.1] md:leading-[1.1] py-2">
             Equity that <br className="hidden md:block" />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 to-teal-500">evolves with you.</span>
           </h1>
-          <p className="relative z-10 mx-auto mb-6 max-w-2xl text-xl text-slate-500 leading-relaxed font-medium">
+          <p className="relative z-20 mx-auto mb-6 max-w-2xl text-xl text-slate-500 leading-relaxed font-medium">
             Stop guessing. Use the only fair model for equity distribution among co-founders, based on real contributions, cash, and market risk.
             <span className="block mt-2 text-slate-400 text-base">Trustless. Dynamic. Fair.</span>
           </p>
-          <div className="relative z-10 flex flex-col sm:flex-row items-center justify-center gap-4">
+          <div className="relative z-20 flex flex-col sm:flex-row items-center justify-center gap-4">
             <Link href="/login?view=signup" className="h-14 px-8 rounded-2xl bg-emerald-500 text-white font-bold text-lg flex items-center justify-center shadow-lg hover:bg-emerald-600 hover:-translate-y-0.5 transition-all duration-300 tracking-tight">
               Get Started
             </Link>
@@ -74,7 +73,7 @@ export default function LandingPage() {
           </div>
 
           {/* Infinite Marquee de funcionalidades */}
-          <div className="relative z-10 mt-20 w-full overflow-hidden">
+          <div className="relative z-20 mt-20 w-full overflow-hidden">
             <div className="animate-marquee flex gap-4 w-max" role="marquee">
               {[...Array(2)].map((_, dup) => (
                 <div key={dup} className="flex gap-4 shrink-0">
