@@ -56,9 +56,10 @@ function LoginForm() {
           password,
         });
         if (error) throw error;
-        
-        router.push("/dashboard");
-        router.refresh();
+        // Redirección completa para que el middleware reciba las cookies de sesión
+        // (evita tener que pulsar "Sign In" dos veces)
+        window.location.href = "/dashboard";
+        return;
       }
     } catch (error: any) {
       setMessage({ text: error.message, type: 'error' });
