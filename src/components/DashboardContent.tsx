@@ -19,12 +19,9 @@ export function DashboardContent() {
   const [newName, setNewName] = useState("");
   const [saving, setSaving] = useState(false);
   const [toast, setToast] = useState<{ show: boolean; message: string; type: "success" | "error" }>({ show: false, message: "", type: "success" });
-  const [portalLoading, setPortalLoading] = useState(false);
+  const [portalLoadingId, setPortalLoadingId] = useState<string | null>(null);
   const router = useRouter();
   const supabase = createClient();
-
-  const firstProjectWithSubscription = projects.find((p) => (p as Project & { stripe_subscription_id?: string | null }).stripe_subscription_id);
-  const hasAnySubscription = !!firstProjectWithSubscription;
 
   const fetchProjects = async () => {
     const { data: { user }, error: authError } = await supabase.auth.getUser();
@@ -98,14 +95,17 @@ export function DashboardContent() {
     }
   };
 
-  const handleManageSubscription = async () => {
-    if (!firstProjectWithSubscription) return;
-    setPortalLoading(true);
+  const handleManageSubscription = async (project: Project, e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    const stripeSubId = (project as Project & { stripe_subscription_id?: string | null }).stripe_subscription_id;
+    if (!stripeSubId) return;
+    setPortalLoadingId(project.id);
     try {
       const res = await fetch("/api/stripe/portal", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ projectId: firstProjectWithSubscription.id }),
+        body: JSON.stringify({ projectId: project.id }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data?.error ?? "Failed to open billing portal");
@@ -121,7 +121,7 @@ export function DashboardContent() {
         type: "error",
       });
     } finally {
-      setPortalLoading(false);
+      setPortalLoadingId(null);
     }
   };
 
@@ -176,24 +176,6 @@ export function DashboardContent() {
                 )}
             </div>
             <div className="flex flex-wrap gap-3 items-center justify-end">
-                {hasAnySubscription && (
-                  <button
-                    type="button"
-                    onClick={handleManageSubscription}
-                    disabled={portalLoading}
-                    className="inline-flex items-center gap-2 bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 hover:border-slate-300 px-6 py-3 rounded-xl font-bold transition-all disabled:opacity-60 disabled:cursor-not-allowed"
-                  >
-                    {portalLoading ? (
-                      <>
-                        <Loader2 className="w-5 h-5 animate-spin" /> Redirecting…
-                      </>
-                    ) : (
-                      <>
-                        <Receipt className="w-5 h-5" /> Billing &amp; Invoices
-                      </>
-                    )}
-                  </button>
-                )}
                 <button 
                     onClick={() => setIsModalOpen(true)}
                     className="inline-flex items-center gap-2 bg-slate-900 hover:bg-slate-800 text-white px-6 py-3 rounded-xl font-bold transition-all shadow-lg hover:-translate-y-0.5"
@@ -250,10 +232,32 @@ export function DashboardContent() {
                           {project.name}
                         </h3>
                         <p className="text-xs text-slate-400 font-bold">Created {new Date(project.created_at || new Date()).toLocaleDateString()}</p>
-                        <div className="mt-auto flex items-center justify-end">
-                          <span className="text-sm font-bold text-slate-300 group-hover:text-emerald-500 flex items-center gap-1 transition-colors">
+                        <div className="mt-auto flex flex-col gap-2">
+                          {(project as Project & { stripe_subscription_id?: string | null }).stripe_subscription_id && (
+                            <button
+                              type="button"
+                              onClick={(e) => handleManageSubscription(project, e)}
+                              disabled={portalLoadingId === project.id}
+                              className="w-full inline-flex items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white py-2 px-3 text-sm font-bold text-slate-700 hover:bg-slate-50 transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
+                            >
+                              {portalLoadingId === project.id ? (
+                                <>
+                                  <Loader2 className="w-4 h-4 animate-spin" /> Redirecting…
+                                </>
+                              ) : (
+                                <>
+                                  <Receipt className="w-4 h-4" /> Billing &amp; Invoices
+                                </>
+                              )}
+                            </button>
+                          )}
+                          <Link
+                            href={`/dashboard/${project.id}`}
+                            onClick={(e) => e.stopPropagation()}
+                            className="text-sm font-bold text-slate-300 group-hover:text-emerald-500 flex items-center justify-end gap-1 transition-colors"
+                          >
                             Open Dashboard <ArrowRight className="w-4 h-4" />
-                          </span>
+                          </Link>
                         </div>
                       </Link>
                     );
