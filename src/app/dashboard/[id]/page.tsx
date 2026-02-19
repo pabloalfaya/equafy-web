@@ -157,11 +157,26 @@ export default function ProjectDashboardPage() {
     setCurrentUserId(user?.id ?? null);
     setCurrentUserEmail(user?.email ?? null);
     
-    // Cargar Proyecto (incl. is_setup_completed para onboarding)
-    const { data: projectData, error: projectError } = await supabase.from("projects").select("*").eq("id", projectId).single();
-    if (projectData) console.log("[Dashboard] Proyecto cargado - is_setup_completed:", projectData.is_setup_completed);
+    // Cargar Proyecto (select("*") trae todas las columnas, incl. is_setup_completed si existe en la BD)
+    const { data: projectData, error: projectError } = await supabase
+      .from("projects")
+      .select("*")
+      .eq("id", projectId)
+      .single();
+
     if (projectError || !projectData) { router.push("/dashboard"); return; }
-    setProject(projectData as ExtendedProject);
+
+    // Normalizar is_setup_completed: si la columna no existe en la BD (migración no aplicada), viene undefined → tratamos como false para mostrar onboarding
+    const raw = projectData as Record<string, unknown>;
+    const isSetupCompleted = raw.is_setup_completed;
+    if (isSetupCompleted === undefined) {
+      console.warn("[Dashboard] is_setup_completed no existe en la BD. Ejecuta: npx supabase db push");
+    }
+    const normalizedProject: ExtendedProject = {
+      ...projectData,
+      is_setup_completed: isSetupCompleted === true,
+    } as ExtendedProject;
+    setProject(normalizedProject);
 
     // Cargar Aportaciones
     const { data: contributionsData } = await supabase.from("contributions").select("*").eq("project_id", projectId).order("created_at", { ascending: false });
@@ -771,9 +786,14 @@ export default function ProjectDashboardPage() {
         onClose={async () => {
           const needsSetupComplete = (project as ExtendedProject)?.is_setup_completed === false;
           if (needsSetupComplete) {
-            const supabase = createClient();
-            await supabase.from("projects").update({ is_setup_completed: true }).eq("id", projectId);
-            await fetchData();
+            try {
+              const supabase = createClient();
+              const { error } = await supabase.from("projects").update({ is_setup_completed: true }).eq("id", projectId);
+              if (error) console.warn("[Dashboard] No se pudo actualizar is_setup_completed (¿migración aplicada?):", error.message);
+              await fetchData();
+            } catch (e) {
+              console.warn("[Dashboard] Error al marcar setup completado:", e);
+            }
           }
           setFixedEquityOpen(false);
         }}

@@ -21,7 +21,7 @@ export interface Project {
   status?: string;
   /** If false, show the equity model onboarding modal on first dashboard visit. */
   model_onboarding_dismissed?: boolean;
-  /** If false, show Equity Settings onboarding (Default Models tab) on first dashboard visit. */
+  /** If false, show Equity Settings onboarding (Default Models tab) on first dashboard visit. Proyectos nuevos deben insertarse con false. */
   is_setup_completed?: boolean;
 }
 
