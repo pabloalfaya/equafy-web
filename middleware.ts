@@ -21,7 +21,9 @@ export async function middleware(request: NextRequest) {
     pathname.startsWith("/apis") ||
     pathname.startsWith("/what-is-equily") ||
     pathname.startsWith("/how-it-works") ||
-    pathname.startsWith("/legal");
+    pathname.startsWith("/legal") ||
+    pathname.startsWith("/terms") ||
+    pathname.startsWith("/privacy");
 
   if (isPublicRoute) {
     return NextResponse.next();
