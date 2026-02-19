@@ -35,8 +35,7 @@ export const metadata: Metadata = {
     icon: "/favicon.ico",
   },
   verification: {
-    // Pega aquí la clave que te dé Google Search Console (p. ej. "abc123...")
-    google: process.env.GOOGLE_SITE_VERIFICATION || undefined,
+    google: "zFCVOKbGDiNQfYNpKE8Xe8mhPQ4NHRJPreGlC_aGlwk",
   },
 };
 
