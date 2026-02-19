@@ -64,26 +64,37 @@ export function EquityModelModal({
   const handleSave = async () => {
     const supabase = createClient();
     setLoading(true);
-    const modelTypeDb = model === "flat" ? "FLAT" : model === "just_split" ? "JUST_SPLIT" : "CUSTOM";
-    const { error } = await supabase
-      .from("projects")
-      .update({
+    try {
+      const modelTypeDb = model === "flat" ? "FLAT" : model === "just_split" ? "JUST_SPLIT" : "CUSTOM";
+      const payload = {
         model_type: modelTypeDb,
-        mult_cash: mults.cash,
-        mult_work: mults.work,
-        mult_tangible: mults.tangible,
-        mult_intangible: mults.intangible,
-        mult_others: mults.others,
+        mult_cash: Number(mults.cash) || 1,
+        mult_work: Number(mults.work) || 1,
+        mult_tangible: Number(mults.tangible) || 1,
+        mult_intangible: Number(mults.intangible) || 1,
+        mult_others: Number(mults.others) || 1,
         model_onboarding_dismissed: true,
-      })
-      .eq("id", projectId);
-    setLoading(false);
-    if (error) {
-      console.error("Error updating model:", error);
-      return;
+      };
+      const { data, error } = await supabase
+        .from("projects")
+        .update(payload)
+        .eq("id", projectId)
+        .select("id")
+        .single();
+
+      if (error) {
+        console.error("Error updating equity model:", error);
+        return;
+      }
+      if (!data) {
+        console.error("Error updating equity model: no rows updated (check projectId and RLS)");
+        return;
+      }
+      await onSuccess?.();
+      onClose();
+    } finally {
+      setLoading(false);
     }
-    onSuccess?.();
-    onClose();
   };
 
   const handleDismiss = async () => {
