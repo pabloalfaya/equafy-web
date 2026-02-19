@@ -290,6 +290,7 @@ export function CreateProjectModal({ isOpen, onClose, onProjectCreated }: Create
               >
                 <span className="font-bold text-slate-900 block">Annual</span>
                 <span className="text-lg font-black text-slate-800 block">199,99€</span>
+                <span className="text-xs font-bold text-emerald-600 block uppercase tracking-wider">Save 2 months</span>
                 <span className="text-xs font-medium text-emerald-600 block">7-day free trial included</span>
                 <span className="text-sm font-medium text-slate-500">/year billed annually</span>
               </button>
