@@ -16,21 +16,23 @@ const COUNTRY_OPTIONS = [
 
 type CountryKey = (typeof COUNTRY_OPTIONS)[number]["value"];
 
+const PREFIX = "Within your profile, in the legal section of the dashboard you will find ";
+
 const COUNTRY_CONTENT: Record<CountryKey, string> = {
   spain:
-    "Information regarding SL (Sociedad Limitada) equity frameworks and Spanish partnership agreements (Pacto de Socios).",
+    `${PREFIX}information regarding SL (Sociedad Limitada) equity frameworks and Spanish partnership agreements (Pacto de Socios).`,
   united_states:
-    "Resources for LLC and C-Corp structures, including Vesting Schedules and stock option plans under US law.",
+    `${PREFIX}resources for LLC and C-Corp structures, including Vesting Schedules and stock option plans under US law.`,
   united_kingdom:
-    "Guidance on LTD structures and UK-specific equity distribution models.",
+    `${PREFIX}guidance on LTD structures and UK-specific equity distribution models.`,
   ireland:
-    "Legal considerations for Irish startups and tech-based equity agreements.",
+    `${PREFIX}legal considerations for Irish startups and tech-based equity agreements.`,
   india:
-    "Overview of Indian startup regulations and equity compliance for founders.",
+    `${PREFIX}overview of Indian startup regulations and equity compliance for founders.`,
   mexico:
-    "Information for S.A. de C.V. structures and Mexican commercial law regarding equity.",
+    `${PREFIX}information for S.A. de C.V. structures and Mexican commercial law regarding equity.`,
   other:
-    "General international framework for equity distribution. Contact us for specific regional inquiries.",
+    `${PREFIX}general international framework for equity distribution. Contact us for specific regional inquiries.`,
 };
 
 export default function LegalPage() {
