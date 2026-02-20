@@ -785,13 +785,13 @@ export default function ProjectDashboardPage() {
         canEdit={canEdit}
       />
       
-      <AddMemberModal 
-        isOpen={memberModalOpen} 
-        onClose={() => setMemberModalOpen(false)} 
-        projectId={projectId} 
+<AddMemberModal
+        isOpen={memberModalOpen}
+        onClose={() => setMemberModalOpen(false)}
+        projectId={projectId}
         members={members}
         contributions={contributions}
-        onUpdate={refreshMembers}
+        onUpdate={async () => { await refreshMembers(); await fetchData(); }}
         canEdit={canEdit}
       />
 
