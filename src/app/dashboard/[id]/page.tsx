@@ -734,7 +734,7 @@ export default function ProjectDashboardPage() {
                   return <p className="text-slate-500">No hay miembros en el proyecto. Añade miembros desde el botón Team.</p>;
                 }
                 return (
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                  <div className="grid grid-cols-1 gap-8">
                     {rows.map((r, i) => (
                       <div key={r.name} className="bg-white rounded-2xl p-7 border border-slate-100 shadow-sm hover:shadow-md transition-shadow min-w-0">
                         <div className="flex items-center gap-4 mb-4">
