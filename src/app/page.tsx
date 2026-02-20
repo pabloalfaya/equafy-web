@@ -95,10 +95,10 @@ export default function LandingPage() {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6 mb-8">
                 {[
-                  { name: "Alex", role: "CEO • TIME & IP", risk: "x4", ownership: "45.0%", pctNum: 45, img: "https://i.pravatar.cc/150?u=alex", barColor: "bg-emerald-500", ringColor: "ring-emerald-500" },
-                  { name: "Ben", role: "CTO • TIME & IP", risk: "x4", ownership: "30.0%", pctNum: 30, img: "https://i.pravatar.cc/150?u=ben", barColor: "bg-blue-500", ringColor: "ring-blue-500" },
-                  { name: "VC Fund A", role: "CASH", risk: "x2", ownership: "18.75%", pctNum: 18.75, img: "https://i.pravatar.cc/150?u=vc", barColor: "bg-orange-500", ringColor: "ring-orange-500" },
-                  { name: "Sarah", role: "Dev • TIME", risk: "x1", ownership: "6.25%", pctNum: 6.25, img: "https://i.pravatar.cc/150?u=sarah", barColor: "bg-purple-500", ringColor: "ring-purple-500" },
+                  { name: "Alex", role: "Founder • TIME & IP", risk: "x2", ownership: "45.0%", pctNum: 45, img: "https://i.pravatar.cc/150?img=12", barColor: "bg-emerald-500", ringColor: "ring-emerald-500" },
+                  { name: "Ben", role: "Co-founder • TIME & IP", risk: "x2", ownership: "30.0%", pctNum: 30, img: "https://i.pravatar.cc/150?img=33", barColor: "bg-blue-500", ringColor: "ring-blue-500" },
+                  { name: "VC Fund A", role: "CASH", risk: "x4", ownership: "18.75%", pctNum: 18.75, img: "https://i.pravatar.cc/150?img=44", barColor: "bg-orange-500", ringColor: "ring-orange-500" },
+                  { name: "Sarah", role: "Dev • TIME", risk: "x1", ownership: "6.25%", pctNum: 6.25, img: "https://i.pravatar.cc/150?img=47", barColor: "bg-purple-500", ringColor: "ring-purple-500" },
                 ].map((member, i) => (
                   <div key={i} className="bg-white rounded-2xl p-6 border border-slate-100 shadow-sm hover:shadow-md transition-shadow">
                     <div className="flex items-center gap-4 mb-4">
@@ -134,7 +134,7 @@ export default function LandingPage() {
       </section>
 
       {/* --- FRAMEWORK SELECTION --- */}
-      <section className="relative z-10 w-full bg-slate-100 pt-16 pb-24 mt-24 md:mt-32">
+      <section className="relative z-10 w-full bg-transparent pt-16 pb-24 mt-24 md:mt-32">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12 max-w-3xl mx-auto">
             <h2 className="text-4xl md:text-5xl font-bold tracking-tight mb-4 text-slate-800">
