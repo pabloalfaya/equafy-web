@@ -68,6 +68,26 @@ function LoginForm() {
     }
   };
 
+  const handlePasswordReset = async () => {
+    if (!email?.trim()) {
+      setMessage({ text: "Enter your email above first, then click Forgot password.", type: 'error' });
+      return;
+    }
+    setLoading(true);
+    setMessage(null);
+    try {
+      const { error } = await supabase.auth.resetPasswordForEmail(email.trim(), {
+        redirectTo: `${window.location.origin}/login`,
+      });
+      if (error) throw error;
+      setMessage({ text: "Check your inbox for the reset link.", type: 'success' });
+    } catch (error: any) {
+      setMessage({ text: error.message, type: 'error' });
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="flex min-h-screen items-start justify-center bg-[#F8FAFC] px-4 pt-40 md:pt-48 pb-8 font-sans">
       <div className="w-full max-w-[360px] md:max-w-md space-y-5 md:space-y-6 rounded-2xl md:rounded-3xl bg-white p-6 md:p-8 shadow-xl border border-slate-100">
@@ -108,7 +128,18 @@ function LoginForm() {
           </div>
 
           <div>
-            <label className="block text-xs md:text-sm font-bold text-slate-700 mb-1">Password</label>
+            <div className="flex items-center justify-between mb-1">
+              <label className="block text-xs md:text-sm font-bold text-slate-700">Password</label>
+              {!isSignUp && (
+                <button
+                  type="button"
+                  onClick={handlePasswordReset}
+                  className="text-xs font-bold text-emerald-600 hover:text-emerald-500 hover:underline transition-colors"
+                >
+                  Forgot password?
+                </button>
+              )}
+            </div>
             <div className="relative">
               <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 md:h-5 md:w-5 text-slate-400" />
               <input
