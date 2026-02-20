@@ -88,24 +88,12 @@ export default function LandingPage() {
       {/* --- DASHBOARD PREVIEW SECTION --- */}
       <section className="pt-24 md:pt-32 pb-16 relative z-10 w-full px-6 md:px-12 lg:px-24">
         <div className="mx-auto max-w-screen-2xl relative">
-          <div className="relative z-20 rounded-[32px] border border-slate-200/60 bg-white/80 backdrop-blur-2xl shadow-[0_40px_80px_-20px_rgba(0,0,0,0.1)] overflow-hidden ring-1 ring-slate-900/5">
-            <div className="h-12 border-b border-slate-100 flex items-center px-6 gap-2 bg-slate-50/50">
-              <div className="w-3 h-3 rounded-full bg-red-400/80"></div>
-              <div className="w-3 h-3 rounded-full bg-amber-400/80"></div>
-              <div className="w-3 h-3 rounded-full bg-emerald-400/80"></div>
-              <div className="ml-auto text-xs font-bold text-slate-400 uppercase tracking-widest flex items-center gap-2">
-                <div className="w-1.5 h-1.5 rounded-full bg-emerald-50 animate-pulse"></div>
-                Live Calculation
-              </div>
-            </div>
+          <div className="mb-8">
+            <h2 className="text-2xl font-bold tracking-tight text-slate-900">Cap Table Status</h2>
+            <p className="text-slate-500 font-medium">Real-time dynamic split based on contributions.</p>
+          </div>
 
-            <div className="p-8 md:p-12">
-              <div className="mb-8">
-                <h2 className="text-2xl font-bold tracking-tight text-slate-900">Cap Table Status</h2>
-                <p className="text-slate-500 font-medium">Real-time dynamic split based on contributions.</p>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6 mb-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6 mb-8">
                 {[
                   { name: "Alex", role: "CEO • TIME & IP", risk: "x4", ownership: "45.0%", pctNum: 45, img: "https://i.pravatar.cc/150?u=alex", barColor: "bg-emerald-500", ringColor: "ring-emerald-500" },
                   { name: "Ben", role: "CTO • TIME & IP", risk: "x4", ownership: "30.0%", pctNum: 30, img: "https://i.pravatar.cc/150?u=ben", barColor: "bg-blue-500", ringColor: "ring-blue-500" },
@@ -129,19 +117,17 @@ export default function LandingPage() {
                     </div>
                   </div>
                 ))}
-              </div>
+          </div>
 
-              <div className="bg-white rounded-2xl p-6 border border-slate-100 shadow-sm flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-                <div>
-                  <p className="text-3xl font-bold text-slate-900 tracking-tight">€1.37M</p>
-                  <p className="text-xs font-bold text-slate-500 uppercase tracking-widest mt-1">Valuation</p>
-                </div>
-                <div className="flex items-center gap-1 text-emerald-600">
-                  <TrendingUp className="w-5 h-5" />
-                  <span className="font-bold">+12%</span>
-                  <span className="text-slate-500 text-sm font-medium">vs last month</span>
-                </div>
-              </div>
+          <div className="bg-white rounded-2xl p-6 border border-slate-100 shadow-sm flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div>
+              <p className="text-3xl font-bold text-slate-900 tracking-tight">€1.37M</p>
+              <p className="text-xs font-bold text-slate-500 uppercase tracking-widest mt-1">Valuation</p>
+            </div>
+            <div className="flex items-center gap-1 text-emerald-600">
+              <TrendingUp className="w-5 h-5" />
+              <span className="font-bold">+12%</span>
+              <span className="text-slate-500 text-sm font-medium">vs last month</span>
             </div>
           </div>
         </div>
