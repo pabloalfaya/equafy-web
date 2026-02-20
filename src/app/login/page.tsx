@@ -52,7 +52,11 @@ function LoginForm() {
   // --- LÓGICA DE DETECCIÓN AUTOMÁTICA (signup vs login) ---
   useEffect(() => {
     const view = searchParams.get("view");
+    const resetSent = searchParams.get("reset_sent");
     setIsSignUp(view === "signup");
+    if (resetSent === "1") {
+      setMessage({ text: "Revisa tu correo para restablecer la contraseña. Haz clic en el enlace que te hemos enviado.", type: "success" });
+    }
   }, [searchParams]);
 
   const handleUpdatePassword = async (e: React.FormEvent) => {

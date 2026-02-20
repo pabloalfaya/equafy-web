@@ -62,7 +62,7 @@ export default function ProfilePage() {
       return;
     }
     const ok = window.confirm(
-      "Send a password reset link to " + email + "?"
+      "Send a password reset link to " + email + "? You will be signed out and must use the link to set your new password."
     );
     if (!ok) return;
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
@@ -72,7 +72,8 @@ export default function ProfilePage() {
       alert("Failed to send reset email: " + error.message);
       return;
     }
-    alert("Check your inbox for the reset link.");
+    await supabase.auth.signOut();
+    router.push("/login?reset_sent=1");
   };
 
   const handleSignOut = async () => {
