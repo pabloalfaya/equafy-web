@@ -1,9 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useParams, useRouter } from "next/navigation"; 
 import Link from "next/link";
-import { Plus, TrendingUp, LayoutDashboard, PieChart, Users, Download, ArrowLeft, Settings, History, FileText, Snowflake, CreditCard, LockOpen } from "lucide-react";
+import { Plus, TrendingUp, LayoutDashboard, PieChart, Users, Download, ArrowLeft, Settings, History, FileText, Snowflake, CreditCard, LockOpen, X } from "lucide-react";
 import { createClient } from "@/utils/supabase/client";
 import { recalculateAndPersistProjectValuation } from "@/utils/projectRecalculator";
 import { logAudit } from "@/utils/auditLog";
@@ -139,6 +139,8 @@ export default function ProjectDashboardPage() {
   const [equityModelModalOpen, setEquityModelModalOpen] = useState(false);
   const [isFreezing, setIsFreezing] = useState(false);
   const [finalizeToast, setFinalizeToast] = useState<string | null>(null);
+  const [filterByMember, setFilterByMember] = useState<string | null>(null);
+  const contributionLogRef = useRef<HTMLDivElement>(null);
   const [summaryPayload, setSummaryPayload] = useState<{
     projectName: string;
     modelName: string;
@@ -663,13 +665,24 @@ export default function ProjectDashboardPage() {
             </div>
 
             <div className="grid lg:grid-cols-3 gap-8">
-                <div className="lg:col-span-2 bg-white/70 backdrop-blur-xl border border-white/60 rounded-[32px] p-8 shadow-xl flex flex-col">
-                    <div className="flex items-center gap-3 mb-6">
-                        <div className="p-2 bg-blue-50 rounded-lg"><TrendingUp className="h-5 w-5 text-blue-600" /></div>
-                        <h3 className="font-bold text-slate-900 text-xl">Contribution Log</h3>
+                <div ref={contributionLogRef} className="lg:col-span-2 bg-white/70 backdrop-blur-xl border border-white/60 rounded-[32px] p-8 shadow-xl flex flex-col">
+                    <div className="flex items-center gap-3 mb-6 flex-wrap">
+                        <div className="flex items-center gap-3">
+                            <div className="p-2 bg-blue-50 rounded-lg"><TrendingUp className="h-5 w-5 text-blue-600" /></div>
+                            <h3 className="font-bold text-slate-900 text-xl">Contribution Log</h3>
+                        </div>
+                        {filterByMember && (
+                            <button
+                                type="button"
+                                onClick={() => setFilterByMember(null)}
+                                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-100 text-emerald-700 text-sm font-bold hover:bg-emerald-200 transition-colors"
+                            >
+                                {filterByMember} <X className="h-3.5 w-3.5" />
+                            </button>
+                        )}
                     </div>
                     <div className="overflow-auto max-h-[600px] pr-2 pb-1 custom-scrollbar">
-                        <ContributionsTable contributions={contributions} onDelete={handleContributionDeleted} onEdit={handleEditContribution} canEdit={canEditAndNotFinalized} />
+                        <ContributionsTable contributions={filterByMember ? contributions.filter((c) => c.contributor_name === filterByMember) : contributions} onDelete={handleContributionDeleted} onEdit={handleEditContribution} canEdit={canEditAndNotFinalized} />
                     </div>
                 </div>
                 
@@ -744,7 +757,16 @@ export default function ProjectDashboardPage() {
                             {getInitials(r.name)}
                           </div>
                           <div className="min-w-0 flex-1">
-                            <p className="font-bold text-slate-900 truncate">{r.name}</p>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setFilterByMember((prev) => (prev === r.name ? null : r.name));
+                                contributionLogRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+                              }}
+                              className="font-bold text-slate-900 truncate text-left w-full hover:text-emerald-600 hover:underline transition-colors"
+                            >
+                              {r.name}
+                            </button>
                             <p className="text-xs text-slate-500 font-medium uppercase tracking-wider">{r.role}</p>
                           </div>
                         </div>
