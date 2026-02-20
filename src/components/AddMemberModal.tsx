@@ -84,6 +84,7 @@ export function AddMemberModal({
         role: role.trim() || "Member",
         access_level: accessLevel,
       };
+      const oldName = editingId ? members.find((m) => m.id === editingId)?.name : null;
       let error;
       if (editingId) {
         const { error: updateError } = await supabase
@@ -91,6 +92,16 @@ export function AddMemberModal({
           .update(payload)
           .eq("id", editingId);
         error = updateError;
+        if (!error && oldName && oldName.trim() !== payload.name) {
+          const { error: contribError } = await supabase
+            .from("contributions")
+            .update({ contributor_name: payload.name })
+            .eq("project_id", projectId)
+            .eq("contributor_name", oldName.trim());
+          if (contribError) {
+            console.error("Error updating contributions after member rename:", contribError);
+          }
+        }
       } else {
         const { error: insertError } = await supabase
           .from("project_members")
