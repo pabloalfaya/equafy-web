@@ -55,9 +55,12 @@ function LoginForm() {
     const view = searchParams.get("view");
     const resetSent = searchParams.get("reset_sent");
     const forgot = searchParams.get("forgot");
+    const signupSuccess = searchParams.get("signup");
     const emailParam = searchParams.get("email");
     setIsSignUp(view === "signup");
-    if (resetSent === "1") {
+    if (signupSuccess === "success") {
+      setMessage({ text: "Cuenta creada. Revisa tu email para confirmar y luego inicia sesión.", type: "success" });
+    } else if (resetSent === "1") {
       setMessage({ text: "Revisa tu correo para restablecer la contraseña. Haz clic en el enlace que te hemos enviado.", type: "success" });
     } else if (forgot === "1") {
       setMessage({ text: "Introduce tu email y pulsa 'Forgot password?' para recibir el enlace de recuperación.", type: "success" });
@@ -119,7 +122,7 @@ function LoginForm() {
           },
         });
         if (error) throw error;
-        setMessage({ text: "¡Cuenta creada! Revisa tu email para confirmar.", type: 'success' });
+        window.location.href = "/login?signup=success";
       } else {
         // --- MODO LOGIN ---
         const { error } = await supabase.auth.signInWithPassword({
