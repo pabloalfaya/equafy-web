@@ -721,48 +721,54 @@ export default function ProjectDashboardPage() {
                 </div>
             </div>
 
-            {/* Team Breakdown */}
+            {/* Team Breakdown - datos reales del proyecto */}
             <section className="mt-12">
               <h3 className="text-2xl font-bold tracking-tight text-slate-900 mb-2">Team Breakdown</h3>
               <p className="text-slate-500 font-medium mb-8">División dinámica basada en contribuciones.</p>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                {[
-                  { name: "Alex", role: "Founder • TIME & IP", ownership: "45.0%", pctNum: 45, points: "1200", fixed: "20%", cap: "50%", img: "https://i.pravatar.cc/150?img=12", barColor: "bg-emerald-500", ringColor: "ring-emerald-500" },
-                  { name: "Ben", role: "Co-founder • TIME & IP", ownership: "30.0%", pctNum: 30, points: "800", fixed: "15%", cap: "35%", img: "https://i.pravatar.cc/150?img=33", barColor: "bg-blue-500", ringColor: "ring-blue-500" },
-                  { name: "VC Fund A", role: "CASH", ownership: "18.75%", pctNum: 18.75, points: "0", fixed: "10%", cap: "15%", img: "https://i.pravatar.cc/150?img=44", barColor: "bg-orange-500", ringColor: "ring-orange-500" },
-                  { name: "Sarah", role: "Dev • TIME", ownership: "6.25%", pctNum: 6.25, points: "400", fixed: "—", cap: "—", img: "https://i.pravatar.cc/150?img=47", barColor: "bg-purple-500", ringColor: "ring-purple-500" },
-                ].map((m) => (
-                  <div key={m.name} className="bg-white rounded-2xl p-8 border border-slate-100 shadow-sm hover:shadow-md transition-shadow min-w-0">
-                    <div className="flex items-center gap-4 mb-4">
-                      <img src={m.img} className={`h-14 w-14 rounded-full object-cover ring-2 ${m.ringColor} ring-offset-2`} alt={m.name} />
-                      <div className="min-w-0 flex-1">
-                        <p className="font-bold text-slate-900 truncate">{m.name}</p>
-                        <p className="text-xs text-slate-500 font-medium uppercase tracking-wider">{m.role}</p>
+              {(() => {
+                const { rows } = getEquitySummaryForFinalize(members, contributions, project);
+                const barColors = ["bg-emerald-500", "bg-blue-500", "bg-violet-500", "bg-amber-500", "bg-red-500", "bg-cyan-500", "bg-pink-500", "bg-indigo-500"];
+                const ringColors = ["ring-emerald-500", "ring-blue-500", "ring-violet-500", "ring-amber-500", "ring-red-500", "ring-cyan-500", "ring-pink-500", "ring-indigo-500"];
+                const getInitials = (name: string) => name.split(" ").map((n) => n[0]).join("").slice(0, 2).toUpperCase();
+                if (rows.length === 0) {
+                  return <p className="text-slate-500">No hay miembros en el proyecto. Añade miembros desde el botón Team.</p>;
+                }
+                return (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                    {rows.map((r, i) => (
+                      <div key={r.name} className="bg-white rounded-2xl p-6 border border-slate-100 shadow-sm hover:shadow-md transition-shadow min-w-0">
+                        <div className="flex items-center gap-4 mb-4">
+                          <div className={`h-14 w-14 rounded-full flex items-center justify-center font-bold text-white text-sm shrink-0 ring-2 ring-offset-2 ${ringColors[i % ringColors.length]}`} style={{ backgroundColor: ["#10b981", "#3b82f6", "#8b5cf6", "#f59e0b", "#ef4444", "#06b6d4", "#ec4899", "#6366f1"][i % 8] }}>
+                            {getInitials(r.name)}
+                          </div>
+                          <div className="min-w-0 flex-1">
+                            <p className="font-bold text-slate-900 truncate">{r.name}</p>
+                            <p className="text-xs text-slate-500 font-medium uppercase tracking-wider">{r.role}</p>
+                          </div>
+                        </div>
+                        <div className="h-2 bg-slate-100 rounded-full overflow-hidden mb-4">
+                          <div className={`h-full ${barColors[i % barColors.length]} rounded-full transition-all`} style={{ width: `${Math.min(r.equityPct, 100)}%` }} />
+                        </div>
+                        <p className="text-xl font-bold text-slate-900 tabular-nums mb-5">{r.equityPct.toFixed(1)}%</p>
+                        <div className="border-t border-slate-100 pt-4 space-y-3">
+                          <div className="flex justify-between items-center">
+                            <span className="text-xs text-slate-500 font-medium uppercase tracking-wider">Total Points</span>
+                            <span className="font-bold text-slate-700 tabular-nums">{r.points.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+                          </div>
+                          <div className="flex justify-between items-center">
+                            <span className="text-xs text-slate-500 font-medium uppercase tracking-wider">Fixed Equity</span>
+                            <span className="font-bold text-slate-700 tabular-nums">{r.fixed > 0 ? `${r.fixed.toFixed(2)}%` : "—"}</span>
+                          </div>
+                          <div className="flex justify-between items-center">
+                            <span className="text-xs text-slate-500 font-medium uppercase tracking-wider">Limit / Cap</span>
+                            <span className="font-bold text-slate-700 tabular-nums">{r.capFormatted}</span>
+                          </div>
+                        </div>
                       </div>
-                    </div>
-                    <div className="h-2 bg-slate-100 rounded-full overflow-hidden mb-4">
-                      <div className={`h-full ${m.barColor} rounded-full transition-all`} style={{ width: `${m.pctNum}%` }} />
-                    </div>
-                    <div className="flex items-center justify-between mb-5">
-                      <span className="text-xl font-bold text-slate-900 tabular-nums">{m.ownership}</span>
-                    </div>
-                    <div className="border-t border-slate-100 pt-5 space-y-4">
-                      <div className="flex justify-between items-center">
-                        <span className="text-xs text-slate-500 font-medium uppercase tracking-wider">Total Points</span>
-                        <span className="font-bold text-slate-700 tabular-nums">{m.points}</span>
-                      </div>
-                      <div className="flex justify-between items-center">
-                        <span className="text-xs text-slate-500 font-medium uppercase tracking-wider">Fixed Equity</span>
-                        <span className="font-bold text-slate-700 tabular-nums">{m.fixed}</span>
-                      </div>
-                      <div className="flex justify-between items-center">
-                        <span className="text-xs text-slate-500 font-medium uppercase tracking-wider">Limit / Cap</span>
-                        <span className="font-bold text-slate-700 tabular-nums">{m.cap}</span>
-                      </div>
-                    </div>
+                    ))}
                   </div>
-                ))}
-              </div>
+                );
+              })()}
             </section>
             </div>
         </div>
