@@ -160,149 +160,144 @@ export default function LandingPage() {
       </section>
 
       {/* --- FRAMEWORK SELECTION --- */}
-      <div className="mx-4 sm:mx-6 lg:mx-8 mt-24 md:mt-32 mb-12 rounded-[32px] overflow-hidden">
-      <section className="relative z-10 w-full bg-[#0B0F19] text-white pt-16 pb-24">
-          <div className="absolute inset-0 rounded-[32px] bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-emerald-900/20 via-[#0B0F19] to-[#0B0F19] pointer-events-none"></div>
-          <div className="relative w-full">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center mb-12 max-w-3xl mx-auto">
-              <h2 className="text-4xl md:text-5xl font-bold tracking-tight mb-4 bg-clip-text text-transparent bg-gradient-to-b from-white to-white/60 py-2">
-                Choose your Equity Framework
-              </h2>
-              <p className="text-slate-400 text-lg font-medium leading-relaxed">
-                Every company is different. Select the mathematical logic that fits your stage, from bootstrap to Series A.
-              </p>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 items-start">
-              
-              {/* --- CUSTOM MODEL --- */}
-              <div className="bg-white/[0.03] border border-white/10 rounded-[32px] p-8 hover:bg-white/[0.05] transition-all duration-300 group h-full flex flex-col">
-                <div className="mb-8">
-                  <div className="w-12 h-12 rounded-2xl bg-slate-800 flex items-center justify-center mb-6 group-hover:bg-slate-700 transition-colors">
-                    <Sliders className="w-6 h-6 text-slate-300" />
-                  </div>
-                  <h3 className="text-2xl font-bold text-white mb-2">Custom Model</h3>
-                  <p className="text-slate-400 text-sm font-medium">Total control for complex setups.</p>
-                </div>
-                <div className="space-y-4 mb-8 flex-grow">
-                  <div className="flex items-center gap-3 text-slate-300 font-medium">
-                    <CheckCircle2 className="w-5 h-5 text-slate-500" /> Fully Editable Multipliers
-                  </div>
-                  <div className="flex items-center gap-3 text-slate-300 font-medium">
-                    <CheckCircle2 className="w-5 h-5 text-slate-500" /> Manual Configuration
-                  </div>
-                  
-                  <div className={`mt-6 rounded-xl p-4 border flex items-center justify-between transition-colors ${customRisk ? 'border-emerald-500/30 bg-white/5' : 'border-white/5 bg-transparent'}`}>
-                    <div className="flex items-center gap-2">
-                      <PieChart className={`w-4 h-4 transition-colors ${customRisk ? 'text-emerald-400' : 'text-slate-500'}`} />
-                      <span className={`text-sm font-bold transition-colors ${customRisk ? 'text-white' : 'text-slate-400'}`}>
-                        Logarithmic Risk <span className="text-[10px] opacity-70 font-normal ml-1">(Optional)</span>
-                      </span>
-                    </div>
-                    <button 
-                      onClick={() => setCustomRisk(!customRisk)}
-                      className={`w-8 h-4 rounded-full relative transition-colors ${customRisk ? 'bg-emerald-500' : 'bg-slate-700'}`}
-                    >
-                      <div className={`absolute top-0.5 w-3 h-3 bg-white rounded-full transition-all ${customRisk ? 'right-0.5' : 'left-0.5'}`}></div>
-                    </button>
-                  </div>
-                </div>
-                <Link href="/models#custom" className="w-full">
-                  <button className="w-full py-4 rounded-2xl border border-white/10 text-white font-bold hover:bg-white hover:text-slate-900 transition-all uppercase text-[11px] tracking-widest">
-                    Learn more about Custom Model
-                  </button>
-                </Link>
-              </div>
-
-              {/* --- JUST SPLIT MODEL --- */}
-              <div className="relative bg-emerald-900/10 border border-emerald-500/50 rounded-[32px] p-8 transition-all duration-300 shadow-[0_0_80px_-20px_rgba(16,185,129,0.2)] h-full flex flex-col transform lg:-translate-y-4 z-20">
-                <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-emerald-500 text-white px-4 py-1.5 rounded-full text-[10px] font-black tracking-widest uppercase shadow-lg border border-emerald-400">
-                  Recommended
-                </div>
-                <div className="mb-8">
-                  <div className="w-12 h-12 rounded-2xl bg-emerald-500 flex items-center justify-center mb-6 shadow-lg shadow-emerald-500/30">
-                    <ShieldCheck className="w-6 h-6 text-white" />
-                  </div>
-                  <h3 className="text-2xl font-bold text-white mb-2">Just Split Model</h3>
-                  <p className="text-emerald-400 text-sm font-bold">The Industry Standard</p>
-                </div>
-                <div className="space-y-6 mb-8 flex-grow">
-                  <div className="bg-emerald-500/10 border border-emerald-500/20 rounded-2xl p-4">
-                      <div className="flex justify-between items-center mb-1">
-                          <span className="text-xs font-bold text-emerald-400 uppercase tracking-widest">Capital (Cash)</span>
-                          <span className="text-xl font-bold text-white">x4</span>
-                      </div>
-                  </div>
-                  <div className="bg-blue-500/10 border border-blue-500/20 rounded-2xl p-4">
-                      <div className="flex justify-between items-center mb-1">
-                          <span className="text-xs font-bold text-blue-400 uppercase tracking-widest">Work & IP</span>
-                          <span className="text-xl font-bold text-white">x2</span>
-                      </div>
-                      <p className="text-xs text-blue-200/60 mt-2 font-medium">Tangible and intangible contributions</p>
-                  </div>
-                  
-                  <div className={`rounded-xl p-4 border flex items-center justify-between transition-colors ${standardRisk ? 'border-emerald-500/30 bg-white/5' : 'border-white/5 bg-transparent'}`}>
-                    <div className="flex items-center gap-2">
-                      <PieChart className={`w-4 h-4 transition-colors ${standardRisk ? 'text-emerald-400' : 'text-slate-500'}`} />
-                      <span className={`text-sm font-bold transition-colors ${standardRisk ? 'text-white' : 'text-slate-400'}`}>
-                        Logarithmic Risk <span className="text-[10px] opacity-70 font-normal ml-1">(Optional)</span>
-                      </span>
-                    </div>
-                    <button 
-                      onClick={() => setStandardRisk(!standardRisk)}
-                      className={`w-8 h-4 rounded-full relative transition-colors ${standardRisk ? 'bg-emerald-500' : 'bg-slate-700'}`}
-                    >
-                      <div className={`absolute top-0.5 w-3 h-3 bg-white rounded-full transition-all ${standardRisk ? 'right-0.5' : 'left-0.5'}`}></div>
-                    </button>
-                  </div>
-                </div>
-                <Link href="/models#standard" className="w-full">
-                  <button className="w-full py-4 rounded-2xl bg-emerald-500 text-white font-bold hover:bg-emerald-400 hover:scale-[1.02] shadow-lg shadow-emerald-900/20 text-center transition-all uppercase text-[11px] tracking-widest">
-                    Learn more about Just Split Model
-                  </button>
-                </Link>
-              </div>
-
-              {/* --- FLAT MODEL --- */}
-              <div className="bg-white/[0.03] border border-white/10 rounded-[32px] p-8 hover:bg-white/[0.05] transition-all duration-300 group h-full flex flex-col">
-                <div className="mb-8">
-                  <div className="w-12 h-12 rounded-2xl bg-slate-800 flex items-center justify-center mb-6 group-hover:bg-purple-900/30 transition-colors">
-                    <Scale className="w-6 h-6 text-purple-400" />
-                  </div>
-                  <h3 className="text-2xl font-bold text-white mb-2">Flat Model</h3>
-                  <p className="text-purple-400 text-sm font-medium">Simple fixed split.</p>
-                </div>
-                <div className="space-y-4 mb-8 flex-grow">
-                    <div className="flex items-center gap-3 text-slate-300 font-medium">
-                    <CheckCircle2 className="w-5 h-5 text-slate-500" /> Equal Multipliers (x1)
-                  </div>
-                  <div className="flex items-center gap-3 text-slate-300 font-medium">
-                    <CheckCircle2 className="w-5 h-5 text-slate-500" /> Good for Service Agencies
-                  </div>
-                  
-                  <div className="mt-4 p-4 rounded-xl bg-red-500/10 border border-red-500/20">
-                      <div className="flex gap-2 text-red-400 mb-1">
-                          <AlertTriangle className="w-4 h-4" />
-                          <span className="text-xs font-bold uppercase">Caution</span>
-                      </div>
-                      <p className="text-xs text-red-200/70 leading-relaxed">
-                          Discourages cash investment as it treats liquid capital equal to time.
-                      </p>
-                  </div>
-                </div>
-                <Link href="/models#flat" className="w-full">
-                  <button className="w-full py-4 rounded-2xl border border-white/10 text-white font-bold hover:bg-white hover:text-slate-900 transition-all uppercase text-[11px] tracking-widest">
-                    Learn more about Flat Model
-                  </button>
-                </Link>
-              </div>
-
-            </div>
-            </div>
+      <section className="relative z-10 w-full bg-slate-100 pt-16 pb-24 mt-24 md:mt-32">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12 max-w-3xl mx-auto">
+            <h2 className="text-4xl md:text-5xl font-bold tracking-tight mb-4 text-slate-800">
+              Choose your Equity Framework
+            </h2>
+            <p className="text-slate-500 text-lg font-medium leading-relaxed">
+              Every company is different. Select the mathematical logic that fits your stage, from bootstrap to Series A.
+            </p>
           </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 items-stretch">
+            
+            {/* --- CUSTOM MODEL --- */}
+            <div className="bg-white border border-slate-200 rounded-2xl p-8 shadow-sm hover:shadow-md transition-shadow h-full flex flex-col">
+              <div className="mb-6">
+                <div className="w-12 h-12 rounded-xl bg-slate-100 flex items-center justify-center mb-4">
+                  <Sliders className="w-6 h-6 text-slate-600" />
+                </div>
+                <h3 className="text-2xl font-bold text-slate-800 mb-2">Custom Model</h3>
+                <p className="text-slate-500 text-sm font-medium">Total control for complex setups.</p>
+              </div>
+              <div className="space-y-4 mb-8 flex-grow">
+                <div className="flex items-center gap-3 text-slate-600 font-medium">
+                  <CheckCircle2 className="w-5 h-5 text-slate-400 shrink-0" /> Fully Editable Multipliers
+                </div>
+                <div className="flex items-center gap-3 text-slate-600 font-medium">
+                  <CheckCircle2 className="w-5 h-5 text-slate-400 shrink-0" /> Manual Configuration
+                </div>
+                
+                <div className={`mt-[7rem] rounded-xl p-4 border flex items-center justify-between transition-colors ${customRisk ? 'border-emerald-500/50 bg-emerald-50/50' : 'border-slate-200 bg-slate-50/50'}`}>
+                  <div className="flex items-center gap-2">
+                    <PieChart className={`w-4 h-4 transition-colors ${customRisk ? 'text-emerald-500' : 'text-slate-400'}`} />
+                    <span className={`text-sm font-bold transition-colors ${customRisk ? 'text-slate-800' : 'text-slate-600'}`}>
+                      Logarithmic Risk <span className="text-[10px] opacity-70 font-normal ml-1">(Optional)</span>
+                    </span>
+                  </div>
+                  <button 
+                    onClick={() => setCustomRisk(!customRisk)}
+                    className={`w-8 h-4 rounded-full relative transition-colors shrink-0 ${customRisk ? 'bg-emerald-500' : 'bg-slate-300'}`}
+                  >
+                    <div className={`absolute top-0.5 w-3 h-3 bg-white rounded-full transition-all shadow-sm ${customRisk ? 'right-0.5' : 'left-0.5'}`}></div>
+                  </button>
+                </div>
+              </div>
+              <Link href="/models#custom" className="w-full">
+                <button className="w-full py-4 rounded-xl border border-slate-200 bg-white text-slate-700 font-bold hover:bg-slate-50 hover:border-slate-300 transition-all uppercase text-[11px] tracking-widest">
+                  Learn more about Custom Model
+                </button>
+              </Link>
+            </div>
+
+            {/* --- JUST SPLIT MODEL (Recommended) --- */}
+            <div className="relative bg-white border-2 border-emerald-500 rounded-2xl p-8 shadow-md h-full flex flex-col transform lg:-translate-y-2 z-20">
+              <div className="absolute top-0 right-6 -translate-y-1/2 bg-emerald-500 text-white px-3 py-1 rounded-full text-[10px] font-black tracking-widest uppercase">
+                Recommended
+              </div>
+              <div className="mb-6">
+                <div className="w-12 h-12 rounded-xl bg-emerald-500 flex items-center justify-center mb-4">
+                  <ShieldCheck className="w-6 h-6 text-white" />
+                </div>
+                <h3 className="text-2xl font-bold text-slate-800 mb-2">Just Split Model</h3>
+                <p className="text-emerald-600 text-sm font-bold">The Industry Standard</p>
+              </div>
+              <div className="space-y-4 mb-8 flex-grow">
+                <div className="bg-slate-50 border border-slate-100 rounded-xl p-4">
+                  <div className="flex justify-between items-center mb-1">
+                    <span className="text-xs font-bold text-slate-600 uppercase tracking-widest">Capital (Cash)</span>
+                    <span className="text-xl font-bold text-slate-800">x4</span>
+                  </div>
+                </div>
+                <div className="bg-slate-50 border border-slate-100 rounded-xl p-4">
+                  <div className="flex justify-between items-center mb-1">
+                    <span className="text-xs font-bold text-slate-600 uppercase tracking-widest">Work & IP</span>
+                    <span className="text-xl font-bold text-slate-800">x2</span>
+                  </div>
+                  <p className="text-xs text-slate-500 mt-2 font-medium">Tangible and intangible contributions</p>
+                </div>
+                
+                <div className={`rounded-xl p-4 border flex items-center justify-between transition-colors ${standardRisk ? 'border-emerald-500/50 bg-emerald-50/50' : 'border-slate-200 bg-slate-50/50'}`}>
+                  <div className="flex items-center gap-2">
+                    <PieChart className={`w-4 h-4 transition-colors ${standardRisk ? 'text-emerald-500' : 'text-slate-400'}`} />
+                    <span className={`text-sm font-bold transition-colors ${standardRisk ? 'text-slate-800' : 'text-slate-600'}`}>
+                      Logarithmic Risk <span className="text-[10px] opacity-70 font-normal ml-1">(Optional)</span>
+                    </span>
+                  </div>
+                  <button 
+                    onClick={() => setStandardRisk(!standardRisk)}
+                    className={`w-8 h-4 rounded-full relative transition-colors shrink-0 ${standardRisk ? 'bg-emerald-500' : 'bg-slate-300'}`}
+                  >
+                    <div className={`absolute top-0.5 w-3 h-3 bg-white rounded-full transition-all shadow-sm ${standardRisk ? 'right-0.5' : 'left-0.5'}`}></div>
+                  </button>
+                </div>
+              </div>
+              <Link href="/models#standard" className="w-full">
+                <button className="w-full py-4 rounded-xl border-2 border-emerald-500 bg-white text-slate-700 font-bold hover:bg-emerald-50 transition-all uppercase text-[11px] tracking-widest">
+                  Learn more about Just Split Model
+                </button>
+              </Link>
+            </div>
+
+            {/* --- FLAT MODEL --- */}
+            <div className="bg-white border border-slate-200 rounded-2xl p-8 shadow-sm hover:shadow-md transition-shadow h-full flex flex-col">
+              <div className="mb-6">
+                <div className="w-12 h-12 rounded-xl bg-slate-100 flex items-center justify-center mb-4">
+                  <Scale className="w-6 h-6 text-purple-600" />
+                </div>
+                <h3 className="text-2xl font-bold text-slate-800 mb-2">Flat Model</h3>
+                <p className="text-purple-600 text-sm font-medium">Simple fixed split.</p>
+              </div>
+              <div className="space-y-4 mb-8 flex-grow">
+                <div className="flex items-center gap-3 text-slate-600 font-medium">
+                  <CheckCircle2 className="w-5 h-5 text-slate-400 shrink-0" /> Equal Multipliers (x1)
+                </div>
+                <div className="flex items-center gap-3 text-slate-600 font-medium">
+                  <CheckCircle2 className="w-5 h-5 text-slate-400 shrink-0" /> Good for Service Agencies
+                </div>
+                
+                <div className="mt-4 p-4 rounded-xl bg-slate-100 border border-slate-200">
+                  <div className="flex gap-2 text-amber-600 mb-1">
+                    <AlertTriangle className="w-4 h-4 shrink-0" />
+                    <span className="text-xs font-bold uppercase">Caution</span>
+                  </div>
+                  <p className="text-xs text-slate-600 leading-relaxed">
+                    Discourages cash investment as it treats liquid capital equal to time.
+                  </p>
+                </div>
+              </div>
+              <Link href="/models#flat" className="w-full">
+                <button className="w-full py-4 rounded-xl border border-slate-200 bg-white text-slate-700 font-bold hover:bg-slate-50 hover:border-slate-300 transition-all uppercase text-[11px] tracking-widest">
+                  Learn more about Flat Model
+                </button>
+              </Link>
+            </div>
+
+          </div>
+        </div>
       </section>
-      </div>
 
       <VideoDemoModal open={isVideoOpen} onClose={() => setIsVideoOpen(false)} />
     </div>
