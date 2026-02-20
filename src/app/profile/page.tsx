@@ -66,7 +66,7 @@ export default function ProfilePage() {
     );
     if (!ok) return;
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: `${window.location.origin}/login`,
+      redirectTo: `${window.location.origin}/auth/update-password`,
     });
     if (error) {
       alert("Failed to send reset email: " + error.message);
