@@ -9,6 +9,11 @@ export async function middleware(request: NextRequest) {
 
   const pathname = request.nextUrl.pathname;
 
+  // 2. Permitir archivos estáticos (public folder) - logos, imágenes, favicon, etc.
+  if (/\.(png|ico|svg|jpg|jpeg|webp|gif|css|js|woff2?|xml)$/i.test(pathname)) {
+    return NextResponse.next();
+  }
+
   // Rutas públicas (sin requerir auth) - incluir sitemap y robots para SEO
   const isPublicRoute =
     pathname === "/sitemap.xml" ||
