@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { TrendingUp, PieChart, FileText, ArrowRight, PlayCircle } from "lucide-react";
+import { PlayCircle } from "lucide-react";
 import { VideoDemoModal } from "@/components/VideoDemoModal";
 
 export default function WhatIsEquilyPage() {
@@ -14,7 +14,6 @@ export default function WhatIsEquilyPage() {
       {/* --- BACKGROUND AMBIENTAL --- */}
       <div className="fixed inset-0 z-0 pointer-events-none">
         <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-emerald-400/10 blur-[120px] rounded-full opacity-50 mix-blend-multiply"></div>
-        <div className="absolute bottom-0 left-0 w-[800px] h-[800px] bg-blue-400/10 blur-[120px] rounded-full opacity-40 mix-blend-multiply"></div>
         <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]"></div>
       </div>
 
@@ -54,7 +53,7 @@ export default function WhatIsEquilyPage() {
 
             {/* Lado Derecho: IMAGEN LIMPIA */}
             <div className="relative flex items-center justify-center">
-              <div className="absolute inset-0 bg-gradient-to-tr from-emerald-500/5 to-blue-500/5 rounded-full blur-3xl -z-10"></div>
+              <div className="absolute inset-0 bg-gradient-to-tr from-emerald-500/5 to-transparent rounded-full blur-3xl -z-10"></div>
               <img 
                 src="/what-is-equily-hero.png" 
                 alt="Equily Dynamic Equity Illustration" 
@@ -64,35 +63,6 @@ export default function WhatIsEquilyPage() {
           </div>
         </div>
       </main>
-
-      {/* --- SECCIÓN "CORE FEATURES" (Dark Mode) --- */}
-      <section className="py-20 md:py-24 relative z-10 w-full bg-[#0B0F19] text-white overflow-hidden">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-emerald-900/20 via-[#0B0F19] to-[#0B0F19]"></div>
-        <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-emerald-500/20 to-transparent"></div>
-        
-        <div className="mx-auto max-w-screen-2xl px-6 md:px-12 lg:px-24 relative">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold tracking-tight mb-4">How it works under the hood</h2>
-            <p className="text-slate-400 text-lg">A simple process for complex fairness.</p>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
-            {[
-              { title: "Track Contributions", desc: "Automate the tracking of time, expertise, and capital.", icon: TrendingUp, color: "text-emerald-400", bg: "bg-emerald-400/10", border: "border-emerald-500/20" },
-              { title: "Algorithm Runs", desc: "Our proprietary algorithm processes contributions fairly.", icon: PieChart, color: "text-blue-400", bg: "bg-blue-400/10", border: "border-blue-500/20" },
-              { title: "Legal Docs", desc: "Instantly generate legally binding agreements.", icon: FileText, color: "text-purple-400", bg: "bg-purple-400/10", border: "border-purple-500/20" }
-            ].map((card, i) => (
-              <div key={i} className={`bg-white/[0.03] backdrop-blur-sm rounded-[32px] p-8 border ${card.border} hover:bg-white/[0.05] transition-all group`}>
-                <div className={`h-14 w-14 ${card.bg} rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform`}>
-                  <card.icon className={`${card.color} h-7 w-7`} />
-                </div>
-                <h3 className="text-xl font-bold text-white mb-3">{card.title}</h3>
-                <p className="text-slate-400 font-medium leading-relaxed">{card.desc}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
 
       <VideoDemoModal open={isVideoOpen} onClose={() => setIsVideoOpen(false)} />
     </div>
