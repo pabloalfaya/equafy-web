@@ -3,7 +3,7 @@
 import { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { createClient } from "@/utils/supabase/client";
-import { Loader2, Lock, Mail, ArrowLeft } from "lucide-react";
+import { Loader2, Lock, Mail, ArrowLeft, User } from "lucide-react";
 import Link from "next/link";
 
 function LoginForm() {
@@ -13,9 +13,10 @@ function LoginForm() {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [fullName, setFullName] = useState("");
+  const [signUpConfirmPassword, setSignUpConfirmPassword] = useState("");
   const [loading, setLoading] = useState(false);
   
-  // Inicializamos en false, pero el useEffect lo corregirá al instante si hace falta
   const [isSignUp, setIsSignUp] = useState(false);
   const [isRecoveryMode, setIsRecoveryMode] = useState(false);
   const [newPassword, setNewPassword] = useState("");
@@ -90,17 +91,31 @@ function LoginForm() {
 
   const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (isSignUp) {
+      if (password !== signUpConfirmPassword) {
+        setMessage({ text: "Las contraseñas no coinciden.", type: "error" });
+        return;
+      }
+      if (password.length < 6) {
+        setMessage({ text: "La contraseña debe tener al menos 6 caracteres.", type: "error" });
+        return;
+      }
+    }
+
     setLoading(true);
     setMessage(null);
 
     try {
       if (isSignUp) {
-        // --- MODO REGISTRO ---
         const { error } = await supabase.auth.signUp({
           email,
           password,
           options: { 
-            emailRedirectTo: `${window.location.origin}/auth/callback` 
+            emailRedirectTo: `${window.location.origin}/auth/callback`,
+            data: {
+              display_name: fullName.trim(),
+            },
           },
         });
         if (error) throw error;
@@ -212,6 +227,23 @@ function LoginForm() {
           </form>
         ) : (
         <form className="mt-5 md:mt-6 space-y-4" onSubmit={handleAuth}>
+          {isSignUp && (
+            <div>
+              <label className="block text-xs md:text-sm font-bold text-slate-700 mb-1">Full Name</label>
+              <div className="relative">
+                <User className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 md:h-5 md:w-5 text-slate-400" />
+                <input
+                  type="text"
+                  required={isSignUp}
+                  value={fullName}
+                  onChange={(e) => setFullName(e.target.value)}
+                  className="block w-full rounded-xl border border-slate-200 py-2.5 md:py-3 pl-9 md:pl-10 pr-3 text-sm text-slate-900 placeholder:text-slate-400 focus:border-emerald-500 focus:outline-none focus:ring-4 focus:ring-emerald-500/10 transition-all"
+                  placeholder="Jane Doe"
+                />
+              </div>
+            </div>
+          )}
+
           <div>
             <label className="block text-xs md:text-sm font-bold text-slate-700 mb-1">Email</label>
             <div className="relative">
@@ -245,13 +277,32 @@ function LoginForm() {
               <input
                 type="password"
                 required
+                minLength={isSignUp ? 6 : undefined}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 className="block w-full rounded-xl border border-slate-200 py-2.5 md:py-3 pl-9 md:pl-10 pr-3 text-sm text-slate-900 placeholder:text-slate-400 focus:border-emerald-500 focus:outline-none focus:ring-4 focus:ring-emerald-500/10 transition-all"
-                placeholder="••••••••"
+                placeholder={isSignUp ? "Min. 6 characters" : "••••••••"}
               />
             </div>
           </div>
+
+          {isSignUp && (
+            <div>
+              <label className="block text-xs md:text-sm font-bold text-slate-700 mb-1">Confirm Password</label>
+              <div className="relative">
+                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 md:h-5 md:w-5 text-slate-400" />
+                <input
+                  type="password"
+                  required
+                  minLength={6}
+                  value={signUpConfirmPassword}
+                  onChange={(e) => setSignUpConfirmPassword(e.target.value)}
+                  className="block w-full rounded-xl border border-slate-200 py-2.5 md:py-3 pl-9 md:pl-10 pr-3 text-sm text-slate-900 placeholder:text-slate-400 focus:border-emerald-500 focus:outline-none focus:ring-4 focus:ring-emerald-500/10 transition-all"
+                  placeholder="Repeat password"
+                />
+              </div>
+            </div>
+          )}
 
           <button
             type="submit"
@@ -271,8 +322,11 @@ function LoginForm() {
             // Al hacer clic manual, alternamos el estado y limpiamos la URL visualmente (opcional)
             onClick={() => { 
               setIsSignUp(!isSignUp); 
-              setMessage(null); 
-              // Opcional: limpiar query params sin recargar para que no interfiera si el usuario cambia de opinión
+              setMessage(null);
+              if (!isSignUp) {
+                setFullName("");
+                setSignUpConfirmPassword("");
+              }
               if (window.history.pushState) {
                 const newUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
                 window.history.pushState({path:newUrl},'',newUrl);
