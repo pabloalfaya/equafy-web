@@ -32,7 +32,7 @@ export const metadata: Metadata = {
   },
   metadataBase: new URL(baseUrl),
   icons: {
-    icon: "/favicon.ico",
+    icon: "/equily-mark.png",
   },
   verification: {
     google: "zFCVOKbGDiNQfYNpKE8Xe8mhPQ4NHRJPreGlC_aGlwk",
