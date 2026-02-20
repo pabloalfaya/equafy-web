@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useSearchParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import {
   ShieldCheck,
@@ -19,6 +20,15 @@ export default function LandingPage() {
   const [standardRisk, setStandardRisk] = useState(true);
   const [customRisk, setCustomRisk] = useState(false);
   const [isVideoOpen, setIsVideoOpen] = useState(false);
+  const searchParams = useSearchParams();
+  const router = useRouter();
+
+  useEffect(() => {
+    const errorCode = searchParams.get("error_code");
+    if (errorCode === "otp_expired" || errorCode === "access_denied") {
+      router.replace(`/login?error_code=${errorCode}&error_description=${encodeURIComponent(searchParams.get("error_description") || "Link expired or invalid")}`);
+    }
+  }, [searchParams, router]);
 
   return (
     <div className="min-h-screen bg-[#F8FAFC] font-sans text-slate-900 selection:bg-emerald-100 selection:text-emerald-900 overflow-x-hidden">

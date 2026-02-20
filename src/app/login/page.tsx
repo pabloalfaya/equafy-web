@@ -17,20 +17,67 @@ function LoginForm() {
   
   // Inicializamos en false, pero el useEffect lo corregirá al instante si hace falta
   const [isSignUp, setIsSignUp] = useState(false);
+  const [isRecoveryMode, setIsRecoveryMode] = useState(false);
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   
   const [message, setMessage] = useState<{ text: string; type: 'error' | 'success' } | null>(null);
 
-  // --- LÓGICA DE DETECCIÓN AUTOMÁTICA ---
+  // --- DETECTAR ERRORES DE RECUPERACIÓN (otp_expired, etc.) ---
   useEffect(() => {
-    // Si la URL tiene ?view=signup, forzamos el modo registro
-    const view = searchParams.get("view");
-    if (view === "signup") {
-      setIsSignUp(true);
-    } else {
-      // Si no, aseguramos que esté en modo Login
-      setIsSignUp(false);
+    const errorCode = searchParams.get("error_code");
+    const errorDesc = searchParams.get("error_description");
+    if (errorCode === "otp_expired" || (typeof window !== "undefined" && window.location.hash.includes("otp_expired"))) {
+      setMessage({ 
+        text: "Este enlace ha caducado. Solicita uno nuevo con 'Contraseña olvidada' e intenta de nuevo antes de 1 hora.", 
+        type: "error" 
+      });
+      if (typeof window !== "undefined" && window.history.replaceState) {
+        window.history.replaceState({}, "", window.location.pathname);
+      }
+    } else if (errorCode && errorDesc) {
+      setMessage({ text: decodeURIComponent(errorDesc.replace(/\+/g, " ")), type: "error" });
     }
   }, [searchParams]);
+
+  // --- DETECTAR MODO RECUPERACIÓN (enlace válido con type=recovery) ---
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const hash = window.location.hash || "";
+    if (hash.includes("type=recovery")) {
+      setIsRecoveryMode(true);
+    }
+  }, []);
+
+  // --- LÓGICA DE DETECCIÓN AUTOMÁTICA (signup vs login) ---
+  useEffect(() => {
+    const view = searchParams.get("view");
+    setIsSignUp(view === "signup");
+  }, [searchParams]);
+
+  const handleUpdatePassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (newPassword !== confirmPassword) {
+      setMessage({ text: "Las contraseñas no coinciden.", type: "error" });
+      return;
+    }
+    if (newPassword.length < 6) {
+      setMessage({ text: "La contraseña debe tener al menos 6 caracteres.", type: "error" });
+      return;
+    }
+    setLoading(true);
+    setMessage(null);
+    try {
+      const { error } = await supabase.auth.updateUser({ password: newPassword });
+      if (error) throw error;
+      setMessage({ text: "Contraseña actualizada. Redirigiendo...", type: "success" });
+      setTimeout(() => { window.location.href = "/dashboard"; }, 1500);
+    } catch (error: any) {
+      setMessage({ text: error.message, type: "error" });
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -98,10 +145,12 @@ function LoginForm() {
         
         <div className="text-center">
           <h2 className="text-2xl md:text-3xl font-black text-slate-900">
-            {isSignUp ? "Create Account" : "Welcome Back"}
+            {isRecoveryMode ? "Nueva contraseña" : isSignUp ? "Create Account" : "Welcome Back"}
           </h2>
           <p className="mt-1.5 md:mt-2 text-sm md:text-base text-slate-500">
-            {isSignUp ? "Start managing equity properly." : "Enter your details to access."}
+            {isRecoveryMode 
+              ? "Introduce tu nueva contraseña." 
+              : isSignUp ? "Start managing equity properly." : "Enter your details to access."}
           </p>
         </div>
 
@@ -111,6 +160,48 @@ function LoginForm() {
           </div>
         )}
 
+        {isRecoveryMode ? (
+          <form className="mt-5 md:mt-6 space-y-4" onSubmit={handleUpdatePassword}>
+            <div>
+              <label className="block text-xs md:text-sm font-bold text-slate-700 mb-1">Nueva contraseña</label>
+              <div className="relative">
+                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 md:h-5 md:w-5 text-slate-400" />
+                <input
+                  type="password"
+                  required
+                  minLength={6}
+                  value={newPassword}
+                  onChange={(e) => setNewPassword(e.target.value)}
+                  className="block w-full rounded-xl border border-slate-200 py-2.5 md:py-3 pl-9 md:pl-10 pr-3 text-sm text-slate-900 placeholder:text-slate-400 focus:border-emerald-500 focus:outline-none focus:ring-4 focus:ring-emerald-500/10 transition-all"
+                  placeholder="Mínimo 6 caracteres"
+                />
+              </div>
+            </div>
+            <div>
+              <label className="block text-xs md:text-sm font-bold text-slate-700 mb-1">Confirmar contraseña</label>
+              <div className="relative">
+                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 md:h-5 md:w-5 text-slate-400" />
+                <input
+                  type="password"
+                  required
+                  minLength={6}
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  className="block w-full rounded-xl border border-slate-200 py-2.5 md:py-3 pl-9 md:pl-10 pr-3 text-sm text-slate-900 placeholder:text-slate-400 focus:border-emerald-500 focus:outline-none focus:ring-4 focus:ring-emerald-500/10 transition-all"
+                  placeholder="Repite la contraseña"
+                />
+              </div>
+            </div>
+            <button
+              type="submit"
+              disabled={loading}
+              className="group relative flex w-full justify-center rounded-xl bg-slate-900 py-3 md:py-3.5 px-4 text-sm font-bold text-white hover:bg-slate-800 disabled:opacity-70 transition-all shadow-lg hover:shadow-xl hover:-translate-y-0.5"
+            >
+              {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
+              Guardar nueva contraseña
+            </button>
+          </form>
+        ) : (
         <form className="mt-5 md:mt-6 space-y-4" onSubmit={handleAuth}>
           <div>
             <label className="block text-xs md:text-sm font-bold text-slate-700 mb-1">Email</label>
@@ -162,7 +253,9 @@ function LoginForm() {
             {isSignUp ? "Create Free Account" : "Sign In"}
           </button>
         </form>
+        )}
 
+        {!isRecoveryMode && (
         <div className="text-center mt-4 md:mt-6 pt-4 md:pt-6 border-t border-slate-50">
           <button
             type="button"
@@ -181,6 +274,7 @@ function LoginForm() {
             {isSignUp ? "Already have an account? Sign In" : "New to Equily? Create Account"}
           </button>
         </div>
+        )}
       </div>
     </div>
   );
