@@ -720,6 +720,46 @@ export default function ProjectDashboardPage() {
                   )}
                 </div>
             </div>
+
+            {/* Team Breakdown - mock data for preview */}
+            <section className="mt-12">
+              <h3 className="text-sm font-bold text-slate-500 uppercase tracking-wider mb-6">Team Breakdown</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                {[
+                  { name: "Alex", role: "Owner", equityPct: 45, totalPoints: 1200, fixedEquity: 20, limit: 50 },
+                  { name: "Ben", role: "Co-founder", equityPct: 30, totalPoints: 800, fixedEquity: 15, limit: 35 },
+                  { name: "Sarah", role: "Contributor", equityPct: 15, totalPoints: 400, fixedEquity: 0, limit: null },
+                  { name: "VC Fund A", role: "Investor", equityPct: 10, totalPoints: 0, fixedEquity: 10, limit: 15 },
+                ].map((m) => (
+                  <div
+                    key={m.name}
+                    className="bg-white rounded-xl border border-slate-100 shadow-sm p-5"
+                  >
+                    <div className="flex items-center justify-between gap-2 mb-4">
+                      <span className="font-bold text-slate-900 truncate">{m.name}</span>
+                      <span className="shrink-0 px-2.5 py-0.5 text-xs font-bold rounded-full bg-slate-100 text-slate-600 capitalize">
+                        {m.role}
+                      </span>
+                    </div>
+                    <p className="text-3xl font-bold text-slate-900 mb-4">{m.equityPct}%</p>
+                    <div className="border-t border-slate-100 pt-4 grid grid-cols-2 gap-3 text-sm">
+                      <div>
+                        <p className="text-slate-400 font-medium text-xs uppercase tracking-wider">Total Points</p>
+                        <p className="font-bold text-slate-700">{m.totalPoints.toLocaleString()}</p>
+                      </div>
+                      <div>
+                        <p className="text-slate-400 font-medium text-xs uppercase tracking-wider">Fixed Equity</p>
+                        <p className="font-bold text-slate-700">{m.fixedEquity > 0 ? `${m.fixedEquity}%` : "—"}</p>
+                      </div>
+                      <div className="col-span-2">
+                        <p className="text-slate-400 font-medium text-xs uppercase tracking-wider">Limit / Hard Cap</p>
+                        <p className="font-bold text-slate-700">{m.limit != null ? `${m.limit}%` : "—"}</p>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </section>
             </div>
         </div>
       </main>
