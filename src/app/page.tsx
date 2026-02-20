@@ -33,64 +33,6 @@ export default function LandingPage() {
       {/* --- HERO SECTION --- */}
       <header className="relative pt-32 md:pt-40 pb-10 z-10 w-full overflow-hidden">
         <div className="mx-auto max-w-screen-2xl px-6 md:px-12 lg:px-24 text-center relative">
-          {/* Cap Table – círculo completo detrás del título */}
-          <div className="absolute left-1/2 top-[88%] -translate-x-1/2 -translate-y-1/2 -z-10 w-[calc(100%+1.5rem)] md:w-[calc(100%+3rem)] lg:w-[calc(100%+6rem)] opacity-65 pointer-events-none select-none aspect-square">
-            <svg
-              viewBox="0 0 200 200"
-              xmlns="http://www.w3.org/2000/svg"
-              className="w-full h-full"
-              preserveAspectRatio="xMidYMid meet"
-              aria-hidden
-            >
-              <g>
-                {/* Segment 1: 45% */}
-                <circle
-                  cx="100"
-                  cy="100"
-                  r="75"
-                  fill="none"
-                  stroke="#34d399"
-                  strokeWidth="6"
-                  strokeDasharray="212.06 259.18"
-                  strokeDashoffset="0"
-                />
-                {/* Segment 2: 30% */}
-                <circle
-                  cx="100"
-                  cy="100"
-                  r="75"
-                  fill="none"
-                  stroke="#60a5fa"
-                  strokeWidth="6"
-                  strokeDasharray="141.37 329.87"
-                  strokeDashoffset="-212.06"
-                />
-                {/* Segment 3: 15% */}
-                <circle
-                  cx="100"
-                  cy="100"
-                  r="75"
-                  fill="none"
-                  stroke="#a78bfa"
-                  strokeWidth="6"
-                  strokeDasharray="70.69 400.55"
-                  strokeDashoffset="-353.43"
-                />
-                {/* Segment 4: 10% */}
-                <circle
-                  cx="100"
-                  cy="100"
-                  r="75"
-                  fill="none"
-                  stroke="#f59e0b"
-                  strokeWidth="6"
-                  strokeDasharray="47.12 424.12"
-                  strokeDashoffset="-424.12"
-                />
-              </g>
-            </svg>
-          </div>
-
           <h1 className="relative z-20 text-6xl md:text-8xl font-bold tracking-tight text-slate-900 mb-5 leading-[1.1] md:leading-[1.1] py-2">
             Equit<span className="ml-[0.05em]">y</span> that <br className="hidden md:block" />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 to-teal-500">evolves with you.</span>
@@ -113,23 +55,25 @@ export default function LandingPage() {
           </div>
 
           {/* Infinite Marquee de funcionalidades */}
-          <div className="relative -z-20 mt-20 -mx-3 md:-mx-6 lg:-mx-12 w-[calc(100%+1.5rem)] md:w-[calc(100%+3rem)] lg:w-[calc(100%+6rem)] overflow-hidden">
+          <div className="relative z-20 mt-20 -mx-3 md:-mx-6 lg:-mx-12 w-[calc(100%+1.5rem)] md:w-[calc(100%+3rem)] lg:w-[calc(100%+6rem)] overflow-hidden">
             <div className="animate-marquee flex gap-6 w-max" role="marquee">
               {[...Array(3)].map((_, dup) => (
                 <div key={dup} className="flex gap-6 shrink-0">
                   {[
+                    "Add Contributions",
+                    "Dynamic Splitting",
+                    "Smart Multipliers",
+                    "Fixed Equity",
+                    "Limit Equity",
+                    "Freeze Project",
                     "Real-Time Cap Table",
                     "Binding Contracts",
-                    "Just Split Logic",
-                    "Stripe Integration",
                     "Role-Based Access",
                     "Audit Log",
-                    "PDF Export",
-                    "Smart Multipliers",
                   ].map((label) => (
                     <span
                       key={`${dup}-${label}`}
-                      className="shrink-0 px-6 py-2.5 rounded-full bg-white/80 backdrop-blur-sm border border-slate-200/60 text-slate-700 font-bold text-sm shadow-sm"
+                      className="shrink-0 text-slate-900 font-bold text-base"
                     >
                       {label}
                     </span>
