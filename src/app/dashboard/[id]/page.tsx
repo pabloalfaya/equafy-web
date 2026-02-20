@@ -720,8 +720,10 @@ export default function ProjectDashboardPage() {
                   )}
                 </div>
             </div>
+            </div>
+            </div>
 
-            {/* Team Breakdown - datos reales del proyecto */}
+            {/* Team Breakdown - datos reales (fuera del max-w para ocupar todo el ancho) */}
             <section className="mt-12 w-full">
               <h3 className="text-2xl font-bold tracking-tight text-slate-900 mb-2">Team Breakdown</h3>
               <p className="text-slate-500 font-medium mb-8">División dinámica basada en contribuciones.</p>
@@ -770,8 +772,6 @@ export default function ProjectDashboardPage() {
                 );
               })()}
             </section>
-            </div>
-        </div>
       </main>
 
       <AddContributionModal 
