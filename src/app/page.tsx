@@ -100,58 +100,46 @@ export default function LandingPage() {
             </div>
 
             <div className="p-8 md:p-12">
-              <div className="grid lg:grid-cols-2 gap-16 items-center">
-                <div className="space-y-6">
-                  <div className="mb-8">
-                    <h2 className="text-2xl font-bold tracking-tight text-slate-900">Cap Table Status</h2>
-                    <p className="text-slate-500 font-medium">Real-time dynamic split based on contributions.</p>
-                  </div>
-                  <div className="space-y-4">
-                    {[
-                      { name: "Alex (CEO)", type: "Time & IP", risk: "x4", ownership: "45.0%", img: "https://i.pravatar.cc/150?u=alex", color: "text-emerald-600", bg: "bg-emerald-50" },
-                      { name: "Ben (CTO)", type: "Time", risk: "x4", ownership: "30.0%", img: "https://i.pravatar.cc/150?u=ben", color: "text-blue-600", bg: "bg-blue-50" },
-                      { name: "VC Fund A", type: "Cash", risk: "x2", ownership: "18.75%", img: "https://i.pravatar.cc/150?u=vc", color: "text-orange-600", bg: "bg-orange-50" },
-                      { name: "Sarah (Dev)", type: "Time", risk: "x1", ownership: "6.25%", img: "https://i.pravatar.cc/150?u=sarah", color: "text-purple-600", bg: "bg-purple-50" },
-                    ].map((member, i) => (
-                      <div key={i} className="flex items-center justify-between p-3 rounded-2xl hover:bg-slate-50 transition-colors group cursor-default">
-                        <div className="flex items-center gap-4">
-                          <div className="relative">
-                            <img src={member.img} className="h-12 w-12 rounded-xl object-cover ring-2 ring-white shadow-sm" alt={member.name} />
-                            <div className={`absolute -bottom-1 -right-1 w-5 h-5 rounded-full ${member.bg} flex items-center justify-center border-2 border-white`}>
-                              <div className={`w-1.5 h-1.5 rounded-full ${member.color.replace('text', 'bg')}`}></div>
-                            </div>
-                          </div>
-                          <div>
-                            <p className="font-bold text-slate-900 text-base">{member.name}</p>
-                            <p className="text-xs text-slate-400 font-bold uppercase tracking-wider">{member.type}</p>
-                          </div>
-                        </div>
-                        <div className="text-right">
-                          <p className={`text-xl font-bold ${member.color} tabular-nums`}>{member.ownership}</p>
-                          <span className="text-[10px] font-bold text-slate-400 bg-slate-100 px-2 py-0.5 rounded-full">{member.risk} Multiplier</span>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-                <div className="relative flex items-center justify-center py-8">
-                  <div className="relative h-72 w-72">
-                    <svg viewBox="0 0 36 36" className="h-full w-full transform -rotate-90 drop-shadow-2xl">
-                      <circle cx="18" cy="18" r="16" fill="transparent" stroke="#e2e8f0" strokeWidth="3.8" />
-                      <circle cx="18" cy="18" r="16" fill="transparent" stroke="#10b981" strokeWidth="3.8" strokeDasharray="45 100" className="animate-[spin_1s_ease-out_reverse]" style={{ transformOrigin: 'center' }} />
-                      <circle cx="18" cy="18" r="16" fill="transparent" stroke="#3b82f6" strokeWidth="3.8" strokeDasharray="30 100" strokeDashoffset="-45" className="animate-[spin_1.2s_ease-out_reverse]" style={{ transformOrigin: 'center' }} />
-                      <circle cx="18" cy="18" r="16" fill="transparent" stroke="#f97316" strokeWidth="3.8" strokeDasharray="18.75 100" strokeDashoffset="-75" className="animate-[spin_1.4s_ease-out_reverse]" style={{ transformOrigin: 'center' }} />
-                      <circle cx="18" cy="18" r="16" fill="transparent" stroke="#a855f7" strokeWidth="3.8" strokeDasharray="6.25 100" strokeDashoffset="-93.75" className="animate-[spin_1.6s_ease-out_reverse]" style={{ transformOrigin: 'center' }} />
-                    </svg>
-                    <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
-                      <p className="text-xs text-slate-400 font-bold uppercase tracking-widest mb-1">Valuation</p>
-                      <p className="text-4xl font-bold text-slate-900 tracking-tight">€1.37M</p>
-                      <div className="flex items-center gap-1 mt-2 text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full text-[10px] font-bold">
-                        <TrendingUp className="w-3 h-3" />
-                        +12% vs last month
+              <div className="mb-8">
+                <h2 className="text-2xl font-bold tracking-tight text-slate-900">Cap Table Status</h2>
+                <p className="text-slate-500 font-medium">Real-time dynamic split based on contributions.</p>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6 mb-8">
+                {[
+                  { name: "Alex", role: "CEO • TIME & IP", risk: "x4", ownership: "45.0%", pctNum: 45, img: "https://i.pravatar.cc/150?u=alex", barColor: "bg-emerald-500", ringColor: "ring-emerald-500" },
+                  { name: "Ben", role: "CTO • TIME & IP", risk: "x4", ownership: "30.0%", pctNum: 30, img: "https://i.pravatar.cc/150?u=ben", barColor: "bg-blue-500", ringColor: "ring-blue-500" },
+                  { name: "VC Fund A", role: "CASH", risk: "x2", ownership: "18.75%", pctNum: 18.75, img: "https://i.pravatar.cc/150?u=vc", barColor: "bg-orange-500", ringColor: "ring-orange-500" },
+                  { name: "Sarah", role: "Dev • TIME", risk: "x1", ownership: "6.25%", pctNum: 6.25, img: "https://i.pravatar.cc/150?u=sarah", barColor: "bg-purple-500", ringColor: "ring-purple-500" },
+                ].map((member, i) => (
+                  <div key={i} className="bg-white rounded-2xl p-6 border border-slate-100 shadow-sm hover:shadow-md transition-shadow">
+                    <div className="flex items-center gap-4 mb-4">
+                      <img src={member.img} className={`h-14 w-14 rounded-full object-cover ring-2 ${member.ringColor} ring-offset-2`} alt={member.name} />
+                      <div>
+                        <p className="font-bold text-slate-900">{member.name}</p>
+                        <p className="text-xs text-slate-500 font-medium uppercase tracking-wider">{member.role}</p>
                       </div>
                     </div>
+                    <div className="h-2 bg-slate-100 rounded-full overflow-hidden mb-4">
+                      <div className={`h-full ${member.barColor} rounded-full transition-all`} style={{ width: `${member.pctNum}%` }} />
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-xl font-bold text-slate-900 tabular-nums">{member.ownership}</span>
+                      <span className="text-sm font-bold text-slate-400">{member.risk}</span>
+                    </div>
                   </div>
+                ))}
+              </div>
+
+              <div className="bg-white rounded-2xl p-6 border border-slate-100 shadow-sm flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                <div>
+                  <p className="text-3xl font-bold text-slate-900 tracking-tight">€1.37M</p>
+                  <p className="text-xs font-bold text-slate-500 uppercase tracking-widest mt-1">Valuation</p>
+                </div>
+                <div className="flex items-center gap-1 text-emerald-600">
+                  <TrendingUp className="w-5 h-5" />
+                  <span className="font-bold">+12%</span>
+                  <span className="text-slate-500 text-sm font-medium">vs last month</span>
                 </div>
               </div>
             </div>
