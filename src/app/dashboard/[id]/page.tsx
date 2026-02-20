@@ -723,40 +723,41 @@ export default function ProjectDashboardPage() {
 
             {/* Team Breakdown */}
             <section className="mt-12">
-              <h3 className="text-sm font-bold text-slate-500 uppercase tracking-wider mb-6">Team Breakdown</h3>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              <h3 className="text-2xl font-bold tracking-tight text-slate-900 mb-2">Team Breakdown</h3>
+              <p className="text-slate-500 font-medium mb-8">División dinámica basada en contribuciones.</p>
+              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6">
                 {[
-                  { name: "Pablo Alfaya", role: "Owner", totalPercent: "45%", points: "1200", fixed: "20%", cap: "50%" },
-                  { name: "Juanmiguel", role: "Co-Founder", totalPercent: "30%", points: "800", fixed: "15%", cap: "35%" },
-                  { name: "Carlos Murillo", role: "Contributor", totalPercent: "15%", points: "400", fixed: "-", cap: "-" },
-                  { name: "Inversor Ejemplo", role: "Investor", totalPercent: "10%", points: "0", fixed: "10%", cap: "15%" },
+                  { name: "Alex", role: "Founder • TIME & IP", ownership: "45.0%", pctNum: 45, points: "1200", fixed: "20%", cap: "50%", img: "https://i.pravatar.cc/150?img=12", barColor: "bg-emerald-500", ringColor: "ring-emerald-500" },
+                  { name: "Ben", role: "Co-founder • TIME & IP", ownership: "30.0%", pctNum: 30, points: "800", fixed: "15%", cap: "35%", img: "https://i.pravatar.cc/150?img=33", barColor: "bg-blue-500", ringColor: "ring-blue-500" },
+                  { name: "VC Fund A", role: "CASH", ownership: "18.75%", pctNum: 18.75, points: "0", fixed: "10%", cap: "15%", img: "https://i.pravatar.cc/150?img=44", barColor: "bg-orange-500", ringColor: "ring-orange-500" },
+                  { name: "Sarah", role: "Dev • TIME", ownership: "6.25%", pctNum: 6.25, points: "400", fixed: "—", cap: "—", img: "https://i.pravatar.cc/150?img=47", barColor: "bg-purple-500", ringColor: "ring-purple-500" },
                 ].map((m) => (
-                  <div
-                    key={m.name}
-                    className="bg-white rounded-xl border border-slate-100 shadow-sm p-6"
-                  >
-                    <div className="flex items-center justify-between gap-3 mb-4">
-                      <span className="font-bold text-gray-900 truncate flex-1 min-w-0">{m.name}</span>
-                      <span className="shrink-0 px-2.5 py-0.5 text-xs font-bold rounded-full bg-slate-100 text-slate-600">
-                        {m.role}
-                      </span>
+                  <div key={m.name} className="bg-white rounded-2xl p-6 border border-slate-100 shadow-sm hover:shadow-md transition-shadow">
+                    <div className="flex items-center gap-4 mb-4">
+                      <img src={m.img} className={`h-14 w-14 rounded-full object-cover ring-2 ${m.ringColor} ring-offset-2`} alt={m.name} />
+                      <div className="min-w-0 flex-1">
+                        <p className="font-bold text-slate-900 truncate">{m.name}</p>
+                        <p className="text-xs text-slate-500 font-medium uppercase tracking-wider">{m.role}</p>
+                      </div>
                     </div>
-                    <p className="text-3xl font-bold text-gray-900 mb-5">{m.totalPercent}</p>
-                    <div className="border-t border-slate-100 pt-4">
-                      <div className="grid grid-cols-2 gap-y-4 gap-x-2">
-                        <div>
-                          <p className="text-xs text-gray-500 uppercase tracking-wider mb-0.5">Total Points</p>
-                          <p className="font-bold text-gray-900">{m.points}</p>
-                        </div>
-                        <div>
-                          <p className="text-xs text-gray-500 uppercase tracking-wider mb-0.5">Fixed Equity</p>
-                          <p className="font-bold text-gray-900">{m.fixed}</p>
-                        </div>
-                        <div>
-                          <p className="text-xs text-gray-500 uppercase tracking-wider mb-0.5">Limit / Hard Cap</p>
-                          <p className="font-bold text-gray-900">{m.cap}</p>
-                        </div>
-                        <div />
+                    <div className="h-2 bg-slate-100 rounded-full overflow-hidden mb-4">
+                      <div className={`h-full ${m.barColor} rounded-full transition-all`} style={{ width: `${m.pctNum}%` }} />
+                    </div>
+                    <div className="flex items-center justify-between mb-5">
+                      <span className="text-xl font-bold text-slate-900 tabular-nums">{m.ownership}</span>
+                    </div>
+                    <div className="border-t border-slate-100 pt-4 space-y-3">
+                      <div className="flex justify-between items-center">
+                        <span className="text-xs text-slate-500 font-medium uppercase tracking-wider">Total Points</span>
+                        <span className="font-bold text-slate-700 tabular-nums">{m.points}</span>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span className="text-xs text-slate-500 font-medium uppercase tracking-wider">Fixed Equity</span>
+                        <span className="font-bold text-slate-700 tabular-nums">{m.fixed}</span>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span className="text-xs text-slate-500 font-medium uppercase tracking-wider">Limit / Cap</span>
+                        <span className="font-bold text-slate-700 tabular-nums">{m.cap}</span>
                       </div>
                     </div>
                   </div>
