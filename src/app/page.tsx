@@ -34,7 +34,7 @@ export default function LandingPage() {
       <header className="relative pt-32 md:pt-40 pb-10 z-10 w-full overflow-hidden">
         <div className="mx-auto max-w-screen-2xl px-6 md:px-12 lg:px-24 text-center relative">
           {/* Cap Table – círculo completo detrás del título */}
-          <div className="absolute left-1/2 top-[84%] -translate-x-1/2 -translate-y-1/2 -z-10 w-[225%] max-w-[78rem] opacity-65 pointer-events-none select-none aspect-square">
+          <div className="absolute left-1/2 top-[88%] -translate-x-1/2 -translate-y-1/2 -z-10 w-[calc(100%+1.5rem)] md:w-[calc(100%+3rem)] lg:w-[calc(100%+6rem)] opacity-65 pointer-events-none select-none aspect-square">
             <svg
               viewBox="0 0 200 200"
               xmlns="http://www.w3.org/2000/svg"
