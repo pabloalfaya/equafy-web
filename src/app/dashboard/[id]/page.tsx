@@ -721,39 +721,42 @@ export default function ProjectDashboardPage() {
                 </div>
             </div>
 
-            {/* Team Breakdown - mock data for preview */}
+            {/* Team Breakdown */}
             <section className="mt-12">
               <h3 className="text-sm font-bold text-slate-500 uppercase tracking-wider mb-6">Team Breakdown</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                 {[
-                  { name: "Alex", role: "Owner", equityPct: 45, totalPoints: 1200, fixedEquity: 20, limit: 50 },
-                  { name: "Ben", role: "Co-founder", equityPct: 30, totalPoints: 800, fixedEquity: 15, limit: 35 },
-                  { name: "Sarah", role: "Contributor", equityPct: 15, totalPoints: 400, fixedEquity: 0, limit: null },
-                  { name: "VC Fund A", role: "Investor", equityPct: 10, totalPoints: 0, fixedEquity: 10, limit: 15 },
+                  { name: "Pablo Alfaya", role: "Owner", totalPercent: "45%", points: "1200", fixed: "20%", cap: "50%" },
+                  { name: "Juanmiguel", role: "Co-Founder", totalPercent: "30%", points: "800", fixed: "15%", cap: "35%" },
+                  { name: "Carlos Murillo", role: "Contributor", totalPercent: "15%", points: "400", fixed: "-", cap: "-" },
+                  { name: "Inversor Ejemplo", role: "Investor", totalPercent: "10%", points: "0", fixed: "10%", cap: "15%" },
                 ].map((m) => (
                   <div
                     key={m.name}
-                    className="bg-white rounded-xl border border-slate-100 shadow-sm p-5 min-w-0"
+                    className="bg-white rounded-xl border border-slate-100 shadow-sm p-6"
                   >
-                    <div className="flex items-center justify-between gap-2 mb-4">
-                      <span className="font-bold text-slate-900 truncate">{m.name}</span>
-                      <span className="shrink-0 px-2.5 py-0.5 text-xs font-bold rounded-full bg-slate-100 text-slate-600 capitalize">
+                    <div className="flex items-center justify-between gap-3 mb-4">
+                      <span className="font-bold text-gray-900 truncate flex-1 min-w-0">{m.name}</span>
+                      <span className="shrink-0 px-2.5 py-0.5 text-xs font-bold rounded-full bg-slate-100 text-slate-600">
                         {m.role}
                       </span>
                     </div>
-                    <p className="text-3xl font-bold text-slate-900 mb-4">{m.equityPct}%</p>
-                    <div className="border-t border-slate-100 pt-4 space-y-3">
-                      <div className="flex justify-between items-baseline gap-4">
-                        <span className="text-xs font-medium text-slate-400 uppercase tracking-wider shrink-0">Total Points</span>
-                        <span className="font-bold text-slate-700 text-sm tabular-nums">{m.totalPoints.toLocaleString()}</span>
-                      </div>
-                      <div className="flex justify-between items-baseline gap-4">
-                        <span className="text-xs font-medium text-slate-400 uppercase tracking-wider shrink-0">Fixed Equity</span>
-                        <span className="font-bold text-slate-700 text-sm tabular-nums">{m.fixedEquity > 0 ? `${m.fixedEquity}%` : "—"}</span>
-                      </div>
-                      <div className="flex justify-between items-baseline gap-4">
-                        <span className="text-xs font-medium text-slate-400 uppercase tracking-wider shrink-0">Limit / Cap</span>
-                        <span className="font-bold text-slate-700 text-sm tabular-nums">{m.limit != null ? `${m.limit}%` : "—"}</span>
+                    <p className="text-3xl font-bold text-gray-900 mb-5">{m.totalPercent}</p>
+                    <div className="border-t border-slate-100 pt-4">
+                      <div className="grid grid-cols-2 gap-y-4 gap-x-2">
+                        <div>
+                          <p className="text-xs text-gray-500 uppercase tracking-wider mb-0.5">Total Points</p>
+                          <p className="font-bold text-gray-900">{m.points}</p>
+                        </div>
+                        <div>
+                          <p className="text-xs text-gray-500 uppercase tracking-wider mb-0.5">Fixed Equity</p>
+                          <p className="font-bold text-gray-900">{m.fixed}</p>
+                        </div>
+                        <div>
+                          <p className="text-xs text-gray-500 uppercase tracking-wider mb-0.5">Limit / Hard Cap</p>
+                          <p className="font-bold text-gray-900">{m.cap}</p>
+                        </div>
+                        <div />
                       </div>
                     </div>
                   </div>
