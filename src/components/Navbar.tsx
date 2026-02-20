@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { ArrowRight, ChevronDown, Sparkles, Cog, Zap, BookOpen, Plug, Menu, X } from "lucide-react";
 
 const PRODUCT_MENU_LEAVE_DELAY_MS = 120;
@@ -39,11 +40,13 @@ export function Navbar() {
         <div className="flex items-center gap-4 sm:gap-8 min-w-0">
           <Link href="/" className="relative group flex-shrink-0">
             <div className="absolute -inset-2 bg-gradient-to-r from-emerald-500/20 to-blue-500/20 rounded-lg blur opacity-0 group-hover:opacity-100 transition duration-500" />
-            <img
+            <Image
               src="/logo-web.png"
               alt="Equily Logo"
               width={140}
               height={56}
+              priority
+              unoptimized
               className="relative h-16 sm:h-24 md:h-28 w-auto min-w-[100px] object-contain transition-transform duration-300 group-hover:scale-105"
             />
           </Link>
