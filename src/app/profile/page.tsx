@@ -56,24 +56,10 @@ export default function ProfilePage() {
     alert("Profile updated successfully.");
   };
 
-  const handlePasswordReset = async () => {
-    if (!email) {
-      alert("No email on file. Cannot send reset link.");
-      return;
-    }
-    const ok = window.confirm(
-      "Send a password reset link to " + email + "? You will be signed out and must use the link to set your new password."
-    );
-    if (!ok) return;
-    const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: `${window.location.origin}/auth/update-password`,
-    });
-    if (error) {
-      alert("Failed to send reset email: " + error.message);
-      return;
-    }
-    await supabase.auth.signOut();
-    router.push("/login?reset_sent=1");
+  const handlePasswordReset = () => {
+    const params = new URLSearchParams({ forgot: "1" });
+    if (email) params.set("email", email);
+    router.push(`/login?${params.toString()}`);
   };
 
   const handleSignOut = async () => {
@@ -202,15 +188,15 @@ export default function ProfilePage() {
             <Shield className="w-5 h-5 text-slate-600" /> Security
           </h2>
           <p className="text-slate-600 font-medium text-sm leading-relaxed mb-4">
-            Forgot your password? We&apos;ll send you a link to reset it. Check
-            your email (including spam) after clicking below.
+            To change your password, go to the login page and use &quot;Forgot
+            password?&quot; to receive the reset link.
           </p>
           <button
             type="button"
             onClick={handlePasswordReset}
             className="inline-flex items-center gap-2 bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 hover:border-slate-300 px-6 py-3 rounded-xl font-bold transition-all"
           >
-            Send Reset Email
+            Go to reset password
           </button>
         </section>
 

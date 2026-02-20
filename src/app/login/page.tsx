@@ -53,9 +53,14 @@ function LoginForm() {
   useEffect(() => {
     const view = searchParams.get("view");
     const resetSent = searchParams.get("reset_sent");
+    const forgot = searchParams.get("forgot");
+    const emailParam = searchParams.get("email");
     setIsSignUp(view === "signup");
     if (resetSent === "1") {
       setMessage({ text: "Revisa tu correo para restablecer la contraseña. Haz clic en el enlace que te hemos enviado.", type: "success" });
+    } else if (forgot === "1") {
+      setMessage({ text: "Introduce tu email y pulsa 'Forgot password?' para recibir el enlace de recuperación.", type: "success" });
+      if (emailParam) setEmail(decodeURIComponent(emailParam));
     }
   }, [searchParams]);
 
