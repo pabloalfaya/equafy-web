@@ -733,7 +733,7 @@ export default function ProjectDashboardPage() {
                 ].map((m) => (
                   <div
                     key={m.name}
-                    className="bg-white rounded-xl border border-slate-100 shadow-sm p-5"
+                    className="bg-white rounded-xl border border-slate-100 shadow-sm p-5 min-w-0"
                   >
                     <div className="flex items-center justify-between gap-2 mb-4">
                       <span className="font-bold text-slate-900 truncate">{m.name}</span>
@@ -742,18 +742,18 @@ export default function ProjectDashboardPage() {
                       </span>
                     </div>
                     <p className="text-3xl font-bold text-slate-900 mb-4">{m.equityPct}%</p>
-                    <div className="border-t border-slate-100 pt-4 grid grid-cols-2 gap-3 text-sm">
-                      <div>
-                        <p className="text-slate-400 font-medium text-xs uppercase tracking-wider">Total Points</p>
-                        <p className="font-bold text-slate-700">{m.totalPoints.toLocaleString()}</p>
+                    <div className="border-t border-slate-100 pt-4 space-y-3">
+                      <div className="flex justify-between items-baseline gap-4">
+                        <span className="text-xs font-medium text-slate-400 uppercase tracking-wider shrink-0">Total Points</span>
+                        <span className="font-bold text-slate-700 text-sm tabular-nums">{m.totalPoints.toLocaleString()}</span>
                       </div>
-                      <div>
-                        <p className="text-slate-400 font-medium text-xs uppercase tracking-wider">Fixed Equity</p>
-                        <p className="font-bold text-slate-700">{m.fixedEquity > 0 ? `${m.fixedEquity}%` : "—"}</p>
+                      <div className="flex justify-between items-baseline gap-4">
+                        <span className="text-xs font-medium text-slate-400 uppercase tracking-wider shrink-0">Fixed Equity</span>
+                        <span className="font-bold text-slate-700 text-sm tabular-nums">{m.fixedEquity > 0 ? `${m.fixedEquity}%` : "—"}</span>
                       </div>
-                      <div className="col-span-2">
-                        <p className="text-slate-400 font-medium text-xs uppercase tracking-wider">Limit / Hard Cap</p>
-                        <p className="font-bold text-slate-700">{m.limit != null ? `${m.limit}%` : "—"}</p>
+                      <div className="flex justify-between items-baseline gap-4">
+                        <span className="text-xs font-medium text-slate-400 uppercase tracking-wider shrink-0">Limit / Cap</span>
+                        <span className="font-bold text-slate-700 text-sm tabular-nums">{m.limit != null ? `${m.limit}%` : "—"}</span>
                       </div>
                     </div>
                   </div>
