@@ -25,6 +25,7 @@ export function PublicFooter() {
           <div>
             <h4 className="font-bold text-slate-900 mb-6 text-sm">Product</h4>
             <ul className="space-y-4 text-sm font-medium text-slate-500">
+              <li><Link href="/why-equily" className="hover:text-emerald-600 transition-colors">Why Equily?</Link></li>
               <li><Link href="/dashboard" className="hover:text-emerald-600 transition-colors">Calculator</Link></li>
               <li><Link href="/pricing" className="hover:text-emerald-600 transition-colors">Pricing</Link></li>
               <li><Link href="/models" className="hover:text-emerald-600 transition-colors">Equity Models</Link></li>
