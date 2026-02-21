@@ -171,18 +171,20 @@ export function FinalizedSummaryModal({
   const displayDate = new Date(finalizedAt).toLocaleString(undefined, { dateStyle: "long", timeStyle: "short" });
 
   return (
-    <div className="fixed inset-0 z-[200] flex items-center justify-center bg-slate-900/80 backdrop-blur-sm p-4 overflow-y-auto">
-      <div className="relative w-full max-w-3xl bg-white rounded-3xl shadow-2xl overflow-hidden my-8">
-        <button
-          type="button"
-          onClick={onClose}
-          className="absolute top-4 right-4 z-10 p-2 rounded-xl text-slate-400 hover:text-slate-800 hover:bg-slate-100 transition-colors"
-          aria-label="Close"
-        >
-          <X className="w-5 h-5" />
-        </button>
+    <div className="fixed inset-0 z-[200] flex items-center justify-center bg-slate-900/80 backdrop-blur-sm p-3 sm:p-4 overflow-y-auto min-h-0">
+      <div className="relative w-full max-w-3xl max-h-[95vh] bg-white rounded-3xl shadow-2xl overflow-hidden my-4 flex flex-col">
+        <div className="flex justify-end shrink-0 p-3 pb-0">
+          <button
+            type="button"
+            onClick={onClose}
+            className="p-2 rounded-xl text-slate-400 hover:text-slate-800 hover:bg-slate-100 transition-colors"
+            aria-label="Close"
+          >
+            <X className="w-5 h-5" />
+          </button>
+        </div>
 
-        <div className="p-8 md:p-10">
+        <div className="p-6 md:p-8 overflow-y-auto flex-1 min-h-0">
           <h2 className="text-2xl md:text-3xl font-black text-slate-900 text-center mb-1 tracking-tight">
             Official Project Freeze Certificate
           </h2>
@@ -192,9 +194,9 @@ export function FinalizedSummaryModal({
           </p>
 
           <h3 className="text-sm font-bold text-slate-500 uppercase tracking-wider mb-3">Equity Distribution</h3>
-          <div className="rounded-xl border border-slate-200 overflow-hidden mb-8">
+          <div className="rounded-xl border border-slate-200 overflow-x-auto overflow-y-auto max-h-[40vh] mb-6">
             <table className="w-full text-left">
-              <thead>
+              <thead className="sticky top-0 z-10">
                 <tr className="bg-[#1e293b] text-white">
                   <th className="py-3 px-4 text-xs font-bold uppercase tracking-wider">Member</th>
                   <th className="py-3 px-4 text-xs font-bold uppercase tracking-wider">Role</th>
@@ -219,7 +221,7 @@ export function FinalizedSummaryModal({
                   </tr>
                 ))}
               </tbody>
-              <tfoot>
+              <tfoot className="sticky bottom-0 z-10">
                 <tr className="bg-slate-200 border-t-2 border-slate-300 font-bold text-slate-800">
                   <td className="py-3 px-4">TOTAL</td>
                   <td className="py-3 px-4"></td>
