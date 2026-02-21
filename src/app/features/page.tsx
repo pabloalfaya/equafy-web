@@ -186,7 +186,7 @@ export default function FeaturesPage() {
             ))}
           </div>
 
-          <div className="mt-16 md:mt-20 text-center rounded-2xl bg-white/80 backdrop-blur-sm border border-slate-200/80 shadow-sm py-12 px-6">
+          <div className="mt-16 md:mt-20 text-center">
             <p className="text-2xl font-bold text-slate-900 mb-6 tracking-tight">
               Ready to split fairly?
             </p>
