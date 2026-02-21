@@ -394,10 +394,10 @@ export function EquitySettingsModal({
           </button>
         </div>
 
-        {/* Tab Content — fixed height to prevent layout shift when switching tabs */}
-        <div className="h-[480px] overflow-y-auto pr-1 w-full min-w-0">
+        {/* Tab Content — fixed height, scroll only inner lists; buttons stay visible */}
+        <div className="h-[480px] flex flex-col overflow-hidden pr-1 w-full min-w-0">
         {activeTab === "default_models" && (
-          <div className="space-y-4 w-full">
+          <div className="flex-1 min-h-0 overflow-y-auto space-y-4 w-full">
             <p className="text-sm text-slate-600 leading-relaxed w-full">
               Choose a preset model (Just Split, Flat, or Custom) to set default multipliers for contributions.
             </p>
@@ -471,8 +471,8 @@ export function EquitySettingsModal({
         )}
 
         {activeTab === "multipliers" && (
-          <>
-            <div className="space-y-3 mb-5">
+          <div className="flex flex-col flex-1 min-h-0 overflow-hidden">
+            <div className="space-y-3 mb-5 flex-1 min-h-0 overflow-y-auto">
               {(
                 [
                   { key: "mult_cash", label: "Cash" },
@@ -504,7 +504,7 @@ export function EquitySettingsModal({
               ))}
             </div>
 
-            <div className="flex gap-3">
+            <div className="flex gap-3 shrink-0 pt-4 mt-4 border-t border-slate-100">
               <button
                 type="button"
                 onClick={onClose}
@@ -524,11 +524,11 @@ export function EquitySettingsModal({
                 </button>
               )}
             </div>
-          </>
+          </div>
         )}
 
         {activeTab === "fixed" && (
-          <div className="w-full max-w-full flex flex-col min-h-[450px]">
+          <div className="w-full max-w-full flex flex-col flex-1 min-h-0 overflow-hidden">
             {/* Segmented Progress Bar */}
             <div className="mb-4 w-full shrink-0">
               <div className="flex justify-between text-xs font-bold text-slate-500 mb-2 uppercase">
@@ -633,7 +633,7 @@ export function EquitySettingsModal({
         )}
 
         {activeTab === "limited" && (
-          <div className="w-full max-w-full flex flex-col min-h-[450px]">
+          <div className="w-full max-w-full flex flex-col flex-1 min-h-0 overflow-hidden">
             <p className="text-xs text-slate-500 mb-4 leading-relaxed w-full shrink-0">
               Set a hard cap (%) per member. When enabled, that member will not exceed this share regardless of contributions.
             </p>
@@ -734,7 +734,7 @@ export function EquitySettingsModal({
         )}
 
         {activeTab === "smart" && (
-          <div className="space-y-6 w-full">
+          <div className="flex-1 min-h-0 overflow-y-auto space-y-6 w-full">
             {/* Smart Risk Calculator */}
             <div className="space-y-3">
               <div className="flex items-center gap-2">
