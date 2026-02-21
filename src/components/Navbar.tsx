@@ -123,8 +123,8 @@ export function Navbar() {
                     onClick={() => setIsProductMenuOpen(false)}
                     className="flex items-start gap-3 px-3 py-2 rounded-lg hover:bg-gray-50 transition-colors"
                   >
-                    <div className="mt-0.5 rounded-full bg-slate-50 p-2">
-                      <HelpCircle className="w-4 h-4 text-slate-700" />
+                    <div className="mt-0.5 rounded-full bg-teal-50 p-2">
+                      <HelpCircle className="w-4 h-4 text-teal-600" />
                     </div>
                     <div>
                       <div className="text-sm font-semibold text-slate-900">
