@@ -528,9 +528,9 @@ export function EquitySettingsModal({
         )}
 
         {activeTab === "fixed" && (
-          <div className="w-full max-w-full">
+          <div className="w-full max-w-full flex flex-col min-h-[450px]">
             {/* Segmented Progress Bar */}
-            <div className="mb-6 w-full">
+            <div className="mb-4 w-full shrink-0">
               <div className="flex justify-between text-xs font-bold text-slate-500 mb-2 uppercase">
                 <span>Fixed</span>
                 <span>Dynamic (Slicing Pie)</span>
@@ -565,8 +565,8 @@ export function EquitySettingsModal({
               )}
             </div>
 
-            {/* Member list */}
-            <div className="space-y-3 max-h-[200px] overflow-y-auto pr-2 custom-scrollbar w-full">
+            {/* Member list — expands to fill space */}
+            <div className="space-y-3 flex-1 min-h-0 overflow-y-auto pr-2 custom-scrollbar w-full">
               {localMembers.length === 0 ? (
                 <p className="text-center text-slate-400 text-sm italic py-4">
                   No members yet.
@@ -609,7 +609,7 @@ export function EquitySettingsModal({
               )}
             </div>
 
-            <div className="flex gap-3 mt-6 w-full">
+            <div className="flex gap-3 mt-4 w-full shrink-0 pt-4 border-t border-slate-100">
               <button
                 type="button"
                 onClick={onClose}
@@ -633,11 +633,11 @@ export function EquitySettingsModal({
         )}
 
         {activeTab === "limited" && (
-          <div className="w-full max-w-full">
-            <p className="text-xs text-slate-500 mb-4 leading-relaxed w-full">
+          <div className="w-full max-w-full flex flex-col min-h-[450px]">
+            <p className="text-xs text-slate-500 mb-4 leading-relaxed w-full shrink-0">
               Set a hard cap (%) per member. When enabled, that member will not exceed this share regardless of contributions.
             </p>
-            <div className="space-y-3 max-h-[200px] overflow-y-auto pr-2 custom-scrollbar mb-4 w-full">
+            <div className="space-y-3 flex-1 min-h-0 overflow-y-auto pr-2 custom-scrollbar w-full">
               {localMembers.length === 0 ? (
                 <p className="text-center text-slate-400 text-sm italic py-4">
                   No members yet.
@@ -710,7 +710,7 @@ export function EquitySettingsModal({
               )}
             </div>
 
-            <div className="flex gap-3 mt-6 w-full">
+            <div className="flex gap-3 mt-4 w-full shrink-0 pt-4 border-t border-slate-100">
               <button
                 type="button"
                 onClick={onClose}
