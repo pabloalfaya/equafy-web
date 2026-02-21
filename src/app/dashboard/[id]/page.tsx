@@ -678,20 +678,11 @@ export default function ProjectDashboardPage() {
               </div>
               </div>
               <div className="flex gap-2 sm:gap-3 flex-wrap sm:flex-nowrap">
-                {simulationMode && (
-                  <button
-                    type="button"
-                    onClick={handleExitSimulationMode}
-                    className="inline-flex items-center gap-2 rounded-xl bg-amber-100 border border-amber-300 px-4 md:px-5 py-2.5 md:py-3 font-bold text-amber-800 shadow-sm hover:bg-amber-200 transition-all whitespace-nowrap text-sm md:text-base"
-                  >
-                    <X className="h-5 w-5" /> Exit simulation
-                  </button>
-                )}
                 <button
                   onClick={generatePDF}
                   className="inline-flex items-center gap-2 rounded-xl bg-white border border-slate-200 px-4 md:px-5 py-2.5 md:py-3 font-bold text-slate-700 shadow-sm hover:bg-slate-50 transition-all whitespace-nowrap text-sm md:text-base"
                 >
-                    <Download className="h-5 w-5" /> Export PDF
+                  <Download className="h-5 w-5" /> Export PDF
                 </button>
                 {canEditAndNotFinalized && (
                   <>
@@ -699,19 +690,19 @@ export default function ProjectDashboardPage() {
                       onClick={() => setFixedEquityOpen(true)}
                       className="inline-flex items-center gap-2 rounded-xl bg-white border border-slate-200 px-4 md:px-5 py-2.5 md:py-3 font-bold text-slate-700 shadow-sm hover:bg-slate-50 transition-all whitespace-nowrap text-sm md:text-base"
                     >
-                        <Settings className="h-5 w-5" /> Equity Settings
+                      <Settings className="h-5 w-5" /> Equity Settings
                     </button>
                     <button
                       onClick={() => setMemberModalOpen(true)}
                       className="inline-flex items-center gap-2 rounded-xl bg-white border border-slate-200 px-4 md:px-5 py-2.5 md:py-3 font-bold text-slate-700 shadow-sm hover:bg-slate-50 transition-all whitespace-nowrap text-sm md:text-base"
                     >
-                        <Users className="h-5 w-5" /> Team
+                      <Users className="h-5 w-5" /> Team
                     </button>
                     <button
                       onClick={() => { setEditingContribution(null); setModalOpen(true); }}
                       className="inline-flex items-center gap-2 rounded-xl bg-slate-900 px-4 md:px-6 py-2.5 md:py-3 font-bold text-white shadow-lg hover:bg-slate-800 transition-all whitespace-nowrap text-sm md:text-base"
                     >
-                        <Plus className="h-5 w-5" /> Add Contribution
+                      <Plus className="h-5 w-5" /> Add Contribution
                     </button>
                   </>
                 )}
