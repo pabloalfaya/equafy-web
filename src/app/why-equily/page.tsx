@@ -198,11 +198,11 @@ export default function WhyEquilyPage() {
           </div>
 
           {/* CTA */}
-          <div className="mt-24 md:mt-28 text-center rounded-3xl bg-slate-900 px-8 py-16 md:py-20">
-            <h2 className="text-2xl md:text-3xl font-bold text-white mb-4">
+          <div className="mt-24 md:mt-28 text-center">
+            <h2 className="text-2xl md:text-3xl font-bold text-slate-900 mb-4">
               Ready to split the pie fairly?
             </h2>
-            <p className="text-slate-300 mb-8 max-w-xl mx-auto">
+            <p className="text-slate-600 mb-8 max-w-xl mx-auto">
               Join founders who trust Equily for transparent, dynamic equity management.
             </p>
             <Link
