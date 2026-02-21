@@ -85,29 +85,12 @@ export function Navbar() {
                 <div className="absolute left-0 top-full pt-3 w-72 z-30">
                   <div className="rounded-xl bg-white shadow-lg border border-gray-100 py-2">
                   <Link
-                    href="/why-equily"
+                    href="/what-is-equily"
                     onClick={() => setIsProductMenuOpen(false)}
                     className="flex items-start gap-3 px-3 py-2 rounded-lg hover:bg-gray-50 transition-colors"
                   >
                     <div className="mt-0.5 rounded-full bg-emerald-50 p-2">
                       <Sparkles className="w-4 h-4 text-emerald-600" />
-                    </div>
-                    <div>
-                      <div className="text-sm font-semibold text-slate-900">
-                        Why Equily?
-                      </div>
-                      <p className="text-xs text-slate-500">
-                        The all-in-one platform for dynamic equity.
-                      </p>
-                    </div>
-                  </Link>
-                  <Link
-                    href="/what-is-equily"
-                    onClick={() => setIsProductMenuOpen(false)}
-                    className="flex items-start gap-3 px-3 py-2 rounded-lg hover:bg-gray-50 transition-colors"
-                  >
-                    <div className="mt-0.5 rounded-full bg-slate-50 p-2">
-                      <HelpCircle className="w-4 h-4 text-slate-700" />
                     </div>
                     <div>
                       <div className="text-sm font-semibold text-slate-900">
@@ -136,19 +119,19 @@ export function Navbar() {
                     </div>
                   </Link>
                   <Link
-                    href="/guide"
+                    href="/why-equily"
                     onClick={() => setIsProductMenuOpen(false)}
                     className="flex items-start gap-3 px-3 py-2 rounded-lg hover:bg-gray-50 transition-colors"
                   >
-                    <div className="mt-0.5 rounded-full bg-blue-50 p-2">
-                      <BookOpen className="w-4 h-4 text-blue-600" />
+                    <div className="mt-0.5 rounded-full bg-slate-50 p-2">
+                      <HelpCircle className="w-4 h-4 text-slate-700" />
                     </div>
                     <div>
                       <div className="text-sm font-semibold text-slate-900">
-                        Guide
+                        Why Equily?
                       </div>
                       <p className="text-xs text-slate-500">
-                        Step-by-step user manual.
+                        The all-in-one platform for dynamic equity.
                       </p>
                     </div>
                   </Link>
@@ -166,6 +149,23 @@ export function Navbar() {
                       </div>
                       <p className="text-xs text-slate-500">
                         Discover everything Equily can do.
+                      </p>
+                    </div>
+                  </Link>
+                  <Link
+                    href="/guide"
+                    onClick={() => setIsProductMenuOpen(false)}
+                    className="flex items-start gap-3 px-3 py-2 rounded-lg hover:bg-gray-50 transition-colors"
+                  >
+                    <div className="mt-0.5 rounded-full bg-blue-50 p-2">
+                      <BookOpen className="w-4 h-4 text-blue-600" />
+                    </div>
+                    <div>
+                      <div className="text-sm font-semibold text-slate-900">
+                        Guide
+                      </div>
+                      <p className="text-xs text-slate-500">
+                        Step-by-step user manual.
                       </p>
                     </div>
                   </Link>
@@ -253,20 +253,20 @@ export function Navbar() {
               Sign Up
             </Link>
             <p className="pt-3 pb-1 text-[10px] font-bold text-slate-400 uppercase tracking-widest">Product</p>
-            <Link href="/why-equily" onClick={() => setIsMobileMenuOpen(false)} className="block py-1.5 pl-3 text-sm font-medium text-slate-600 hover:text-slate-900">
-              Why Equily?
-            </Link>
             <Link href="/what-is-equily" onClick={() => setIsMobileMenuOpen(false)} className="block py-1.5 pl-3 text-sm font-medium text-slate-600 hover:text-slate-900">
               What is Equily?
             </Link>
             <Link href="/how-it-works" onClick={() => setIsMobileMenuOpen(false)} className="block py-1.5 pl-3 text-sm font-medium text-slate-600 hover:text-slate-900">
               How does Equily work?
             </Link>
-            <Link href="/guide" onClick={() => setIsMobileMenuOpen(false)} className="block py-1.5 pl-3 text-sm font-medium text-slate-600 hover:text-slate-900">
-              Guide
+            <Link href="/why-equily" onClick={() => setIsMobileMenuOpen(false)} className="block py-1.5 pl-3 text-sm font-medium text-slate-600 hover:text-slate-900">
+              Why Equily?
             </Link>
             <Link href="/features" onClick={() => setIsMobileMenuOpen(false)} className="block py-1.5 pl-3 text-sm font-medium text-slate-600 hover:text-slate-900">
               Features
+            </Link>
+            <Link href="/guide" onClick={() => setIsMobileMenuOpen(false)} className="block py-1.5 pl-3 text-sm font-medium text-slate-600 hover:text-slate-900">
+              Guide
             </Link>
             <Link href="/apis" onClick={() => setIsMobileMenuOpen(false)} className="block py-1.5 pl-3 text-sm font-medium text-slate-600 hover:text-slate-900">
               APIs & Integrations
@@ -307,13 +307,6 @@ export function Navbar() {
           {isProductMenuOpen && (
             <div className="mt-1 space-y-1 pb-2">
               <Link
-                href="/why-equily"
-                onClick={() => setIsProductMenuOpen(false)}
-                className="block text-sm text-slate-600 py-1 pl-2 border-l border-slate-200 hover:text-slate-900"
-              >
-                Why Equily?
-              </Link>
-              <Link
                 href="/what-is-equily"
                 onClick={() => setIsProductMenuOpen(false)}
                 className="block text-sm text-slate-600 py-1 pl-2 border-l border-slate-200 hover:text-slate-900"
@@ -328,11 +321,11 @@ export function Navbar() {
                 How does Equily work?
               </Link>
               <Link
-                href="/guide"
+                href="/why-equily"
                 onClick={() => setIsProductMenuOpen(false)}
                 className="block text-sm text-slate-600 py-1 pl-2 border-l border-slate-200 hover:text-slate-900"
               >
-                Guide
+                Why Equily?
               </Link>
               <Link
                 href="/features"
@@ -340,6 +333,13 @@ export function Navbar() {
                 className="block text-sm text-slate-600 py-1 pl-2 border-l border-slate-200 hover:text-slate-900"
               >
                 Features
+              </Link>
+              <Link
+                href="/guide"
+                onClick={() => setIsProductMenuOpen(false)}
+                className="block text-sm text-slate-600 py-1 pl-2 border-l border-slate-200 hover:text-slate-900"
+              >
+                Guide
               </Link>
               <Link
                 href="/apis"
