@@ -77,6 +77,7 @@ export default function LandingPage() {
                     "Smart Multipliers",
                     "Fixed Equity",
                     "Limit Equity",
+                    "Simulation Mode",
                     "Freeze Project",
                     "Real-Time Cap Table",
                     "Binding Contracts",

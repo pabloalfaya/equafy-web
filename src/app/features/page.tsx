@@ -11,6 +11,7 @@ import {
   FileSearch,
   ShieldCheck,
   Download,
+  FlaskConical,
 } from "lucide-react";
 
 const FEATURES = [
@@ -67,6 +68,12 @@ const FEATURES = [
     icon: Download,
     description:
       "Generate professional, signed-ready reports of your Cap Table and contribution history.",
+  },
+  {
+    title: "Simulation Mode",
+    icon: FlaskConical,
+    description:
+      "Try 'what if' scenarios without saving. Add simulated contributions to see how they affect the cap table before committing.",
   },
 ];
 
