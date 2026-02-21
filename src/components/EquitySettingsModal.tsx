@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { X, Percent, Save, Settings2, Sparkles, Calculator, BookOpen, Info, ShieldCheck } from "lucide-react";
+import { X, Percent, Save, Settings2, Sparkles, Calculator, BookOpen, Info, ShieldCheck, Scale, Settings } from "lucide-react";
 import { createClient } from "@/utils/supabase/client";
 import { logAudit } from "@/utils/auditLog";
 import { calculateDynamicMultiplier } from "@/utils/riskEngine";
@@ -315,7 +315,7 @@ export function EquitySettingsModal({
       onClick={onClose}
     >
       <div
-        className="w-full max-w-2xl max-h-[80vh] bg-white rounded-[32px] shadow-2xl p-6 md:p-8 animate-in zoom-in duration-200 font-sans overflow-y-auto"
+        className="w-full max-w-2xl max-h-[80vh] bg-white rounded-[32px] shadow-2xl px-4 py-6 md:px-6 md:py-8 animate-in zoom-in duration-200 font-sans overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
@@ -336,11 +336,11 @@ export function EquitySettingsModal({
         </div>
 
         {/* Tabs: 1. Default Models 2. Multipliers 3. Fixed Equity 4. Limited Equity 5. Smart Multipliers */}
-        <div className="flex flex-nowrap gap-1.5 mb-6 p-1 rounded-xl bg-slate-100 border border-slate-200">
+        <div className="flex flex-nowrap gap-1.5 mb-6 p-1 rounded-xl bg-slate-100 border border-slate-200 w-full">
           <button
             type="button"
             onClick={() => setActiveTab("default_models")}
-            className={`shrink-0 py-2 px-2.5 rounded-lg text-xs font-bold transition-all whitespace-nowrap ${
+            className={`flex-1 min-w-0 py-2 px-2 rounded-lg text-xs font-bold transition-all whitespace-nowrap ${
               activeTab === "default_models"
                 ? "bg-white text-slate-800 shadow-sm"
                 : "text-slate-600 hover:text-slate-800"
@@ -351,7 +351,7 @@ export function EquitySettingsModal({
           <button
             type="button"
             onClick={() => setActiveTab("multipliers")}
-            className={`shrink-0 py-2 px-2.5 rounded-lg text-xs font-bold transition-all whitespace-nowrap ${
+            className={`flex-1 min-w-0 py-2 px-2 rounded-lg text-xs font-bold transition-all whitespace-nowrap ${
               activeTab === "multipliers"
                 ? "bg-white text-slate-800 shadow-sm"
                 : "text-slate-600 hover:text-slate-800"
@@ -362,7 +362,7 @@ export function EquitySettingsModal({
           <button
             type="button"
             onClick={() => setActiveTab("fixed")}
-            className={`shrink-0 py-2 px-2.5 rounded-lg text-xs font-bold transition-all whitespace-nowrap ${
+            className={`flex-1 min-w-0 py-2 px-2 rounded-lg text-xs font-bold transition-all whitespace-nowrap ${
               activeTab === "fixed"
                 ? "bg-white text-slate-800 shadow-sm"
                 : "text-slate-600 hover:text-slate-800"
@@ -373,7 +373,7 @@ export function EquitySettingsModal({
           <button
             type="button"
             onClick={() => setActiveTab("limited")}
-            className={`shrink-0 py-2 px-2.5 rounded-lg text-xs font-bold transition-all whitespace-nowrap ${
+            className={`flex-1 min-w-0 py-2 px-2 rounded-lg text-xs font-bold transition-all whitespace-nowrap ${
               activeTab === "limited"
                 ? "bg-white text-slate-800 shadow-sm"
                 : "text-slate-600 hover:text-slate-800"
@@ -384,7 +384,7 @@ export function EquitySettingsModal({
           <button
             type="button"
             onClick={() => setActiveTab("smart")}
-            className={`shrink-0 py-2 px-2.5 rounded-lg text-xs font-bold transition-all whitespace-nowrap ${
+            className={`flex-1 min-w-0 py-2 px-2 rounded-lg text-xs font-bold transition-all whitespace-nowrap ${
               activeTab === "smart"
                 ? "bg-white text-slate-800 shadow-sm"
                 : "text-slate-600 hover:text-slate-800"
@@ -395,35 +395,77 @@ export function EquitySettingsModal({
         </div>
 
         {/* Tab Content — fixed height to prevent layout shift when switching tabs */}
-        <div className="h-[480px] overflow-y-auto pr-1">
+        <div className="h-[480px] overflow-y-auto pr-1 w-full min-w-0">
         {activeTab === "default_models" && (
-          <div className="space-y-4">
-            <p className="text-sm text-slate-600 leading-relaxed">
+          <div className="space-y-4 w-full">
+            <p className="text-sm text-slate-600 leading-relaxed w-full">
               Choose a preset model (Just Split, Flat, or Custom) to set default multipliers for contributions.
             </p>
-            <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-between gap-4">
-              <div className="flex items-center gap-3">
-                <div className="p-2 bg-emerald-100 rounded-lg">
-                  <ShieldCheck className="w-5 h-5 text-emerald-600" />
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-3 w-full">
+              {/* Custom Model */}
+              <div
+                className={`relative p-3 rounded-xl border-2 transition-all flex flex-col ${
+                  (project?.model_type || "JUST_SPLIT") === "CUSTOM"
+                    ? "border-blue-500 bg-blue-50/30 ring-1 ring-blue-500/20"
+                    : "border-slate-100 bg-slate-50/50 hover:border-slate-200"
+                }`}
+              >
+                <div className="flex items-center gap-2 mb-2">
+                  <div className={`p-1.5 rounded-md ${(project?.model_type || "JUST_SPLIT") === "CUSTOM" ? "bg-blue-500 text-white" : "bg-white text-slate-400 shadow-sm"}`}>
+                    <Settings className="w-3.5 h-3.5" />
+                  </div>
+                  <span className="font-black text-sm text-slate-800">Custom</span>
                 </div>
-                <div>
-                  <p className="font-bold text-slate-800">
-                    {(project?.model_type || "JUST_SPLIT").replace(/_/g, " ")}
-                  </p>
-                  <p className="text-xs text-slate-500">
-                    Current model · Multipliers: Cash x{project?.mult_cash ?? 4}, Work x{project?.mult_work ?? 2}, etc.
-                  </p>
-                </div>
+                <p className="text-[10px] text-slate-500 mb-3 flex-1">Manual control of each multiplier.</p>
+                {canEdit && onOpenDefaultModels && (
+                  <button type="button" onClick={onOpenDefaultModels} className="mt-auto w-full py-2 rounded-lg text-xs font-bold border border-slate-200 bg-white hover:bg-slate-50 transition-all">
+                    {(project?.model_type || "JUST_SPLIT") === "CUSTOM" ? "Current · Edit" : "Select"}
+                  </button>
+                )}
               </div>
-              {canEdit && onOpenDefaultModels && (
-                <button
-                  type="button"
-                  onClick={onOpenDefaultModels}
-                  className="px-4 py-2.5 rounded-xl font-bold text-slate-800 bg-white border border-slate-200 hover:bg-slate-50 hover:border-slate-300 transition-all"
-                >
-                  Change default model
-                </button>
-              )}
+              {/* Just Split Model */}
+              <div
+                className={`relative p-3 rounded-xl border-2 transition-all flex flex-col ${
+                  (project?.model_type || "JUST_SPLIT") === "JUST_SPLIT"
+                    ? "border-emerald-500 bg-emerald-50/40 ring-1 ring-emerald-500/20"
+                    : "border-slate-100 bg-slate-50/50 hover:border-slate-200"
+                }`}
+              >
+                <div className="absolute -top-2 left-1/2 -translate-x-1/2 bg-emerald-500 text-white text-[8px] font-black px-2 py-0.5 rounded-full uppercase z-10">Recommended</div>
+                <div className="flex items-center gap-2 mb-2 mt-1">
+                  <div className={`p-1.5 rounded-md ${(project?.model_type || "JUST_SPLIT") === "JUST_SPLIT" ? "bg-emerald-500 text-white" : "bg-white text-slate-400 shadow-sm"}`}>
+                    <ShieldCheck className="w-3.5 h-3.5" />
+                  </div>
+                  <span className="font-black text-sm text-slate-800">Just Split</span>
+                </div>
+                <p className="text-[10px] text-slate-500 mb-3 flex-1">Cash x4, Work x2, Assets x2, IP x2.</p>
+                {canEdit && onOpenDefaultModels && (
+                  <button type="button" onClick={onOpenDefaultModels} className="mt-auto w-full py-2 rounded-lg text-xs font-bold border border-slate-200 bg-white hover:bg-slate-50 transition-all">
+                    {(project?.model_type || "JUST_SPLIT") === "JUST_SPLIT" ? "Current · Edit" : "Select"}
+                  </button>
+                )}
+              </div>
+              {/* Flat Model */}
+              <div
+                className={`relative p-3 rounded-xl border-2 transition-all flex flex-col ${
+                  (project?.model_type || "JUST_SPLIT") === "FLAT"
+                    ? "border-purple-500 bg-purple-50/20 ring-1 ring-purple-500/20"
+                    : "border-slate-100 bg-slate-50/50 hover:border-slate-200"
+                }`}
+              >
+                <div className="flex items-center gap-2 mb-2">
+                  <div className={`p-1.5 rounded-md ${(project?.model_type || "JUST_SPLIT") === "FLAT" ? "bg-purple-500 text-white" : "bg-white text-slate-400 shadow-sm"}`}>
+                    <Scale className="w-3.5 h-3.5" />
+                  </div>
+                  <span className="font-black text-sm text-slate-800">Flat</span>
+                </div>
+                <p className="text-[10px] text-slate-500 mb-3 flex-1">All contributions x1. Simple linear split.</p>
+                {canEdit && onOpenDefaultModels && (
+                  <button type="button" onClick={onOpenDefaultModels} className="mt-auto w-full py-2 rounded-lg text-xs font-bold border border-slate-200 bg-white hover:bg-slate-50 transition-all">
+                    {(project?.model_type || "JUST_SPLIT") === "FLAT" ? "Current · Edit" : "Select"}
+                  </button>
+                )}
+              </div>
             </div>
           </div>
         )}
@@ -486,7 +528,7 @@ export function EquitySettingsModal({
         )}
 
         {activeTab === "fixed" && (
-          <>
+          <div className="w-full max-w-full">
             {/* Segmented Progress Bar */}
             <div className="mb-6 w-full">
               <div className="flex justify-between text-xs font-bold text-slate-500 mb-2 uppercase">
@@ -587,11 +629,11 @@ export function EquitySettingsModal({
                 </button>
               )}
             </div>
-          </>
+          </div>
         )}
 
         {activeTab === "limited" && (
-          <>
+          <div className="w-full max-w-full">
             <p className="text-xs text-slate-500 mb-4 leading-relaxed w-full">
               Set a hard cap (%) per member. When enabled, that member will not exceed this share regardless of contributions.
             </p>
@@ -688,11 +730,11 @@ export function EquitySettingsModal({
                 </button>
               )}
             </div>
-          </>
+          </div>
         )}
 
         {activeTab === "smart" && (
-          <div className="space-y-6 max-h-[55vh] overflow-y-auto pr-1">
+          <div className="space-y-6 w-full">
             {/* Smart Risk Calculator */}
             <div className="space-y-3">
               <div className="flex items-center gap-2">
