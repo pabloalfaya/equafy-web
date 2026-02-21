@@ -48,6 +48,7 @@ export const updateSession = async (request: NextRequest) => {
       !request.nextUrl.pathname.startsWith("/how-it-works") &&
       !request.nextUrl.pathname.startsWith("/guide") &&
       !request.nextUrl.pathname.startsWith("/features") &&
+      !request.nextUrl.pathname.startsWith("/models") &&
       !request.nextUrl.pathname.startsWith("/pricing") &&
       !request.nextUrl.pathname.startsWith("/contact") &&
       !request.nextUrl.pathname.startsWith("/legal")
