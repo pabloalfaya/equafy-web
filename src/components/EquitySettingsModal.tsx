@@ -723,7 +723,7 @@ export function EquitySettingsModal({
                   type="button"
                   onClick={handleSaveLimited}
                   disabled={loading}
-                  className="flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-xl font-black text-white bg-[#00C853] hover:bg-emerald-600 shadow-lg shadow-emerald-600/20 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                  className="flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-xl font-black text-white bg-emerald-600 hover:bg-emerald-700 shadow-lg shadow-emerald-600/20 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
                 >
                   <Save className="w-4 h-4" />
                   {loading ? "Saving..." : "Save Changes"}
