@@ -80,6 +80,7 @@ export default function PrivacyPage() {
               <ul className="list-disc pl-6 space-y-2 mt-2">
                 <li><strong>Stripe</strong> — for payment processing and subscription management. Stripe&apos;s privacy policy applies to payment data they process.</li>
                 <li><strong>Supabase</strong> — for authentication, database storage, and backend services. Your account and project data are stored and processed through Supabase in accordance with their data processing terms.</li>
+                <li><strong>Vercel</strong> — for cloud hosting and frontend delivery. Vercel processes infrastructure data, including IP addresses, to ensure the security, performance, and reliability of the platform.</li>
               </ul>
               <p className="mt-4">
                 We ensure that these providers offer adequate safeguards (e.g., standard contractual clauses or equivalent) where data is transferred outside the European Economic Area or your jurisdiction.
@@ -95,6 +96,11 @@ export default function PrivacyPage() {
                 <li><strong>Right of access:</strong> you may request a copy of the personal data we hold about you.</li>
                 <li><strong>Right to rectification:</strong> you may ask us to correct inaccurate or incomplete data.</li>
                 <li><strong>Right to erasure:</strong> you may request deletion of your personal data, subject to legal retention requirements.</li>
+              </ul>
+              <p className="mt-4 font-medium">
+                <strong>Important Exception Regarding Equity Data:</strong> Please note that while you can delete your account and personal profile information, we cannot delete your historical contribution data, risk multipliers, or presence in the immutable Audit Log of a shared project. Retaining this specific data is strictly necessary under our &quot;legitimate interest&quot; to preserve the mathematical integrity of the cap table and the legal rights of your co-founders or partners within that project.
+              </p>
+              <ul className="list-disc pl-6 space-y-2 mt-4">
                 <li><strong>Right to restrict processing:</strong> you may ask us to limit how we use your data in certain circumstances.</li>
                 <li><strong>Right to data portability:</strong> you may request your data in a structured, machine-readable format.</li>
                 <li><strong>Right to object:</strong> you may object to processing based on legitimate interests or for direct marketing.</li>
@@ -130,9 +136,16 @@ export default function PrivacyPage() {
             </section>
 
             <section>
-              <h2 className="text-2xl font-bold text-slate-900 mb-4">8. Changes and Contact</h2>
+              <h2 className="text-2xl font-bold text-slate-900 mb-4">8. Cookies and Local Storage</h2>
               <p>
-                We may update this Privacy Policy from time to time. We will indicate the &quot;Last updated&quot; date at the top and, where required, notify you of material changes. Continued use of Equily after changes constitutes acceptance of the updated policy. For any questions or to exercise your rights, contact us at{" "}
+                We use essential cookies and local storage mechanisms (such as those provided by Supabase) strictly to keep you logged in securely and ensure the platform functions correctly. We do not use intrusive tracking or advertising cookies. By using Equily, you consent to the use of these strictly necessary operational cookies.
+              </p>
+            </section>
+
+            <section>
+              <h2 className="text-2xl font-bold text-slate-900 mb-4">9. Changes and Contact</h2>
+              <p>
+                We may update this Privacy Policy from time to time. We will indicate the &quot;Last updated&quot; date at the top and, where required, notify you of material changes. Continued use of Equily after changes constitutes acceptance of the updated policy. If you believe your privacy rights have been violated, you also have the right to file a complaint directly with the Spanish Data Protection Agency (AEPD). For any questions or to exercise your rights, contact us at{" "}
                 <a href={`mailto:${EMAIL}`} className="text-emerald-600 font-semibold hover:underline">{EMAIL}</a> or at {ADDRESS}.
               </p>
             </section>

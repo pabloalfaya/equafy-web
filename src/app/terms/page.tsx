@@ -83,14 +83,21 @@ export default function TermsPage() {
             </section>
 
             <section>
-              <h2 className="text-2xl font-bold text-slate-900 mb-4">6. Governing Law</h2>
+              <h2 className="text-2xl font-bold text-slate-900 mb-4">6. Indemnification</h2>
+              <p>
+                You agree to defend, indemnify, and hold harmless {LEGAL_NAME} (operating as Equily), its affiliates, and its respective directors, employees, and agents, from and against any and all claims, damages, obligations, losses, liabilities, costs, or debt, and expenses (including but not limited to attorney&apos;s fees) arising from: (i) your use of and access to the Equily service; (ii) your violation of any term of these Terms; or (iii) any dispute, conflict, or litigation between you and any other user, co-founder, partner, or third party regarding the allocation, calculation, or distribution of equity or ownership interests managed through the platform.
+              </p>
+            </section>
+
+            <section>
+              <h2 className="text-2xl font-bold text-slate-900 mb-4">7. Governing Law</h2>
               <p>
                 These Terms and any dispute arising out of or in connection with them shall be governed by and construed in accordance with the laws of <strong>Spain</strong>, without regard to its conflict of law provisions. The courts of Spain shall have exclusive jurisdiction for any legal proceedings relating to these Terms, subject to mandatory consumer protection laws in your country of residence.
               </p>
             </section>
 
             <section>
-              <h2 className="text-2xl font-bold text-slate-900 mb-4">7. Contact</h2>
+              <h2 className="text-2xl font-bold text-slate-900 mb-4">8. Contact</h2>
               <p>
                 For questions about these Terms, please contact us at{" "}
                 <a href={`mailto:${EMAIL}`} className="text-emerald-600 font-semibold hover:underline">{EMAIL}</a>. Our address is {ADDRESS}.
