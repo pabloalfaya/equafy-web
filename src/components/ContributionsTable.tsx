@@ -16,10 +16,12 @@ interface ContributionsTableProps {
   contributions: any[];
   onDelete: (id: string) => void;
   onEdit: (contribution: any) => void;
+  onRemoveSimulated?: (id: string) => void;
   canEdit?: boolean;
+  simulationMode?: boolean;
 }
 
-export function ContributionsTable({ contributions, onDelete, onEdit, canEdit = true }: ContributionsTableProps) {
+export function ContributionsTable({ contributions, onDelete, onEdit, onRemoveSimulated, canEdit = true, simulationMode }: ContributionsTableProps) {
   
   const formatDate = (dateString: string) => {
     if (!dateString) return "-";
@@ -52,8 +54,13 @@ export function ContributionsTable({ contributions, onDelete, onEdit, canEdit = 
           </tr>
         </thead>
         <tbody className="text-sm text-slate-700">
-          {contributions.map((c) => (
-            <tr key={c.id} className="border-b border-slate-50 hover:bg-slate-50/50 transition-colors">
+          {contributions.map((c) => {
+            const isSimulated = !!(c as { isSimulated?: boolean }).isSimulated;
+            return (
+            <tr
+              key={c.id}
+              className={`border-b transition-colors ${isSimulated ? "bg-amber-50/60 border-amber-100/80 hover:bg-amber-50" : "border-slate-50 hover:bg-slate-50/50"}`}
+            >
               
               {/* 1. FECHA (Usamos c.date) */}
               <td className="py-4 px-4 whitespace-nowrap text-slate-500 font-medium">
@@ -70,9 +77,10 @@ export function ContributionsTable({ contributions, onDelete, onEdit, canEdit = 
 
               {/* 3. TIPO (Usamos c.type) */}
               <td className="py-4 px-4">
-                <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-slate-100 text-slate-600 text-xs font-bold uppercase tracking-wide">
+                <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-bold uppercase tracking-wide ${isSimulated ? "bg-amber-200/60 text-amber-900" : "bg-slate-100 text-slate-600"}`}>
                     <Tag className="w-3 h-3" />
                     {c.type}
+                    {isSimulated && <span className="ml-1 text-[10px]">(sim)</span>}
                 </span>
               </td>
 
@@ -91,7 +99,24 @@ export function ContributionsTable({ contributions, onDelete, onEdit, canEdit = 
 
               {/* 6. ACCIONES */}
               <td className="py-4 px-4 text-right">
-                {canEdit ? (
+                {isSimulated ? (
+                  onRemoveSimulated ? (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        if (window.confirm("Remove this simulated contribution?")) {
+                          onRemoveSimulated(c.id);
+                        }
+                      }}
+                      className="p-1.5 text-amber-600 hover:text-amber-700 hover:bg-amber-100 rounded-lg transition-all"
+                      title="Remove simulation"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  ) : (
+                    <span className="text-amber-600 text-xs font-bold">Simulated</span>
+                  )
+                ) : canEdit ? (
                   <div className="flex items-center justify-end gap-1">
                     <button
                       type="button"
@@ -119,7 +144,8 @@ export function ContributionsTable({ contributions, onDelete, onEdit, canEdit = 
                 )}
               </td>
             </tr>
-          ))}
+          );
+          })}
         </tbody>
       </table>
     </div>

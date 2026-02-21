@@ -15,7 +15,7 @@ import { EquitySettingsModal } from "@/components/EquitySettingsModal";
 import { EquityModelModal } from "@/components/EquityModelModal";
 import { AuditLogModal } from "@/components/AuditLogModal";
 import { FinalizedSummaryModal, type SummaryRow } from "@/components/FinalizedSummaryModal";
-import type { Project, Contribution } from "@/types/database";
+import type { Project, Contribution, ContributionType } from "@/types/database";
 
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
@@ -140,6 +140,8 @@ export default function ProjectDashboardPage() {
   const [isFreezing, setIsFreezing] = useState(false);
   const [finalizeToast, setFinalizeToast] = useState<string | null>(null);
   const [filterByMember, setFilterByMember] = useState<string | null>(null);
+  const [simulationMode, setSimulationMode] = useState(false);
+  const [simulatedContributions, setSimulatedContributions] = useState<ExtendedContribution[]>([]);
   const contributionLogRef = useRef<HTMLDivElement>(null);
   const [summaryPayload, setSummaryPayload] = useState<{
     projectName: string;
@@ -222,8 +224,51 @@ export default function ProjectDashboardPage() {
   };
 
   const handleEditContribution = (contribution: ExtendedContribution) => {
+    if ((contribution as { isSimulated?: boolean }).isSimulated) return;
     setEditingContribution(contribution);
     setModalOpen(true);
+  };
+
+  const displayContributions = simulationMode
+    ? [...contributions, ...simulatedContributions].sort((a, b) => {
+        const da = (a as ExtendedContribution).date ?? (a as ExtendedContribution).created_at ?? "";
+        const db = (b as ExtendedContribution).date ?? (b as ExtendedContribution).created_at ?? "";
+        return da > db ? -1 : da < db ? 1 : 0;
+      })
+    : contributions;
+
+  const handleAddSimulatedContribution = (data: {
+    contributor_name: string;
+    concept: string;
+    type: string;
+    amount: number;
+    multiplier: number;
+    risk_adjusted_value: number;
+    date: string;
+  }) => {
+    const sim: ExtendedContribution = {
+      id: `sim-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`,
+      project_id: projectId,
+      contributor_name: data.contributor_name,
+      concept: data.concept,
+      type: (data.type?.toLowerCase() || "others") as ContributionType,
+      amount: data.amount,
+      multiplier: data.multiplier,
+      risk_adjusted_value: data.risk_adjusted_value,
+      date: data.date,
+      isSimulated: true,
+    };
+    setSimulatedContributions((prev) => [...prev, sim]);
+    setSimulationMode(true);
+  };
+
+  const handleRemoveSimulatedContribution = (id: string) => {
+    setSimulatedContributions((prev) => prev.filter((c) => c.id !== id));
+  };
+
+  const handleExitSimulationMode = () => {
+    setSimulationMode(false);
+    setSimulatedContributions([]);
   };
 
   const handleFinalizeProject = async () => {
@@ -502,7 +547,7 @@ export default function ProjectDashboardPage() {
   const isFinalized = (project as ExtendedProject & { status?: string })?.status === "finalized";
   const canEditAndNotFinalized = canEdit && !isFinalized;
 
-  const groupedContributionsForChart = contributions.reduce((acc, curr) => {
+  const groupedContributionsForChart = displayContributions.reduce((acc, curr) => {
     const existingIndex = acc.findIndex((c) => c.contributor_name === curr.contributor_name);
     if (existingIndex >= 0) {
       const existing = acc[existingIndex];
@@ -633,6 +678,24 @@ export default function ProjectDashboardPage() {
               </div>
               </div>
               <div className="flex gap-2 sm:gap-3 flex-wrap sm:flex-nowrap">
+                {simulationMode && (
+                  <button
+                    type="button"
+                    onClick={handleExitSimulationMode}
+                    className="inline-flex items-center gap-2 rounded-xl bg-amber-100 border border-amber-300 px-4 md:px-5 py-2.5 md:py-3 font-bold text-amber-800 shadow-sm hover:bg-amber-200 transition-all whitespace-nowrap text-sm md:text-base"
+                  >
+                    <X className="h-5 w-5" /> Exit simulation
+                  </button>
+                )}
+                {!simulationMode && canEditAndNotFinalized && (
+                  <button
+                    type="button"
+                    onClick={() => setSimulationMode(true)}
+                    className="inline-flex items-center gap-2 rounded-xl bg-slate-100 border border-slate-200 px-4 md:px-5 py-2.5 md:py-3 font-bold text-slate-600 shadow-sm hover:bg-slate-200 transition-all whitespace-nowrap text-sm md:text-base"
+                  >
+                    <TrendingUp className="h-5 w-5" /> Simulation mode
+                  </button>
+                )}
                 <button
                   onClick={generatePDF}
                   className="inline-flex items-center gap-2 rounded-xl bg-white border border-slate-200 px-4 md:px-5 py-2.5 md:py-3 font-bold text-slate-700 shadow-sm hover:bg-slate-50 transition-all whitespace-nowrap text-sm md:text-base"
@@ -664,6 +727,24 @@ export default function ProjectDashboardPage() {
               </div>
             </div>
 
+            {simulationMode && (
+              <div className="mb-6 rounded-2xl bg-amber-50 border border-amber-200 px-6 py-4 flex items-center justify-between gap-4">
+                <p className="font-bold text-amber-800 text-sm">
+                  <span className="inline-flex items-center gap-2">
+                    <TrendingUp className="w-5 h-5" />
+                    Simulation mode — Cap table and Team Breakdown reflect simulated contributions.
+                  </span>
+                </p>
+                <button
+                  type="button"
+                  onClick={handleExitSimulationMode}
+                  className="shrink-0 px-4 py-2 rounded-xl bg-amber-200 hover:bg-amber-300 text-amber-900 font-bold text-sm transition-colors"
+                >
+                  Exit simulation
+                </button>
+              </div>
+            )}
+
             <div className="grid lg:grid-cols-3 gap-8">
                 <div ref={contributionLogRef} className="lg:col-span-2 bg-white/70 backdrop-blur-xl border border-white/60 rounded-[32px] p-8 shadow-xl flex flex-col">
                     <div className="flex items-center gap-3 mb-6 flex-wrap">
@@ -682,7 +763,14 @@ export default function ProjectDashboardPage() {
                         )}
                     </div>
                     <div className="overflow-auto max-h-[600px] pr-2 pb-1 custom-scrollbar">
-                        <ContributionsTable contributions={filterByMember ? contributions.filter((c) => c.contributor_name === filterByMember) : contributions} onDelete={handleContributionDeleted} onEdit={handleEditContribution} canEdit={canEditAndNotFinalized} />
+                        <ContributionsTable
+                          contributions={filterByMember ? displayContributions.filter((c) => c.contributor_name === filterByMember) : displayContributions}
+                          onDelete={handleContributionDeleted}
+                          onEdit={handleEditContribution}
+                          onRemoveSimulated={handleRemoveSimulatedContribution}
+                          canEdit={canEditAndNotFinalized}
+                          simulationMode={simulationMode}
+                        />
                     </div>
                 </div>
                 
@@ -692,7 +780,7 @@ export default function ProjectDashboardPage() {
                         <div className="p-2 bg-emerald-50 rounded-lg"><PieChart className="h-5 w-5 text-emerald-600" /></div>
                         <h3 className="font-bold text-slate-900 text-xl">Equity Distribution</h3>
                     </div>
-                    <div className="w-full aspect-square"><EquityPieChart contributions={contributions} members={members} /></div>
+                    <div className="w-full aspect-square"><EquityPieChart contributions={displayContributions} members={members} /></div>
                   </div>
 
                 <div className="grid grid-cols-3 gap-2 mt-2">
@@ -741,7 +829,7 @@ export default function ProjectDashboardPage() {
               <h3 className="text-2xl font-bold tracking-tight text-slate-900 mb-2">Team Breakdown</h3>
               <p className="text-slate-500 font-medium mb-8">Dynamic split based on contributions.</p>
               {(() => {
-                const { rows } = getEquitySummaryForFinalize(members, contributions, project);
+                const { rows } = getEquitySummaryForFinalize(members, displayContributions, project);
                 const barColors = ["bg-emerald-500", "bg-blue-500", "bg-violet-500", "bg-amber-500", "bg-red-500", "bg-cyan-500", "bg-pink-500", "bg-indigo-500"];
                 const ringColors = ["ring-emerald-500", "ring-blue-500", "ring-violet-500", "ring-amber-500", "ring-red-500", "ring-cyan-500", "ring-pink-500", "ring-indigo-500"];
                 const getInitials = (name: string) => name.split(" ").map((n) => n[0]).join("").slice(0, 2).toUpperCase();
@@ -802,6 +890,7 @@ export default function ProjectDashboardPage() {
         projectId={projectId} 
         projectConfig={project} 
         onSuccess={handleContributionSuccess} 
+        onAddSimulated={handleAddSimulatedContribution}
         members={members} 
         editData={editingContribution}
         canEdit={canEdit}

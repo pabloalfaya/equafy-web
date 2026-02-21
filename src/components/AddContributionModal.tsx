@@ -24,7 +24,10 @@ const DEFAULT_MULTIPLIERS: Record<string, number> = {
   mult_others: 1,
 };
 
-export function AddContributionModal({ isOpen, onClose, projectId, projectConfig, onSuccess, members, editData = null, canEdit = true }: any) {
+type AddContributionTab = "add" | "simulate";
+
+export function AddContributionModal({ isOpen, onClose, projectId, projectConfig, onSuccess, members, editData = null, canEdit = true, onAddSimulated }: { isOpen: boolean; onClose: () => void; projectId: string; projectConfig?: any; onSuccess?: (c: any) => void; members: any[]; editData?: any; canEdit?: boolean; onAddSimulated?: (data: { contributor_name: string; concept: string; type: string; amount: number; multiplier: number; risk_adjusted_value: number; date: string }) => void }) {
+  const [activeTab, setActiveTab] = useState<AddContributionTab>("add");
   const [contributorId, setContributorId] = useState("");
   const [concept, setConcept] = useState("");
   const [type, setType] = useState("CASH");
@@ -79,6 +82,7 @@ export function AddContributionModal({ isOpen, onClose, projectId, projectConfig
   useEffect(() => {
     if (isOpen) {
       if (editData) {
+        setActiveTab("add");
         const member = members.find((m: any) => m.name === editData.contributor_name);
         setContributorId(member?.id || ""); 
         setConcept(editData.concept || ""); 
@@ -87,6 +91,7 @@ export function AddContributionModal({ isOpen, onClose, projectId, projectConfig
         setDate(editData.date || new Date().toISOString().split('T')[0]); 
         setMultiplier(editData.multiplier || 1);
       } else {
+        setActiveTab("add");
         setConcept(""); 
         setAmount(""); 
         setType("CASH"); 
@@ -113,19 +118,36 @@ export function AddContributionModal({ isOpen, onClose, projectId, projectConfig
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!canEdit) return;
-    setLoading(true);
+    if (!canEdit && activeTab === "add") return;
 
     const selectedMember = members.find((m: any) => m.id === contributorId);
-    
+    const amt = parseFloat(amount || "0");
+    const riskVal = parseFloat(riskAdjustedValue);
+
+    if (activeTab === "simulate" && onAddSimulated) {
+      onAddSimulated({
+        contributor_name: selectedMember?.name || "Unknown",
+        concept,
+        type,
+        amount: amt,
+        multiplier,
+        risk_adjusted_value: riskVal,
+        date,
+      });
+      onClose();
+      return;
+    }
+
+    setLoading(true);
+
     const payload = { 
         project_id: projectId, 
         contributor_name: selectedMember?.name || "Unknown", 
         concept, 
         type, 
-        amount: parseFloat(amount), 
+        amount: amt, 
         multiplier, 
-        risk_adjusted_value: parseFloat(riskAdjustedValue), 
+        risk_adjusted_value: riskVal, 
         date 
     };
 
@@ -141,9 +163,7 @@ export function AddContributionModal({ isOpen, onClose, projectId, projectConfig
         return;
     }
 
-    // Audit log: justo después del insert exitoso
     const actionType = editData ? "EDIT_CONTRIBUTION" : "ADD_CONTRIBUTION";
-    const amt = parseFloat(amount || "0");
     const memberName = selectedMember?.name ?? "Unknown";
 
     let desc: string;
@@ -159,7 +179,6 @@ export function AddContributionModal({ isOpen, onClose, projectId, projectConfig
       console.error("❌ ERROR GUARDANDO AUDIT LOG:", err);
     }
 
-    // Recalcular multiplicador y total acumulado basado en el NUEVO total
     const { error: recalcError } = await recalculateAndPersistProjectValuation(
       supabase,
       projectId,
@@ -168,7 +187,6 @@ export function AddContributionModal({ isOpen, onClose, projectId, projectConfig
 
     if (recalcError) {
         console.error("Error recalculating project valuation:", recalcError);
-        // Aun así devolvemos éxito porque la aportación se guardó correctamente
     }
 
     if (onSuccess) onSuccess(data);
@@ -189,6 +207,25 @@ export function AddContributionModal({ isOpen, onClose, projectId, projectConfig
             <X className="h-5 w-5" />
           </button>
         </div>
+
+        {!editData && (
+          <div className="flex gap-2 mb-6 p-1 rounded-xl bg-slate-100 border border-slate-200">
+            <button
+              type="button"
+              onClick={() => setActiveTab("add")}
+              className={`flex-1 py-2.5 px-4 rounded-lg text-sm font-bold transition-all ${activeTab === "add" ? "bg-white text-slate-800 shadow-sm" : "text-slate-600 hover:text-slate-800"}`}
+            >
+              Add Contribution
+            </button>
+            <button
+              type="button"
+              onClick={() => setActiveTab("simulate")}
+              className={`flex-1 py-2.5 px-4 rounded-lg text-sm font-bold transition-all ${activeTab === "simulate" ? "bg-white text-slate-800 shadow-sm" : "text-slate-600 hover:text-slate-800"}`}
+            >
+              Simulate Contribution
+            </button>
+          </div>
+        )}
 
         {/* Form */}
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -277,13 +314,13 @@ export function AddContributionModal({ isOpen, onClose, projectId, projectConfig
           </div>
 
           {/* Submit Button */}
-          {canEdit && (
+          {(canEdit || (activeTab === "simulate" && onAddSimulated)) && (
             <button 
               type="submit" 
               disabled={loading} 
-              className="w-full rounded-2xl bg-emerald-600 py-4 text-sm font-black text-white hover:bg-emerald-500 hover:shadow-lg hover:shadow-emerald-500/30 transition-all uppercase tracking-widest disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full rounded-2xl py-4 text-sm font-black text-white hover:shadow-lg transition-all uppercase tracking-widest disabled:opacity-50 disabled:cursor-not-allowed bg-emerald-600 hover:bg-emerald-500 hover:shadow-emerald-500/30"
             >
-              {loading ? "Saving..." : editData ? "Save Changes" : "Confirm Contribution"}
+              {loading ? "Saving..." : activeTab === "simulate" ? "Simulate Contribution" : editData ? "Save Changes" : "Confirm Contribution"}
             </button>
           )}
 
