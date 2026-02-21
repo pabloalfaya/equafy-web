@@ -146,7 +146,7 @@ export default function LandingPage() {
       </section>
 
       {/* --- FRAMEWORK SELECTION --- */}
-      <section className="relative z-10 w-full bg-transparent pt-8 pb-24 mt-12 md:mt-16">
+      <section className="relative z-10 w-full bg-transparent pt-6 pb-24 mt-8 md:mt-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12 max-w-3xl mx-auto">
             <h2 className="text-4xl md:text-5xl font-bold tracking-tight mb-4 text-slate-800">
