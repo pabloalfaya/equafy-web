@@ -231,8 +231,10 @@ export default function ProjectDashboardPage() {
 
   const displayContributions = simulationMode
     ? [...contributions, ...simulatedContributions].sort((a, b) => {
-        const da = (a as ExtendedContribution).date ?? (a as ExtendedContribution).created_at ?? "";
-        const db = (b as ExtendedContribution).date ?? (b as ExtendedContribution).created_at ?? "";
+        const getSortKey = (c: ExtendedContribution) =>
+          (c as { addedAt?: string }).addedAt ?? (c as ExtendedContribution).created_at ?? (c as ExtendedContribution).date ?? "";
+        const da = getSortKey(a);
+        const db = getSortKey(b);
         return da > db ? -1 : da < db ? 1 : 0;
       })
     : contributions;
@@ -257,6 +259,7 @@ export default function ProjectDashboardPage() {
       risk_adjusted_value: data.risk_adjusted_value,
       date: data.date,
       isSimulated: true,
+      addedAt: new Date().toISOString(),
     };
     setSimulatedContributions((prev) => [...prev, sim]);
     setSimulationMode(true);
