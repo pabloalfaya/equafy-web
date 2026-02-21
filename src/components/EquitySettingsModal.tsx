@@ -488,7 +488,7 @@ export function EquitySettingsModal({
         {activeTab === "fixed" && (
           <>
             {/* Segmented Progress Bar */}
-            <div className="mb-6">
+            <div className="mb-6 w-full">
               <div className="flex justify-between text-xs font-bold text-slate-500 mb-2 uppercase">
                 <span>Fixed</span>
                 <span>Dynamic (Slicing Pie)</span>
@@ -524,7 +524,7 @@ export function EquitySettingsModal({
             </div>
 
             {/* Member list */}
-            <div className="space-y-3 max-h-[200px] overflow-y-auto pr-2 custom-scrollbar">
+            <div className="space-y-3 max-h-[200px] overflow-y-auto pr-2 custom-scrollbar w-full">
               {localMembers.length === 0 ? (
                 <p className="text-center text-slate-400 text-sm italic py-4">
                   No members yet.
@@ -533,9 +533,9 @@ export function EquitySettingsModal({
                 localMembers.map((m, index) => (
                   <div
                     key={m.id}
-                    className="flex items-center justify-between p-3 rounded-xl bg-slate-50 border border-slate-100 hover:border-slate-200 transition-all"
+                    className="flex items-center justify-between gap-4 w-full p-3 rounded-xl bg-slate-50 border border-slate-100 hover:border-slate-200 transition-all"
                   >
-                    <div className="flex items-center gap-3 overflow-hidden mr-3">
+                    <div className="flex flex-1 min-w-0 items-center gap-3 overflow-hidden">
                       <div
                         className={`h-3 w-3 rounded-full shrink-0 ${MEMBER_COLORS[index % MEMBER_COLORS.length]}`}
                       />
@@ -558,7 +558,7 @@ export function EquitySettingsModal({
                         onChange={(e) => handleMemberChange(m.id, e.target.value)}
                         disabled={!canEdit}
                         readOnly={!canEdit}
-                        className={`w-20 px-3 py-2 rounded-lg border border-slate-200 bg-white font-bold text-slate-800 text-sm text-right outline-none focus:ring-2 transition-all disabled:opacity-60 disabled:cursor-not-allowed ${MEMBER_BORDER_COLORS[index % MEMBER_BORDER_COLORS.length]}`}
+                        className={`w-24 min-w-[5rem] px-3 py-2 rounded-lg border border-slate-200 bg-white font-bold text-slate-800 text-sm text-right outline-none focus:ring-2 transition-all disabled:opacity-60 disabled:cursor-not-allowed ${MEMBER_BORDER_COLORS[index % MEMBER_BORDER_COLORS.length]}`}
                       />
                       <span className="text-slate-400 font-bold text-sm">%</span>
                     </div>
@@ -567,7 +567,7 @@ export function EquitySettingsModal({
               )}
             </div>
 
-            <div className="flex gap-3 mt-6">
+            <div className="flex gap-3 mt-6 w-full">
               <button
                 type="button"
                 onClick={onClose}
@@ -592,10 +592,10 @@ export function EquitySettingsModal({
 
         {activeTab === "limited" && (
           <>
-            <p className="text-xs text-slate-500 mb-4 leading-relaxed">
+            <p className="text-xs text-slate-500 mb-4 leading-relaxed w-full">
               Set a hard cap (%) per member. When enabled, that member will not exceed this share regardless of contributions.
             </p>
-            <div className="space-y-3 max-h-[200px] overflow-y-auto pr-2 custom-scrollbar mb-4">
+            <div className="space-y-3 max-h-[200px] overflow-y-auto pr-2 custom-scrollbar mb-4 w-full">
               {localMembers.length === 0 ? (
                 <p className="text-center text-slate-400 text-sm italic py-4">
                   No members yet.
@@ -607,10 +607,10 @@ export function EquitySettingsModal({
                   return (
                     <div
                       key={m.id}
-                      className="flex flex-col gap-2 p-3 rounded-xl bg-slate-50 border border-slate-100 hover:border-slate-200 transition-all"
+                      className="flex flex-col gap-2 w-full p-3 rounded-xl bg-slate-50 border border-slate-100 hover:border-slate-200 transition-all"
                     >
-                      <div className="flex items-center justify-between gap-4">
-                        <div className="flex items-center gap-3 overflow-hidden min-w-0">
+                      <div className="flex items-center justify-between gap-4 w-full">
+                        <div className="flex flex-1 min-w-0 items-center gap-3 overflow-hidden">
                           <div
                             className={`h-3 w-3 rounded-full shrink-0 ${MEMBER_COLORS[index % MEMBER_COLORS.length]}`}
                           />
@@ -650,7 +650,7 @@ export function EquitySettingsModal({
                                 value={formatWithComma(Number.isNaN(capValue) ? 0 : capValue)}
                                 onChange={(e) => setCapValue(m.id, e.target.value)}
                                 disabled={!canEdit}
-                                className={`w-20 px-3 py-2 rounded-lg border border-slate-200 bg-white font-bold text-slate-800 text-sm text-right outline-none focus:ring-2 transition-all disabled:opacity-60 disabled:cursor-not-allowed ${MEMBER_BORDER_COLORS[index % MEMBER_BORDER_COLORS.length]}`}
+                                className={`w-24 min-w-[5rem] px-3 py-2 rounded-lg border border-slate-200 bg-white font-bold text-slate-800 text-sm text-right outline-none focus:ring-2 transition-all disabled:opacity-60 disabled:cursor-not-allowed ${MEMBER_BORDER_COLORS[index % MEMBER_BORDER_COLORS.length]}`}
                               />
                               <span className="text-slate-400 font-bold text-sm">%</span>
                             </div>
@@ -668,7 +668,7 @@ export function EquitySettingsModal({
               )}
             </div>
 
-            <div className="flex gap-3 mt-6">
+            <div className="flex gap-3 mt-6 w-full">
               <button
                 type="button"
                 onClick={onClose}
