@@ -21,6 +21,10 @@ export interface Project {
   status?: string;
   /** If false, show the equity model onboarding modal on first dashboard visit. */
   model_onboarding_dismissed?: boolean;
+  /** When the user accepted Terms of Service before checkout. */
+  terms_accepted_at?: string | null;
+  /** When the user accepted Privacy Policy before checkout. */
+  privacy_accepted_at?: string | null;
 }
 
 export interface Contribution {

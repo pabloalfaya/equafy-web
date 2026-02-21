@@ -30,6 +30,8 @@ export async function POST(req: Request) {
       mult_tangible: bodyMultTangible,
       mult_intangible: bodyMultIntangible,
       mult_others: bodyMultOthers,
+      terms_accepted_at: termsAcceptedAt,
+      privacy_accepted_at: privacyAcceptedAt,
     } = body as {
       priceId?: string;
       userId?: string;
@@ -41,6 +43,8 @@ export async function POST(req: Request) {
       mult_tangible?: number;
       mult_intangible?: number;
       mult_others?: number;
+      terms_accepted_at?: string;
+      privacy_accepted_at?: string;
     };
 
     if (!priceId || typeof priceId !== "string") {
@@ -54,6 +58,12 @@ export async function POST(req: Request) {
     }
     if (!projectName || typeof projectName !== "string") {
       return NextResponse.json({ error: "projectName is required" }, { status: 400 });
+    }
+    if (!termsAcceptedAt || typeof termsAcceptedAt !== "string") {
+      return NextResponse.json({ error: "You must accept the Terms of Service to continue" }, { status: 400 });
+    }
+    if (!privacyAcceptedAt || typeof privacyAcceptedAt !== "string") {
+      return NextResponse.json({ error: "You must accept the Privacy Policy to continue" }, { status: 400 });
     }
 
     const userEmail = email;
@@ -81,6 +91,8 @@ export async function POST(req: Request) {
       mult_others,
       use_log_risk: false,
       model_onboarding_dismissed: false,
+      terms_accepted_at: termsAcceptedAt,
+      privacy_accepted_at: privacyAcceptedAt,
     };
 
     let insertedProject: { id: string } | null = null;

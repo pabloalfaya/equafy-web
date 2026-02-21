@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { createClient } from "@/utils/supabase/client";
+import Link from "next/link";
 import { X, Loader2, ArrowRight, ArrowLeft, Briefcase } from "lucide-react";
 import type { Project } from "@/types/database";
 
@@ -21,6 +22,7 @@ export function CreateProjectModal({ isOpen, onClose, onProjectCreated }: Create
   const [name, setName] = useState("");
   const [subscriptionPlan, setSubscriptionPlan] = useState<"monthly" | "annual" | null>(null);
   const [selectedPriceId, setSelectedPriceId] = useState<string>("");
+  const [legalAccepted, setLegalAccepted] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const handleSelectMonthly = () => {
@@ -31,7 +33,7 @@ export function CreateProjectModal({ isOpen, onClose, onProjectCreated }: Create
     setSubscriptionPlan("annual");
     setSelectedPriceId(STRIPE_ANNUAL_PRICE_ID);
   };
-  const isPaymentReady = subscriptionPlan !== null && !loading;
+  const isPaymentReady = subscriptionPlan !== null && legalAccepted && !loading;
 
   const supabase = createClient();
 
@@ -71,6 +73,7 @@ export function CreateProjectModal({ isOpen, onClose, onProjectCreated }: Create
 
       const apiUrl = "/api/stripe/checkout";
       const projectNameTrimmed = name.trim();
+      const acceptedAt = new Date().toISOString();
       const body = {
         projectName: projectNameTrimmed,
         priceId,
@@ -82,6 +85,8 @@ export function CreateProjectModal({ isOpen, onClose, onProjectCreated }: Create
         mult_tangible: JUST_SPLIT_MULTS.tangible,
         mult_intangible: JUST_SPLIT_MULTS.intangible,
         mult_others: JUST_SPLIT_MULTS.others,
+        terms_accepted_at: acceptedAt,
+        privacy_accepted_at: acceptedAt,
       };
 
       const response = await fetch(apiUrl, {
@@ -199,6 +204,24 @@ export function CreateProjectModal({ isOpen, onClose, onProjectCreated }: Create
                 <span className="text-sm font-medium text-slate-500">/year billed annually</span>
               </button>
             </div>
+            <label className="flex items-start gap-3 cursor-pointer group">
+              <input
+                type="checkbox"
+                checked={legalAccepted}
+                onChange={(e) => setLegalAccepted(e.target.checked)}
+                className="mt-1 w-4 h-4 rounded border-slate-300 text-emerald-600 focus:ring-emerald-500"
+              />
+              <span className="text-sm text-slate-600 font-medium leading-relaxed">
+                I accept the{" "}
+                <Link href="/terms" target="_blank" rel="noopener noreferrer" className="text-emerald-600 font-semibold hover:underline">
+                  Terms of Service
+                </Link>
+                {" "}and{" "}
+                <Link href="/privacy" target="_blank" rel="noopener noreferrer" className="text-emerald-600 font-semibold hover:underline">
+                  Privacy Policy
+                </Link>
+              </span>
+            </label>
             <div className="flex items-center justify-between gap-3 pt-4 border-t border-slate-100">
               <button type="button" onClick={goBack} className="flex items-center gap-2 text-xs font-black text-slate-400 hover:text-slate-900 transition-colors min-w-0">
                 <ArrowLeft className="w-4 h-4 flex-shrink-0" /> Back
