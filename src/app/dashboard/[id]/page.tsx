@@ -687,15 +687,6 @@ export default function ProjectDashboardPage() {
                     <X className="h-5 w-5" /> Exit simulation
                   </button>
                 )}
-                {!simulationMode && canEditAndNotFinalized && (
-                  <button
-                    type="button"
-                    onClick={() => setSimulationMode(true)}
-                    className="inline-flex items-center gap-2 rounded-xl bg-slate-100 border border-slate-200 px-4 md:px-5 py-2.5 md:py-3 font-bold text-slate-600 shadow-sm hover:bg-slate-200 transition-all whitespace-nowrap text-sm md:text-base"
-                  >
-                    <TrendingUp className="h-5 w-5" /> Simulation mode
-                  </button>
-                )}
                 <button
                   onClick={generatePDF}
                   className="inline-flex items-center gap-2 rounded-xl bg-white border border-slate-200 px-4 md:px-5 py-2.5 md:py-3 font-bold text-slate-700 shadow-sm hover:bg-slate-50 transition-all whitespace-nowrap text-sm md:text-base"
