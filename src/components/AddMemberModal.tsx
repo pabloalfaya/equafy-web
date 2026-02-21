@@ -378,11 +378,11 @@ export function AddMemberModal({
 
         {/* Tab: Edit Team — list with edit/delete */}
         {activeTab === "edit" && (
-          <div className="flex-1 min-h-[360px] overflow-auto space-y-3">
-            <label className="text-xs font-bold text-slate-400 ml-1 block uppercase mb-2">
+          <div className="flex-1 min-h-[360px] flex flex-col overflow-hidden">
+            <label className="text-xs font-bold text-slate-400 ml-1 block uppercase mb-2 shrink-0">
               Current Team ({members.length})
             </label>
-            <div className="max-h-[280px] overflow-y-auto pr-2 custom-scrollbar space-y-3">
+            <div className="flex-1 min-h-0 overflow-y-auto pr-2 custom-scrollbar space-y-3">
               {members.length === 0 ? (
                 <p className="text-center text-slate-400 text-sm italic py-4">No members yet.</p>
               ) : (
