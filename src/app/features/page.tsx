@@ -34,6 +34,7 @@ import {
 
 const FEATURE_SECTIONS = [
   {
+    id: "project-management",
     title: "Project Management",
     features: [
       { title: "Create Projects", icon: FolderPlus, description: "Create new equity projects with a guided wizard." },
@@ -43,6 +44,7 @@ const FEATURE_SECTIONS = [
     ],
   },
   {
+    id: "contributions",
     title: "Contributions",
     features: [
       { title: "Add Contributions", icon: PlusCircle, description: "Log Cash, Work, Tangible, Intangible and Others with a guided wizard." },
@@ -53,6 +55,7 @@ const FEATURE_SECTIONS = [
     ],
   },
   {
+    id: "dynamic-equity-distribution",
     title: "Dynamic Equity Distribution",
     features: [
       { title: "Dynamic Splitting", icon: Zap, description: "Slicing Pie model: equity recalculates automatically based on contributions." },
@@ -63,6 +66,7 @@ const FEATURE_SECTIONS = [
     ],
   },
   {
+    id: "equity-models",
     title: "Equity Models",
     features: [
       { title: "Just Split Model", icon: Zap, description: "Recommended: Cash x4, Work x2, Assets x2, IP x2." },
@@ -71,6 +75,7 @@ const FEATURE_SECTIONS = [
     ],
   },
   {
+    id: "equity-configuration",
     title: "Equity Configuration",
     features: [
       { title: "Custom Multipliers", icon: Settings, description: "Adjust Cash, Work, Tangible, Intangible and Others to match your stage." },
@@ -81,6 +86,7 @@ const FEATURE_SECTIONS = [
     ],
   },
   {
+    id: "valuation-finalization",
     title: "Valuation & Finalization",
     features: [
       { title: "Current Valuation", icon: CreditCard, description: "Project valuation updated automatically." },
@@ -91,12 +97,14 @@ const FEATURE_SECTIONS = [
     ],
   },
   {
+    id: "export",
     title: "Export",
     features: [
       { title: "Export PDF", icon: Download, description: "Generate PDFs of the cap table and contribution log, signed-ready." },
     ],
   },
   {
+    id: "team-management",
     title: "Team Management",
     features: [
       { title: "Add Members", icon: Users, description: "Add members to the project team." },
@@ -106,6 +114,7 @@ const FEATURE_SECTIONS = [
     ],
   },
   {
+    id: "transparency-audit",
     title: "Transparency & Audit",
     features: [
       { title: "Audit Log", icon: FileSearch, description: "Full history: who did what and when." },
@@ -113,6 +122,7 @@ const FEATURE_SECTIONS = [
     ],
   },
   {
+    id: "security",
     title: "Security",
     features: [
       { title: "Authentication", icon: Shield, description: "Secure login with Supabase Auth." },
@@ -120,6 +130,7 @@ const FEATURE_SECTIONS = [
     ],
   },
   {
+    id: "legal",
     title: "Legal",
     features: [
       { title: "Legal Hub", icon: Globe, description: "Jurisdiction guide: US, Spain, UK, Ireland, India, Mexico and more." },
@@ -152,7 +163,7 @@ export default function FeaturesPage() {
 
           <div className="space-y-16">
             {FEATURE_SECTIONS.map((section) => (
-              <section key={section.title}>
+              <section key={section.title} id={section.id} className="scroll-mt-24">
                 <h2 className="text-2xl md:text-3xl font-bold text-slate-900 mb-8 tracking-tight pb-3 border-b border-slate-200">
                   {section.title}
                 </h2>

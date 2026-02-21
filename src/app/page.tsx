@@ -66,30 +66,31 @@ export default function LandingPage() {
             </button>
           </div>
 
-          {/* Infinite Marquee de funcionalidades */}
+          {/* Infinite Marquee — Feature section links */}
           <div className="relative z-20 mt-20 -mx-3 md:-mx-6 lg:-mx-12 w-[calc(100%+1.5rem)] md:w-[calc(100%+3rem)] lg:w-[calc(100%+6rem)] overflow-hidden">
             <div className="animate-marquee flex gap-6 w-max" role="marquee">
               {[...Array(3)].map((_, dup) => (
                 <div key={dup} className="flex gap-6 shrink-0">
                   {[
-                    "Add Contributions",
-                    "Dynamic Splitting",
-                    "Smart Multipliers",
-                    "Fixed Equity",
-                    "Limit Equity",
-                    "Simulation Mode",
-                    "Freeze Project",
-                    "Real-Time Cap Table",
-                    "Binding Contracts",
-                    "Role-Based Access",
-                    "Audit Log",
-                  ].map((label) => (
-                    <span
-                      key={`${dup}-${label}`}
-                      className="shrink-0 text-slate-900 font-bold text-base"
+                    { title: "Project Management", id: "project-management" },
+                    { title: "Contributions", id: "contributions" },
+                    { title: "Dynamic Equity Distribution", id: "dynamic-equity-distribution" },
+                    { title: "Equity Models", id: "equity-models" },
+                    { title: "Equity Configuration", id: "equity-configuration" },
+                    { title: "Valuation & Finalization", id: "valuation-finalization" },
+                    { title: "Export", id: "export" },
+                    { title: "Team Management", id: "team-management" },
+                    { title: "Transparency & Audit", id: "transparency-audit" },
+                    { title: "Security", id: "security" },
+                    { title: "Legal", id: "legal" },
+                  ].map((item) => (
+                    <Link
+                      key={`${dup}-${item.id}`}
+                      href={`/features#${item.id}`}
+                      className="shrink-0 text-slate-900 font-bold text-base hover:text-emerald-600 transition-colors"
                     >
-                      {label}
-                    </span>
+                      {item.title}
+                    </Link>
                   ))}
                 </div>
               ))}
