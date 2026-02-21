@@ -35,12 +35,14 @@ export function EquityModelModal({
   const [model, setModel] = useState<"flat" | "just_split" | "custom">(() => toModel(currentModel));
   const [mults, setMults] = useState(() => ({ ...JUST_SPLIT_MULTS, ...currentMults }));
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const wasOpen = useRef(false);
   useEffect(() => {
     if (isOpen && !wasOpen.current) {
       setModel(toModel(currentModel));
       setMults({ ...JUST_SPLIT_MULTS, ...currentMults });
+      setError(null);
     }
     wasOpen.current = isOpen;
   }, [isOpen, currentModel, currentMults]);
@@ -66,6 +68,7 @@ export function EquityModelModal({
   const handleSave = async () => {
     const supabase = createClient();
     setLoading(true);
+    setError(null);
     try {
       const modelTypeDb = model === "flat" ? "FLAT" : model === "just_split" ? "JUST_SPLIT" : "CUSTOM";
       const payload = {
@@ -77,23 +80,28 @@ export function EquityModelModal({
         mult_others: Number(mults.others) || 1,
         model_onboarding_dismissed: true,
       };
-      const { data, error } = await supabase
+      const { data, error: updateErr } = await supabase
         .from("projects")
         .update(payload)
         .eq("id", projectId)
         .select("id")
         .single();
 
-      if (error) {
-        console.error("Error updating equity model:", error);
+      if (updateErr) {
+        console.error("Error updating equity model:", updateErr);
+        setError(updateErr.message || "Failed to save model. Please try again.");
         return;
       }
       if (!data) {
-        console.error("Error updating equity model: no rows updated (check projectId and RLS)");
+        setError("Could not update project. Please try again.");
         return;
       }
       await onSuccess?.();
       onClose();
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : "An unexpected error occurred.";
+      setError(msg);
+      console.error("EquityModelModal handleSave error:", err);
     } finally {
       setLoading(false);
     }
@@ -192,6 +200,12 @@ export function EquityModelModal({
               <p className="text-[8px] sm:text-[9px] text-center text-purple-700 font-black uppercase tracking-widest mt-auto">Fixed split</p>
             </div>
           </div>
+
+          {error && (
+            <div className="rounded-xl bg-red-50 border border-red-200 px-4 py-3 text-sm font-medium text-red-700">
+              {error}
+            </div>
+          )}
 
           <p className="text-center text-xs sm:text-sm text-gray-500 flex items-center justify-center gap-1.5 flex-wrap">
             <Info className="w-3.5 h-3.5 shrink-0 text-gray-400" />

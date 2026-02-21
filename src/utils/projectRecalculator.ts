@@ -76,3 +76,63 @@ export async function recalculateAndPersistProjectValuation(
     return { error: err instanceof Error ? err : new Error(String(err)) };
   }
 }
+
+const TYPE_TO_MULT_KEY: Record<string, string> = {
+  cash: "mult_cash",
+  work: "mult_work",
+  tangible: "mult_tangible",
+  intangible: "mult_intangible",
+  others: "mult_others",
+};
+
+/**
+ * Recalculates all contributions' risk_adjusted_value and multiplier when project multipliers change.
+ * Called after changing equity model (e.g. Just Split → Flat).
+ */
+export async function recalculateContributionsWithMultipliers(
+  supabase: SupabaseClient,
+  projectId: string,
+  mults: { cash: number; work: number; tangible: number; intangible: number; others: number }
+): Promise<{ error: Error | null }> {
+  try {
+    const { data: contributions, error: fetchError } = await supabase
+      .from("contributions")
+      .select("id, type, amount, multiplier")
+      .eq("project_id", projectId);
+
+    if (fetchError) return { error: fetchError };
+
+    const multMap: Record<string, number> = {
+      mult_cash: Number(mults.cash) || 1,
+      mult_work: Number(mults.work) || 1,
+      mult_tangible: Number(mults.tangible) || 1,
+      mult_intangible: Number(mults.intangible) || 1,
+      mult_others: Number(mults.others) || 1,
+    };
+
+    let newTotal = 0;
+    for (const c of contributions ?? []) {
+      const typeKey = TYPE_TO_MULT_KEY[(c.type || "").toLowerCase()] || "mult_others";
+      const mult = multMap[typeKey] ?? 1;
+      const amount = Number(c.amount) || 0;
+      const riskAdjusted = amount * mult;
+
+      const { error: updErr } = await supabase
+        .from("contributions")
+        .update({ multiplier: mult, risk_adjusted_value: riskAdjusted })
+        .eq("id", c.id);
+
+      if (updErr) return { error: updErr };
+      newTotal += riskAdjusted;
+    }
+
+    const { error: projectErr } = await supabase
+      .from("projects")
+      .update({ current_valuation: newTotal })
+      .eq("id", projectId);
+
+    return projectErr ? { error: projectErr } : { error: null };
+  } catch (err) {
+    return { error: err instanceof Error ? err : new Error(String(err)) };
+  }
+}
