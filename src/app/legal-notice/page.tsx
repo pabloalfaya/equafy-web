@@ -18,54 +18,54 @@ export default function LegalNoticePage() {
               href="/legal"
               className="inline-flex items-center gap-2 text-sm font-bold text-slate-600 hover:text-slate-900"
             >
-              <ArrowLeft className="w-4 h-4" /> Volver al Legal Center
+              <ArrowLeft className="w-4 h-4" /> Back to Legal Center
             </Link>
             <button
               type="button"
               onClick={() => window.print()}
               className="inline-flex items-center gap-2 text-sm font-bold text-slate-600 hover:text-slate-900 print:hidden"
-              aria-label="Imprimir esta página"
+              aria-label="Print this page"
             >
-              <Printer className="w-4 h-4" /> Imprimir
+              <Printer className="w-4 h-4" /> Print
             </button>
           </div>
 
           <article className="prose prose-slate max-w-3xl mx-auto py-12 text-slate-700 leading-relaxed">
             <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-slate-900 mb-12">
-              Aviso Legal
+              Legal Notice
             </h1>
 
             <section className="mb-10">
-              <h2 className="text-2xl font-bold text-slate-900 mb-4">1. Información General</h2>
+              <h2 className="text-2xl font-bold text-slate-900 mb-4">1. General Information</h2>
               <p className="mb-4">
-                En cumplimiento de lo dispuesto en la Ley 34/2002, de 11 de julio, de Servicios de la Sociedad de la Información y de Comercio Electrónico (LSSI-CE), se informa a los usuarios de que el titular de este sitio web y de la plataforma comercial es:
+                In compliance with Spanish Law 34/2002 of 11 July on Information Society Services and Electronic Commerce (LSSI-CE), users are informed that the owner of this website and commercial platform is:
               </p>
               <ul className="list-none pl-0 space-y-2">
-                <li><strong>Titular:</strong> Pablo Alfaya Fernandez (operando bajo el nombre comercial EQUILY)</li>
-                <li><strong>NIF:</strong> 29514449K</li>
-                <li><strong>Domicilio:</strong> Calle La Santa Maria 86, España</li>
-                <li><strong>Email de contacto:</strong> <a href="mailto:info@getequily.com" className="text-emerald-600 font-semibold hover:underline">info@getequily.com</a></li>
+                <li><strong>Owner:</strong> Pablo Alfaya Fernandez (trading under the business name EQUILY)</li>
+                <li><strong>Tax ID (NIF):</strong> 29514449K</li>
+                <li><strong>Address:</strong> Calle La Santa Maria 86, Spain</li>
+                <li><strong>Contact email:</strong> <a href="mailto:info@getequily.com" className="text-emerald-600 font-semibold hover:underline">info@getequily.com</a></li>
               </ul>
             </section>
 
             <section className="mb-10">
-              <h2 className="text-2xl font-bold text-slate-900 mb-4">2. Objeto</h2>
+              <h2 className="text-2xl font-bold text-slate-900 mb-4">2. Purpose</h2>
               <p>
-                El presente Aviso Legal regula el acceso, navegación y uso de la plataforma web. El uso de la web implica la aceptación expresa y sin reservas de todas las advertencias legales y términos de uso vigentes.
+                This Legal Notice governs access to, navigation of, and use of the platform. Use of the website implies express and unreserved acceptance of all current legal notices and terms of use.
               </p>
             </section>
 
             <section className="mb-10">
-              <h2 className="text-2xl font-bold text-slate-900 mb-4">3. Propiedad Intelectual e Industrial</h2>
+              <h2 className="text-2xl font-bold text-slate-900 mb-4">3. Intellectual and Industrial Property</h2>
               <p>
-                El titular es propietario o tiene las licencias correspondientes sobre los derechos de explotación de propiedad intelectual e industrial de la plataforma EQUILY, incluyendo el código fuente, diseño, algoritmos, logotipos y textos. Queda expresamente prohibida la reproducción, distribución o modificación sin autorización.
+                The owner holds or has the corresponding licenses for the intellectual and industrial property exploitation rights of the EQUILY platform, including the source code, design, algorithms, logos, and texts. Reproduction, distribution, or modification without authorisation is expressly prohibited.
               </p>
             </section>
 
             <section>
-              <h2 className="text-2xl font-bold text-slate-900 mb-4">4. Exclusión de Responsabilidad</h2>
+              <h2 className="text-2xl font-bold text-slate-900 mb-4">4. Limitation of Liability</h2>
               <p>
-                El titular no garantiza la inexistencia de errores en el acceso a la web. EQUILY es una herramienta tecnológica para la gestión de la parte de la empresa, pero su uso no sustituye el asesoramiento legal profesional en la redacción de contratos para empresas emergentes.
+                The owner does not guarantee the absence of errors when accessing the website. EQUILY is a technological tool for managing company ownership, but its use does not replace professional legal advice when drafting contracts for startups.
               </p>
             </section>
           </article>

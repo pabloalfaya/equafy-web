@@ -42,7 +42,7 @@ export function PublicFooter() {
             <h4 className="font-bold text-slate-900 mb-6 text-sm">Legal</h4>
             <ul className="space-y-4 text-sm font-medium text-slate-500">
               <li><Link href="/legal" className="hover:text-emerald-600 transition-colors">Legal Center</Link></li>
-              <li><Link href="/legal-notice" className="hover:text-emerald-600 transition-colors">Aviso Legal</Link></li>
+              <li><Link href="/legal-notice" className="hover:text-emerald-600 transition-colors">Legal Notice</Link></li>
               <li><Link href="/privacy" className="hover:text-emerald-600 transition-colors">Privacy Policy</Link></li>
               <li><Link href="/terms" className="hover:text-emerald-600 transition-colors">Terms</Link></li>
             </ul>
