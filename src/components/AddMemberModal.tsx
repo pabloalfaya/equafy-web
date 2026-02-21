@@ -168,7 +168,7 @@ export function AddMemberModal({
 
   return (
     <div className="fixed inset-0 z-[110] flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4">
-      <div className="w-full max-w-2xl min-h-[540px] bg-white rounded-[32px] shadow-2xl p-8 animate-in zoom-in duration-200 font-sans max-h-[90vh] flex flex-col">
+      <div className="w-full max-w-2xl h-[min(620px,90vh)] min-h-[560px] bg-white rounded-[32px] shadow-2xl p-8 animate-in zoom-in duration-200 font-sans flex flex-col overflow-hidden">
         {/* Header */}
         <div className="flex justify-between items-center mb-6 shrink-0">
           <div className="flex items-center gap-2">
@@ -218,7 +218,7 @@ export function AddMemberModal({
 
         {/* Tab: Members — summary table */}
         {activeTab === "members" && (
-          <div className="flex-1 min-h-0 overflow-auto">
+          <div className="flex-1 min-h-[360px] overflow-auto">
             <div className="rounded-xl border border-slate-200 overflow-hidden">
               <div className="overflow-x-auto">
                 <table className="w-full text-sm">
@@ -296,7 +296,7 @@ export function AddMemberModal({
 
         {/* Tab: Add Member — form */}
         {activeTab === "add" && (
-          <form onSubmit={handleSubmit} className="space-y-4 flex-1 min-h-0 overflow-auto">
+          <form onSubmit={handleSubmit} className="space-y-4 flex-1 min-h-[360px] overflow-auto">
             <div>
               <label className="text-xs font-bold text-slate-400 ml-1 mb-1 block uppercase">Name *</label>
               <div className="relative">
@@ -378,7 +378,7 @@ export function AddMemberModal({
 
         {/* Tab: Edit Team — list with edit/delete */}
         {activeTab === "edit" && (
-          <div className="flex-1 min-h-0 overflow-auto space-y-3">
+          <div className="flex-1 min-h-[360px] overflow-auto space-y-3">
             <label className="text-xs font-bold text-slate-400 ml-1 block uppercase mb-2">
               Current Team ({members.length})
             </label>
