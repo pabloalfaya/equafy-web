@@ -12,68 +12,121 @@ import {
   ShieldCheck,
   Download,
   FlaskConical,
+  FolderPlus,
+  List,
+  Users,
+  LayoutGrid,
+  PieChart,
+  BarChart3,
+  Calculator,
+  Zap,
+  Scale,
+  Sliders,
+  TrendingUp,
+  Snowflake,
+  FileText,
+  ClipboardCheck,
+  Shield,
+  Globe,
+  BookOpen,
+  CreditCard,
 } from "lucide-react";
 
-const FEATURES = [
+const FEATURE_SECTIONS = [
   {
-    title: "Add Contributions",
-    icon: PlusCircle,
-    description:
-      "Log cash, time, IP, or supplies for any member instantly with our guided wizard.",
+    title: "Gestión de proyectos",
+    features: [
+      { title: "Crear proyectos", icon: FolderPlus, description: "Crea nuevos proyectos de equity con un asistente guiado." },
+      { title: "Listar proyectos", icon: List, description: "Accede a todos tus proyectos desde el dashboard principal." },
+      { title: "Eliminar proyectos", icon: Trash2, description: "Elimina proyectos que ya no necesites." },
+      { title: "Acceso por roles", icon: ShieldCheck, description: "Owner, Co-owner, Worker y más: control granular de permisos." },
+    ],
   },
   {
-    title: "Edit Entries",
-    icon: Edit3,
-    description:
-      "Made a mistake? Edit any past contribution value or description to keep records 100% accurate.",
+    title: "Contribuciones",
+    features: [
+      { title: "Añadir contribuciones", icon: PlusCircle, description: "Registra Cash, Work, Tangible, Intangible y Others con un wizard guiado." },
+      { title: "Editar contribuciones", icon: Edit3, description: "Corrige valores o descripciones de contribuciones pasadas." },
+      { title: "Eliminar contribuciones", icon: Trash2, description: "Elimina entradas incorrectas o duplicadas para mantener un historial limpio." },
+      { title: "Log de contribuciones", icon: FileText, description: "Historial cronológico de todas las aportaciones, con filtro por miembro." },
+      { title: "Modo simulación", icon: FlaskConical, description: "Simula aportaciones sin guardar y visualiza el impacto en el cap table antes de confirmar." },
+    ],
   },
   {
-    title: "Delete Participations",
-    icon: Trash2,
-    description:
-      "Remove incorrect or duplicated entries easily to maintain a clean history.",
+    title: "Distribución dinámica de equity",
+    features: [
+      { title: "Dynamic splitting", icon: Zap, description: "Modelo Slicing Pie: el equity se recalcula automáticamente según las contribuciones." },
+      { title: "Cap Table en tiempo real", icon: LayoutGrid, description: "Tabla de capitalización actualizada al instante." },
+      { title: "Equity Distribution", icon: PieChart, description: "Gráfico de tarta con la distribución de ownership." },
+      { title: "Team Breakdown", icon: BarChart3, description: "Desglose detallado por miembro con puntos y porcentajes." },
+      { title: "Cálculo automático", icon: Calculator, description: "Porcentajes calculados automáticamente según contribuciones y multiplicadores." },
+    ],
   },
   {
-    title: "Custom Multipliers",
-    icon: Settings,
-    description:
-      "Adjust risk multipliers (x2, x4) for Cash vs. Work to match your project's stage.",
+    title: "Modelos de equity",
+    features: [
+      { title: "Just Split Model", icon: Zap, description: "Recomendado: Cash x4, Work x2, Assets x2, IP x2." },
+      { title: "Flat Model", icon: Scale, description: "Todos los multiplicadores x1. Ideal para agencias de servicios." },
+      { title: "Custom Model", icon: Sliders, description: "Multiplicadores completamente editables por categoría." },
+    ],
   },
   {
-    title: "Fixed Equity",
-    icon: Anchor,
-    description:
-      "Assign immovable percentages to founders that remain static regardless of new contributions.",
+    title: "Configuración de equity",
+    features: [
+      { title: "Multiplicadores personalizados", icon: Settings, description: "Ajusta Cash, Work, Tangible, Intangible y Others según tu etapa." },
+      { title: "Fixed Equity", icon: Anchor, description: "Porcentajes fijos que no cambian con nuevas contribuciones." },
+      { title: "Limited Equity (Hard Caps)", icon: Lock, description: "Límite máximo de % por miembro para proteger el cap table." },
+      { title: "Smart Multipliers", icon: TrendingUp, description: "Sugerencias basadas en la valoración del proyecto (modelo logarítmico)." },
+      { title: "Modelos predefinidos", icon: BookOpen, description: "Selecciona Just Split, Flat o Custom como punto de partida." },
+    ],
   },
   {
-    title: "Hard Caps",
-    icon: Lock,
-    description:
-      'Set "Hard Caps" to limit the maximum % a member can ever unlock, protecting the cap table.',
+    title: "Valoración y finalización",
+    features: [
+      { title: "Valoración actual", icon: CreditCard, description: "Valoración del proyecto actualizada automáticamente." },
+      { title: "Recalculo automático", icon: Calculator, description: "Recálculo al añadir, editar o eliminar contribuciones." },
+      { title: "Freeze Project", icon: Snowflake, description: "Congela el proyecto: bloquea contribuciones y fija el equity." },
+      { title: "Executive Summary", icon: ClipboardCheck, description: "Resumen ejecutivo del estado final del proyecto." },
+      { title: "Unfreeze Project", icon: Zap, description: "Desbloquea el proyecto para volver a editar cuando sea necesario." },
+    ],
   },
   {
-    title: "Audit Log",
-    icon: FileSearch,
-    description:
-      "Full transparency. View a security history of every modification: who made it, what changed, and when.",
+    title: "Exportación",
+    features: [
+      { title: "Export PDF", icon: Download, description: "Genera PDFs del cap table y del log de contribuciones listos para firmar." },
+    ],
   },
   {
-    title: "Role Management",
-    icon: ShieldCheck,
-    description:
-      "Assign specific roles (Owner, Co-owner, Worker) to control who can edit or just view data.",
+    title: "Gestión de equipo",
+    features: [
+      { title: "Añadir miembros", icon: Users, description: "Incorpora miembros al equipo del proyecto." },
+      { title: "Editar miembros", icon: Edit3, description: "Modifica nombre, email y rol de cada miembro." },
+      { title: "Eliminar miembros", icon: Trash2, description: "Elimina miembros del proyecto." },
+      { title: "Roles", icon: ShieldCheck, description: "Owner, Co-owner, Worker, Venture Capital y más." },
+    ],
   },
   {
-    title: "PDF Export",
-    icon: Download,
-    description:
-      "Generate professional, signed-ready reports of your Cap Table and contribution history.",
+    title: "Transparencia y auditoría",
+    features: [
+      { title: "Audit Log", icon: FileSearch, description: "Historial completo: quién hizo qué y cuándo." },
+      { title: "Registro de acciones", icon: FileText, description: "Todas las modificaciones quedan registradas para transparencia total." },
+    ],
   },
   {
-    title: "Simulation Mode",
-    icon: FlaskConical,
-    description:
-      "Try 'what if' scenarios without saving. Add simulated contributions to see how they affect the cap table before committing.",
+    title: "Seguridad",
+    features: [
+      { title: "Autenticación", icon: Shield, description: "Inicio de sesión seguro con Supabase Auth." },
+      { title: "Control de acceso por roles", icon: Lock, description: "Rutas y acciones protegidas según permisos del usuario." },
+    ],
+  },
+  {
+    title: "Legal",
+    features: [
+      { title: "Legal Hub", icon: Globe, description: "Guía por jurisdicción: US, España, UK, Irlanda, India, México y más." },
+      { title: "Plantillas de documentos", icon: FileText, description: "Partnership Agreement y otras plantillas listas para usar." },
+      { title: "Vault de documentos", icon: Download, description: "Sube y guarda PDFs firmados en un espacio seguro." },
+      { title: "Project Freeze Certificate", icon: ClipboardCheck, description: "Certificado de congelación del proyecto para uso legal." },
+    ],
   },
 ];
 
@@ -88,40 +141,49 @@ export default function FeaturesPage() {
 
       <main className="relative z-10 pt-32 md:pt-40 pb-20 md:pb-28 px-6 md:px-12 lg:px-24">
         <div className="mx-auto max-w-screen-2xl">
-          <header className="text-center mb-12 md:mb-16">
+          <header className="text-center mb-16 md:mb-20">
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-slate-900 mb-6">
-              Complete Control Over Your Equity
+              Todas las funcionalidades de Equily
             </h1>
             <p className="text-xl text-slate-600 font-medium max-w-2xl mx-auto leading-relaxed tracking-tight">
-              Powerful tools to manage contributions, define rules, and maintain total transparency.
+              Control total sobre tu equity: contribuciones, modelos, equipo, legal y más.
             </p>
           </header>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-6">
-            {FEATURES.map((feature) => {
-              const Icon = feature.icon;
-              return (
-                <div
-                  key={feature.title}
-                  className="group rounded-2xl bg-white border border-slate-200/80 p-8 shadow-sm hover:shadow-lg hover:border-slate-300/80 transition-all duration-300"
-                >
-                  <div className="inline-flex p-3 rounded-full mb-5 bg-emerald-50">
-                    <Icon className="w-6 h-6 text-emerald-600 shrink-0" />
-                  </div>
-                  <h3 className="text-lg font-bold text-slate-900 mb-2 tracking-tight">
-                    {feature.title}
-                  </h3>
-                  <p className="text-slate-600 font-medium text-sm leading-relaxed tracking-tight">
-                    {feature.description}
-                  </p>
+          <div className="space-y-16">
+            {FEATURE_SECTIONS.map((section) => (
+              <section key={section.title}>
+                <h2 className="text-2xl md:text-3xl font-bold text-slate-900 mb-8 tracking-tight pb-3 border-b border-slate-200">
+                  {section.title}
+                </h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-6">
+                  {section.features.map((feature) => {
+                    const Icon = feature.icon;
+                    return (
+                      <div
+                        key={feature.title}
+                        className="group rounded-2xl bg-white border border-slate-200/80 p-6 shadow-sm hover:shadow-lg hover:border-slate-300/80 transition-all duration-300"
+                      >
+                        <div className="inline-flex p-3 rounded-full mb-4 bg-emerald-50">
+                          <Icon className="w-5 h-5 text-emerald-600 shrink-0" />
+                        </div>
+                        <h3 className="text-base font-bold text-slate-900 mb-2 tracking-tight">
+                          {feature.title}
+                        </h3>
+                        <p className="text-slate-600 font-medium text-sm leading-relaxed tracking-tight">
+                          {feature.description}
+                        </p>
+                      </div>
+                    );
+                  })}
                 </div>
-              );
-            })}
+              </section>
+            ))}
           </div>
 
-          <div className="mt-12 md:mt-16 text-center rounded-2xl bg-white/80 backdrop-blur-sm border border-slate-200/80 shadow-sm py-12 px-6">
+          <div className="mt-16 md:mt-20 text-center rounded-2xl bg-white/80 backdrop-blur-sm border border-slate-200/80 shadow-sm py-12 px-6">
             <p className="text-2xl font-bold text-slate-900 mb-6 tracking-tight">
-              Ready to split fairly?
+              ¿Listo para repartir de forma justa?
             </p>
             <Link
               href="/login?view=signup"
