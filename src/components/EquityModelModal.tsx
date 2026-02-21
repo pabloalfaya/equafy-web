@@ -78,7 +78,6 @@ export function EquityModelModal({
         mult_tangible: Number(mults.tangible) || 1,
         mult_intangible: Number(mults.intangible) || 1,
         mult_others: Number(mults.others) || 1,
-        model_onboarding_dismissed: true,
       };
       const { data, error: updateErr } = await supabase
         .from("projects")
@@ -108,15 +107,10 @@ export function EquityModelModal({
   };
 
   const handleDismiss = async () => {
-    const supabase = createClient();
     setLoading(true);
-    const { error } = await supabase
-      .from("projects")
-      .update({ model_onboarding_dismissed: true })
-      .eq("id", projectId);
-    setLoading(false);
-    if (!error) onSuccess?.();
+    onSuccess?.();
     onClose();
+    setLoading(false);
   };
 
   if (!isOpen) return null;
