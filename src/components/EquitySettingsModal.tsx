@@ -315,7 +315,7 @@ export function EquitySettingsModal({
       onClick={onClose}
     >
       <div
-        className="w-full max-w-xl max-h-[80vh] bg-white rounded-[32px] shadow-2xl p-6 md:p-8 animate-in zoom-in duration-200 font-sans overflow-y-auto"
+        className="w-full max-w-2xl max-h-[80vh] bg-white rounded-[32px] shadow-2xl p-6 md:p-8 animate-in zoom-in duration-200 font-sans overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
@@ -336,11 +336,11 @@ export function EquitySettingsModal({
         </div>
 
         {/* Tabs: 1. Default Models 2. Multipliers 3. Fixed Equity 4. Limited Equity 5. Smart Multipliers */}
-        <div className="flex flex-nowrap gap-2 mb-6 p-1 rounded-xl bg-slate-100 border border-slate-200 overflow-x-auto">
+        <div className="flex flex-nowrap gap-1.5 mb-6 p-1 rounded-xl bg-slate-100 border border-slate-200">
           <button
             type="button"
             onClick={() => setActiveTab("default_models")}
-            className={`shrink-0 py-2.5 px-3 rounded-lg text-sm font-bold transition-all whitespace-nowrap ${
+            className={`shrink-0 py-2 px-2.5 rounded-lg text-xs font-bold transition-all whitespace-nowrap ${
               activeTab === "default_models"
                 ? "bg-white text-slate-800 shadow-sm"
                 : "text-slate-600 hover:text-slate-800"
@@ -351,7 +351,7 @@ export function EquitySettingsModal({
           <button
             type="button"
             onClick={() => setActiveTab("multipliers")}
-            className={`shrink-0 py-2.5 px-4 rounded-lg text-sm font-bold transition-all whitespace-nowrap ${
+            className={`shrink-0 py-2 px-2.5 rounded-lg text-xs font-bold transition-all whitespace-nowrap ${
               activeTab === "multipliers"
                 ? "bg-white text-slate-800 shadow-sm"
                 : "text-slate-600 hover:text-slate-800"
@@ -362,7 +362,7 @@ export function EquitySettingsModal({
           <button
             type="button"
             onClick={() => setActiveTab("fixed")}
-            className={`shrink-0 py-2.5 px-4 rounded-lg text-sm font-bold transition-all whitespace-nowrap ${
+            className={`shrink-0 py-2 px-2.5 rounded-lg text-xs font-bold transition-all whitespace-nowrap ${
               activeTab === "fixed"
                 ? "bg-white text-slate-800 shadow-sm"
                 : "text-slate-600 hover:text-slate-800"
@@ -373,7 +373,7 @@ export function EquitySettingsModal({
           <button
             type="button"
             onClick={() => setActiveTab("limited")}
-            className={`shrink-0 py-2.5 px-4 rounded-lg text-sm font-bold transition-all whitespace-nowrap ${
+            className={`shrink-0 py-2 px-2.5 rounded-lg text-xs font-bold transition-all whitespace-nowrap ${
               activeTab === "limited"
                 ? "bg-white text-slate-800 shadow-sm"
                 : "text-slate-600 hover:text-slate-800"
@@ -384,7 +384,7 @@ export function EquitySettingsModal({
           <button
             type="button"
             onClick={() => setActiveTab("smart")}
-            className={`shrink-0 py-2.5 px-4 rounded-lg text-sm font-bold transition-all whitespace-nowrap ${
+            className={`shrink-0 py-2 px-2.5 rounded-lg text-xs font-bold transition-all whitespace-nowrap ${
               activeTab === "smart"
                 ? "bg-white text-slate-800 shadow-sm"
                 : "text-slate-600 hover:text-slate-800"
