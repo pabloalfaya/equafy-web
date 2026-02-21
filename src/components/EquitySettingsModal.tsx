@@ -394,7 +394,8 @@ export function EquitySettingsModal({
           </button>
         </div>
 
-        {/* Tab Content */}
+        {/* Tab Content — fixed height to prevent layout shift when switching tabs */}
+        <div className="h-[480px] overflow-y-auto pr-1">
         {activeTab === "default_models" && (
           <div className="space-y-4">
             <p className="text-sm text-slate-600 leading-relaxed">
@@ -809,6 +810,7 @@ export function EquitySettingsModal({
             </div>
           </div>
         )}
+        </div>
 
         {error && (
           <p className="mt-4 rounded-lg bg-red-50 px-3 py-2 text-sm font-medium text-red-600">

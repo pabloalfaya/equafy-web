@@ -168,7 +168,7 @@ export function AddMemberModal({
 
   return (
     <div className="fixed inset-0 z-[110] flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4">
-      <div className="w-full max-w-2xl bg-white rounded-[32px] shadow-2xl p-8 animate-in zoom-in duration-200 font-sans max-h-[90vh] flex flex-col">
+      <div className="w-full max-w-2xl min-h-[540px] bg-white rounded-[32px] shadow-2xl p-8 animate-in zoom-in duration-200 font-sans max-h-[90vh] flex flex-col">
         {/* Header */}
         <div className="flex justify-between items-center mb-6 shrink-0">
           <div className="flex items-center gap-2">
