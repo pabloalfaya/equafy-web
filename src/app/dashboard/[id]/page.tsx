@@ -739,7 +739,7 @@ export default function ProjectDashboardPage() {
             {/* Team Breakdown - datos reales (fuera del max-w para ocupar todo el ancho) */}
             <section className="mt-12 w-full">
               <h3 className="text-2xl font-bold tracking-tight text-slate-900 mb-2">Team Breakdown</h3>
-              <p className="text-slate-500 font-medium mb-8">División dinámica basada en contribuciones.</p>
+              <p className="text-slate-500 font-medium mb-8">Dynamic split based on contributions.</p>
               {(() => {
                 const { rows } = getEquitySummaryForFinalize(members, contributions, project);
                 const barColors = ["bg-emerald-500", "bg-blue-500", "bg-violet-500", "bg-amber-500", "bg-red-500", "bg-cyan-500", "bg-pink-500", "bg-indigo-500"];
