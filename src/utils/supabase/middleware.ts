@@ -44,6 +44,7 @@ export const updateSession = async (request: NextRequest) => {
       !request.nextUrl.pathname.startsWith("/auth") &&
       request.nextUrl.pathname !== "/" &&
       !request.nextUrl.pathname.startsWith("/what-is-equily") &&
+      !request.nextUrl.pathname.startsWith("/why-equily") &&
       !request.nextUrl.pathname.startsWith("/how-it-works") &&
       !request.nextUrl.pathname.startsWith("/guide") &&
       !request.nextUrl.pathname.startsWith("/features") &&
