@@ -73,15 +73,14 @@ export default function LandingPage() {
                 <div key={dup} className="flex gap-6 shrink-0">
                   {[
                     { title: "Project Management", id: "project-management" },
+                    { title: "Select Equity Models", id: "select-equity-models" },
                     { title: "Contributions", id: "contributions" },
                     { title: "Dynamic Equity Distribution", id: "dynamic-equity-distribution" },
-                    { title: "Equity Models", id: "equity-models" },
                     { title: "Equity Configuration", id: "equity-configuration" },
-                    { title: "Valuation & Finalization", id: "valuation-finalization" },
-                    { title: "Export", id: "export" },
                     { title: "Team Management", id: "team-management" },
-                    { title: "Transparency & Audit", id: "transparency-audit" },
-                    { title: "Security", id: "security" },
+                    { title: "Valuation & Finalization", id: "valuation-finalization" },
+                    { title: "Transparency, Audit & Security", id: "transparency-audit-security" },
+                    { title: "Export", id: "export" },
                     { title: "Legal", id: "legal" },
                   ].map((item) => (
                     <Link

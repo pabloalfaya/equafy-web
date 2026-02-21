@@ -44,6 +44,15 @@ const FEATURE_SECTIONS = [
     ],
   },
   {
+    id: "select-equity-models",
+    title: "Select Equity Models",
+    features: [
+      { title: "Just Split Model", icon: Zap, description: "Recommended: Cash x4, Work x2, Assets x2, IP x2." },
+      { title: "Flat Model", icon: Scale, description: "All multipliers x1. Ideal for service agencies." },
+      { title: "Custom Model", icon: Sliders, description: "Fully editable multipliers per category." },
+    ],
+  },
+  {
     id: "contributions",
     title: "Contributions",
     features: [
@@ -66,15 +75,6 @@ const FEATURE_SECTIONS = [
     ],
   },
   {
-    id: "equity-models",
-    title: "Equity Models",
-    features: [
-      { title: "Just Split Model", icon: Zap, description: "Recommended: Cash x4, Work x2, Assets x2, IP x2." },
-      { title: "Flat Model", icon: Scale, description: "All multipliers x1. Ideal for service agencies." },
-      { title: "Custom Model", icon: Sliders, description: "Fully editable multipliers per category." },
-    ],
-  },
-  {
     id: "equity-configuration",
     title: "Equity Configuration",
     features: [
@@ -83,6 +83,16 @@ const FEATURE_SECTIONS = [
       { title: "Limited Equity (Hard Caps)", icon: Lock, description: "Maximum % cap per member to protect the cap table." },
       { title: "Smart Multipliers", icon: TrendingUp, description: "Suggestions based on project valuation (logarithmic model)." },
       { title: "Preset Models", icon: BookOpen, description: "Choose Just Split, Flat or Custom as a starting point." },
+    ],
+  },
+  {
+    id: "team-management",
+    title: "Team Management",
+    features: [
+      { title: "Add Members", icon: Users, description: "Add members to the project team." },
+      { title: "Edit Members", icon: Edit3, description: "Update name, email and role for each member." },
+      { title: "Remove Members", icon: Trash2, description: "Remove members from the project." },
+      { title: "Roles", icon: ShieldCheck, description: "Owner, Co-owner, Worker, Venture Capital and more." },
     ],
   },
   {
@@ -97,36 +107,20 @@ const FEATURE_SECTIONS = [
     ],
   },
   {
+    id: "transparency-audit-security",
+    title: "Transparency, Audit & Security",
+    features: [
+      { title: "Audit Log", icon: FileSearch, description: "Full history: who did what and when." },
+      { title: "Action Logging", icon: FileText, description: "All modifications are recorded for complete transparency." },
+      { title: "Authentication", icon: Shield, description: "Secure login with Supabase Auth." },
+      { title: "Role-Based Access Control", icon: Lock, description: "Routes and actions protected by user permissions." },
+    ],
+  },
+  {
     id: "export",
     title: "Export",
     features: [
       { title: "Export PDF", icon: Download, description: "Generate PDFs of the cap table and contribution log, signed-ready." },
-    ],
-  },
-  {
-    id: "team-management",
-    title: "Team Management",
-    features: [
-      { title: "Add Members", icon: Users, description: "Add members to the project team." },
-      { title: "Edit Members", icon: Edit3, description: "Update name, email and role for each member." },
-      { title: "Remove Members", icon: Trash2, description: "Remove members from the project." },
-      { title: "Roles", icon: ShieldCheck, description: "Owner, Co-owner, Worker, Venture Capital and more." },
-    ],
-  },
-  {
-    id: "transparency-audit",
-    title: "Transparency & Audit",
-    features: [
-      { title: "Audit Log", icon: FileSearch, description: "Full history: who did what and when." },
-      { title: "Action Logging", icon: FileText, description: "All modifications are recorded for complete transparency." },
-    ],
-  },
-  {
-    id: "security",
-    title: "Security",
-    features: [
-      { title: "Authentication", icon: Shield, description: "Secure login with Supabase Auth." },
-      { title: "Role-Based Access Control", icon: Lock, description: "Routes and actions protected by user permissions." },
     ],
   },
   {
