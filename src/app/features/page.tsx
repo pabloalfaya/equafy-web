@@ -34,98 +34,98 @@ import {
 
 const FEATURE_SECTIONS = [
   {
-    title: "Gestión de proyectos",
+    title: "Project Management",
     features: [
-      { title: "Crear proyectos", icon: FolderPlus, description: "Crea nuevos proyectos de equity con un asistente guiado." },
-      { title: "Listar proyectos", icon: List, description: "Accede a todos tus proyectos desde el dashboard principal." },
-      { title: "Eliminar proyectos", icon: Trash2, description: "Elimina proyectos que ya no necesites." },
-      { title: "Acceso por roles", icon: ShieldCheck, description: "Owner, Co-owner, Worker y más: control granular de permisos." },
+      { title: "Create Projects", icon: FolderPlus, description: "Create new equity projects with a guided wizard." },
+      { title: "List Projects", icon: List, description: "Access all your projects from the main dashboard." },
+      { title: "Delete Projects", icon: Trash2, description: "Remove projects you no longer need." },
+      { title: "Role-Based Access", icon: ShieldCheck, description: "Owner, Co-owner, Worker and more: granular permission control." },
     ],
   },
   {
-    title: "Contribuciones",
+    title: "Contributions",
     features: [
-      { title: "Añadir contribuciones", icon: PlusCircle, description: "Registra Cash, Work, Tangible, Intangible y Others con un wizard guiado." },
-      { title: "Editar contribuciones", icon: Edit3, description: "Corrige valores o descripciones de contribuciones pasadas." },
-      { title: "Eliminar contribuciones", icon: Trash2, description: "Elimina entradas incorrectas o duplicadas para mantener un historial limpio." },
-      { title: "Log de contribuciones", icon: FileText, description: "Historial cronológico de todas las aportaciones, con filtro por miembro." },
-      { title: "Modo simulación", icon: FlaskConical, description: "Simula aportaciones sin guardar y visualiza el impacto en el cap table antes de confirmar." },
+      { title: "Add Contributions", icon: PlusCircle, description: "Log Cash, Work, Tangible, Intangible and Others with a guided wizard." },
+      { title: "Edit Contributions", icon: Edit3, description: "Fix values or descriptions of past contributions." },
+      { title: "Delete Contributions", icon: Trash2, description: "Remove incorrect or duplicate entries to keep a clean history." },
+      { title: "Contribution Log", icon: FileText, description: "Chronological history of all contributions, with filter by member." },
+      { title: "Simulation Mode", icon: FlaskConical, description: "Simulate contributions without saving and see the impact on the cap table before committing." },
     ],
   },
   {
-    title: "Distribución dinámica de equity",
+    title: "Dynamic Equity Distribution",
     features: [
-      { title: "Dynamic splitting", icon: Zap, description: "Modelo Slicing Pie: el equity se recalcula automáticamente según las contribuciones." },
-      { title: "Cap Table en tiempo real", icon: LayoutGrid, description: "Tabla de capitalización actualizada al instante." },
-      { title: "Equity Distribution", icon: PieChart, description: "Gráfico de tarta con la distribución de ownership." },
-      { title: "Team Breakdown", icon: BarChart3, description: "Desglose detallado por miembro con puntos y porcentajes." },
-      { title: "Cálculo automático", icon: Calculator, description: "Porcentajes calculados automáticamente según contribuciones y multiplicadores." },
+      { title: "Dynamic Splitting", icon: Zap, description: "Slicing Pie model: equity recalculates automatically based on contributions." },
+      { title: "Real-Time Cap Table", icon: LayoutGrid, description: "Cap table updated instantly." },
+      { title: "Equity Distribution", icon: PieChart, description: "Pie chart showing ownership distribution." },
+      { title: "Team Breakdown", icon: BarChart3, description: "Detailed breakdown per member with points and percentages." },
+      { title: "Automatic Calculation", icon: Calculator, description: "Percentages calculated automatically from contributions and multipliers." },
     ],
   },
   {
-    title: "Modelos de equity",
+    title: "Equity Models",
     features: [
-      { title: "Just Split Model", icon: Zap, description: "Recomendado: Cash x4, Work x2, Assets x2, IP x2." },
-      { title: "Flat Model", icon: Scale, description: "Todos los multiplicadores x1. Ideal para agencias de servicios." },
-      { title: "Custom Model", icon: Sliders, description: "Multiplicadores completamente editables por categoría." },
+      { title: "Just Split Model", icon: Zap, description: "Recommended: Cash x4, Work x2, Assets x2, IP x2." },
+      { title: "Flat Model", icon: Scale, description: "All multipliers x1. Ideal for service agencies." },
+      { title: "Custom Model", icon: Sliders, description: "Fully editable multipliers per category." },
     ],
   },
   {
-    title: "Configuración de equity",
+    title: "Equity Configuration",
     features: [
-      { title: "Multiplicadores personalizados", icon: Settings, description: "Ajusta Cash, Work, Tangible, Intangible y Others según tu etapa." },
-      { title: "Fixed Equity", icon: Anchor, description: "Porcentajes fijos que no cambian con nuevas contribuciones." },
-      { title: "Limited Equity (Hard Caps)", icon: Lock, description: "Límite máximo de % por miembro para proteger el cap table." },
-      { title: "Smart Multipliers", icon: TrendingUp, description: "Sugerencias basadas en la valoración del proyecto (modelo logarítmico)." },
-      { title: "Modelos predefinidos", icon: BookOpen, description: "Selecciona Just Split, Flat o Custom como punto de partida." },
+      { title: "Custom Multipliers", icon: Settings, description: "Adjust Cash, Work, Tangible, Intangible and Others to match your stage." },
+      { title: "Fixed Equity", icon: Anchor, description: "Fixed percentages that do not change with new contributions." },
+      { title: "Limited Equity (Hard Caps)", icon: Lock, description: "Maximum % cap per member to protect the cap table." },
+      { title: "Smart Multipliers", icon: TrendingUp, description: "Suggestions based on project valuation (logarithmic model)." },
+      { title: "Preset Models", icon: BookOpen, description: "Choose Just Split, Flat or Custom as a starting point." },
     ],
   },
   {
-    title: "Valoración y finalización",
+    title: "Valuation & Finalization",
     features: [
-      { title: "Valoración actual", icon: CreditCard, description: "Valoración del proyecto actualizada automáticamente." },
-      { title: "Recalculo automático", icon: Calculator, description: "Recálculo al añadir, editar o eliminar contribuciones." },
-      { title: "Freeze Project", icon: Snowflake, description: "Congela el proyecto: bloquea contribuciones y fija el equity." },
-      { title: "Executive Summary", icon: ClipboardCheck, description: "Resumen ejecutivo del estado final del proyecto." },
-      { title: "Unfreeze Project", icon: Zap, description: "Desbloquea el proyecto para volver a editar cuando sea necesario." },
+      { title: "Current Valuation", icon: CreditCard, description: "Project valuation updated automatically." },
+      { title: "Automatic Recalculation", icon: Calculator, description: "Recalculates when adding, editing or deleting contributions." },
+      { title: "Freeze Project", icon: Snowflake, description: "Freeze the project: lock contributions and fix equity state." },
+      { title: "Executive Summary", icon: ClipboardCheck, description: "Summary of the project's final state." },
+      { title: "Unfreeze Project", icon: Zap, description: "Unlock the project to edit again when needed." },
     ],
   },
   {
-    title: "Exportación",
+    title: "Export",
     features: [
-      { title: "Export PDF", icon: Download, description: "Genera PDFs del cap table y del log de contribuciones listos para firmar." },
+      { title: "Export PDF", icon: Download, description: "Generate PDFs of the cap table and contribution log, signed-ready." },
     ],
   },
   {
-    title: "Gestión de equipo",
+    title: "Team Management",
     features: [
-      { title: "Añadir miembros", icon: Users, description: "Incorpora miembros al equipo del proyecto." },
-      { title: "Editar miembros", icon: Edit3, description: "Modifica nombre, email y rol de cada miembro." },
-      { title: "Eliminar miembros", icon: Trash2, description: "Elimina miembros del proyecto." },
-      { title: "Roles", icon: ShieldCheck, description: "Owner, Co-owner, Worker, Venture Capital y más." },
+      { title: "Add Members", icon: Users, description: "Add members to the project team." },
+      { title: "Edit Members", icon: Edit3, description: "Update name, email and role for each member." },
+      { title: "Remove Members", icon: Trash2, description: "Remove members from the project." },
+      { title: "Roles", icon: ShieldCheck, description: "Owner, Co-owner, Worker, Venture Capital and more." },
     ],
   },
   {
-    title: "Transparencia y auditoría",
+    title: "Transparency & Audit",
     features: [
-      { title: "Audit Log", icon: FileSearch, description: "Historial completo: quién hizo qué y cuándo." },
-      { title: "Registro de acciones", icon: FileText, description: "Todas las modificaciones quedan registradas para transparencia total." },
+      { title: "Audit Log", icon: FileSearch, description: "Full history: who did what and when." },
+      { title: "Action Logging", icon: FileText, description: "All modifications are recorded for complete transparency." },
     ],
   },
   {
-    title: "Seguridad",
+    title: "Security",
     features: [
-      { title: "Autenticación", icon: Shield, description: "Inicio de sesión seguro con Supabase Auth." },
-      { title: "Control de acceso por roles", icon: Lock, description: "Rutas y acciones protegidas según permisos del usuario." },
+      { title: "Authentication", icon: Shield, description: "Secure login with Supabase Auth." },
+      { title: "Role-Based Access Control", icon: Lock, description: "Routes and actions protected by user permissions." },
     ],
   },
   {
     title: "Legal",
     features: [
-      { title: "Legal Hub", icon: Globe, description: "Guía por jurisdicción: US, España, UK, Irlanda, India, México y más." },
-      { title: "Plantillas de documentos", icon: FileText, description: "Partnership Agreement y otras plantillas listas para usar." },
-      { title: "Vault de documentos", icon: Download, description: "Sube y guarda PDFs firmados en un espacio seguro." },
-      { title: "Project Freeze Certificate", icon: ClipboardCheck, description: "Certificado de congelación del proyecto para uso legal." },
+      { title: "Legal Hub", icon: Globe, description: "Jurisdiction guide: US, Spain, UK, Ireland, India, Mexico and more." },
+      { title: "Document Templates", icon: FileText, description: "Partnership Agreement and other ready-to-use templates." },
+      { title: "Document Vault", icon: Download, description: "Upload and store signed PDFs in a secure space." },
+      { title: "Project Freeze Certificate", icon: ClipboardCheck, description: "Project freeze certificate for legal use." },
     ],
   },
 ];
@@ -143,10 +143,10 @@ export default function FeaturesPage() {
         <div className="mx-auto max-w-screen-2xl">
           <header className="text-center mb-16 md:mb-20">
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-slate-900 mb-6">
-              Todas las funcionalidades de Equily
+              All Equily Features
             </h1>
             <p className="text-xl text-slate-600 font-medium max-w-2xl mx-auto leading-relaxed tracking-tight">
-              Control total sobre tu equity: contribuciones, modelos, equipo, legal y más.
+              Complete control over your equity: contributions, models, team, legal and more.
             </p>
           </header>
 
@@ -183,7 +183,7 @@ export default function FeaturesPage() {
 
           <div className="mt-16 md:mt-20 text-center rounded-2xl bg-white/80 backdrop-blur-sm border border-slate-200/80 shadow-sm py-12 px-6">
             <p className="text-2xl font-bold text-slate-900 mb-6 tracking-tight">
-              ¿Listo para repartir de forma justa?
+              Ready to split fairly?
             </p>
             <Link
               href="/login?view=signup"
