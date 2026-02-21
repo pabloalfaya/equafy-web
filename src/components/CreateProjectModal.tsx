@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { createClient } from "@/utils/supabase/client";
-import { X, Loader2, ArrowRight, ArrowLeft, Rocket } from "lucide-react";
+import { X, Loader2, ArrowRight, ArrowLeft, Briefcase } from "lucide-react";
 import type { Project } from "@/types/database";
 
 const STRIPE_MONTHLY_PRICE_ID = process.env.NEXT_PUBLIC_STRIPE_MONTHLY_PRICE_ID || "";
@@ -137,10 +137,10 @@ export function CreateProjectModal({ isOpen, onClose, onProjectCreated }: Create
         {step === 1 && (
           <form onSubmit={handleStep1Submit} className="py-8 space-y-6 text-center animate-in fade-in zoom-in duration-300">
             <div>
-              <div className="w-14 h-14 bg-emerald-50 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                <Rocket className="w-7 h-7 text-emerald-600" />
-              </div>
-              <h2 className="text-2xl font-black mb-1 text-slate-900 tracking-tight">Project name</h2>
+              <h2 className="text-2xl font-black mb-1 text-slate-900 tracking-tight flex items-center justify-center gap-2">
+                <Briefcase className="w-6 h-6 text-emerald-600 shrink-0" />
+                Project name
+              </h2>
               <p className="text-slate-600 font-bold text-sm">What is the name of this new project?</p>
             </div>
             <input
