@@ -28,7 +28,7 @@ const SECTIONS = [
           "Investor partner who shouldn't dilute? Use Fixed Equity. Want to cap a collaborator's stake? Enable Hard Caps (Limited Equity). You're in control.",
       },
       {
-        title: "Simulation Mode (The "What If")",
+        title: "Simulation Mode (The \"What If\")",
         content:
           "What happens if a new partner or Business Angel joins? Simulate scenarios in real time without touching your official data—make strategic decisions with confidence.",
       },
