@@ -41,16 +41,16 @@ export function ContributionsTable({ contributions, onDelete, onEdit, onRemoveSi
   }
 
   return (
-    <div className="min-w-max w-full">
-      <table className="w-full text-left border-collapse min-w-[700px]">
+    <div className="min-w-0 w-full md:min-w-max">
+      <table className="w-full text-left border-collapse min-w-[420px] sm:min-w-[520px] md:min-w-[700px]">
         <thead>
           <tr className="text-[10px] font-bold text-slate-400 uppercase tracking-wider border-b border-slate-100">
-            <th className="py-3 px-4">Date</th>
-            <th className="py-3 px-4">Member</th>
-            <th className="py-3 px-4">Category</th>
-            <th className="py-3 px-4">Description</th>
-            <th className="py-3 px-4 text-right">Value (PTS)</th>
-            <th className="py-3 px-4 text-right">Actions</th>
+            <th className="py-3 px-2 md:px-4">Date</th>
+            <th className="py-3 px-2 md:px-4">Member</th>
+            <th className="py-3 px-2 md:px-4">Category</th>
+            <th className="py-3 px-2 md:px-4 hidden sm:table-cell">Description</th>
+            <th className="py-3 px-2 md:px-4 text-right"><span className="hidden sm:inline">Value </span>(PTS)</th>
+            <th className="py-3 px-2 md:px-4 text-right">Actions</th>
           </tr>
         </thead>
         <tbody className="text-sm text-slate-700">
@@ -63,7 +63,7 @@ export function ContributionsTable({ contributions, onDelete, onEdit, onRemoveSi
             >
               
               {/* 1. FECHA (Usamos c.date) */}
-              <td className="py-4 px-4 whitespace-nowrap text-slate-500 font-medium">
+              <td className="py-4 px-2 md:px-4 whitespace-nowrap text-slate-500 font-medium">
                 <div className="flex items-center gap-2">
                     <Calendar className="w-3 h-3 text-slate-300" />
                     {formatDate(c.date)} 
@@ -71,12 +71,12 @@ export function ContributionsTable({ contributions, onDelete, onEdit, onRemoveSi
               </td>
 
               {/* 2. SOCIO */}
-              <td className="py-4 px-4 font-bold text-slate-800">
+              <td className="py-4 px-2 md:px-4 font-bold text-slate-800">
                 {c.contributor_name}
               </td>
 
               {/* 3. TIPO (Usamos c.type) */}
-              <td className="py-4 px-4">
+              <td className="py-4 px-2 md:px-4">
                 <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-bold uppercase tracking-wide ${isSimulated ? "bg-amber-200/60 text-amber-900" : "bg-slate-100 text-slate-600"}`}>
                     <Tag className="w-3 h-3" />
                     {c.type}
@@ -85,7 +85,7 @@ export function ContributionsTable({ contributions, onDelete, onEdit, onRemoveSi
               </td>
 
               {/* 4. CONCEPTO (Usamos c.concept) */}
-              <td className="py-4 px-4 max-w-[200px] truncate text-slate-500" title={c.concept}>
+              <td className="py-4 px-2 md:px-4 max-w-[200px] truncate text-slate-500 hidden sm:table-cell" title={c.concept}>
                 <div className="flex items-center gap-2">
                     <FileText className="w-3 h-3 text-slate-300 shrink-0" />
                     <span className="truncate font-medium">{c.concept}</span>
@@ -93,12 +93,12 @@ export function ContributionsTable({ contributions, onDelete, onEdit, onRemoveSi
               </td>
 
               {/* 5. VALOR */}
-              <td className="py-4 px-4 text-right font-black text-emerald-600">
+              <td className="py-4 px-2 md:px-4 text-right font-black text-emerald-600">
                 {Number(c.risk_adjusted_value).toLocaleString()}
               </td>
 
               {/* 6. ACCIONES */}
-              <td className="py-4 px-4 text-right">
+              <td className="py-4 px-2 md:px-4 text-right">
                 {isSimulated ? (
                   onRemoveSimulated ? (
                     <button

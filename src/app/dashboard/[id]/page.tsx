@@ -641,7 +641,7 @@ export default function ProjectDashboardPage() {
 
   return (
     <div className="min-h-screen bg-[#F8FAFC] font-sans text-slate-900 overflow-x-hidden">
-      <main className="relative z-10 pt-16 pb-20 px-6 md:px-12 lg:px-24">
+      <main className="relative z-10 pt-16 pb-20 px-4 md:px-12 lg:px-24">
         <div className="mx-auto max-w-screen-2xl">
             <div className="mb-10 flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
               <div className="flex items-start gap-4">
@@ -681,32 +681,32 @@ export default function ProjectDashboardPage() {
                 )}
               </div>
               </div>
-              <div className="flex gap-2 sm:gap-3 flex-wrap sm:flex-nowrap">
+              <div className="flex gap-2 sm:gap-3 overflow-x-auto md:overflow-visible flex-nowrap md:flex-wrap pb-2 md:pb-0 -mx-1 px-1 md:mx-0 md:px-0 [&>*]:flex-shrink-0">
                 <button
                   onClick={generatePDF}
-                  className="inline-flex items-center gap-2 rounded-xl bg-white border border-slate-200 px-4 md:px-5 py-2.5 md:py-3 font-bold text-slate-700 shadow-sm hover:bg-slate-50 transition-all whitespace-nowrap text-sm md:text-base"
+                  className="inline-flex items-center gap-1.5 md:gap-2 rounded-xl bg-white border border-slate-200 px-3 md:px-5 py-2.5 md:py-3 font-bold text-slate-700 shadow-sm hover:bg-slate-50 transition-all whitespace-nowrap text-xs md:text-base"
                 >
-                  <Download className="h-5 w-5" /> Export PDF
+                  <Download className="h-4 w-4 md:h-5 md:w-5 shrink-0" /> <span className="hidden sm:inline">Export </span>PDF
                 </button>
                 {canEditAndNotFinalized && (
                   <>
                     <button
                       onClick={() => setFixedEquityOpen(true)}
-                      className="inline-flex items-center gap-2 rounded-xl bg-white border border-slate-200 px-4 md:px-5 py-2.5 md:py-3 font-bold text-slate-700 shadow-sm hover:bg-slate-50 transition-all whitespace-nowrap text-sm md:text-base"
+                      className="inline-flex items-center gap-1.5 md:gap-2 rounded-xl bg-white border border-slate-200 px-3 md:px-5 py-2.5 md:py-3 font-bold text-slate-700 shadow-sm hover:bg-slate-50 transition-all whitespace-nowrap text-xs md:text-base"
                     >
-                      <Settings className="h-5 w-5" /> Equity Settings
+                      <Settings className="h-4 w-4 md:h-5 md:w-5 shrink-0" /> <span className="hidden sm:inline">Equity </span>Settings
                     </button>
                     <button
                       onClick={() => setMemberModalOpen(true)}
-                      className="inline-flex items-center gap-2 rounded-xl bg-white border border-slate-200 px-4 md:px-5 py-2.5 md:py-3 font-bold text-slate-700 shadow-sm hover:bg-slate-50 transition-all whitespace-nowrap text-sm md:text-base"
+                      className="inline-flex items-center gap-1.5 md:gap-2 rounded-xl bg-white border border-slate-200 px-3 md:px-5 py-2.5 md:py-3 font-bold text-slate-700 shadow-sm hover:bg-slate-50 transition-all whitespace-nowrap text-xs md:text-base"
                     >
-                      <Users className="h-5 w-5" /> Team
+                      <Users className="h-4 w-4 md:h-5 md:w-5 shrink-0" /> Team
                     </button>
                     <button
                       onClick={() => { setEditingContribution(null); setModalOpen(true); }}
-                      className="inline-flex items-center gap-2 rounded-xl bg-slate-900 px-4 md:px-6 py-2.5 md:py-3 font-bold text-white shadow-lg hover:bg-slate-800 transition-all whitespace-nowrap text-sm md:text-base"
+                      className="inline-flex items-center gap-1.5 md:gap-2 rounded-xl bg-slate-900 px-3 md:px-6 py-2.5 md:py-3 font-bold text-white shadow-lg hover:bg-slate-800 transition-all whitespace-nowrap text-xs md:text-base"
                     >
-                      <Plus className="h-5 w-5" /> Add Contribution
+                      <Plus className="h-4 w-4 md:h-5 md:w-5 shrink-0" /> <span className="hidden sm:inline">Add </span>Contribution
                     </button>
                   </>
                 )}
@@ -732,7 +732,7 @@ export default function ProjectDashboardPage() {
             )}
 
             <div className="grid lg:grid-cols-3 gap-8">
-                <div ref={contributionLogRef} className="lg:col-span-2 bg-white/70 backdrop-blur-xl border border-white/60 rounded-[32px] p-8 shadow-xl flex flex-col">
+                <div ref={contributionLogRef} className="lg:col-span-2 bg-white/70 backdrop-blur-xl border border-white/60 rounded-[32px] p-4 md:p-8 shadow-xl flex flex-col min-w-0 overflow-hidden">
                     <div className="flex items-center gap-3 mb-6 flex-wrap">
                         <div className="flex items-center gap-3">
                             <div className="p-2 bg-blue-50 rounded-lg"><TrendingUp className="h-5 w-5 text-blue-600" /></div>
@@ -748,7 +748,7 @@ export default function ProjectDashboardPage() {
                             </button>
                         )}
                     </div>
-                    <div className="overflow-auto max-h-[600px] pr-2 pb-1 custom-scrollbar">
+                    <div className="overflow-x-auto overflow-y-auto max-h-[600px] pr-2 pb-1 custom-scrollbar -mx-1 md:mx-0 min-w-0">
                         <ContributionsTable
                           contributions={filterByMember ? displayContributions.filter((c) => c.contributor_name === filterByMember) : displayContributions}
                           onDelete={handleContributionDeleted}
@@ -761,7 +761,7 @@ export default function ProjectDashboardPage() {
                 </div>
                 
                 <div className="lg:col-span-1 flex flex-col gap-4">
-                <div className="bg-white/70 backdrop-blur-xl border border-white/60 rounded-[32px] p-8 shadow-xl flex flex-col h-fit sticky top-32">
+                <div className="bg-white/70 backdrop-blur-xl border border-white/60 rounded-[32px] p-4 md:p-8 shadow-xl flex flex-col h-fit sticky top-32">
                     <div className="flex items-center gap-3 mb-8">
                         <div className="p-2 bg-emerald-50 rounded-lg"><PieChart className="h-5 w-5 text-emerald-600" /></div>
                         <h3 className="font-bold text-slate-900 text-xl">Equity Distribution</h3>
