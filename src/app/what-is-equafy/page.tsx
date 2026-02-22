@@ -6,7 +6,7 @@ import { PlayCircle } from "lucide-react";
 import { VideoDemoModal } from "@/components/VideoDemoModal";
 import { BRAND } from "@/lib/brand";
 
-export default function WhatIsEquilyPage() {
+export default function WhatIsEquafyPage() {
   const [isVideoOpen, setIsVideoOpen] = useState(false);
 
   return (
@@ -56,7 +56,7 @@ export default function WhatIsEquilyPage() {
             <div className="relative flex items-center justify-center">
               <div className="absolute inset-0 bg-gradient-to-tr from-emerald-500/5 to-transparent rounded-full blur-3xl -z-10"></div>
               <img 
-                src="/what-is-equily-hero.png" 
+                src="/what-is-equafy-hero.png" 
                 alt={`${BRAND.name} Dynamic Equity Illustration`} 
                 className="w-full h-auto object-contain drop-shadow-xl hover:scale-[1.02] transition-transform duration-500" 
               />

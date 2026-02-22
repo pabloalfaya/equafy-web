@@ -1,4 +1,4 @@
--- Referencia del esquema para Equily
+-- Referencia del esquema para Equafy
 -- Ejecuta esto en el SQL Editor de Supabase para actualizar tus tablas
 
 -- 1. TABLA DE PROYECTOS

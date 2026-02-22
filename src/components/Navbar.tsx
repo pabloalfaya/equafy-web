@@ -86,7 +86,7 @@ export function Navbar() {
                 <div className="absolute left-0 top-full pt-3 w-72 z-30">
                   <div className="rounded-xl bg-white shadow-lg border border-gray-100 py-2">
                   <Link
-                    href="/what-is-equily"
+                    href="/what-is-equafy"
                     onClick={() => setIsProductMenuOpen(false)}
                     className="flex items-start gap-3 px-3 py-2 rounded-lg hover:bg-gray-50 transition-colors"
                   >
@@ -120,7 +120,7 @@ export function Navbar() {
                     </div>
                   </Link>
                   <Link
-                    href="/why-equily"
+                    href="/why-equafy"
                     onClick={() => setIsProductMenuOpen(false)}
                     className="flex items-start gap-3 px-3 py-2 rounded-lg hover:bg-gray-50 transition-colors"
                   >
@@ -271,13 +271,13 @@ export function Navbar() {
               Sign Up
             </Link>
             <p className="pt-3 pb-1 text-[10px] font-bold text-slate-400 uppercase tracking-widest">Product</p>
-            <Link href="/what-is-equily" onClick={() => setIsMobileMenuOpen(false)} className="block py-1.5 pl-3 text-sm font-medium text-slate-600 hover:text-slate-900">
+            <Link href="/what-is-equafy" onClick={() => setIsMobileMenuOpen(false)} className="block py-1.5 pl-3 text-sm font-medium text-slate-600 hover:text-slate-900">
               What is {BRAND.name}?
             </Link>
             <Link href="/how-it-works" onClick={() => setIsMobileMenuOpen(false)} className="block py-1.5 pl-3 text-sm font-medium text-slate-600 hover:text-slate-900">
               How does {BRAND.name} work?
             </Link>
-            <Link href="/why-equily" onClick={() => setIsMobileMenuOpen(false)} className="block py-1.5 pl-3 text-sm font-medium text-slate-600 hover:text-slate-900">
+            <Link href="/why-equafy" onClick={() => setIsMobileMenuOpen(false)} className="block py-1.5 pl-3 text-sm font-medium text-slate-600 hover:text-slate-900">
               Why {BRAND.name}?
             </Link>
             <Link href="/features" onClick={() => setIsMobileMenuOpen(false)} className="block py-1.5 pl-3 text-sm font-medium text-slate-600 hover:text-slate-900">
@@ -328,7 +328,7 @@ export function Navbar() {
           {isProductMenuOpen && (
             <div className="mt-1 space-y-1 pb-2">
               <Link
-                href="/what-is-equily"
+                href="/what-is-equafy"
                 onClick={() => setIsProductMenuOpen(false)}
                 className="block text-sm text-slate-600 py-1 pl-2 border-l border-slate-200 hover:text-slate-900"
               >
@@ -342,7 +342,7 @@ export function Navbar() {
                 How does {BRAND.name} work?
               </Link>
               <Link
-                href="/why-equily"
+                href="/why-equafy"
                 onClick={() => setIsProductMenuOpen(false)}
                 className="block text-sm text-slate-600 py-1 pl-2 border-l border-slate-200 hover:text-slate-900"
               >
