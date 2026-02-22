@@ -12,7 +12,8 @@ import {
   Scale,
   AlertTriangle,
   CheckCircle2,
-  TrendingUp
+  TrendingUp,
+  Building2,
 } from "lucide-react";
 import { VideoDemoModal } from "../components/VideoDemoModal";
 
@@ -108,14 +109,20 @@ export default function LandingPage() {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6 mb-8">
                 {[
-                  { name: "Alex", role: "Founder • TIME & IP", risk: "x2", ownership: "45.0%", pctNum: 45, img: "https://i.pravatar.cc/150?img=12", barColor: "bg-emerald-500", ringColor: "ring-emerald-500" },
-                  { name: "Ben", role: "Co-founder • TIME & IP", risk: "x2", ownership: "30.0%", pctNum: 30, img: "https://i.pravatar.cc/150?img=33", barColor: "bg-blue-500", ringColor: "ring-blue-500" },
-                  { name: "VC Fund A", role: "CASH", risk: "x4", ownership: "18.75%", pctNum: 18.75, img: "https://i.pravatar.cc/150?img=44", barColor: "bg-orange-500", ringColor: "ring-orange-500" },
-                  { name: "Sarah", role: "Dev • TIME", risk: "x1", ownership: "6.25%", pctNum: 6.25, img: "https://i.pravatar.cc/150?img=47", barColor: "bg-purple-500", ringColor: "ring-purple-500" },
+                  { name: "Alex", role: "Founder • TIME & IP", risk: "x2", ownership: "45.0%", pctNum: 45, img: "https://i.pravatar.cc/150?img=12", barColor: "bg-emerald-500", ringColor: "ring-emerald-500", isCompany: false },
+                  { name: "Ben", role: "Co-founder • TIME & IP", risk: "x2", ownership: "30.0%", pctNum: 30, img: "https://i.pravatar.cc/150?img=33", barColor: "bg-blue-500", ringColor: "ring-blue-500", isCompany: false },
+                  { name: "VC Fund A", role: "CASH", risk: "x4", ownership: "18.75%", pctNum: 18.75, img: "", barColor: "bg-orange-500", ringColor: "ring-orange-500", isCompany: true },
+                  { name: "Sarah", role: "Dev • TIME", risk: "x1", ownership: "6.25%", pctNum: 6.25, img: "https://i.pravatar.cc/150?img=47", barColor: "bg-purple-500", ringColor: "ring-purple-500", isCompany: false },
                 ].map((member, i) => (
                   <div key={i} className="bg-white rounded-2xl p-6 border border-slate-100 shadow-sm hover:shadow-md transition-shadow">
                     <div className="flex items-center gap-4 mb-4">
-                      <img src={member.img} className={`h-14 w-14 rounded-full object-cover ring-2 ${member.ringColor} ring-offset-2`} alt={member.name} />
+                      {(member as { isCompany?: boolean }).isCompany ? (
+                        <div className={`h-14 w-14 rounded-full flex items-center justify-center ring-2 ${member.ringColor} ring-offset-2 bg-orange-50`}>
+                          <Building2 className="h-7 w-7 text-orange-600" />
+                        </div>
+                      ) : (
+                        <img src={member.img} className={`h-14 w-14 rounded-full object-cover ring-2 ${member.ringColor} ring-offset-2`} alt={member.name} />
+                      )}
                       <div>
                         <p className="font-bold text-slate-900">{member.name}</p>
                         <p className="text-xs text-slate-500 font-medium uppercase tracking-wider">{member.role}</p>
