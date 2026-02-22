@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import {
@@ -21,7 +21,20 @@ export default function LandingPage() {
   const [standardRisk, setStandardRisk] = useState(true);
   const [customRisk, setCustomRisk] = useState(false);
   const [isVideoOpen, setIsVideoOpen] = useState(false);
+  const [capTableInView, setCapTableInView] = useState(false);
+  const capTableRef = useRef<HTMLElement>(null);
   const router = useRouter();
+
+  useEffect(() => {
+    const el = capTableRef.current;
+    if (!el) return;
+    const obs = new IntersectionObserver(
+      ([e]) => setCapTableInView(e.isIntersecting),
+      { threshold: 0.15, rootMargin: "0px 0px -50px 0px" }
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, []);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -100,7 +113,12 @@ export default function LandingPage() {
       </header>
 
       {/* --- DASHBOARD PREVIEW SECTION --- */}
-      <section className="pt-24 md:pt-32 pb-16 relative z-10 w-full px-6 md:px-12 lg:px-24">
+      <section
+        ref={capTableRef}
+        className={`pt-24 md:pt-32 pb-16 relative z-10 w-full px-6 md:px-12 lg:px-24 transition-all duration-700 ease-out ${
+          capTableInView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+        }`}
+      >
         <div className="mx-auto max-w-screen-2xl relative">
           <div className="mb-8">
             <h2 className="text-2xl font-bold tracking-tight text-slate-900">Cap Table Status</h2>
