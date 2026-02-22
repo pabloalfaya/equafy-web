@@ -14,5 +14,5 @@ export const BRAND = {
   /** Logo for navbar and footer (replace file in /public) */
   logoPath: "/logo-web.png",
   /** Favicon (replace file in /public) */
-  iconPath: "/equafy-mark.png",
+  iconPath: "/favicon.ico",
 } as const;
