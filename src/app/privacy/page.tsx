@@ -108,7 +108,7 @@ export default function PrivacyPage() {
                 <li><strong>Right to lodge a complaint:</strong> you may lodge a complaint with a supervisory authority in your country.</li>
               </ul>
               <p className="mt-4">
-                To exercise these rights, contact us at {EMAIL}. We will respond within the timeframes required by applicable law.
+                To exercise these rights, contact us at {BRAND.email}. We will respond within the timeframes required by applicable law.
               </p>
             </section>
 
@@ -124,7 +124,7 @@ export default function PrivacyPage() {
                 <li><strong>Right to non-discrimination:</strong> we will not discriminate against you for exercising your privacy rights.</li>
               </ul>
               <p className="mt-4">
-                To submit a CCPA request, contact us at {EMAIL} and specify that you are a California resident. We may need to verify your identity before processing your request.
+                To submit a CCPA request, contact us at {BRAND.email} and specify that you are a California resident. We may need to verify your identity before processing your request.
               </p>
             </section>
 
