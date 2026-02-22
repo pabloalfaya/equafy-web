@@ -2,10 +2,10 @@
 
 import Link from "next/link";
 import { ArrowLeft, Printer } from "lucide-react";
+import { BRAND } from "@/lib/brand";
 
 const LEGAL_NAME = "Pablo Alfaya Fernandez";
 const ADDRESS = "Calle La Santa Maria 86, Spain";
-const EMAIL = "info@getequily.com";
 
 export default function TermsPage() {
   return (
@@ -40,28 +40,28 @@ export default function TermsPage() {
             Terms of Service
           </h1>
           <p className="text-lg text-slate-600 font-medium mb-12">
-            These Terms of Service (&quot;Terms&quot;) govern your use of Equily, operated by {LEGAL_NAME} (&quot;we&quot;, &quot;us&quot;, &quot;Equily&quot;). By accessing or using Equily, you agree to these Terms.
+            These Terms of Service (&quot;Terms&quot;) govern your use of {BRAND.name}, operated by {LEGAL_NAME} (&quot;we&quot;, &quot;us&quot;). By accessing or using {BRAND.name}, you agree to these Terms.
           </p>
 
           <article className="space-y-10 text-slate-700 leading-relaxed">
             <section>
               <h2 className="text-2xl font-bold text-slate-900 mb-4">1. Acceptance and Scope</h2>
               <p>
-                By creating an account or using the Equily platform, you confirm that you have read, understood, and agree to be bound by these Terms. If you are using Equily on behalf of an organization, you represent that you have authority to bind that organization. These Terms apply to all users in the European Union, the United States, and other jurisdictions where the service is available.
+                By creating an account or using the {BRAND.name} platform, you confirm that you have read, understood, and agree to be bound by these Terms. If you are using {BRAND.name} on behalf of an organization, you represent that you have authority to bind that organization. These Terms apply to all users in the European Union, the United States, and other jurisdictions where the service is available.
               </p>
             </section>
 
             <section>
               <h2 className="text-2xl font-bold text-slate-900 mb-4">2. Description of Service</h2>
               <p>
-                Equily provides a dynamic equity split calculator and related tools to help teams track contributions and visualize ownership. The service includes project management, contribution logging, cap table calculations, and export features. We reserve the right to modify, suspend, or discontinue any part of the service with reasonable notice where feasible.
+                {BRAND.name} provides a dynamic equity split calculator and related tools to help teams track contributions and visualize ownership. The service includes project management, contribution logging, cap table calculations, and export features. We reserve the right to modify, suspend, or discontinue any part of the service with reasonable notice where feasible.
               </p>
             </section>
 
             <section>
               <h2 className="text-2xl font-bold text-slate-900 mb-4">3. Subscriptions and Payment</h2>
               <p className="mb-4">
-                Equily offers subscription plans, including monthly and annual options. A <strong>7-day free trial</strong> is included when you start a subscription. No payment is required during the trial period. After the trial, you will be charged according to the plan you selected.
+                {BRAND.name} offers subscription plans, including monthly and annual options. A <strong>7-day free trial</strong> is included when you start a subscription. No payment is required during the trial period. After the trial, you will be charged according to the plan you selected.
               </p>
               <p>
                 Payments are processed securely through <strong>Stripe</strong>. By subscribing, you agree to Stripe&apos;s terms and to provide accurate billing information. You may cancel your subscription at any time; access continues until the end of the current billing period. Refunds are handled in accordance with our refund policy and applicable law.
@@ -71,21 +71,21 @@ export default function TermsPage() {
             <section>
               <h2 className="text-2xl font-bold text-slate-900 mb-4">4. Disclaimer of Warranties</h2>
               <p className="uppercase text-slate-800 font-semibold tracking-wide mb-4">
-                The Equily service and all content, calculations, and tools are provided &quot;AS IS&quot; and &quot;AS AVAILABLE&quot; without warranties of any kind, either express or implied. Equity calculations and cap table outputs are for informational and illustrative purposes only. They do not constitute legal, tax, financial, or professional advice. You should consult qualified professionals for decisions regarding equity, corporate structure, or compliance. We do not guarantee the accuracy, completeness, or suitability of any calculation for your specific situation.
+                The {BRAND.name} service and all content, calculations, and tools are provided &quot;AS IS&quot; and &quot;AS AVAILABLE&quot; without warranties of any kind, either express or implied. Equity calculations and cap table outputs are for informational and illustrative purposes only. They do not constitute legal, tax, financial, or professional advice. You should consult qualified professionals for decisions regarding equity, corporate structure, or compliance. We do not guarantee the accuracy, completeness, or suitability of any calculation for your specific situation.
               </p>
             </section>
 
             <section>
               <h2 className="text-2xl font-bold text-slate-900 mb-4">5. Limitation of Liability</h2>
               <p>
-                To the maximum extent permitted by applicable law, {LEGAL_NAME}, operating as Equily, shall not be liable for any indirect, incidental, special, consequential, or punitive damages, or for loss of profits, data, or goodwill, arising out of or in connection with your use of the service. In no event shall our total liability to you for all claims arising from or related to these Terms or your use of Equily exceed the amount you have paid to us in the twelve (12) months preceding the claim.
+                To the maximum extent permitted by applicable law, {LEGAL_NAME}, operating as {BRAND.name}, shall not be liable for any indirect, incidental, special, consequential, or punitive damages, or for loss of profits, data, or goodwill, arising out of or in connection with your use of the service. In no event shall our total liability to you for all claims arising from or related to these Terms or your use of {BRAND.name} exceed the amount you have paid to us in the twelve (12) months preceding the claim.
               </p>
             </section>
 
             <section>
               <h2 className="text-2xl font-bold text-slate-900 mb-4">6. Indemnification</h2>
               <p>
-                You agree to defend, indemnify, and hold harmless {LEGAL_NAME} (operating as Equily), its affiliates, and its respective directors, employees, and agents, from and against any and all claims, damages, obligations, losses, liabilities, costs, or debt, and expenses (including but not limited to attorney&apos;s fees) arising from: (i) your use of and access to the Equily service; (ii) your violation of any term of these Terms; or (iii) any dispute, conflict, or litigation between you and any other user, co-founder, partner, or third party regarding the allocation, calculation, or distribution of equity or ownership interests managed through the platform.
+                You agree to defend, indemnify, and hold harmless {LEGAL_NAME} (operating as {BRAND.name}), its affiliates, and its respective directors, employees, and agents, from and against any and all claims, damages, obligations, losses, liabilities, costs, or debt, and expenses (including but not limited to attorney&apos;s fees) arising from: (i) your use of and access to the {BRAND.name} service; (ii) your violation of any term of these Terms; or (iii) any dispute, conflict, or litigation between you and any other user, co-founder, partner, or third party regarding the allocation, calculation, or distribution of equity or ownership interests managed through the platform.
               </p>
             </section>
 
@@ -100,7 +100,7 @@ export default function TermsPage() {
               <h2 className="text-2xl font-bold text-slate-900 mb-4">8. Contact</h2>
               <p>
                 For questions about these Terms, please contact us at{" "}
-                <a href={`mailto:${EMAIL}`} className="text-emerald-600 font-semibold hover:underline">{EMAIL}</a>. Our address is {ADDRESS}.
+                <a href={`mailto:${BRAND.email}`} className="text-emerald-600 font-semibold hover:underline">{BRAND.email}</a>. Our address is {ADDRESS}.
               </p>
             </section>
           </article>

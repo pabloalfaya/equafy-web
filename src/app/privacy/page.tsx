@@ -2,10 +2,10 @@
 
 import Link from "next/link";
 import { ArrowLeft, Printer } from "lucide-react";
+import { BRAND } from "@/lib/brand";
 
 const LEGAL_NAME = "Pablo Alfaya Fernandez";
 const ADDRESS = "Calle La Santa Maria 86, Spain";
-const EMAIL = "info@getequily.com";
 
 export default function PrivacyPage() {
   return (
@@ -40,22 +40,22 @@ export default function PrivacyPage() {
             Privacy Policy
           </h1>
           <p className="text-lg text-slate-600 font-medium mb-12">
-            This Privacy Policy explains how we collect, use, and protect your personal data when you use Equily. It applies to users in the European Union, the United States (including California), and other regions where Equily is available.
+            This Privacy Policy explains how we collect, use, and protect your personal data when you use {BRAND.name}. It applies to users in the European Union, the United States (including California), and other regions where {BRAND.name} is available.
           </p>
 
           <article className="space-y-10 text-slate-700 leading-relaxed">
             <section>
               <h2 className="text-2xl font-bold text-slate-900 mb-4">1. Data Controller</h2>
               <p>
-                The data controller responsible for your personal data is <strong>{LEGAL_NAME}</strong>, operating as Equily, with address at {ADDRESS}. For any privacy-related requests or questions, you may contact us at{" "}
-                <a href={`mailto:${EMAIL}`} className="text-emerald-600 font-semibold hover:underline">{EMAIL}</a>.
+                The data controller responsible for your personal data is <strong>{LEGAL_NAME}</strong>, operating as {BRAND.name}, with address at {ADDRESS}. For any privacy-related requests or questions, you may contact us at{" "}
+                <a href={`mailto:${BRAND.email}`} className="text-emerald-600 font-semibold hover:underline">{BRAND.email}</a>.
               </p>
             </section>
 
             <section>
               <h2 className="text-2xl font-bold text-slate-900 mb-4">2. Data We Collect and Why</h2>
               <p className="mb-4">
-                We collect and process data necessary to provide and improve the Equily service. This includes:
+                We collect and process data necessary to provide and improve the {BRAND.name} service. This includes:
               </p>
               <ul className="list-disc pl-6 space-y-2">
                 <li><strong>Account data:</strong> email address, name, and job title (if provided) to manage your account and authenticate you.</li>
@@ -75,7 +75,7 @@ export default function PrivacyPage() {
             <section>
               <h2 className="text-2xl font-bold text-slate-900 mb-4">4. Third-Party Processors</h2>
               <p>
-                We use trusted third-party service providers to operate Equily. These include:
+                We use trusted third-party service providers to operate {BRAND.name}. These include:
               </p>
               <ul className="list-disc pl-6 space-y-2 mt-2">
                 <li><strong>Stripe</strong> — for payment processing and subscription management. Stripe&apos;s privacy policy applies to payment data they process.</li>
@@ -138,15 +138,15 @@ export default function PrivacyPage() {
             <section>
               <h2 className="text-2xl font-bold text-slate-900 mb-4">8. Cookies and Local Storage</h2>
               <p>
-                We use essential cookies and local storage mechanisms (such as those provided by Supabase) strictly to keep you logged in securely and ensure the platform functions correctly. We do not use intrusive tracking or advertising cookies. By using Equily, you consent to the use of these strictly necessary operational cookies.
+                We use essential cookies and local storage mechanisms (such as those provided by Supabase) strictly to keep you logged in securely and ensure the platform functions correctly. We do not use intrusive tracking or advertising cookies. By using {BRAND.name}, you consent to the use of these strictly necessary operational cookies.
               </p>
             </section>
 
             <section>
               <h2 className="text-2xl font-bold text-slate-900 mb-4">9. Changes and Contact</h2>
               <p>
-                We may update this Privacy Policy from time to time. We will indicate the &quot;Last updated&quot; date at the top and, where required, notify you of material changes. Continued use of Equily after changes constitutes acceptance of the updated policy. If you believe your privacy rights have been violated, you also have the right to file a complaint directly with the Spanish Data Protection Agency (AEPD). For any questions or to exercise your rights, contact us at{" "}
-                <a href={`mailto:${EMAIL}`} className="text-emerald-600 font-semibold hover:underline">{EMAIL}</a> or at {ADDRESS}.
+                We may update this Privacy Policy from time to time. We will indicate the &quot;Last updated&quot; date at the top and, where required, notify you of material changes. Continued use of {BRAND.name} after changes constitutes acceptance of the updated policy. If you believe your privacy rights have been violated, you also have the right to file a complaint directly with the Spanish Data Protection Agency (AEPD). For any questions or to exercise your rights, contact us at{" "}
+                <a href={`mailto:${BRAND.email}`} className="text-emerald-600 font-semibold hover:underline">{BRAND.email}</a> or at {ADDRESS}.
               </p>
             </section>
           </article>

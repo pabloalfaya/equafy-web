@@ -2,6 +2,7 @@
 
 import { X, Download } from "lucide-react";
 import jsPDF from "jspdf";
+import { BRAND } from "@/lib/brand";
 import autoTable from "jspdf-autotable";
 
 export interface SummaryRow {
@@ -49,7 +50,7 @@ function loadLogoAsDataUrl(): Promise<string | null> {
       }
     };
     img.onerror = () => resolve(null);
-    img.src = "/logo-web.png";
+    img.src = BRAND.logoPath;
   });
 }
 
@@ -80,7 +81,7 @@ export function FinalizedSummaryModal({
       doc.setFont("helvetica", "bold");
       doc.setFontSize(18);
       doc.setTextColor(...SLATE_800);
-      doc.text("EQUILY", 14, 22);
+      doc.text(BRAND.nameUppercase, 14, 22);
       startY = 28;
     }
 
@@ -153,7 +154,7 @@ export function FinalizedSummaryModal({
     doc.setFontSize(9);
     doc.setTextColor(100, 116, 139);
     doc.text(
-      "This document represents the finalized equity state as recorded in Equily.",
+      `This document represents the finalized equity state as recorded in ${BRAND.name}.`,
       pageW / 2,
       finalY + 12,
       { align: "center" }
@@ -235,7 +236,7 @@ export function FinalizedSummaryModal({
           </div>
 
           <p className="text-sm text-slate-500 text-center leading-relaxed mb-8 font-medium italic">
-            This document represents the finalized equity state as recorded in Equily.
+            This document represents the finalized equity state as recorded in {BRAND.name}.
           </p>
 
           <button

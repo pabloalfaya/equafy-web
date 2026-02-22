@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { BRAND } from "@/lib/brand";
 import {
   PlusCircle,
   Edit3,
@@ -148,7 +149,7 @@ export default function FeaturesPage() {
         <div className="mx-auto max-w-screen-2xl">
           <header className="text-center mb-16 md:mb-20">
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-slate-900 mb-6">
-              All Equily Features
+              All {BRAND.name} Features
             </h1>
             <p className="text-xl text-slate-600 font-medium max-w-2xl mx-auto leading-relaxed tracking-tight">
               Complete control over your equity: contributions, models, team, legal and more.

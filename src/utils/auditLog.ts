@@ -1,4 +1,5 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
+import { BRAND } from "@/lib/brand";
 
 export type AuditActionType =
   | "ADD_CONTRIBUTION"
@@ -39,7 +40,7 @@ export async function logAudit({
     data: { user },
   } = await supabase.auth.getUser();
 
-  const userEmail = user?.email ?? "admin@equily.com";
+  const userEmail = user?.email ?? BRAND.auditFallbackEmail;
 
   const data = {
     project_id: projectId,

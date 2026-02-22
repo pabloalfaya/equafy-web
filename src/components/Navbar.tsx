@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { ArrowRight, ChevronDown, Sparkles, HelpCircle, Cog, Zap, Scale, BookOpen, Plug, Menu, X } from "lucide-react";
+import { BRAND } from "@/lib/brand";
 
 const PRODUCT_MENU_LEAVE_DELAY_MS = 120;
 
@@ -41,8 +42,8 @@ export function Navbar() {
           <Link href="/" className="relative group flex-shrink-0">
             <div className="absolute -inset-2 bg-gradient-to-r from-emerald-500/20 to-blue-500/20 rounded-lg blur opacity-0 group-hover:opacity-100 transition duration-500" />
             <Image
-              src="/logo-web.png"
-              alt="Equily Logo"
+              src={BRAND.logoPath}
+              alt={`${BRAND.name} Logo`}
               width={140}
               height={56}
               priority
@@ -94,7 +95,7 @@ export function Navbar() {
                     </div>
                     <div>
                       <div className="text-sm font-semibold text-slate-900">
-                        What is Equily?
+                        What is {BRAND.name}?
                       </div>
                       <p className="text-xs text-slate-500">
                         Understand the basics of dynamic equity.
@@ -111,7 +112,7 @@ export function Navbar() {
                     </div>
                     <div>
                       <div className="text-sm font-semibold text-slate-900">
-                        How does Equily work?
+                        How does {BRAND.name} work?
                       </div>
                       <p className="text-xs text-slate-500">
                         Dive into the methodology.
@@ -128,7 +129,7 @@ export function Navbar() {
                     </div>
                     <div>
                       <div className="text-sm font-semibold text-slate-900">
-                        Why Equily?
+                        Why {BRAND.name}?
                       </div>
                       <p className="text-xs text-slate-500">
                         The all-in-one platform for dynamic equity.
@@ -148,7 +149,7 @@ export function Navbar() {
                         Features
                       </div>
                       <p className="text-xs text-slate-500">
-                        Discover everything Equily can do.
+                        Discover everything {BRAND.name} can do.
                       </p>
                     </div>
                   </Link>
@@ -199,7 +200,7 @@ export function Navbar() {
                         APIs & Integrations
                       </div>
                       <p className="text-xs text-slate-500">
-                        Tools you can sync with Equily.
+                        Tools you can sync with {BRAND.name}.
                       </p>
                     </div>
                   </Link>
@@ -271,13 +272,13 @@ export function Navbar() {
             </Link>
             <p className="pt-3 pb-1 text-[10px] font-bold text-slate-400 uppercase tracking-widest">Product</p>
             <Link href="/what-is-equily" onClick={() => setIsMobileMenuOpen(false)} className="block py-1.5 pl-3 text-sm font-medium text-slate-600 hover:text-slate-900">
-              What is Equily?
+              What is {BRAND.name}?
             </Link>
             <Link href="/how-it-works" onClick={() => setIsMobileMenuOpen(false)} className="block py-1.5 pl-3 text-sm font-medium text-slate-600 hover:text-slate-900">
-              How does Equily work?
+              How does {BRAND.name} work?
             </Link>
             <Link href="/why-equily" onClick={() => setIsMobileMenuOpen(false)} className="block py-1.5 pl-3 text-sm font-medium text-slate-600 hover:text-slate-900">
-              Why Equily?
+              Why {BRAND.name}?
             </Link>
             <Link href="/features" onClick={() => setIsMobileMenuOpen(false)} className="block py-1.5 pl-3 text-sm font-medium text-slate-600 hover:text-slate-900">
               Features
@@ -331,21 +332,21 @@ export function Navbar() {
                 onClick={() => setIsProductMenuOpen(false)}
                 className="block text-sm text-slate-600 py-1 pl-2 border-l border-slate-200 hover:text-slate-900"
               >
-                What is Equily?
+                What is {BRAND.name}?
               </Link>
               <Link
                 href="/how-it-works"
                 onClick={() => setIsProductMenuOpen(false)}
                 className="block text-sm text-slate-600 py-1 pl-2 border-l border-slate-200 hover:text-slate-900"
               >
-                How does Equily work?
+                How does {BRAND.name} work?
               </Link>
               <Link
                 href="/why-equily"
                 onClick={() => setIsProductMenuOpen(false)}
                 className="block text-sm text-slate-600 py-1 pl-2 border-l border-slate-200 hover:text-slate-900"
               >
-                Why Equily?
+                Why {BRAND.name}?
               </Link>
               <Link
                 href="/features"

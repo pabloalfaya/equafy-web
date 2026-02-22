@@ -14,6 +14,7 @@ import {
   ArrowLeft,
 } from "lucide-react";
 import { createClient } from "@/utils/supabase/client";
+import { BRAND } from "@/lib/brand";
 
 export default function ProfilePage() {
   const [fullName, setFullName] = useState("");
@@ -74,7 +75,7 @@ export default function ProfilePage() {
     );
     if (!ok) return;
     alert(
-      "Account deletion is handled by our support team. Please contact support@getequily.com to request account deletion."
+      `Account deletion is handled by our support team. Please contact ${BRAND.supportEmail} to request account deletion.`
     );
   };
 

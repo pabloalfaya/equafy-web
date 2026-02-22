@@ -1,7 +1,7 @@
 import type { MetadataRoute } from "next";
+import { BRAND } from "@/lib/brand";
 
-// Usa NEXT_PUBLIC_BASE_URL en .env (ej: https://www.getequily.com o https://equily.app)
-const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://www.getequily.com";
+const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || BRAND.baseUrl;
 
 export default function sitemap(): MetadataRoute.Sitemap {
   return [

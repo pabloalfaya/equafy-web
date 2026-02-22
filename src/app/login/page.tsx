@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { createClient } from "@/utils/supabase/client";
 import { Loader2, Lock, Mail, ArrowLeft, User } from "lucide-react";
 import Link from "next/link";
+import { BRAND } from "@/lib/brand";
 
 function LoginForm() {
   const searchParams = useSearchParams();
@@ -337,7 +338,7 @@ function LoginForm() {
             }}
             className="text-sm font-bold text-emerald-600 hover:text-emerald-500 hover:underline transition-all"
           >
-            {isSignUp ? "Already have an account? Sign In" : "New to Equily? Create Account"}
+            {isSignUp ? "Already have an account? Sign In" : `New to ${BRAND.name}? Create Account`}
           </button>
         </div>
         )}

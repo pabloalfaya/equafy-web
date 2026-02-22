@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { Plug } from "lucide-react";
+import { BRAND } from "@/lib/brand";
 
 export default function APIsPage() {
   return (
@@ -22,13 +23,13 @@ export default function APIsPage() {
               APIs & Integrations
             </h1>
             <p className="text-xl text-slate-600 font-medium max-w-2xl mx-auto leading-relaxed tracking-tight">
-              Work tools you can sync with Equily. Connect your existing apps and keep your equity data in one place.
+              Work tools you can sync with {BRAND.name}. Connect your existing apps and keep your equity data in one place.
             </p>
           </header>
 
           <div className="rounded-2xl bg-white/80 backdrop-blur-sm border border-slate-200/80 shadow-sm py-16 px-6 md:px-12 text-center">
             <p className="text-slate-600 font-medium max-w-xl mx-auto leading-relaxed mb-8">
-              Coming soon: API and integration documentation to connect Equily with your daily workflow and tools.
+              Coming soon: API and integration documentation to connect {BRAND.name} with your daily workflow and tools.
             </p>
             <Link
               href="/features"

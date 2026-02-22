@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { Cog, Shield, Scale, Rocket, ArrowRight } from "lucide-react";
+import { BRAND } from "@/lib/brand";
 
 const SECTIONS = [
   {
@@ -43,7 +44,7 @@ const SECTIONS = [
       {
         title: "Project Freeze Certificate (Our flagship feature)",
         content:
-          "When your team is ready to incorporate legally, one click freezes the calculations. Equily issues an Official Certificate (Executive Summary) with the exact ownership snapshot to take straight to the notary. Need last-minute changes? You can Unfreeze and update.",
+          `When your team is ready to incorporate legally, one click freezes the calculations. ${BRAND.name} issues an Official Certificate (Executive Summary) with the exact ownership snapshot to take straight to the notary. Need last-minute changes? You can Unfreeze and update.`,
       },
       {
         title: "Immutable Audit Log",
@@ -77,7 +78,7 @@ const SECTIONS = [
       {
         title: "Secure Document Vault",
         content:
-          "An encrypted space inside your dashboard to upload and store all signed contracts and PDFs. If it's in Equily, it's official.",
+          `An encrypted space inside your dashboard to upload and store all signed contracts and PDFs. If it's in ${BRAND.name}, it's official.`,
       },
     ],
   },
@@ -122,7 +123,7 @@ export default function WhyEquilyPage() {
           {/* Hero */}
           <header className="text-center mb-20 md:mb-24">
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-slate-900 mb-6 leading-[1.1]">
-              Why <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 to-teal-500">Equily?</span>
+              Why <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 to-teal-500">{BRAND.name}?</span>
             </h1>
             <p className="text-xl md:text-2xl font-bold text-slate-700 mb-6 max-w-3xl mx-auto leading-relaxed">
               The end of equity arguments. The start of total transparency.
@@ -203,7 +204,7 @@ export default function WhyEquilyPage() {
               Ready to split the pie fairly?
             </h2>
             <p className="text-slate-600 mb-8 max-w-xl mx-auto">
-              Join founders who trust Equily for transparent, dynamic equity management.
+              Join founders who trust {BRAND.name} for transparent, dynamic equity management.
             </p>
             <Link
               href="/login?view=signup"

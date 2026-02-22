@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { Mail, Twitter, Linkedin, Send, ArrowRight, CheckCircle2 } from "lucide-react";
 import { createClient } from "@/utils/supabase/client";
+import { BRAND } from "@/lib/brand";
 
 export default function ContactPage() {
   const [formData, setFormData] = useState({ name: "", email: "", message: "" });
@@ -65,7 +66,7 @@ export default function ContactPage() {
                     <CheckCircle2 className="w-10 h-10" />
                   </div>
                   <h3 className="text-2xl font-bold text-slate-900 mb-2">Message Sent!</h3>
-                  <p className="text-slate-500 font-medium mb-8">We will get back to you at info@getequily.com very soon.</p>
+                  <p className="text-slate-500 font-medium mb-8">We will get back to you at {BRAND.email} very soon.</p>
                   <button onClick={() => setSubmitted(false)} className="text-emerald-600 font-bold hover:underline">Send another message</button>
                 </div>
               ) : (
@@ -95,8 +96,8 @@ export default function ContactPage() {
 
           <div className="max-w-sm mx-auto mt-16 text-center">
             <p className="text-slate-400 font-medium mb-4">Prefer email?</p>
-            <a href="mailto:info@getequily.com" className="inline-flex items-center gap-3 px-6 py-3 bg-white border border-slate-200 rounded-2xl text-slate-600 font-bold hover:border-emerald-500 hover:text-emerald-600 transition-all">
-              <Mail className="h-5 w-5 text-slate-400" /> info@getequily.com
+            <a href={`mailto:${BRAND.email}`} className="inline-flex items-center gap-3 px-6 py-3 bg-white border border-slate-200 rounded-2xl text-slate-600 font-bold hover:border-emerald-500 hover:text-emerald-600 transition-all">
+              <Mail className="h-5 w-5 text-slate-400" /> {BRAND.email}
             </a>
           </div>
         </div>

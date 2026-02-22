@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { X, Sparkles, Calculator, BookOpen } from "lucide-react";
 import { calculateDynamicMultiplier } from "@/utils/riskEngine";
+import { BRAND } from "@/lib/brand";
 
 interface SmartMultipliersModalProps {
   isOpen: boolean;
@@ -108,7 +109,7 @@ export function SmartMultipliersModal({
                 The Mathematics of Fairness
               </h4>
               <p className="text-sm text-slate-600 leading-relaxed">
-                Equily uses a <span className="font-semibold text-slate-800">Logarithmic Decay Model</span>.
+                {BRAND.name} uses a <span className="font-semibold text-slate-800">Logarithmic Decay Model</span>.
                 Why? Because €1,000 invested when the company is just an idea is infinitely riskier than
                 €1,000 invested when the company is already making millions.
               </p>

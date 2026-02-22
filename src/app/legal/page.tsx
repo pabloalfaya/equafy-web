@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { ArrowRight, Scale, Globe } from "lucide-react";
+import { BRAND } from "@/lib/brand";
 
 const COUNTRY_OPTIONS = [
   { value: "spain", label: "Spain" },
@@ -52,7 +53,7 @@ export default function LegalPage() {
               Legal <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 to-teal-500">Center</span>
             </h1>
             <p className="text-xl text-slate-500 font-medium leading-relaxed">
-              Transparency and trust matter. Here you will find our legal documents and policies that govern the use of Equily.
+              Transparency and trust matter. Here you will find our legal documents and policies that govern the use of {BRAND.name}.
             </p>
           </div>
 
@@ -96,7 +97,7 @@ export default function LegalPage() {
             {/* Legal disclaimer */}
             <div className="mt-6 rounded-2xl border border-slate-200/80 bg-slate-100/60 px-5 py-4 md:px-6 md:py-5">
               <p className="text-sm md:text-base font-medium leading-relaxed text-slate-700">
-                <span className="font-bold text-slate-800">Disclaimer:</span> While Equily provides resources and templates to facilitate your equity management, these do not constitute professional legal advice. We strongly recommend consulting with a qualified legal expert in your jurisdiction to review and adapt any document to your specific needs.
+                <span className="font-bold text-slate-800">Disclaimer:</span> While {BRAND.name} provides resources and templates to facilitate your equity management, these do not constitute professional legal advice. We strongly recommend consulting with a qualified legal expert in your jurisdiction to review and adapt any document to your specific needs.
               </p>
             </div>
           </section>
@@ -113,7 +114,7 @@ export default function LegalPage() {
                   <h3 className="text-xl font-black text-slate-900">Terms of Service</h3>
                 </div>
                 <p className="text-slate-500 font-medium leading-relaxed mb-4">
-                  The terms and conditions that govern your use of Equily, including subscriptions, disclaimers, and applicable law.
+                  The terms and conditions that govern your use of {BRAND.name}, including subscriptions, disclaimers, and applicable law.
                 </p>
                 <Link href="/terms" className="inline-flex items-center gap-2 text-sm font-bold text-emerald-600 hover:text-emerald-700">
                   Read Terms of Service <ArrowRight className="w-4 h-4" />

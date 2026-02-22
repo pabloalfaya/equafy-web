@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { ArrowLeft, Printer } from "lucide-react";
+import { BRAND } from "@/lib/brand";
 
 export default function LegalNoticePage() {
   return (
@@ -41,10 +42,10 @@ export default function LegalNoticePage() {
                 In compliance with Spanish Law 34/2002 of 11 July on Information Society Services and Electronic Commerce (LSSI-CE), users are informed that the owner of this website and commercial platform is:
               </p>
               <ul className="list-none pl-0 space-y-2">
-                <li><strong>Owner:</strong> Pablo Alfaya Fernandez (trading under the business name EQUILY)</li>
+                <li><strong>Owner:</strong> Pablo Alfaya Fernandez (trading under the business name {BRAND.nameUppercase})</li>
                 <li><strong>Tax ID (NIF):</strong> 29514449K</li>
                 <li><strong>Address:</strong> Calle La Santa Maria 86, Spain</li>
-                <li><strong>Contact email:</strong> <a href="mailto:info@getequily.com" className="text-emerald-600 font-semibold hover:underline">info@getequily.com</a></li>
+                <li><strong>Contact email:</strong> <a href={`mailto:${BRAND.email}`} className="text-emerald-600 font-semibold hover:underline">{BRAND.email}</a></li>
               </ul>
             </section>
 
@@ -58,14 +59,14 @@ export default function LegalNoticePage() {
             <section className="mb-10">
               <h2 className="text-2xl font-bold text-slate-900 mb-4">3. Intellectual and Industrial Property</h2>
               <p>
-                The owner holds or has the corresponding licenses for the intellectual and industrial property exploitation rights of the EQUILY platform, including the source code, design, algorithms, logos, and texts. Reproduction, distribution, or modification without authorisation is expressly prohibited.
+                The owner holds or has the corresponding licenses for the intellectual and industrial property exploitation rights of the {BRAND.nameUppercase} platform, including the source code, design, algorithms, logos, and texts. Reproduction, distribution, or modification without authorisation is expressly prohibited.
               </p>
             </section>
 
             <section>
               <h2 className="text-2xl font-bold text-slate-900 mb-4">4. Limitation of Liability</h2>
               <p>
-                The owner does not guarantee the absence of errors when accessing the website. EQUILY is a technological tool for managing company ownership, but its use does not replace professional legal advice when drafting contracts for startups.
+                The owner does not guarantee the absence of errors when accessing the website. {BRAND.nameUppercase} is a technological tool for managing company ownership, but its use does not replace professional legal advice when drafting contracts for startups.
               </p>
             </section>
           </article>

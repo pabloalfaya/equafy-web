@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useEffect, useState, useCallback } from "react";
 import { ArrowLeft, FileText, Shield, Snowflake, Upload, Info } from "lucide-react";
 import { createClient } from "@/utils/supabase/client";
+import { BRAND } from "@/lib/brand";
 
 const JURISDICTIONS = [
   "United States",
@@ -20,19 +21,19 @@ type Jurisdiction = (typeof JURISDICTIONS)[number];
 
 const LEGAL_HUB_CONTENT: Record<Jurisdiction, string> = {
   "United States":
-    "In the US, Equily works best under an LLC structure or as a Pre-Incorporation Agreement. The generated contracts tie the dynamic percentages to your legal Cap Table.",
+    `In the US, ${BRAND.name} works best under an LLC structure or as a Pre-Incorporation Agreement. The generated contracts tie the dynamic percentages to your legal Cap Table.`,
   Spain:
-    "En España, Equily opera a través de un Pacto de Socios parasocial que regula los derechos económicos antes de elevar a público.",
+    `En España, ${BRAND.name} opera a través de un Pacto de Socios parasocial que regula los derechos económicos antes de elevar a público.`,
   "United Kingdom":
-    "In the UK, Equily supports LTD structures and shareholder agreements. The dynamic split is reflected in your company's articles and equity documentation.",
+    `In the UK, ${BRAND.name} supports LTD structures and shareholder agreements. The dynamic split is reflected in your company's articles and equity documentation.`,
   Ireland:
-    "In Ireland, Equily integrates with tech startup structures and equity schemes. Generated documents align with Irish company law and tax treatment.",
+    `In Ireland, ${BRAND.name} integrates with tech startup structures and equity schemes. Generated documents align with Irish company law and tax treatment.`,
   India:
-    "In India, Equily supports startup compliance and equity distribution under Indian regulations. Templates align with local requirements for founder agreements.",
+    `In India, ${BRAND.name} supports startup compliance and equity distribution under Indian regulations. Templates align with local requirements for founder agreements.`,
   Mexico:
-    "In Mexico, Equily works with S.A. de C.V. structures. The dynamic equity model integrates with Mexican commercial law and partnership agreements.",
+    `In Mexico, ${BRAND.name} works with S.A. de C.V. structures. The dynamic equity model integrates with Mexican commercial law and partnership agreements.`,
   Other:
-    "For other jurisdictions, Equily provides a general international framework. Contact us for tailored guidance on your specific region.",
+    `For other jurisdictions, ${BRAND.name} provides a general international framework. Contact us for tailored guidance on your specific region.`,
 };
 
 export default function ProjectLegalPage() {
@@ -166,7 +167,7 @@ export default function ProjectLegalPage() {
               <ArrowLeft className="w-5 h-5 text-slate-500" />
             </Link>
             <Link href="/">
-              <img src="/logo-web.png" alt="Equily" width={120} height={48} className="h-20 w-auto object-contain" />
+              <img src={BRAND.logoPath} alt={BRAND.name} width={120} height={48} className="h-20 w-auto object-contain" />
             </Link>
           </div>
           <div className="px-4 py-2 bg-slate-100 rounded-full border border-slate-200/50">

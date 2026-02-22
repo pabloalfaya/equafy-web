@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { PlayCircle } from "lucide-react";
 import { VideoDemoModal } from "@/components/VideoDemoModal";
+import { BRAND } from "@/lib/brand";
 
 export default function WhatIsEquilyPage() {
   const [isVideoOpen, setIsVideoOpen] = useState(false);
@@ -25,11 +26,11 @@ export default function WhatIsEquilyPage() {
             {/* Lado Izquierdo: Texto */}
             <div className="relative z-10">
               <h1 className="text-5xl md:text-6xl font-bold tracking-tight text-slate-900 mb-6 leading-[1.1]">
-                What is <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 to-teal-500">Equily?</span>
+                What is <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 to-teal-500">{BRAND.name}?</span>
               </h1>
               
               <p className="text-xl text-slate-600 leading-relaxed font-medium mb-6 mt-2">
-                Equily merges capital (Equity) with justice (Fairly). Through a dynamic algorithm, we calculate each partner's share of the company based on everyone's real contributions: from investment and working hours to knowledge and resources. We transform collective effort into a transparent and balanced distribution of ownership.
+                {BRAND.name} helps you manage equity fairly. Through a dynamic algorithm, we calculate each partner's share of the company based on everyone's real contributions: from investment and working hours to knowledge and resources. We transform collective effort into a transparent and balanced distribution of ownership.
               </p>
 
               <p className="text-lg text-slate-500 leading-relaxed font-medium mb-10">
@@ -56,7 +57,7 @@ export default function WhatIsEquilyPage() {
               <div className="absolute inset-0 bg-gradient-to-tr from-emerald-500/5 to-transparent rounded-full blur-3xl -z-10"></div>
               <img 
                 src="/what-is-equily-hero.png" 
-                alt="Equily Dynamic Equity Illustration" 
+                alt={`${BRAND.name} Dynamic Equity Illustration`} 
                 className="w-full h-auto object-contain drop-shadow-xl hover:scale-[1.02] transition-transform duration-500" 
               />
             </div>

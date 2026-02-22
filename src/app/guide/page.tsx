@@ -14,6 +14,7 @@ import {
   FileCheck,
 } from "lucide-react";
 import { createClient } from "@/utils/supabase/client";
+import { BRAND } from "@/lib/brand";
 
 const SECTIONS = [
   {
@@ -74,7 +75,7 @@ export default function GuidePage() {
         <div className="mx-auto max-w-2xl">
           <header className="text-center mb-12 md:mb-16">
             <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-slate-900 mb-4">
-              Mastering Equily
+              Mastering {BRAND.name}
             </h1>
             <p className="text-xl text-slate-600 font-medium tracking-tight">
               A step-by-step guide to fair equity management.

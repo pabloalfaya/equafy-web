@@ -3,24 +3,25 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { ConditionalNavbar } from "@/components/ConditionalNavbar";
 import { ConditionalFooter } from "@/components/ConditionalFooter";
+import { BRAND } from "@/lib/brand";
 
 const inter = Inter({
   subsets: ["latin"],
   variable: "--font-inter",
 });
 
-const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://www.getequily.com";
+const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || BRAND.baseUrl;
 
 export const metadata: Metadata = {
   title: {
-    default: "Equily - Dynamic Equity Management for Startups & Growing Companies",
-    template: "%s | Equily",
+    default: `${BRAND.name} - ${BRAND.tagline}`,
+    template: `%s | ${BRAND.name}`,
   },
   description:
     "Equity management for startups, scale-ups and early-stage companies. Dynamic split based on contributions (cash, work, IP). Just Split, Flat and Custom models. Fair equity with Slicing Pie methodology.",
   keywords: [
-    "Equily",
-    "Equily startup equity",
+    BRAND.name,
+    `${BRAND.name} startup equity`,
     "equity management",
     "startup equity",
     "cap table",
@@ -30,14 +31,14 @@ export const metadata: Metadata = {
     "Just Split",
     "contributions",
   ],
-  authors: [{ name: "Equily" }],
-  creator: "Equily",
+  authors: [{ name: BRAND.name }],
+  creator: BRAND.name,
   openGraph: {
     type: "website",
     locale: "en_US",
     url: baseUrl,
-    siteName: "Equily",
-    title: "Equily - Dynamic Equity Management for Startups & Growing Companies",
+    siteName: BRAND.name,
+    title: `${BRAND.name} - ${BRAND.tagline}`,
     description:
       "Equity management for startups, scale-ups and early-stage companies. Fair dynamic split based on contributions.",
     images: [
@@ -45,18 +46,18 @@ export const metadata: Metadata = {
         url: "/logo-web.png",
         width: 1200,
         height: 630,
-        alt: "Equily - Dynamic Equity Management",
+        alt: `${BRAND.name} - Dynamic Equity Management`,
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Equily - Dynamic Equity Management for Startups & Growing Companies",
+    title: `${BRAND.name} - ${BRAND.tagline}`,
     description: "Fair equity split for startups and growing companies. Based on contributions.",
   },
   metadataBase: new URL(baseUrl),
   icons: {
-    icon: "/equily-mark.png",
+    icon: BRAND.iconPath,
   },
   verification: {
     google: "zFCVOKbGDiNQfYNpKE8Xe8mhPQ4NHRJPreGlC_aGlwk",
@@ -74,7 +75,7 @@ export default function RootLayout({
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "SoftwareApplication",
-    name: "Equily",
+    name: BRAND.name,
     applicationCategory: "BusinessApplication",
     operatingSystem: "Web",
     description:

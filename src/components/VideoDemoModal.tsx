@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { X, ArrowLeft } from "lucide-react";
+import { BRAND } from "@/lib/brand";
 
 const DEMO_VIDEO_IDS = {
   en: "zZ3kANWXMOU",
@@ -98,7 +99,7 @@ export function VideoDemoModal({ open, onClose }: VideoDemoModalProps) {
               <iframe
                 key={language}
                 src={`https://www.youtube.com/embed/${DEMO_VIDEO_IDS[language!]}?autoplay=1&rel=0`}
-                title="Equily Demo"
+                title={`${BRAND.name} Demo`}
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                 allowFullScreen
                 className="w-full h-full rounded-lg"
