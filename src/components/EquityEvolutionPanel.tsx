@@ -7,8 +7,6 @@ import {
   Line,
   AreaChart,
   Area,
-  BarChart,
-  Bar,
   XAxis,
   YAxis,
   CartesianGrid,
@@ -259,7 +257,7 @@ export function EquityEvolutionPanel({ contributions = [], members = [] }: Equit
             </ResponsiveContainer>
           ) : view === "contributions" ? (
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={chartDataContributions} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
+              <LineChart data={chartDataContributions} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
                 <XAxis dataKey="monthLabel" tick={{ fontSize: 10, fill: "#64748b" }} stroke="#cbd5e1" />
                 <YAxis allowDecimals={false} tick={{ fontSize: 10, fill: "#64748b" }} stroke="#cbd5e1" />
@@ -274,8 +272,8 @@ export function EquityEvolutionPanel({ contributions = [], members = [] }: Equit
                   formatter={(value: number | undefined) => [value != null ? value : "—", "Contributions"]}
                   labelFormatter={(label) => label}
                 />
-                <Bar dataKey="count" fill="#10b981" fillOpacity={0.8} radius={[4, 4, 0, 0]} name="Contributions" />
-              </BarChart>
+                <Line type="monotone" dataKey="count" stroke="#10b981" strokeWidth={2} dot={{ fill: "#10b981" }} name="Contributions" />
+              </LineChart>
             </ResponsiveContainer>
           ) : (
             <ResponsiveContainer width="100%" height="100%">
@@ -316,17 +314,6 @@ export function EquityEvolutionPanel({ contributions = [], members = [] }: Equit
         <div className="flex flex-wrap gap-2 mt-2 justify-center flex-shrink-0">
           <button
             type="button"
-            onClick={() => setView("byMember")}
-            className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-colors ${
-              view === "byMember"
-                ? "bg-emerald-500 text-white shadow-sm"
-                : "bg-slate-100 text-slate-600 hover:bg-slate-200"
-            }`}
-          >
-            By Member (%)
-          </button>
-          <button
-            type="button"
             onClick={() => setView("totalValue")}
             className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-colors ${
               view === "totalValue"
@@ -349,6 +336,17 @@ export function EquityEvolutionPanel({ contributions = [], members = [] }: Equit
           </button>
           <button
             type="button"
+            onClick={() => setView("byMember")}
+            className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-colors ${
+              view === "byMember"
+                ? "bg-emerald-500 text-white shadow-sm"
+                : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+            }`}
+          >
+            By Member (%)
+          </button>
+          <button
+            type="button"
             onClick={() => setView("contributions")}
             className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-colors ${
               view === "contributions"
@@ -356,7 +354,7 @@ export function EquityEvolutionPanel({ contributions = [], members = [] }: Equit
                 : "bg-slate-100 text-slate-600 hover:bg-slate-200"
             }`}
           >
-            Contributions
+            Total Contributions
           </button>
         </div>
 

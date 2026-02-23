@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useMemo } from "react";
+import { TrendingUp } from "lucide-react";
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from "recharts";
 import { parseCap } from "@/utils/equityCalculation";
 
@@ -264,8 +265,9 @@ export function EquityPieChart({ contributions, members, showEvolution = false, 
         <button
           type="button"
           onClick={() => onToggleEvolution?.()}
-          className="w-full mt-3 flex items-center justify-center gap-2 px-3 py-2.5 bg-slate-100 hover:bg-slate-200 rounded-xl border border-slate-200 font-bold text-slate-700 text-sm transition-colors"
+          className="w-full mt-3 flex items-center justify-center gap-2 px-4 py-3 bg-emerald-500 hover:bg-emerald-600 rounded-xl border border-emerald-600 font-bold text-white text-sm shadow-md hover:shadow-lg transition-all"
         >
+          <TrendingUp className="w-4 h-4" />
           {showEvolution ? "See contribution log" : "See evolution"}
         </button>
       </div>
