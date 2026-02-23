@@ -17,7 +17,6 @@ import { buildEquityEvolutionData, type ContributionForEvolution, type MemberFor
 const COLORS_MEMBERS = ["#10b981", "#3b82f6", "#8b5cf6", "#f59e0b", "#ef4444", "#06b6d4", "#ec4899", "#6366f1"];
 const COLORS_TYPES = ["#10b981", "#3b82f6", "#8b5cf6", "#f59e0b", "#ef4444"];
 
-/** Chart view mode: by member %, total value, or by contribution type */
 export type EvolutionView = "byMember" | "totalValue" | "byType";
 function computeVelocity(
   contribs: { date: string; risk_adjusted_value?: number | null }[],
@@ -160,10 +159,14 @@ export function EquityEvolutionPanel({ contributions = [], members = [] }: Equit
                   contentStyle={{
                     backgroundColor: "#ffffff",
                     borderRadius: "12px",
-                    border: "1px solid #e2e8f0",
-                    boxShadow: "0 10px 25px -5px rgb(0 0 0 / 0.1)",
-                    fontSize: "12px",
+                    border: "2px solid #94a3b8",
+                    boxShadow: "0 8px 24px rgba(0,0,0,0.18)",
+                    fontSize: "13px",
+                    padding: "12px 16px",
+                    opacity: 1,
                   }}
+                  itemStyle={{ color: "#0f172a", fontWeight: 600 }}
+                  labelStyle={{ color: "#0f172a", fontWeight: 700, marginBottom: "6px" }}
                   formatter={(value: number | undefined, name?: string) => [value != null ? `${value}%` : "—", name ?? ""]}
                   labelFormatter={(label) => `Month: ${label}`}
                 />
