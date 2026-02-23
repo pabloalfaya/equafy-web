@@ -48,6 +48,7 @@ export default function ProjectLegalPage() {
   const [vaultFiles, setVaultFiles] = useState<{ name: string; uploadedBy: string; date: string }[]>([
     { name: "partnership_agreement_signed.pdf", uploadedBy: "Pablo Alfaya", date: "Feb 15, 2025" },
   ]);
+  const [establishLegalViaAlgorithm, setEstablishLegalViaAlgorithm] = useState(false);
 
   useEffect(() => {
     if (!projectId) {
@@ -215,6 +216,33 @@ export default function ProjectLegalPage() {
                 {LEGAL_HUB_CONTENT[selectedCountry]}
               </p>
             </div>
+          </section>
+
+          {/* Toggle: Establish legal property via Equafy algorithm */}
+          <section className="mb-10">
+            <div className="rounded-2xl border border-slate-200 bg-white px-6 py-5 shadow-sm flex flex-wrap items-center justify-between gap-4">
+              <p className="text-slate-700 font-medium">
+                Establish legal property through the Equafy algorithm?
+              </p>
+              <button
+                type="button"
+                role="switch"
+                aria-checked={establishLegalViaAlgorithm}
+                onClick={() => setEstablishLegalViaAlgorithm((v) => !v)}
+                className={`relative inline-flex h-8 w-14 shrink-0 items-center rounded-full border-2 transition-colors focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 ${
+                  establishLegalViaAlgorithm ? "border-emerald-500 bg-emerald-500" : "border-slate-300 bg-slate-200"
+                }`}
+              >
+                <span
+                  className={`inline-block h-7 w-7 transform rounded-full bg-white shadow-sm transition-transform ${
+                    establishLegalViaAlgorithm ? "translate-x-6" : "translate-x-0.5"
+                  }`}
+                />
+              </button>
+            </div>
+            <p className="mt-2 text-sm text-slate-500">
+              You can use the tool to track contributions even if you do not wish to transfer the calculated percentages into legal ownership. Turn this on only if you intend to establish legal property based on the algorithm results.
+            </p>
           </section>
 
           {/* 3. Templates Grid */}

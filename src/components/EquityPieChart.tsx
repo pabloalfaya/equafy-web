@@ -266,7 +266,7 @@ export function EquityPieChart({ contributions, members, showEvolution = false, 
           onClick={() => onToggleEvolution?.()}
           className="w-full mt-3 flex items-center justify-center gap-2 px-3 py-2.5 bg-slate-100 hover:bg-slate-200 rounded-xl border border-slate-200 font-bold text-slate-700 text-sm transition-colors"
         >
-          {showEvolution ? "Hide evolution" : "See evolution"}
+          {showEvolution ? "See contribution log" : "See evolution"}
         </button>
       </div>
     </div>
