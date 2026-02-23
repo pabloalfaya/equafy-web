@@ -58,7 +58,7 @@ export function EquityPieChart({ contributions, members }: EquityPieChartProps) 
     totalCashInvested,
     totalSweatEquity,
     totalContributionsCount,
-    cashVsNonCashRatio,
+    cashVsNonCashLabel,
     activeMembersCount,
   } = useMemo(() => {
     const memberList = members ?? [];
@@ -158,13 +158,12 @@ export function EquityPieChart({ contributions, members }: EquityPieChartProps) 
       (sum, c) => sum + (Number((c as { amount?: number }).amount) || 0),
       0
     );
-    const totalNonCash = totalAmount - totalCashInvested;
-    const cashVsNonCashRatio =
-      totalNonCash > 0
-        ? (totalCashInvested / totalNonCash).toFixed(2)
-        : totalCashInvested > 0
-          ? "—"
-          : "0";
+    const cashPct = totalAmount > 0 ? (totalCashInvested / totalAmount) * 100 : 0;
+    const sweatPct = totalAmount > 0 ? (totalSweatEquity / totalAmount) * 100 : 0;
+    const cashVsNonCashLabel =
+      totalAmount > 0
+        ? `Cash (${Math.round(cashPct)}%) / Sweat (${Math.round(sweatPct)}%)`
+        : "—";
 
     return {
       data: filtered,
@@ -172,7 +171,7 @@ export function EquityPieChart({ contributions, members }: EquityPieChartProps) 
       totalCashInvested,
       totalSweatEquity,
       totalContributionsCount: contributions.length,
-      cashVsNonCashRatio,
+      cashVsNonCashLabel,
       activeMembersCount: filtered.length,
     };
   }, [contributions, members]);
@@ -247,12 +246,12 @@ export function EquityPieChart({ contributions, members }: EquityPieChartProps) 
       {/* --- Métricas: Cash, Sweat, Contributions, Ratio, Active Members --- */}
       <div className="mt-4 space-y-3 px-2 overflow-y-auto custom-scrollbar max-h-[240px]">
         <div className="flex justify-between items-center py-1.5 border-b border-slate-100">
-          <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Total Cash (Capital Líquido)</span>
-          <span className="text-sm font-bold text-slate-800 tabular-nums">{totalCashInvested.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 })}€</span>
+          <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Total Cash Invested</span>
+          <span className="text-sm font-bold text-slate-800 tabular-nums">{totalCashInvested.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 })}</span>
         </div>
         <div className="flex justify-between items-center py-1.5 border-b border-slate-100">
-          <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Sweat Equity (Valor Trabajo)</span>
-          <span className="text-sm font-bold text-slate-800 tabular-nums">{totalSweatEquity.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 })}€</span>
+          <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Total Sweat Equity</span>
+          <span className="text-sm font-bold text-slate-800 tabular-nums">{totalSweatEquity.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 })}</span>
         </div>
         <div className="flex justify-between items-center py-1.5 border-b border-slate-100">
           <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Total Contributions</span>
@@ -260,7 +259,7 @@ export function EquityPieChart({ contributions, members }: EquityPieChartProps) 
         </div>
         <div className="flex justify-between items-center py-1.5 border-b border-slate-100">
           <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Cash vs Non-Cash</span>
-          <span className="text-sm font-bold text-slate-800 tabular-nums">{cashVsNonCashRatio}</span>
+          <span className="text-sm font-bold text-slate-800 tabular-nums">{cashVsNonCashLabel}</span>
         </div>
         <div className="flex justify-between items-center py-1.5">
           <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Active Members</span>
