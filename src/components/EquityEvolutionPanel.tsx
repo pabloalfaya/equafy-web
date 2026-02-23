@@ -1,6 +1,7 @@
 "use client";
 
-import { useMemo, useState } from "react";import {
+import { useMemo, useState } from "react";
+import {
   ResponsiveContainer,
   LineChart,
   Line,
@@ -16,6 +17,45 @@ import { buildEquityEvolutionData, type ContributionForEvolution, type MemberFor
 
 const COLORS_MEMBERS = ["#10b981", "#3b82f6", "#8b5cf6", "#f59e0b", "#ef4444", "#06b6d4", "#ec4899", "#6366f1"];
 const COLORS_TYPES = ["#10b981", "#3b82f6", "#8b5cf6", "#f59e0b", "#ef4444"];
+
+/** Tooltip opaco para By Member: cada nombre en el color de su línea */
+function ByMemberTooltip({
+  active,
+  payload,
+  label,
+}: {
+  active?: boolean;
+  payload?: Array<{ name: string; value: number; color: string }>;
+  label?: string;
+}) {
+  if (!active || !payload?.length || !label) return null;
+  return (
+    <div
+      className="rounded-xl border-2 border-slate-300 bg-white px-4 py-3 shadow-lg"
+      style={{
+        backgroundColor: "#ffffff",
+        opacity: 1,
+        boxShadow: "0 10px 40px rgba(0,0,0,0.2)",
+      }}
+    >
+      <p className="text-sm font-bold text-slate-800 mb-2 border-b border-slate-200 pb-1.5">
+        {label}
+      </p>
+      <div className="space-y-1">
+        {payload.map((entry) => (
+          <div key={entry.name} className="flex items-center justify-between gap-4 text-sm">
+            <span className="font-semibold" style={{ color: entry.color }}>
+              {entry.name}
+            </span>
+            <span className="font-bold text-slate-800 tabular-nums">
+              {entry.value != null ? `${Number(entry.value)}%` : "—"}
+            </span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
 
 export type EvolutionView = "byMember" | "totalValue" | "byType";
 function computeVelocity(
@@ -155,21 +195,7 @@ export function EquityEvolutionPanel({ contributions = [], members = [] }: Equit
                 <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
                 <XAxis dataKey="monthLabel" tick={{ fontSize: 10, fill: "#64748b" }} stroke="#cbd5e1" />
                 <YAxis domain={[0, 100]} tick={{ fontSize: 10, fill: "#64748b" }} stroke="#cbd5e1" tickFormatter={(v) => `${v}%`} />
-                <Tooltip
-                  contentStyle={{
-                    backgroundColor: "#ffffff",
-                    borderRadius: "12px",
-                    border: "2px solid #94a3b8",
-                    boxShadow: "0 8px 24px rgba(0,0,0,0.18)",
-                    fontSize: "13px",
-                    padding: "12px 16px",
-                    opacity: 1,
-                  }}
-                  itemStyle={{ color: "#0f172a", fontWeight: 600 }}
-                  labelStyle={{ color: "#0f172a", fontWeight: 700, marginBottom: "6px" }}
-                  formatter={(value: number | undefined, name?: string) => [value != null ? `${value}%` : "—", name ?? ""]}
-                  labelFormatter={(label) => `Month: ${label}`}
-                />
+                <Tooltip content={<ByMemberTooltip />} wrapperStyle={{ opacity: 1 }} />
                 <Legend wrapperStyle={{ fontSize: "10px" }} iconType="line" />
                 {memberNames.map((name, i) => (
                   <Line
@@ -276,7 +302,6 @@ export function EquityEvolutionPanel({ contributions = [], members = [] }: Equit
         </div>
       </div>
       <div className="flex-shrink-0">
-        <h3 className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-3">Points velocity / Burn rate</h3>
         <div className="rounded-xl border border-slate-100 bg-slate-50 p-4 shadow-sm">
           <p className="text-2xl font-black text-slate-800 tabular-nums">
             {velocity.points > 0 ? "+" : ""}{velocity.points.toLocaleString()} points {velocity.periodLabel}
