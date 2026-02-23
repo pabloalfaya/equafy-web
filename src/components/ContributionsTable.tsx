@@ -50,7 +50,7 @@ export function ContributionsTable({ contributions, onDelete, onEdit, onRemoveSi
             <th className="py-3 px-2 md:px-4">Date</th>
             <th className="py-3 px-2 md:px-4">Member</th>
             <th className="py-3 px-2 md:px-4">Category</th>
-            <th className="py-3 px-2 md:px-4 hidden sm:table-cell">Description</th>
+            <th className="py-3 px-1 w-[1%] hidden sm:table-cell">Description</th>
             <th className="py-3 px-2 md:px-4 text-right"><span className="hidden sm:inline">Value </span>(PTS)</th>
             <th className="py-3 px-2 md:px-4 text-right">Actions</th>
           </tr>
@@ -70,7 +70,7 @@ export function ContributionsTable({ contributions, onDelete, onEdit, onRemoveSi
               </td>
 
               {/* 2. SOCIO (truncado, tooltip con nombre completo) */}
-              <td className="py-4 px-2 md:px-4 max-w-[120px]" title={c.contributor_name}>
+              <td className="py-4 px-2 md:px-4 min-w-[140px] max-w-[180px]" title={c.contributor_name}>
                 <span className="block font-bold text-slate-800 truncate">
                   {c.contributor_name.length > MAX_NAME_LENGTH
                     ? `${c.contributor_name.slice(0, MAX_NAME_LENGTH)}…`
@@ -88,7 +88,7 @@ export function ContributionsTable({ contributions, onDelete, onEdit, onRemoveSi
               </td>
 
               {/* 4. CONCEPTO: icono de nota, al hacer clic se muestra la descripción */}
-              <td className="py-4 px-2 md:px-4 hidden sm:table-cell">
+              <td className="py-4 px-1 w-[1%] hidden sm:table-cell">
                 <button
                   type="button"
                   onClick={() => {
