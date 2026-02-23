@@ -1,7 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import {
+import { useMemo, useState } from "react";import {
   ResponsiveContainer,
   LineChart,
   Line,
@@ -18,8 +17,8 @@ import { buildEquityEvolutionData, type ContributionForEvolution, type MemberFor
 const COLORS_MEMBERS = ["#10b981", "#3b82f6", "#8b5cf6", "#f59e0b", "#ef4444", "#06b6d4", "#ec4899", "#6366f1"];
 const COLORS_TYPES = ["#10b981", "#3b82f6", "#8b5cf6", "#f59e0b", "#ef4444"];
 
+/** Chart view mode: by member %, total value, or by contribution type */
 export type EvolutionView = "byMember" | "totalValue" | "byType";
-
 function computeVelocity(
   contribs: { date: string; risk_adjusted_value?: number | null }[],
   scale: TimeScale
