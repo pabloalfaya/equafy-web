@@ -59,7 +59,6 @@ export function EquityPieChart({ contributions, members }: EquityPieChartProps) 
     totalSweatEquity,
     totalContributionsCount,
     cashVsNonCashLabel,
-    activeMembersCount,
   } = useMemo(() => {
     const memberList = members ?? [];
 
@@ -172,7 +171,6 @@ export function EquityPieChart({ contributions, members }: EquityPieChartProps) 
       totalSweatEquity,
       totalContributionsCount: contributions.length,
       cashVsNonCashLabel,
-      activeMembersCount: filtered.length,
     };
   }, [contributions, members]);
 
@@ -261,10 +259,12 @@ export function EquityPieChart({ contributions, members }: EquityPieChartProps) 
           <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Total Contributions</span>
           <span className="text-sm font-black text-slate-800 tabular-nums">{totalContributionsCount}</span>
         </div>
-        <div className="flex items-center justify-between px-3 py-2.5 bg-slate-50 rounded-xl border border-slate-100">
-          <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Active Members</span>
-          <span className="text-sm font-black text-slate-800 tabular-nums">{activeMembersCount}</span>
-        </div>
+        <button
+          type="button"
+          className="w-full mt-3 flex items-center justify-center gap-2 px-3 py-2.5 bg-slate-100 hover:bg-slate-200 rounded-xl border border-slate-200 font-bold text-slate-700 text-sm transition-colors"
+        >
+          See evolution
+        </button>
       </div>
     </div>
   );

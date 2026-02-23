@@ -806,6 +806,18 @@ export default function ProjectDashboardPage() {
                     )
                   )}
                 </div>
+
+                {/* Active Members - debajo de los botones, encima de Team Breakdown */}
+                {(() => {
+                  const { rows } = getEquitySummaryForFinalize(members, displayContributions, project);
+                  const activeCount = rows.length;
+                  return (
+                    <div className="mt-4 flex items-center justify-between px-4 py-3 bg-slate-50 rounded-xl border border-slate-100">
+                      <span className="text-xs font-bold text-slate-500 uppercase tracking-widest">Active Members</span>
+                      <span className="text-sm font-black text-slate-800 tabular-nums">{activeCount}</span>
+                    </div>
+                  );
+                })()}
             </div>
             </div>
             </div>
