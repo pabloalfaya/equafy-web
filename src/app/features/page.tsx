@@ -76,6 +76,20 @@ const FEATURE_SECTIONS = [
     ],
   },
   {
+    id: "equity-evolution",
+    title: "Equity Evolution",
+    features: [
+      { title: "Equity Evolution Panel", icon: TrendingUp, description: "Track how equity and contributions evolve over time with interactive charts." },
+      { title: "Time Scales", icon: BarChart3, description: "View data by Daily, Weekly, Monthly or Annual periods." },
+      { title: "By Member (%)", icon: Users, description: "Line chart showing each member's equity percentage over time." },
+      { title: "Total Value", icon: PieChart, description: "Area chart of total points accumulated per period." },
+      { title: "By Type", icon: Sliders, description: "Evolution by contribution type: Cash, Work, Tangible, Intangible, Others." },
+      { title: "Total Contributions", icon: List, description: "Line chart showing the number of contributions per period." },
+      { title: "Period Comparison", icon: Calculator, description: "Compare points and contributions vs previous day, week, month or year." },
+      { title: "See Evolution", icon: Zap, description: "Quick toggle from Contribution Log to Evolution panel in one click." },
+    ],
+  },
+  {
     id: "equity-configuration",
     title: "Equity Configuration",
     features: [

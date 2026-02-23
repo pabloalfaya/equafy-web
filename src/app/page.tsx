@@ -90,6 +90,7 @@ export default function LandingPage() {
                     { title: "Select Equity Models", id: "select-equity-models" },
                     { title: "Contributions", id: "contributions" },
                     { title: "Dynamic Equity Distribution", id: "dynamic-equity-distribution" },
+                    { title: "Equity Evolution", id: "equity-evolution" },
                     { title: "Equity Configuration", id: "equity-configuration" },
                     { title: "Team Management", id: "team-management" },
                     { title: "Valuation & Finalization", id: "valuation-finalization" },
@@ -157,16 +158,31 @@ export default function LandingPage() {
                 ))}
           </div>
 
-          <div className="bg-white rounded-2xl p-6 border border-slate-100 shadow-sm flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-            <div>
-              <p className="text-3xl font-bold text-slate-900 tracking-tight">€1.37M</p>
-              <p className="text-xs font-bold text-slate-500 uppercase tracking-widest mt-1">Valuation</p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            <div className="bg-white rounded-2xl p-6 border border-slate-100 shadow-sm flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+              <div>
+                <p className="text-3xl font-bold text-slate-900 tracking-tight">€1.37M</p>
+                <p className="text-xs font-bold text-slate-500 uppercase tracking-widest mt-1">Valuation</p>
+              </div>
+              <div className="flex items-center gap-1 text-emerald-600">
+                <TrendingUp className="w-5 h-5" />
+                <span className="font-bold">+12%</span>
+                <span className="text-slate-500 text-sm font-medium">vs last month</span>
+              </div>
             </div>
-            <div className="flex items-center gap-1 text-emerald-600">
-              <TrendingUp className="w-5 h-5" />
-              <span className="font-bold">+12%</span>
-              <span className="text-slate-500 text-sm font-medium">vs last month</span>
-            </div>
+            <Link
+              href="/features#equity-evolution"
+              className="bg-emerald-50 border border-emerald-200 rounded-2xl p-6 flex items-center gap-4 hover:bg-emerald-100 hover:border-emerald-300 transition-all group"
+            >
+              <div className="p-3 rounded-xl bg-emerald-500 text-white">
+                <TrendingUp className="w-6 h-6" />
+              </div>
+              <div>
+                <p className="font-bold text-slate-900 tracking-tight group-hover:text-emerald-700">Equity Evolution</p>
+                <p className="text-sm text-slate-600 font-medium">Track equity & contributions over time with charts</p>
+              </div>
+              <ArrowRight className="w-5 h-5 text-emerald-500 ml-auto shrink-0" />
+            </Link>
           </div>
         </div>
       </section>
