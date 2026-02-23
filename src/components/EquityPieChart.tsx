@@ -162,7 +162,7 @@ export function EquityPieChart({ contributions, members }: EquityPieChartProps) 
     const nonCashPct = totalAmount > 0 ? 100 - cashPct : 0;
     const cashVsNonCashLabel =
       totalAmount > 0
-        ? `${Math.round(cashPct)} vs ${Math.round(nonCashPct)}`
+        ? `${Math.round(cashPct)}% vs ${Math.round(nonCashPct)}%`
         : "—";
 
     return {
@@ -243,27 +243,27 @@ export function EquityPieChart({ contributions, members }: EquityPieChartProps) 
         </span>
       </div>
 
-      {/* --- Métricas: Cash, Sweat, Contributions, Ratio, Active Members --- */}
-      <div className="mt-4 space-y-3 px-2 overflow-y-auto custom-scrollbar max-h-[240px]">
-        <div className="flex justify-between items-center py-1.5 border-b border-slate-100">
-          <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Total Cash Invested</span>
-          <span className="text-sm font-bold text-slate-800 tabular-nums">{totalCashInvested.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 })}</span>
+      {/* --- Métricas: mismo estilo que Total Points --- */}
+      <div className="mt-4 space-y-2 overflow-y-auto custom-scrollbar max-h-[280px]">
+        <div className="flex items-center justify-between px-3 py-2.5 bg-slate-50 rounded-xl border border-slate-100">
+          <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Total Cash (without multipliers)</span>
+          <span className="text-sm font-black text-slate-800 tabular-nums">{totalCashInvested.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
         </div>
-        <div className="flex justify-between items-center py-1.5 border-b border-slate-100">
-          <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Total Sweat Equity</span>
-          <span className="text-sm font-bold text-slate-800 tabular-nums">{totalSweatEquity.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 })}</span>
+        <div className="flex items-center justify-between px-3 py-2.5 bg-slate-50 rounded-xl border border-slate-100">
+          <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Total Sweat (without multipliers)</span>
+          <span className="text-sm font-black text-slate-800 tabular-nums">{totalSweatEquity.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
         </div>
-        <div className="flex justify-between items-center py-1.5 border-b border-slate-100">
-          <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Total Contributions</span>
-          <span className="text-sm font-bold text-slate-800 tabular-nums">{totalContributionsCount}</span>
+        <div className="flex items-center justify-between px-3 py-2.5 bg-slate-50 rounded-xl border border-slate-100">
+          <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Cash vs Non-Cash</span>
+          <span className="text-sm font-black text-slate-800 tabular-nums">{cashVsNonCashLabel}</span>
         </div>
-        <div className="flex justify-between items-center py-1.5 border-b border-slate-100">
-          <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Cash vs Non-Cash</span>
-          <span className="text-sm font-bold text-slate-800 tabular-nums">{cashVsNonCashLabel}</span>
+        <div className="flex items-center justify-between px-3 py-2.5 bg-slate-50 rounded-xl border border-slate-100">
+          <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Total Contributions</span>
+          <span className="text-sm font-black text-slate-800 tabular-nums">{totalContributionsCount}</span>
         </div>
-        <div className="flex justify-between items-center py-1.5">
-          <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Active Members</span>
-          <span className="text-sm font-bold text-slate-800 tabular-nums">{activeMembersCount}</span>
+        <div className="flex items-center justify-between px-3 py-2.5 bg-slate-50 rounded-xl border border-slate-100">
+          <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Active Members</span>
+          <span className="text-sm font-black text-slate-800 tabular-nums">{activeMembersCount}</span>
         </div>
       </div>
     </div>
