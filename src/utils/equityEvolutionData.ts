@@ -1,7 +1,9 @@
 /**
  * Builds time-series data for the Equity Evolution chart from real contributions and members.
- * Contributions are sorted by date (oldest first) and aggregated by month.
+ * Contributions are sorted by date (oldest first) and aggregated by period (day, week, month, year).
  */
+
+export type TimeScale = "daily" | "weekly" | "monthly" | "annual";
 
 export type ContributionForEvolution = {
   date?: string;
@@ -31,19 +33,44 @@ function formatMonthLabel(year: number, month: number): string {
   return `${MONTH_LABELS[month]} ${year}`;
 }
 
-/** Contributions up to and including the given year-month (inclusive). */
+/** Contributions up to and including the given end date (inclusive). */
 function contributionsUpTo(
   sorted: (ContributionForEvolution & { date: string })[],
-  year: number,
-  month: number
+  endDate: Date
 ): (ContributionForEvolution & { date: string })[] {
-  const end = new Date(year, month + 1, 0); // last day of month
-  return sorted.filter((c) => new Date(c.date) <= end);
+  return sorted.filter((c) => new Date(c.date) <= endDate);
+}
+
+/** End of day for a given date. */
+function endOfDay(d: Date): Date {
+  const x = new Date(d);
+  x.setHours(23, 59, 59, 999);
+  return x;
+}
+
+/** End of ISO week (Sunday) containing d. */
+function endOfWeek(d: Date): Date {
+  const x = new Date(d);
+  const day = x.getDay();
+  const diff = day === 0 ? 0 : 7 - day;
+  x.setDate(x.getDate() + diff);
+  return endOfDay(x);
+}
+
+/** End of month. */
+function endOfMonth(year: number, month: number): Date {
+  return endOfDay(new Date(year, month + 1, 0));
+}
+
+/** End of year. */
+function endOfYear(year: number): Date {
+  return endOfDay(new Date(year, 11, 31));
 }
 
 export function buildEquityEvolutionData(
   contributions: ContributionForEvolution[],
-  members: MemberForEvolution[]
+  members: MemberForEvolution[],
+  timeScale: TimeScale = "monthly"
 ) {
   const contribs = [...(contributions ?? [])].filter(
     (c): c is ContributionForEvolution & { date: string } => Boolean(c.date)
@@ -62,14 +89,70 @@ export function buildEquityEvolutionData(
 
   const first = new Date(contribs[0].date);
   const last = new Date(contribs[contribs.length - 1].date);
-  const months: { year: number; month: number }[] = [];
-  for (let y = first.getFullYear(), m = first.getMonth(); y < last.getFullYear() || (y === last.getFullYear() && m <= last.getMonth()); m++) {
-    if (m > 11) {
-      m = -1;
-      y++;
-      continue;
+
+  type Period = { endDate: Date; key: string; label: string };
+  const periods: Period[] = [];
+
+  if (timeScale === "daily") {
+    const d = new Date(first);
+    d.setHours(0, 0, 0, 0);
+    const lastDay = new Date(last);
+    lastDay.setHours(0, 0, 0, 0);
+    while (d <= lastDay) {
+      const end = endOfDay(d);
+      periods.push({
+        endDate: end,
+        key: d.toISOString().slice(0, 10),
+        label: `${d.getDate()} ${MONTH_LABELS[d.getMonth()]} ${d.getFullYear()}`,
+      });
+      d.setDate(d.getDate() + 1);
     }
-    months.push({ year: y, month: m });
+  } else if (timeScale === "weekly") {
+    let d = new Date(first);
+    d.setHours(0, 0, 0, 0);
+    const day = d.getDay();
+    const toMonday = day === 0 ? -6 : 1 - day;
+    d.setDate(d.getDate() + toMonday);
+    while (d <= last) {
+      const end = endOfWeek(d);
+      if (end >= first) {
+        periods.push({
+          endDate: end,
+          key: `${d.getFullYear()}-W${String(Math.ceil(d.getDate() / 7)).padStart(2, "0")}`,
+          label: `${d.getDate()} ${MONTH_LABELS[d.getMonth()]} ${d.getFullYear()}`,
+        });
+      }
+      d.setDate(d.getDate() + 7);
+    }
+    if (periods.length === 0) {
+      const end = endOfWeek(first);
+      periods.push({
+        endDate: end,
+        key: first.toISOString().slice(0, 10),
+        label: `${first.getDate()} ${MONTH_LABELS[first.getMonth()]} ${first.getFullYear()}`,
+      });
+    }
+  } else if (timeScale === "annual") {
+    for (let y = first.getFullYear(); y <= last.getFullYear(); y++) {
+      periods.push({
+        endDate: endOfYear(y),
+        key: String(y),
+        label: String(y),
+      });
+    }
+  } else {
+    for (let y = first.getFullYear(), m = first.getMonth(); y < last.getFullYear() || (y === last.getFullYear() && m <= last.getMonth()); m++) {
+      if (m > 11) {
+        m = -1;
+        y++;
+        continue;
+      }
+      periods.push({
+        endDate: endOfMonth(y, m),
+        key: `${y}-${String(m + 1).padStart(2, "0")}`,
+        label: formatMonthLabel(y, m),
+      });
+    }
   }
 
   const memberNames = (members ?? []).map((m) => m.name || "Unknown").filter(Boolean);
@@ -84,10 +167,8 @@ export function buildEquityEvolutionData(
   const totalValue: TotalValueRow[] = [];
   const byType: ByTypeRow[] = [];
 
-  for (const { year, month } of months) {
-    const upTo = contributionsUpTo(contribs, year, month);
-    const monthKey = `${year}-${String(month + 1).padStart(2, "0")}`;
-    const monthLabel = formatMonthLabel(year, month);
+  for (const { endDate, key, label } of periods) {
+    const upTo = contributionsUpTo(contribs, endDate);
 
     const contribsForEquity = upTo.map((c) => ({
       contributor_name: c.contributor_name,
@@ -99,7 +180,7 @@ export function buildEquityEvolutionData(
       contribsForEquity
     );
 
-    const byMemberRow: ByMemberRow = { monthKey, monthLabel };
+    const byMemberRow: ByMemberRow = { monthKey: key, monthLabel: label };
     memberNames.forEach((name, i) => {
       const pct = summary[i]?.equityPct ?? 0;
       byMemberRow[name] = Math.round(pct * 10) / 10;
@@ -107,7 +188,7 @@ export function buildEquityEvolutionData(
     byMember.push(byMemberRow);
 
     const total = upTo.reduce((s, c) => s + (Number(c.risk_adjusted_value) || 0), 0);
-    totalValue.push({ monthKey, monthLabel, total });
+    totalValue.push({ monthKey: key, monthLabel: label, total });
 
     const typeSums: Record<string, number> = {};
     typeNames.forEach((t) => (typeSums[t] = 0));
@@ -115,7 +196,7 @@ export function buildEquityEvolutionData(
       const t = (c.type ?? "OTHERS").toString().toUpperCase();
       if (typeSums[t] !== undefined) typeSums[t] += Number(c.risk_adjusted_value) || 0;
     });
-    const byTypeRow: ByTypeRow = { monthKey, monthLabel };
+    const byTypeRow: ByTypeRow = { monthKey: key, monthLabel: label };
     typeNames.forEach((t) => (byTypeRow[t] = Math.round(typeSums[t] * 100) / 100));
     byType.push(byTypeRow);
   }
