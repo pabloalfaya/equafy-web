@@ -207,34 +207,6 @@ export function EquityPieChart({ contributions, members }: EquityPieChartProps) 
         </span>
       </div>
 
-      {/* --- SECCIÓN LEYENDA (Debajo) --- */}
-      <div className="mt-4 space-y-3 px-2 overflow-y-auto custom-scrollbar max-h-[200px]">
-        <div className="flex justify-end pr-1">
-          <span className="text-[10px] font-medium text-slate-400">100%</span>
-        </div>
-        {data.map((entry, index) => (
-          <div key={index} className="flex items-center justify-between group py-1">
-            <div className="flex items-center gap-3">
-              <div
-                className="w-3 h-3 rounded-full ring-2 ring-white shadow-sm"
-                style={{ backgroundColor: COLORS[index % COLORS.length] }}
-              />
-              <span className="text-sm font-bold text-slate-600 group-hover:text-slate-900 transition-colors truncate max-w-[120px]">
-                {entry.name}
-              </span>
-            </div>
-            <div className="text-right">
-              <span className="block text-sm font-black text-slate-800">
-                {entry.value.toFixed(1)}%
-              </span>
-              <span className="block text-[10px] font-medium text-slate-400">
-                {entry.fixed > 0 && `${entry.fixed.toFixed(0)}% fixed · `}
-                {entry.dynamic.toLocaleString()} pts
-              </span>
-            </div>
-          </div>
-        ))}
-      </div>
     </div>
   );
 }
