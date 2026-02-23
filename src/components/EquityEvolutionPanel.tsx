@@ -325,6 +325,9 @@ export function EquityEvolutionPanel({ contributions = [], members = [] }: Equit
               No data in {velocity.lastPeriodLabel} to compare
             </p>
           )}
+          <p className="mt-3 pt-3 border-t border-slate-200 text-sm font-bold text-slate-700">
+            {(contributions?.length ?? 0).toLocaleString()} contribution{(contributions?.length ?? 0) === 1 ? "" : "s"} total
+          </p>
         </div>
       </div>
     </div>
