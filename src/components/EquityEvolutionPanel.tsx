@@ -138,7 +138,7 @@ interface EquityEvolutionPanelProps {
 
 export function EquityEvolutionPanel({ contributions = [], members = [] }: EquityEvolutionPanelProps) {
   const [view, setView] = useState<EvolutionView>("byMember");
-  const [timeScale, setTimeScale] = useState<TimeScale>("monthly");
+  const [timeScale, setTimeScale] = useState<TimeScale>("daily");
 
   const evolution = useMemo(
     () => buildEquityEvolutionData(contributions ?? [], members ?? [], timeScale),
