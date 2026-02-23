@@ -731,8 +731,8 @@ export default function ProjectDashboardPage() {
               </div>
             )}
 
-            <div className="grid grid-cols-1 gap-8 lg:grid-cols-3 lg:grid-rows-[1fr_auto] lg:min-h-[520px] lg:items-stretch">
-                <div ref={contributionLogRef} className="min-h-0 flex flex-col min-w-0 overflow-hidden bg-white/70 backdrop-blur-xl border border-white/60 rounded-[32px] p-4 md:p-8 shadow-xl lg:col-span-2 lg:row-span-1">
+            <div className="grid lg:grid-cols-3 gap-8">
+                <div ref={contributionLogRef} className="lg:col-span-2 min-h-0 bg-white/70 backdrop-blur-xl border border-white/60 rounded-[32px] p-4 md:p-8 shadow-xl flex flex-col min-w-0 overflow-hidden lg:max-h-[calc(100vh-10rem)] lg:min-h-[400px]">
                     <div className="flex items-center gap-3 mb-6 flex-wrap shrink-0">
                         <div className="flex items-center gap-3">
                             <div className="p-2 bg-blue-50 rounded-lg"><TrendingUp className="h-5 w-5 text-blue-600" /></div>
@@ -760,15 +760,16 @@ export default function ProjectDashboardPage() {
                     </div>
                 </div>
 
-                <div className="bg-white/70 backdrop-blur-xl border border-white/60 rounded-[32px] p-4 md:p-8 shadow-xl flex flex-col min-h-0 min-w-0 overflow-hidden lg:col-span-1 lg:row-span-1 lg:sticky lg:top-32">
+                <div className="lg:col-span-1 flex flex-col gap-4">
+                <div className="bg-white/70 backdrop-blur-xl border border-white/60 rounded-[32px] p-4 md:p-8 shadow-xl flex flex-col h-fit sticky top-32">
                     <div className="flex items-center gap-3 mb-8">
                         <div className="p-2 bg-emerald-50 rounded-lg"><PieChart className="h-5 w-5 text-emerald-600" /></div>
                         <h3 className="font-bold text-slate-900 text-xl">Equity Distribution</h3>
                     </div>
-                    <div className="w-full aspect-square min-h-0 flex-1"><EquityPieChart contributions={displayContributions} members={members} /></div>
+                    <div className="w-full aspect-square"><EquityPieChart contributions={displayContributions} members={members} /></div>
                   </div>
 
-                <div className="grid grid-cols-3 gap-2 lg:col-span-1 lg:col-start-3 lg:row-start-2">
+                <div className="grid grid-cols-3 gap-2 mt-2">
                     <button
                       onClick={() => setAuditLogModalOpen(true)}
                       className="flex flex-col items-center justify-center gap-2 rounded-xl border border-slate-200 bg-slate-50 px-3 py-4 font-bold text-slate-600 hover:bg-slate-100 transition-all"
@@ -805,6 +806,7 @@ export default function ProjectDashboardPage() {
                     )
                   )}
                 </div>
+            </div>
             </div>
             </div>
 
