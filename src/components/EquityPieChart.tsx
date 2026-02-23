@@ -52,7 +52,15 @@ function CustomTooltip(props: { active?: boolean; payload?: Array<{ payload: Cha
 }
 
 export function EquityPieChart({ contributions, members }: EquityPieChartProps) {
-  const { data, totalPoints } = useMemo(() => {
+  const {
+    data,
+    totalPoints,
+    totalCashInvested,
+    totalSweatEquity,
+    totalContributionsCount,
+    cashVsNonCashRatio,
+    activeMembersCount,
+  } = useMemo(() => {
     const memberList = members ?? [];
 
     // 1. TotalFixedEquity = suma de % fijos de todos los miembros
@@ -137,7 +145,36 @@ export function EquityPieChart({ contributions, members }: EquityPieChartProps) 
     // Filtrar miembros con valor 0 para no mostrar segmentos vacíos
     const filtered = chartData.filter((d) => d.value > 0);
 
-    return { data: filtered, totalPoints: totalRiskPoints };
+    // Métricas para el panel: cash, sweat, total contributions, ratio, active members
+    const totalCashInvested = contributions.reduce(
+      (sum, c) => sum + (String((c as { type?: string }).type || "").toLowerCase() === "cash" ? Number((c as { amount?: number }).amount) || 0 : 0),
+      0
+    );
+    const totalSweatEquity = contributions.reduce(
+      (sum, c) => sum + (String((c as { type?: string }).type || "").toLowerCase() === "work" ? Number((c as { amount?: number }).amount) || 0 : 0),
+      0
+    );
+    const totalAmount = contributions.reduce(
+      (sum, c) => sum + (Number((c as { amount?: number }).amount) || 0),
+      0
+    );
+    const totalNonCash = totalAmount - totalCashInvested;
+    const cashVsNonCashRatio =
+      totalNonCash > 0
+        ? (totalCashInvested / totalNonCash).toFixed(2)
+        : totalCashInvested > 0
+          ? "—"
+          : "0";
+
+    return {
+      data: filtered,
+      totalPoints: totalRiskPoints,
+      totalCashInvested,
+      totalSweatEquity,
+      totalContributionsCount: contributions.length,
+      cashVsNonCashRatio,
+      activeMembersCount: filtered.length,
+    };
   }, [contributions, members]);
 
   const totalValue = data.reduce((sum, item) => sum + item.value, 0);
@@ -207,6 +244,29 @@ export function EquityPieChart({ contributions, members }: EquityPieChartProps) 
         </span>
       </div>
 
+      {/* --- Métricas: Cash, Sweat, Contributions, Ratio, Active Members --- */}
+      <div className="mt-4 space-y-3 px-2 overflow-y-auto custom-scrollbar max-h-[240px]">
+        <div className="flex justify-between items-center py-1.5 border-b border-slate-100">
+          <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Total Cash (Capital Líquido)</span>
+          <span className="text-sm font-bold text-slate-800 tabular-nums">{totalCashInvested.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 })}€</span>
+        </div>
+        <div className="flex justify-between items-center py-1.5 border-b border-slate-100">
+          <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Sweat Equity (Valor Trabajo)</span>
+          <span className="text-sm font-bold text-slate-800 tabular-nums">{totalSweatEquity.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 })}€</span>
+        </div>
+        <div className="flex justify-between items-center py-1.5 border-b border-slate-100">
+          <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Total Contributions</span>
+          <span className="text-sm font-bold text-slate-800 tabular-nums">{totalContributionsCount}</span>
+        </div>
+        <div className="flex justify-between items-center py-1.5 border-b border-slate-100">
+          <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Cash vs Non-Cash</span>
+          <span className="text-sm font-bold text-slate-800 tabular-nums">{cashVsNonCashRatio}</span>
+        </div>
+        <div className="flex justify-between items-center py-1.5">
+          <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Active Members</span>
+          <span className="text-sm font-bold text-slate-800 tabular-nums">{activeMembersCount}</span>
+        </div>
+      </div>
     </div>
   );
 }
