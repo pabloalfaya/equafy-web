@@ -29,6 +29,7 @@ function ByMemberTooltip({
   label?: string;
 }) {
   if (!active || !payload?.length || !label) return null;
+  const sorted = [...payload].sort((a, b) => (Number(b.value) ?? 0) - (Number(a.value) ?? 0));
   return (
     <div
       className="relative min-w-[200px] overflow-hidden rounded-xl border-2 border-slate-300 bg-white px-4 py-3 shadow-xl"
@@ -43,7 +44,7 @@ function ByMemberTooltip({
         {label}
       </p>
       <div className="space-y-1 bg-white">
-        {payload.map((entry) => (
+        {sorted.map((entry) => (
           <div key={entry.name} className="flex items-center justify-between gap-4 bg-white text-sm">
             <span className="font-semibold" style={{ color: entry.color }}>
               {entry.name}
@@ -62,7 +63,7 @@ export type EvolutionView = "byMember" | "totalValue" | "byType";
 function computeVelocity(
   contribs: { date: string; risk_adjusted_value?: number | null }[],
   scale: TimeScale
-): { points: number; pctVsLast: number | null; periodLabel: string; lastPeriodLabel: string } {
+): { points: number; pctVsLast: number | null; periodLabel: string; lastPeriodLabel: string; countInPeriod: number } {
   const now = new Date();
   const pts = (c: { date: string; risk_adjusted_value?: number | null }) => Number(c.risk_adjusted_value) || 0;
   const inPeriod = (d: Date, start: Date, end: Date) => d >= start && d <= end;
@@ -75,10 +76,11 @@ function computeVelocity(
     yesterdayStart.setDate(yesterdayStart.getDate() - 1);
     const yesterdayEnd = new Date(yesterdayStart);
     yesterdayEnd.setHours(23, 59, 59, 999);
-    const thisPts = contribs.filter((c) => inPeriod(new Date(c.date), todayStart, todayEnd)).reduce((s, c) => s + pts(c), 0);
+    const inToday = contribs.filter((c) => inPeriod(new Date(c.date), todayStart, todayEnd));
+    const thisPts = inToday.reduce((s, c) => s + pts(c), 0);
     const lastPts = contribs.filter((c) => inPeriod(new Date(c.date), yesterdayStart, yesterdayEnd)).reduce((s, c) => s + pts(c), 0);
     const pct = lastPts > 0 ? Math.round(((thisPts - lastPts) / lastPts) * 100) : null;
-    return { points: thisPts, pctVsLast: pct, periodLabel: "today", lastPeriodLabel: "yesterday" };
+    return { points: thisPts, pctVsLast: pct, periodLabel: "today", lastPeriodLabel: "yesterday", countInPeriod: inToday.length };
   }
 
   if (scale === "weekly") {
@@ -95,10 +97,11 @@ function computeVelocity(
     const lastWeekEnd = new Date(lastWeekStart);
     lastWeekEnd.setDate(lastWeekEnd.getDate() + 6);
     lastWeekEnd.setHours(23, 59, 59, 999);
-    const thisPts = contribs.filter((c) => inPeriod(new Date(c.date), thisWeekStart, thisWeekEnd)).reduce((s, c) => s + pts(c), 0);
+    const inThisWeek = contribs.filter((c) => inPeriod(new Date(c.date), thisWeekStart, thisWeekEnd));
+    const thisPts = inThisWeek.reduce((s, c) => s + pts(c), 0);
     const lastPts = contribs.filter((c) => inPeriod(new Date(c.date), lastWeekStart, lastWeekEnd)).reduce((s, c) => s + pts(c), 0);
     const pct = lastPts > 0 ? Math.round(((thisPts - lastPts) / lastPts) * 100) : null;
-    return { points: thisPts, pctVsLast: pct, periodLabel: "this week", lastPeriodLabel: "last week" };
+    return { points: thisPts, pctVsLast: pct, periodLabel: "this week", lastPeriodLabel: "last week", countInPeriod: inThisWeek.length };
   }
 
   if (scale === "annual") {
@@ -106,20 +109,22 @@ function computeVelocity(
     const thisYearEnd = new Date(now.getFullYear(), 11, 31, 23, 59, 59);
     const lastYearStart = new Date(now.getFullYear() - 1, 0, 1, 0, 0, 0);
     const lastYearEnd = new Date(now.getFullYear() - 1, 11, 31, 23, 59, 59);
-    const thisPts = contribs.filter((c) => inPeriod(new Date(c.date), thisYearStart, thisYearEnd)).reduce((s, c) => s + pts(c), 0);
+    const inThisYear = contribs.filter((c) => inPeriod(new Date(c.date), thisYearStart, thisYearEnd));
+    const thisPts = inThisYear.reduce((s, c) => s + pts(c), 0);
     const lastPts = contribs.filter((c) => inPeriod(new Date(c.date), lastYearStart, lastYearEnd)).reduce((s, c) => s + pts(c), 0);
     const pct = lastPts > 0 ? Math.round(((thisPts - lastPts) / lastPts) * 100) : null;
-    return { points: thisPts, pctVsLast: pct, periodLabel: "this year", lastPeriodLabel: "last year" };
+    return { points: thisPts, pctVsLast: pct, periodLabel: "this year", lastPeriodLabel: "last year", countInPeriod: inThisYear.length };
   }
 
   const thisMonthStart = new Date(now.getFullYear(), now.getMonth(), 1, 0, 0, 0);
   const thisMonthEnd = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59);
   const lastMonthStart = new Date(now.getFullYear(), now.getMonth() - 1, 1, 0, 0, 0);
   const lastMonthEnd = new Date(now.getFullYear(), now.getMonth(), 0, 23, 59, 59);
-  const thisPts = contribs.filter((c) => inPeriod(new Date(c.date), thisMonthStart, thisMonthEnd)).reduce((s, c) => s + pts(c), 0);
+  const inThisMonth = contribs.filter((c) => inPeriod(new Date(c.date), thisMonthStart, thisMonthEnd));
+  const thisPts = inThisMonth.reduce((s, c) => s + pts(c), 0);
   const lastPts = contribs.filter((c) => inPeriod(new Date(c.date), lastMonthStart, lastMonthEnd)).reduce((s, c) => s + pts(c), 0);
   const pct = lastPts > 0 ? Math.round(((thisPts - lastPts) / lastPts) * 100) : null;
-  return { points: thisPts, pctVsLast: pct, periodLabel: "this month", lastPeriodLabel: "last month" };
+  return { points: thisPts, pctVsLast: pct, periodLabel: "this month", lastPeriodLabel: "last month", countInPeriod: inThisMonth.length };
 }
 
 interface EquityEvolutionPanelProps {
@@ -326,7 +331,7 @@ export function EquityEvolutionPanel({ contributions = [], members = [] }: Equit
             </p>
           )}
           <p className="mt-3 pt-3 border-t border-slate-200 text-sm font-bold text-slate-700">
-            {(contributions?.length ?? 0).toLocaleString()} contribution{(contributions?.length ?? 0) === 1 ? "" : "s"} total
+            {velocity.countInPeriod.toLocaleString()} contribution{velocity.countInPeriod === 1 ? "" : "s"} {velocity.periodLabel}
           </p>
         </div>
       </div>
