@@ -246,11 +246,11 @@ export function EquityPieChart({ contributions, members }: EquityPieChartProps) 
       {/* --- Métricas: mismo estilo que Total Points --- */}
       <div className="mt-4 space-y-2 overflow-y-auto custom-scrollbar max-h-[280px]">
         <div className="flex items-center justify-between px-3 py-2.5 bg-slate-50 rounded-xl border border-slate-100">
-          <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Total Cash (without multipliers)</span>
+          <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Total Cash (raw)</span>
           <span className="text-sm font-black text-slate-800 tabular-nums">{totalCashInvested.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
         </div>
         <div className="flex items-center justify-between px-3 py-2.5 bg-slate-50 rounded-xl border border-slate-100">
-          <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Total Sweat (without multipliers)</span>
+          <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Total Sweat (raw)</span>
           <span className="text-sm font-black text-slate-800 tabular-nums">{totalSweatEquity.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
         </div>
         <div className="flex items-center justify-between px-3 py-2.5 bg-slate-50 rounded-xl border border-slate-100">
