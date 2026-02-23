@@ -69,7 +69,7 @@ export default function LandingPage() {
           </p>
           <div className="relative z-20 flex flex-col sm:flex-row items-center justify-center gap-4">
             <Link href="/login?view=signup" className="h-14 px-8 rounded-2xl bg-emerald-500 text-white font-bold text-lg flex items-center justify-center shadow-lg hover:bg-emerald-600 hover:-translate-y-0.5 transition-all duration-300 tracking-tight">
-              Get Started
+              Free Trial
             </Link>
             <button
               onClick={() => setIsVideoOpen(true)}
