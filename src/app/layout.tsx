@@ -14,11 +14,11 @@ const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || BRAND.baseUrl;
 
 export const metadata: Metadata = {
   title: {
-    default: `${BRAND.name} - ${BRAND.tagline}`,
+    default: "Equafy - Dynamic Equity & Slicing Pie Software for Startups & Growing Companies",
     template: `%s | ${BRAND.name}`,
   },
   description:
-    "Equity management for startups, scale-ups and early-stage companies. Dynamic split based on contributions (cash, work, IP). Just Split, Flat and Custom models. Fair equity with Slicing Pie methodology.",
+    "Dynamic equity management for startups & growing companies. Split equity fairly based on cash, work & IP contributions using the Slicing Pie methodology.",
   keywords: [
     BRAND.name,
     `${BRAND.name} startup equity`,
@@ -38,9 +38,9 @@ export const metadata: Metadata = {
     locale: "en_US",
     url: baseUrl,
     siteName: BRAND.name,
-    title: `${BRAND.name} - ${BRAND.tagline}`,
+    title: "Equafy - Dynamic Equity & Slicing Pie Software for Startups & Growing Companies",
     description:
-      "Equity management for startups, scale-ups and early-stage companies. Fair dynamic split based on contributions.",
+      "Dynamic equity management for startups & growing companies. Split equity fairly based on cash, work & IP contributions using the Slicing Pie methodology.",
     images: [
       {
         url: "/logo-web.png",
@@ -52,8 +52,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: `${BRAND.name} - ${BRAND.tagline}`,
-    description: "Fair equity split for startups and growing companies. Based on contributions.",
+    title: "Equafy - Dynamic Equity & Slicing Pie Software for Startups & Growing Companies",
+    description: "Dynamic equity management for startups & growing companies. Split equity fairly based on cash, work & IP contributions using the Slicing Pie methodology.",
   },
   metadataBase: new URL(baseUrl),
   icons: {
@@ -79,7 +79,7 @@ export default function RootLayout({
     applicationCategory: "BusinessApplication",
     operatingSystem: "Web",
     description:
-      "Equity management for startups, scale-ups and early-stage companies. Dynamic split based on contributions (cash, work, IP). Just Split, Flat and Custom models.",
+      "Dynamic equity management for startups & growing companies. Split equity fairly based on cash, work & IP contributions using the Slicing Pie methodology.",
     url: baseUrl,
     offers: { "@type": "Offer", price: "0", priceCurrency: "EUR" },
   };
