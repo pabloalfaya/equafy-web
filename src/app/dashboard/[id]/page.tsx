@@ -742,7 +742,7 @@ export default function ProjectDashboardPage() {
                           <h3 className="font-bold text-slate-900 text-xl">Equity Evolution</h3>
                         </div>
                         <div className="flex-1 min-h-0 overflow-hidden">
-                          <EquityEvolutionPanel />
+                          <EquityEvolutionPanel contributions={displayContributions} members={members} />
                         </div>
                       </>
                     ) : (
