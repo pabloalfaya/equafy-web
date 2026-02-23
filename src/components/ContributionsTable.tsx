@@ -1,6 +1,8 @@
 "use client";
 
-import { Pencil, Trash2, Tag, StickyNote } from "lucide-react";
+import { useState } from "react";
+import { Pencil, Trash2, Tag, StickyNote, Check, X } from "lucide-react";
+import { BRAND } from "@/lib/brand";
 
 // 1. Definimos la interfaz EXACTAMENTE como viene de la base de datos
 interface Contribution {
@@ -24,7 +26,9 @@ interface ContributionsTableProps {
 const MAX_NAME_LENGTH = 18;
 
 export function ContributionsTable({ contributions, onDelete, onEdit, onRemoveSimulated, canEdit = true, simulationMode }: ContributionsTableProps) {
-  
+  const [descriptionModalOpen, setDescriptionModalOpen] = useState(false);
+  const [descriptionText, setDescriptionText] = useState("");
+
   const formatDate = (dateString: string) => {
     if (!dateString) return "-";
     return new Date(dateString).toLocaleDateString("en-GB", {
@@ -87,18 +91,23 @@ export function ContributionsTable({ contributions, onDelete, onEdit, onRemoveSi
                 </span>
               </td>
 
-              {/* 4. CONCEPTO: icono de nota, al hacer clic se muestra la descripción */}
+              {/* 4. CONCEPTO: icono + tick verde / cruz roja; al clic abre modal Equafy */}
               <td className="py-4 px-1 w-[1%] hidden sm:table-cell">
                 <button
                   type="button"
                   onClick={() => {
-                    if (c.concept?.trim()) window.alert(c.concept);
-                    else window.alert("No description");
+                    setDescriptionText(c.concept?.trim() || "");
+                    setDescriptionModalOpen(true);
                   }}
-                  className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition-colors"
+                  className="inline-flex items-center gap-1 p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition-colors"
                   title={c.concept?.trim() ? `Description: ${c.concept}` : "No description"}
                 >
-                  <StickyNote className="w-4 h-4" />
+                  <StickyNote className="w-4 h-4 shrink-0" />
+                  {c.concept?.trim() ? (
+                    <Check className="w-4 h-4 text-emerald-500 shrink-0" aria-hidden />
+                  ) : (
+                    <X className="w-4 h-4 text-red-500 shrink-0" aria-hidden />
+                  )}
                 </button>
               </td>
 
@@ -158,6 +167,42 @@ export function ContributionsTable({ contributions, onDelete, onEdit, onRemoveSi
           })}
         </tbody>
       </table>
+
+      {/* Modal Equafy para la descripción */}
+      {descriptionModalOpen && (
+        <div
+          className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="description-modal-title"
+        >
+          <div className="relative w-full max-w-md bg-white rounded-2xl shadow-2xl p-6 text-slate-900">
+            <button
+              type="button"
+              onClick={() => setDescriptionModalOpen(false)}
+              className="absolute top-4 right-4 text-slate-400 hover:text-slate-700 transition-colors"
+              aria-label="Close"
+            >
+              <X className="w-5 h-5" />
+            </button>
+            <h2 id="description-modal-title" className="text-lg font-black text-slate-900 mb-2 pr-8">
+              {BRAND.name} — Description
+            </h2>
+            <p className="text-slate-600 text-sm leading-relaxed whitespace-pre-wrap">
+              {descriptionText || "No description."}
+            </p>
+            <div className="mt-6 flex justify-end">
+              <button
+                type="button"
+                onClick={() => setDescriptionModalOpen(false)}
+                className="rounded-xl bg-emerald-600 text-white px-5 py-2.5 text-sm font-bold hover:bg-emerald-500 transition-colors"
+              >
+                Aceptar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
