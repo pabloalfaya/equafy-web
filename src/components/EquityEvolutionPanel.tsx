@@ -31,19 +31,20 @@ function ByMemberTooltip({
   if (!active || !payload?.length || !label) return null;
   return (
     <div
-      className="rounded-xl border-2 border-slate-300 bg-white px-4 py-3 shadow-lg"
+      className="relative min-w-[200px] overflow-hidden rounded-xl border-2 border-slate-300 bg-white px-4 py-3 shadow-xl"
       style={{
+        boxShadow: "0 10px 40px rgba(0,0,0,0.25)",
+        isolation: "isolate",
         backgroundColor: "#ffffff",
-        opacity: 1,
-        boxShadow: "0 10px 40px rgba(0,0,0,0.2)",
+        mixBlendMode: "normal",
       }}
     >
       <p className="text-sm font-bold text-slate-800 mb-2 border-b border-slate-200 pb-1.5">
         {label}
       </p>
-      <div className="space-y-1">
+      <div className="space-y-1 bg-white">
         {payload.map((entry) => (
-          <div key={entry.name} className="flex items-center justify-between gap-4 text-sm">
+          <div key={entry.name} className="flex items-center justify-between gap-4 bg-white text-sm">
             <span className="font-semibold" style={{ color: entry.color }}>
               {entry.name}
             </span>
@@ -195,7 +196,15 @@ export function EquityEvolutionPanel({ contributions = [], members = [] }: Equit
                 <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
                 <XAxis dataKey="monthLabel" tick={{ fontSize: 10, fill: "#64748b" }} stroke="#cbd5e1" />
                 <YAxis domain={[0, 100]} tick={{ fontSize: 10, fill: "#64748b" }} stroke="#cbd5e1" tickFormatter={(v) => `${v}%`} />
-                <Tooltip content={<ByMemberTooltip />} wrapperStyle={{ opacity: 1 }} />
+                <Tooltip
+                  content={<ByMemberTooltip />}
+                  wrapperStyle={{
+                    backgroundColor: "#ffffff",
+                    opacity: 1,
+                    isolation: "isolate",
+                    zIndex: 9999,
+                  }}
+                />
                 <Legend wrapperStyle={{ fontSize: "10px" }} iconType="line" />
                 {memberNames.map((name, i) => (
                   <Line
