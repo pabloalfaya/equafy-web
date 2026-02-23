@@ -159,10 +159,10 @@ export function EquityPieChart({ contributions, members }: EquityPieChartProps) 
       0
     );
     const cashPct = totalAmount > 0 ? (totalCashInvested / totalAmount) * 100 : 0;
-    const sweatPct = totalAmount > 0 ? (totalSweatEquity / totalAmount) * 100 : 0;
+    const nonCashPct = totalAmount > 0 ? 100 - cashPct : 0;
     const cashVsNonCashLabel =
       totalAmount > 0
-        ? `Cash (${Math.round(cashPct)}%) / Sweat (${Math.round(sweatPct)}%)`
+        ? `${Math.round(cashPct)} vs ${Math.round(nonCashPct)}`
         : "—";
 
     return {

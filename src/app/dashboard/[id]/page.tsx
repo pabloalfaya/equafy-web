@@ -816,15 +816,16 @@ export default function ProjectDashboardPage() {
               <p className="text-slate-500 font-medium mb-8">Dynamic split based on contributions.</p>
               {(() => {
                 const { rows } = getEquitySummaryForFinalize(members, displayContributions, project);
+                const sortedRows = [...rows].sort((a, b) => b.equityPct - a.equityPct);
                 const barColors = ["bg-emerald-500", "bg-blue-500", "bg-violet-500", "bg-amber-500", "bg-red-500", "bg-cyan-500", "bg-pink-500", "bg-indigo-500"];
                 const ringColors = ["ring-emerald-500", "ring-blue-500", "ring-violet-500", "ring-amber-500", "ring-red-500", "ring-cyan-500", "ring-pink-500", "ring-indigo-500"];
                 const getInitials = (name: string) => name.split(" ").map((n) => n[0]).join("").slice(0, 2).toUpperCase();
-                if (rows.length === 0) {
+                if (sortedRows.length === 0) {
                   return <p className="text-slate-500">No hay miembros en el proyecto. Añade miembros desde el botón Team.</p>;
                 }
                 return (
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full">
-                    {rows.map((r, i) => (
+                    {sortedRows.map((r, i) => (
                       <div key={r.name} className="bg-white rounded-2xl p-7 border border-slate-100 shadow-sm hover:shadow-md transition-shadow w-full min-w-0">
                         <div className="flex items-center gap-4 mb-4">
                           <div className={`h-14 w-14 rounded-full flex items-center justify-center font-bold text-white text-sm shrink-0 ring-2 ring-offset-2 ${ringColors[i % ringColors.length]}`} style={{ backgroundColor: ["#10b981", "#3b82f6", "#8b5cf6", "#f59e0b", "#ef4444", "#06b6d4", "#ec4899", "#6366f1"][i % 8] }}>
