@@ -806,26 +806,28 @@ export default function ProjectDashboardPage() {
                     )
                   )}
                 </div>
-
-                {/* Active Members - debajo de los botones, encima de Team Breakdown */}
-                {(() => {
-                  const { rows } = getEquitySummaryForFinalize(members, displayContributions, project);
-                  const activeCount = rows.length;
-                  return (
-                    <div className="mt-4 flex items-center justify-between px-4 py-3 bg-slate-50 rounded-xl border border-slate-100">
-                      <span className="text-xs font-bold text-slate-500 uppercase tracking-widest">Active Members</span>
-                      <span className="text-sm font-black text-slate-800 tabular-nums">{activeCount}</span>
-                    </div>
-                  );
-                })()}
             </div>
             </div>
             </div>
 
             {/* Team Breakdown - datos reales (fuera del max-w para ocupar todo el ancho) */}
             <section className="mt-12 w-full">
-              <h3 className="text-2xl font-bold tracking-tight text-slate-900 mb-2">Team Breakdown</h3>
-              <p className="text-slate-500 font-medium mb-8">Dynamic split based on contributions.</p>
+              <div className="flex flex-wrap items-center justify-between gap-4 mb-8">
+                <div>
+                  <h3 className="text-2xl font-bold tracking-tight text-slate-900 mb-2">Team Breakdown</h3>
+                  <p className="text-slate-500 font-medium">Dynamic split based on contributions.</p>
+                </div>
+                {(() => {
+                  const { rows } = getEquitySummaryForFinalize(members, displayContributions, project);
+                  const activeCount = rows.length;
+                  return (
+                    <div className="flex items-center justify-between gap-3 px-4 py-3 bg-slate-50 rounded-xl border border-slate-100 shrink-0">
+                      <span className="text-xs font-bold text-slate-500 uppercase tracking-widest">Active Members</span>
+                      <span className="text-sm font-black text-slate-800 tabular-nums">{activeCount}</span>
+                    </div>
+                  );
+                })()}
+              </div>
               {(() => {
                 const { rows } = getEquitySummaryForFinalize(members, displayContributions, project);
                 const sortedRows = [...rows].sort((a, b) => b.equityPct - a.equityPct);
