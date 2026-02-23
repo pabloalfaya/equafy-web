@@ -24,6 +24,7 @@ export type MemberForEvolution = {
 export type ByMemberRow = { monthKey: string; monthLabel: string; [memberName: string]: string | number };
 export type TotalValueRow = { monthKey: string; monthLabel: string; total: number };
 export type ByTypeRow = { monthKey: string; monthLabel: string; [type: string]: string | number };
+export type ContributionCountRow = { monthKey: string; monthLabel: string; count: number };
 
 import { computeMemberEquitySummary } from "./equityCalculation";
 
@@ -31,6 +32,18 @@ const MONTH_LABELS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "S
 
 function formatMonthLabel(year: number, month: number): string {
   return `${MONTH_LABELS[month]} ${year}`;
+}
+
+/** Contributions in the period [startDate, endDate] inclusive. */
+function contributionsInPeriod(
+  sorted: (ContributionForEvolution & { date: string })[],
+  startDate: Date,
+  endDate: Date
+): number {
+  return sorted.filter((c) => {
+    const d = new Date(c.date);
+    return d >= startDate && d <= endDate;
+  }).length;
 }
 
 /** Contributions up to and including the given end date (inclusive). */
@@ -82,6 +95,7 @@ export function buildEquityEvolutionData(
       byMember: [] as ByMemberRow[],
       totalValue: [] as TotalValueRow[],
       byType: [] as ByTypeRow[],
+      contributionCount: [] as ContributionCountRow[],
       memberNames: [] as string[],
       typeNames: [] as string[],
     };
@@ -90,7 +104,7 @@ export function buildEquityEvolutionData(
   const first = new Date(contribs[0].date);
   const last = new Date(contribs[contribs.length - 1].date);
 
-  type Period = { endDate: Date; key: string; label: string };
+  type Period = { startDate: Date; endDate: Date; key: string; label: string };
   const periods: Period[] = [];
 
   if (timeScale === "daily") {
@@ -99,8 +113,11 @@ export function buildEquityEvolutionData(
     const lastDay = new Date(last);
     lastDay.setHours(0, 0, 0, 0);
     while (d <= lastDay) {
+      const start = new Date(d);
+      start.setHours(0, 0, 0, 0);
       const end = endOfDay(d);
       periods.push({
+        startDate: start,
         endDate: end,
         key: d.toISOString().slice(0, 10),
         label: `${d.getDate()} ${MONTH_LABELS[d.getMonth()]} ${d.getFullYear()}`,
@@ -114,9 +131,12 @@ export function buildEquityEvolutionData(
     const toMonday = day === 0 ? -6 : 1 - day;
     d.setDate(d.getDate() + toMonday);
     while (d <= last) {
+      const start = new Date(d);
+      start.setHours(0, 0, 0, 0);
       const end = endOfWeek(d);
       if (end >= first) {
         periods.push({
+          startDate: start,
           endDate: end,
           key: `${d.getFullYear()}-W${String(Math.ceil(d.getDate() / 7)).padStart(2, "0")}`,
           label: `${d.getDate()} ${MONTH_LABELS[d.getMonth()]} ${d.getFullYear()}`,
@@ -125,8 +145,11 @@ export function buildEquityEvolutionData(
       d.setDate(d.getDate() + 7);
     }
     if (periods.length === 0) {
+      const start = new Date(first);
+      start.setHours(0, 0, 0, 0);
       const end = endOfWeek(first);
       periods.push({
+        startDate: start,
         endDate: end,
         key: first.toISOString().slice(0, 10),
         label: `${first.getDate()} ${MONTH_LABELS[first.getMonth()]} ${first.getFullYear()}`,
@@ -135,6 +158,7 @@ export function buildEquityEvolutionData(
   } else if (timeScale === "annual") {
     for (let y = first.getFullYear(); y <= last.getFullYear(); y++) {
       periods.push({
+        startDate: new Date(y, 0, 1, 0, 0, 0),
         endDate: endOfYear(y),
         key: String(y),
         label: String(y),
@@ -148,6 +172,7 @@ export function buildEquityEvolutionData(
         continue;
       }
       periods.push({
+        startDate: new Date(y, m, 1, 0, 0, 0),
         endDate: endOfMonth(y, m),
         key: `${y}-${String(m + 1).padStart(2, "0")}`,
         label: formatMonthLabel(y, m),
@@ -166,8 +191,9 @@ export function buildEquityEvolutionData(
   const byMember: ByMemberRow[] = [];
   const totalValue: TotalValueRow[] = [];
   const byType: ByTypeRow[] = [];
+  const contributionCount: ContributionCountRow[] = [];
 
-  for (const { endDate, key, label } of periods) {
+  for (const { startDate, endDate, key, label } of periods) {
     const upTo = contributionsUpTo(contribs, endDate);
 
     const contribsForEquity = upTo.map((c) => ({
@@ -199,12 +225,16 @@ export function buildEquityEvolutionData(
     const byTypeRow: ByTypeRow = { monthKey: key, monthLabel: label };
     typeNames.forEach((t) => (byTypeRow[t] = Math.round(typeSums[t] * 100) / 100));
     byType.push(byTypeRow);
+
+    const count = contributionsInPeriod(contribs, startDate, endDate);
+    contributionCount.push({ monthKey: key, monthLabel: label, count });
   }
 
   return {
     byMember,
     totalValue,
     byType,
+    contributionCount,
     memberNames,
     typeNames,
   };
