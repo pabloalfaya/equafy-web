@@ -126,61 +126,24 @@ export function EquityEvolutionPanel({ contributions = [], members = [] }: Equit
   return (
     <div className="h-full flex flex-col gap-6 min-h-0">
       <div className="flex-shrink-0">
-        <h3 className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-3">Equity History</h3>
-
-        {/* Time scale: daily, weekly, monthly, annual */}
-        <div className="flex flex-wrap gap-2 mb-2">
-          {(["daily", "weekly", "monthly", "annual"] as const).map((scale) => (
-            <button
-              key={scale}
-              type="button"
-              onClick={() => setTimeScale(scale)}
-              className={`px-2.5 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wide transition-colors ${
-                timeScale === scale
-                  ? "bg-slate-700 text-white shadow-sm"
-                  : "bg-slate-100 text-slate-600 hover:bg-slate-200"
-              }`}
-            >
-              {scale === "daily" ? "Daily" : scale === "weekly" ? "Weekly" : scale === "monthly" ? "Monthly" : "Annual"}
-            </button>
-          ))}
-        </div>
-
-        {/* View tabs */}
-        <div className="flex flex-wrap gap-2 mb-3">
-          <button
-            type="button"
-            onClick={() => setView("byMember")}
-            className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-colors ${
-              view === "byMember"
-                ? "bg-emerald-500 text-white shadow-sm"
-                : "bg-slate-100 text-slate-600 hover:bg-slate-200"
-            }`}
-          >
-            By Member (%)
-          </button>
-          <button
-            type="button"
-            onClick={() => setView("totalValue")}
-            className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-colors ${
-              view === "totalValue"
-                ? "bg-emerald-500 text-white shadow-sm"
-                : "bg-slate-100 text-slate-600 hover:bg-slate-200"
-            }`}
-          >
-            Total Value
-          </button>
-          <button
-            type="button"
-            onClick={() => setView("byType")}
-            className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-colors ${
-              view === "byType"
-                ? "bg-emerald-500 text-white shadow-sm"
-                : "bg-slate-100 text-slate-600 hover:bg-slate-200"
-            }`}
-          >
-            By Type
-          </button>
+        <div className="flex items-center justify-between gap-2 mb-3">
+          <h3 className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Equity History</h3>
+          <div className="flex flex-wrap gap-2 justify-end">
+            {(["daily", "weekly", "monthly", "annual"] as const).map((scale) => (
+              <button
+                key={scale}
+                type="button"
+                onClick={() => setTimeScale(scale)}
+                className={`px-2.5 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wide transition-colors ${
+                  timeScale === scale
+                    ? "bg-slate-700 text-white shadow-sm"
+                    : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+                }`}
+              >
+                {scale === "daily" ? "Daily" : scale === "weekly" ? "Weekly" : scale === "monthly" ? "Monthly" : "Annual"}
+              </button>
+            ))}
+          </div>
         </div>
 
         <div className="h-[240px] rounded-xl border border-slate-100 bg-white shadow-sm overflow-hidden">
@@ -271,6 +234,43 @@ export function EquityEvolutionPanel({ contributions = [], members = [] }: Equit
               </LineChart>
             </ResponsiveContainer>
           )}
+        </div>
+
+        {/* View tabs debajo del gráfico */}
+        <div className="flex flex-wrap gap-2 mt-3 justify-center">
+          <button
+            type="button"
+            onClick={() => setView("byMember")}
+            className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-colors ${
+              view === "byMember"
+                ? "bg-emerald-500 text-white shadow-sm"
+                : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+            }`}
+          >
+            By Member (%)
+          </button>
+          <button
+            type="button"
+            onClick={() => setView("totalValue")}
+            className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-colors ${
+              view === "totalValue"
+                ? "bg-emerald-500 text-white shadow-sm"
+                : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+            }`}
+          >
+            Total Value
+          </button>
+          <button
+            type="button"
+            onClick={() => setView("byType")}
+            className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-colors ${
+              view === "byType"
+                ? "bg-emerald-500 text-white shadow-sm"
+                : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+            }`}
+          >
+            By Type
+          </button>
         </div>
       </div>
       <div className="flex-shrink-0">
