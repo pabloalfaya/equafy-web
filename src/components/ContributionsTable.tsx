@@ -1,6 +1,6 @@
 "use client";
 
-import { Pencil, Trash2, Calendar, Tag, FileText } from "lucide-react";
+import { Pencil, Trash2, Tag, StickyNote } from "lucide-react";
 
 // 1. Definimos la interfaz EXACTAMENTE como viene de la base de datos
 interface Contribution {
@@ -20,6 +20,8 @@ interface ContributionsTableProps {
   canEdit?: boolean;
   simulationMode?: boolean;
 }
+
+const MAX_NAME_LENGTH = 18;
 
 export function ContributionsTable({ contributions, onDelete, onEdit, onRemoveSimulated, canEdit = true, simulationMode }: ContributionsTableProps) {
   
@@ -42,7 +44,7 @@ export function ContributionsTable({ contributions, onDelete, onEdit, onRemoveSi
 
   return (
     <div className="min-w-0 w-full md:min-w-max">
-      <table className="w-full text-left border-collapse min-w-[420px] sm:min-w-[520px] md:min-w-[700px]">
+      <table className="w-full text-left border-collapse min-w-[360px] sm:min-w-[420px]">
         <thead>
           <tr className="text-[10px] font-bold text-slate-400 uppercase tracking-wider border-b border-slate-100">
             <th className="py-3 px-2 md:px-4">Date</th>
@@ -62,17 +64,18 @@ export function ContributionsTable({ contributions, onDelete, onEdit, onRemoveSi
               className={`border-b transition-colors ${isSimulated ? "bg-amber-50/60 border-amber-100/80 hover:bg-amber-50" : "border-slate-50 hover:bg-slate-50/50"}`}
             >
               
-              {/* 1. FECHA (Usamos c.date) */}
-              <td className="py-4 px-2 md:px-4 whitespace-nowrap text-slate-500 font-medium">
-                <div className="flex items-center gap-2">
-                    <Calendar className="w-3 h-3 text-slate-300" />
-                    {formatDate(c.date)} 
-                </div>
+              {/* 1. FECHA (sin icono para ahorrar espacio) */}
+              <td className="py-4 px-2 md:px-4 whitespace-nowrap text-slate-500 font-medium text-xs">
+                {formatDate(c.date)}
               </td>
 
-              {/* 2. SOCIO */}
-              <td className="py-4 px-2 md:px-4 font-bold text-slate-800">
-                {c.contributor_name}
+              {/* 2. SOCIO (truncado, tooltip con nombre completo) */}
+              <td className="py-4 px-2 md:px-4 max-w-[120px]" title={c.contributor_name}>
+                <span className="block font-bold text-slate-800 truncate">
+                  {c.contributor_name.length > MAX_NAME_LENGTH
+                    ? `${c.contributor_name.slice(0, MAX_NAME_LENGTH)}…`
+                    : c.contributor_name}
+                </span>
               </td>
 
               {/* 3. TIPO (Usamos c.type) */}
@@ -84,12 +87,19 @@ export function ContributionsTable({ contributions, onDelete, onEdit, onRemoveSi
                 </span>
               </td>
 
-              {/* 4. CONCEPTO (Usamos c.concept) */}
-              <td className="py-4 px-2 md:px-4 max-w-[200px] truncate text-slate-500 hidden sm:table-cell" title={c.concept}>
-                <div className="flex items-center gap-2">
-                    <FileText className="w-3 h-3 text-slate-300 shrink-0" />
-                    <span className="truncate font-medium">{c.concept}</span>
-                </div>
+              {/* 4. CONCEPTO: icono de nota, al hacer clic se muestra la descripción */}
+              <td className="py-4 px-2 md:px-4 hidden sm:table-cell">
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (c.concept?.trim()) window.alert(c.concept);
+                    else window.alert("No description");
+                  }}
+                  className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition-colors"
+                  title={c.concept?.trim() ? `Description: ${c.concept}` : "No description"}
+                >
+                  <StickyNote className="w-4 h-4" />
+                </button>
               </td>
 
               {/* 5. VALOR */}
