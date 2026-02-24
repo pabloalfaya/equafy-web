@@ -62,6 +62,7 @@ const FEATURE_SECTIONS = [
       { title: "Delete Contributions", icon: Trash2, description: "Remove incorrect or duplicate entries to keep a clean history." },
       { title: "Contribution Log", icon: FileText, description: "Chronological history of all contributions, with filter by member." },
       { title: "Simulation Mode", icon: FlaskConical, description: "Simulate contributions without saving and see the impact on the cap table before committing." },
+      { title: "WORK: By Hours or Fixed Value", icon: Sliders, description: "For work contributions, choose to calculate from hours worked (using the member's Hourly Rate × Work multiplier) or enter a fixed amount. Live points preview before saving." },
     ],
   },
   {
@@ -106,6 +107,7 @@ const FEATURE_SECTIONS = [
     features: [
       { title: "Add Members", icon: Users, description: "Add members to the project team." },
       { title: "Edit Members", icon: Edit3, description: "Update name, email and role for each member." },
+      { title: "Hourly Rate (FMV)", icon: Calculator, description: "Optional per-member hourly rate (fair market value) for valuing work contributions by hours in the contribution wizard." },
       { title: "Remove Members", icon: Trash2, description: "Remove members from the project." },
       { title: "Roles", icon: ShieldCheck, description: "Owner, Co-owner, Worker, Venture Capital and more." },
     ],

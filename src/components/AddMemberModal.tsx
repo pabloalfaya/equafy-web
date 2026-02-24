@@ -80,21 +80,41 @@ export function AddMemberModal({
     if (!name.trim() || !canEdit) return;
     setLoading(true);
     try {
+      const hourlyRateVal = hourlyRate.trim() === "" ? null : parseFloat(hourlyRate) || null;
       const payload = {
         name: name.trim(),
         email: email.trim() === "" ? null : email.trim(),
         role: role.trim() || "Member",
         access_level: accessLevel,
-        hourly_rate: hourlyRate.trim() === "" ? null : parseFloat(hourlyRate) || null,
+        hourly_rate: hourlyRateVal,
+      };
+      const payloadWithoutHourlyRate = {
+        name: payload.name,
+        email: payload.email,
+        role: payload.role,
+        access_level: payload.access_level,
       };
       const oldName = editingId ? members.find((m) => m.id === editingId)?.name : null;
       let error;
+      let hourlyRateSkipped = false;
       if (editingId) {
         const { error: updateError } = await supabase
           .from("project_members")
           .update(payload)
           .eq("id", editingId);
         error = updateError;
+        if (error && /hourly_rate|schema cache|column/i.test(error.message)) {
+          const { error: retryError } = await supabase
+            .from("project_members")
+            .update(payloadWithoutHourlyRate)
+            .eq("id", editingId);
+          if (!retryError) {
+            error = null;
+            if (hourlyRateVal != null) hourlyRateSkipped = true;
+          } else {
+            error = retryError;
+          }
+        }
         if (!error && oldName && oldName.trim() !== payload.name) {
           const { error: contribError } = await supabase
             .from("contributions")
@@ -107,9 +127,20 @@ export function AddMemberModal({
         }
       } else {
         const { error: insertError } = await supabase
-          .from("project_members")
-          .insert({ ...payload, project_id: projectId, status: "active" });
+            .from("project_members")
+            .insert({ ...payload, project_id: projectId, status: "active" });
         error = insertError;
+        if (error && /hourly_rate|schema cache|column/i.test(error.message)) {
+          const { error: retryError } = await supabase
+            .from("project_members")
+            .insert({ ...payloadWithoutHourlyRate, project_id: projectId, status: "active" });
+          if (!retryError) {
+            error = null;
+            if (hourlyRateVal != null) hourlyRateSkipped = true;
+          } else {
+            error = retryError;
+          }
+        }
       }
       if (error) {
         console.error("Error saving member:", error);
@@ -125,6 +156,9 @@ export function AddMemberModal({
       }
       resetForm();
       onUpdate();
+      if (hourlyRateSkipped) {
+        alert("Member saved. The Hourly Rate could not be saved because the database does not have the hourly_rate column yet. Run the migration in Supabase (SQL Editor): see supabase/migrations/20250219200000_add_hourly_rate_to_project_members.sql");
+      }
     } catch (error) {
       console.error("Error saving member:", error);
       alert(`Error: ${error instanceof Error ? error.message : "Unknown error"}`);
