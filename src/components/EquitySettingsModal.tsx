@@ -6,6 +6,7 @@ import { createClient } from "@/utils/supabase/client";
 import { logAudit } from "@/utils/auditLog";
 import { calculateDynamicMultiplier } from "@/utils/riskEngine";
 import { BRAND } from "@/lib/brand";
+import { CURRENCIES, formatCurrency, type CurrencyCode } from "@/lib/currency";
 
 const MEMBER_COLORS = [
   "bg-emerald-500",
@@ -91,6 +92,7 @@ export function EquitySettingsModal({
   const [error, setError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [equityCaps, setEquityCaps] = useState<Record<string, number | null>>({});
+  const [currency, setCurrency] = useState<CurrencyCode>("EUR");
 
   const localMembers = members;
 
@@ -124,6 +126,8 @@ export function EquitySettingsModal({
         mult_intangible: Number(project.mult_intangible) || DEFAULT_MULTIPLIERS.mult_intangible,
         mult_others: Number(project.mult_others) || DEFAULT_MULTIPLIERS.mult_others,
       });
+      const cur = (project.currency ?? "EUR") as CurrencyCode;
+      setCurrency(CURRENCIES.some((c) => c.code === cur) ? cur : "EUR");
     }
   }, [isOpen, project]);
 
@@ -133,10 +137,7 @@ export function EquitySettingsModal({
 
   const totalProjectValue = Number(project?.current_valuation) || 0;
   const { cash: smartCashMult, work: smartWorkMult } = calculateDynamicMultiplier(totalProjectValue || 0);
-  const smartDisplayValue = totalProjectValue.toLocaleString(undefined, {
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0,
-  });
+  const smartDisplayValue = formatCurrency(totalProjectValue, currency);
 
   const handleMemberChange = (memberId: string, val: string) => {
     if (!canEdit) return;
@@ -336,7 +337,7 @@ export function EquitySettingsModal({
           </button>
         </div>
 
-        {/* Tabs: 1. Default Models 2. Multipliers 3. Fixed Equity 4. Limited Equity 5. Smart Multipliers */}
+        {/* Tabs: 1. Settings 2. Multipliers 3. Fixed Equity 4. Limited Equity 5. Smart Multipliers */}
         <div className="flex flex-nowrap gap-1.5 mb-6 p-1 rounded-xl bg-slate-100 border border-slate-200 w-full">
           <button
             type="button"
@@ -347,7 +348,7 @@ export function EquitySettingsModal({
                 : "text-slate-600 hover:text-slate-800"
             }`}
           >
-            Default Models
+            Settings
           </button>
           <button
             type="button"
@@ -399,6 +400,36 @@ export function EquitySettingsModal({
         <div className="h-[480px] flex flex-col overflow-hidden pr-1 w-full min-w-0">
         {activeTab === "default_models" && (
           <div className="flex-1 min-h-0 overflow-y-auto space-y-4 w-full">
+            {/* Currency */}
+            <div>
+              <label className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2 block">Currency</label>
+              <select
+                value={currency}
+                onChange={async (e) => {
+                  const newCur = e.target.value as CurrencyCode;
+                  setCurrency(newCur);
+                  if (!canEdit || !projectId) return;
+                  const supabase = createClient();
+                  const { error: err } = await supabase.from("projects").update({ currency: newCur }).eq("id", projectId);
+                  if (!err) {
+                    try {
+                      await logAudit({ supabase, projectId, actionType: "UPDATE_PROJECT", description: `Currency set to ${newCur}` });
+                    } catch (_) {}
+                    onSuccess?.();
+                  }
+                }}
+                disabled={!canEdit}
+                className="w-full max-w-xs rounded-xl border border-slate-200 px-4 py-2.5 bg-slate-50 font-bold text-slate-800 outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 disabled:opacity-60"
+              >
+                {CURRENCIES.map((c) => (
+                  <option key={c.code} value={c.code}>
+                    {c.symbol} — {c.name}
+                  </option>
+                ))}
+              </select>
+              <p className="text-xs text-slate-500 mt-1">All monetary values in this project will use this currency.</p>
+            </div>
+
             <p className="text-sm text-slate-600 leading-relaxed w-full">
               Choose a preset model (Just Split, Flat, or Custom) to set default multipliers for contributions.
             </p>
@@ -745,7 +776,7 @@ export function EquitySettingsModal({
                 </p>
               </div>
               <p className="text-lg font-black text-slate-900">
-                Current Project Value: €{smartDisplayValue}
+                Current Project Value: {smartDisplayValue}
               </p>
               <div className="space-y-3">
                 <div className="flex items-center justify-between p-4 rounded-2xl bg-emerald-50 border border-emerald-100">
@@ -786,8 +817,8 @@ export function EquitySettingsModal({
                 <p className="text-sm text-slate-600 leading-relaxed">
                   {BRAND.name} uses a{" "}
                   <span className="font-semibold text-slate-800">Logarithmic Decay Model</span>. Why?
-                  Because €1,000 invested when the company is just an idea is infinitely riskier than
-                  €1,000 invested when the company is already making millions.
+                  Because {formatCurrency(1000, currency)} invested when the company is just an idea is infinitely riskier than{" "}
+                  {formatCurrency(1000, currency)} invested when the company is already making millions.
                 </p>
               </div>
 
@@ -823,8 +854,8 @@ export function EquitySettingsModal({
                 <h4 className="text-sm font-semibold text-slate-900">Behavior Rules</h4>
                 <ul className="list-disc list-inside space-y-2 text-sm text-slate-600">
                   <li>
-                    <span className="font-semibold text-slate-800">Early Stage (High Risk):</span> At
-                    €3,000 accumulated, the multiplier is maxed at{" "}
+                    <span className="font-semibold text-slate-800">Early Stage (High Risk):</span> At{" "}
+                    {formatCurrency(3000, currency)} accumulated, the multiplier is maxed at{" "}
                     <span className="font-semibold">x4.00</span>.
                   </li>
                   <li>

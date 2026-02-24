@@ -4,6 +4,7 @@ import React, { useMemo } from "react";
 import { TrendingUp } from "lucide-react";
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from "recharts";
 import { parseCap } from "@/utils/equityCalculation";
+import { formatCurrency } from "@/lib/currency";
 
 // Colores profesionales
 const COLORS = [
@@ -20,6 +21,7 @@ const COLORS = [
 interface EquityPieChartProps {
   contributions: any[];
   members: any[];
+  currency?: string;
   showEvolution?: boolean;
   onToggleEvolution?: () => void;
 }
@@ -54,7 +56,7 @@ function CustomTooltip(props: { active?: boolean; payload?: Array<{ payload: Cha
   );
 }
 
-export function EquityPieChart({ contributions, members, showEvolution = false, onToggleEvolution }: EquityPieChartProps) {
+export function EquityPieChart({ contributions, members, currency = "EUR", showEvolution = false, onToggleEvolution }: EquityPieChartProps) {
   const {
     data,
     totalPoints,
@@ -248,11 +250,11 @@ export function EquityPieChart({ contributions, members, showEvolution = false, 
       <div className="mt-4 space-y-2 overflow-y-auto custom-scrollbar max-h-[280px]">
         <div className="flex items-center justify-between px-3 py-2.5 bg-slate-50 rounded-xl border border-slate-100">
           <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Total Cash (no mult.)</span>
-          <span className="text-sm font-black text-slate-800 tabular-nums">{totalCashInvested.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+          <span className="text-sm font-black text-slate-800 tabular-nums">{formatCurrency(totalCashInvested, currency)}</span>
         </div>
         <div className="flex items-center justify-between px-3 py-2.5 bg-slate-50 rounded-xl border border-slate-100">
           <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Total Sweat (no mult.)</span>
-          <span className="text-sm font-black text-slate-800 tabular-nums">{totalSweatEquity.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+          <span className="text-sm font-black text-slate-800 tabular-nums">{formatCurrency(totalSweatEquity, currency)}</span>
         </div>
         <div className="flex items-center justify-between px-3 py-2.5 bg-slate-50 rounded-xl border border-slate-100">
           <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Cash vs Non-Cash</span>

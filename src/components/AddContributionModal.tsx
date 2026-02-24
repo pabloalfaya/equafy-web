@@ -5,6 +5,7 @@ import { X } from "lucide-react";
 import { createClient } from "@/utils/supabase/client";
 import { recalculateAndPersistProjectValuation } from "@/utils/projectRecalculator";
 import { logAudit } from "@/utils/auditLog";
+import { formatCurrency, getCurrencyLabel } from "@/lib/currency";
 
 // Defined types with English labels
 const CONTRIBUTION_TYPES = [
@@ -81,6 +82,7 @@ export function AddContributionModal({ isOpen, onClose, projectId, projectConfig
   const selectedMember = members.find((m: any) => m.id === contributorId);
   const memberHourlyRate = selectedMember?.hourly_rate != null ? Number(selectedMember.hourly_rate) : null;
   const workMultiplier = getMultiplierForType("WORK");
+  const currency = projectConfig?.currency ?? "EUR";
   const baseValue = type === "WORK" && workInputMode === "hours"
     ? (parseFloat(hoursWorked || "0") || 0) * (memberHourlyRate ?? 0)
     : parseFloat(amount || "0") || 0;
@@ -185,9 +187,9 @@ export function AddContributionModal({ isOpen, onClose, projectId, projectConfig
     let desc: string;
     if (editData) {
       const oldAmt = Number(editData.amount) || 0;
-      desc = `Edited contribution for ${memberName}: Changed ${oldAmt.toLocaleString()}€ to ${amt.toLocaleString()}€ in ${type}`;
+      desc = `Edited contribution for ${memberName}: Changed ${formatCurrency(oldAmt, currency)} to ${formatCurrency(amt, currency)} in ${type}`;
     } else {
-      desc = `Added contribution of ${amt.toLocaleString()}€ in ${type} for ${memberName}`;
+      desc = `Added contribution of ${formatCurrency(amt, currency)} in ${type} for ${memberName}`;
     }
     try {
       await logAudit({ supabase, projectId, actionType, description: desc });
@@ -330,7 +332,7 @@ export function AddContributionModal({ isOpen, onClose, projectId, projectConfig
                   />
                   {memberHourlyRate != null && memberHourlyRate > 0 && (
                     <p className="text-xs text-slate-500 mt-1 ml-1">
-                      Hourly rate: {memberHourlyRate}€ × {hoursWorked || "0"} h = {(parseFloat(hoursWorked || "0") || 0) * memberHourlyRate}€ (before multiplier)
+                      Hourly rate: {formatCurrency(memberHourlyRate, currency)} × {hoursWorked || "0"} h = {formatCurrency((parseFloat(hoursWorked || "0") || 0) * memberHourlyRate, currency)} (before multiplier)
                     </p>
                   )}
                   {isWorkByHoursNoRate && (
@@ -341,7 +343,7 @@ export function AddContributionModal({ isOpen, onClose, projectId, projectConfig
                 </div>
               ) : (
                 <div>
-                  <label className="text-xs font-bold text-slate-400 ml-1 mb-1 block uppercase">Value (€)</label>
+                  <label className="text-xs font-bold text-slate-400 ml-1 mb-1 block uppercase">{getCurrencyLabel(currency)}</label>
                   <input 
                     type="number" 
                     min={0}
@@ -401,7 +403,7 @@ export function AddContributionModal({ isOpen, onClose, projectId, projectConfig
              </div>
              {type === "WORK" && baseValue > 0 && (
                <p className="text-xs text-slate-400 mt-1">
-                 {baseValue.toLocaleString()}€ × {multiplier} = {riskAdjustedValue} points
+                 {formatCurrency(baseValue, currency)} × {multiplier} = {riskAdjustedValue} points
                </p>
              )}
           </div>

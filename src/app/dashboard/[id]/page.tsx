@@ -21,12 +21,14 @@ import type { Project, Contribution, ContributionType } from "@/types/database";
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import { BRAND } from "@/lib/brand";
+import { formatCurrency } from "@/lib/currency";
 
 // Tipos extendidos
 type ExtendedProject = Project & { 
     equity_model?: string; 
     model_type?: string; 
     model_onboarding_dismissed?: boolean;
+    currency?: string;
 };
 type ExtendedContribution = Contribution & { date?: string; concept?: string; multiplier?: number; [key: string]: any };
 
@@ -218,11 +220,12 @@ export default function ProjectDashboardPage() {
       const memberName = contribution?.contributor_name ?? "Unknown";
       const amt = contribution?.amount ?? 0;
       const contributionType = contribution?.type ?? "?";
+      const currency = project?.currency ?? "EUR";
       await logAudit({
         supabase,
         projectId,
         actionType: "DELETE_CONTRIBUTION",
-        description: `Deleted contribution: ${memberName} - ${Number(amt).toLocaleString()}€ (${contributionType})`,
+        description: `Deleted contribution: ${memberName} - ${formatCurrency(Number(amt), currency)} (${contributionType})`,
       });
     } catch (err) {
       console.error("Error saving audit log:", err);
@@ -789,7 +792,7 @@ export default function ProjectDashboardPage() {
                         <div className="p-2 bg-emerald-50 rounded-lg"><PieChart className="h-5 w-5 text-emerald-600" /></div>
                         <h3 className="font-bold text-slate-900 text-xl">Equity Distribution</h3>
                     </div>
-                    <div className="w-full aspect-square"><EquityPieChart contributions={displayContributions} members={members} showEvolution={showEvolution} onToggleEvolution={() => setShowEvolution((v) => !v)} /></div>
+                    <div className="w-full aspect-square"><EquityPieChart contributions={displayContributions} members={members} currency={project?.currency ?? "EUR"} showEvolution={showEvolution} onToggleEvolution={() => setShowEvolution((v) => !v)} /></div>
                   </div>
 
                 <div className="grid grid-cols-3 gap-2 mt-2">
