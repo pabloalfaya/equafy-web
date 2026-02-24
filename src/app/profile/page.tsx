@@ -233,25 +233,7 @@ export default function ProfilePage() {
           </form>
         </section>
 
-        {/* 2. SECURITY */}
-        <section className="bg-white border border-slate-200 rounded-2xl shadow-sm p-8 mb-6">
-          <h2 className="text-lg font-bold text-slate-900 flex items-center gap-2 mb-4">
-            <Shield className="w-5 h-5 text-slate-600" /> Security
-          </h2>
-          <p className="text-slate-600 font-medium text-sm leading-relaxed mb-4">
-            To change your password, go to the login page and use &quot;Forgot
-            password?&quot; to receive the reset link.
-          </p>
-          <button
-            type="button"
-            onClick={handlePasswordReset}
-            className="inline-flex items-center gap-2 bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 hover:border-slate-300 px-6 py-3 rounded-xl font-bold transition-all"
-          >
-            Go to reset password
-          </button>
-        </section>
-
-        {/* 3. PAYMENTS & INVOICING */}
+        {/* 2. PAYMENTS & INVOICING */}
         <section className="bg-white border border-slate-200 rounded-2xl shadow-sm p-8 mb-6">
           <h2 className="text-lg font-bold text-slate-900 flex items-center gap-2 mb-4">
             <CreditCard className="w-5 h-5 text-slate-600" /> Payments & Invoicing
@@ -310,6 +292,24 @@ export default function ProfilePage() {
               </div>
             )}
           </div>
+        </section>
+
+        {/* 3. SECURITY */}
+        <section className="bg-white border border-slate-200 rounded-2xl shadow-sm p-8 mb-6">
+          <h2 className="text-lg font-bold text-slate-900 flex items-center gap-2 mb-4">
+            <Shield className="w-5 h-5 text-slate-600" /> Security
+          </h2>
+          <p className="text-slate-600 font-medium text-sm leading-relaxed mb-4">
+            To change your password, go to the login page and use &quot;Forgot
+            password?&quot; to receive the reset link.
+          </p>
+          <button
+            type="button"
+            onClick={handlePasswordReset}
+            className="inline-flex items-center gap-2 bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 hover:border-slate-300 px-6 py-3 rounded-xl font-bold transition-all"
+          >
+            Go to reset password
+          </button>
         </section>
 
         {/* 4. DANGER ZONE */}
