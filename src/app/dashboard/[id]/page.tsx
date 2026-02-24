@@ -31,27 +31,34 @@ type ExtendedProject = Project & {
 type ExtendedContribution = Contribution & { date?: string; concept?: string; multiplier?: number; [key: string]: any };
 
 // Tipos de miembros
-type Member = { id: string; name: string; role: string; email?: string; fixed_equity?: number | null; equity_cap?: number | null; access_level?: "editor" | "viewer"; user_id?: string | null };
+type Member = { id: string; name: string; role: string; email?: string; fixed_equity?: number | null; equity_cap?: number | null; access_level?: "editor" | "viewer"; user_id?: string | null; hourly_rate?: number | null };
 
-/** Carga miembros del proyecto. Si la columna equity_cap no existe en la BD, reintenta sin ella para no vaciar la lista. */
+/** Carga miembros del proyecto. Si columnas opcionales (equity_cap, hourly_rate) no existen, reintenta sin ellas. */
 async function fetchProjectMembers(
   supabase: ReturnType<typeof createClient>,
   projectId: string
 ): Promise<Member[]> {
   const baseCols = "id, name, role, email, fixed_equity, access_level, user_id";
-  const { data: withCap, error: errWithCap } = await supabase
+  const { data: full, error: errFull } = await supabase
+    .from("project_members")
+    .select(`${baseCols}, equity_cap, hourly_rate`)
+    .eq("project_id", projectId);
+  if (!errFull && full != null) {
+    return (full as unknown as Member[]) ?? [];
+  }
+  const { data: withCap, error: errCap } = await supabase
     .from("project_members")
     .select(`${baseCols}, equity_cap`)
     .eq("project_id", projectId);
-  if (!errWithCap && withCap != null) {
-    return (withCap as unknown as Member[]) ?? [];
+  if (!errCap && withCap != null) {
+    return (withCap as Record<string, unknown>[]).map((r) => ({ ...r, equity_cap: (r as Member).equity_cap ?? null, hourly_rate: null })) as Member[];
   }
-  const { data: withoutCap } = await supabase
+  const { data: minimal } = await supabase
     .from("project_members")
     .select(baseCols)
     .eq("project_id", projectId);
-  const rows = (withoutCap ?? []) as (Omit<Member, "equity_cap"> & { equity_cap?: number | null })[];
-  return rows.map((r) => ({ ...r, equity_cap: r.equity_cap ?? null }));
+  const rows = (minimal ?? []) as Record<string, unknown>[];
+  return rows.map((r) => ({ ...r, equity_cap: null, hourly_rate: null })) as Member[];
 }
 
 /** Returns normalized equity rows and total points (same logic as EquityPieChart / PDF). */

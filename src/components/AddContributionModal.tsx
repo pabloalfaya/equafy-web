@@ -32,14 +32,14 @@ export function AddContributionModal({ isOpen, onClose, projectId, projectConfig
   const [concept, setConcept] = useState("");
   const [type, setType] = useState("CASH");
   const [amount, setAmount] = useState("");
+  const [workInputMode, setWorkInputMode] = useState<"hours" | "fixed">("fixed");
+  const [hoursWorked, setHoursWorked] = useState("");
   const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
   const [multiplier, setMultiplier] = useState(1);
   const [loading, setLoading] = useState(false);
   const [activeMultipliers, setActiveMultipliers] = useState<Record<string, number>>(DEFAULT_MULTIPLIERS);
 
   const supabase = createClient();
-  
-  const riskAdjustedValue = (parseFloat(amount || "0") * multiplier).toFixed(2);
 
   // Lee multiplicadores desde BD al abrir el modal (siempre datos frescos)
   useEffect(() => {
@@ -78,6 +78,15 @@ export function AddContributionModal({ isOpen, onClose, projectId, projectConfig
     return typeof val === "number" && !Number.isNaN(val) ? val : (DEFAULT_MULTIPLIERS[key] ?? 1);
   };
 
+  const selectedMember = members.find((m: any) => m.id === contributorId);
+  const memberHourlyRate = selectedMember?.hourly_rate != null ? Number(selectedMember.hourly_rate) : null;
+  const workMultiplier = getMultiplierForType("WORK");
+  const baseValue = type === "WORK" && workInputMode === "hours"
+    ? (parseFloat(hoursWorked || "0") || 0) * (memberHourlyRate ?? 0)
+    : parseFloat(amount || "0") || 0;
+  const riskAdjustedValue = (baseValue * multiplier).toFixed(2);
+  const isWorkByHoursNoRate = type === "WORK" && workInputMode === "hours" && (memberHourlyRate == null || memberHourlyRate === 0);
+
   // Effect: Load data on open
   useEffect(() => {
     if (isOpen) {
@@ -88,6 +97,8 @@ export function AddContributionModal({ isOpen, onClose, projectId, projectConfig
         setConcept(editData.concept || ""); 
         setType(editData.type || "CASH");
         setAmount(editData.amount?.toString() || ""); 
+        setWorkInputMode("fixed");
+        setHoursWorked("");
         setDate(editData.date || new Date().toISOString().split('T')[0]); 
         setMultiplier(editData.multiplier || 1);
       } else {
@@ -95,6 +106,8 @@ export function AddContributionModal({ isOpen, onClose, projectId, projectConfig
         setConcept(""); 
         setAmount(""); 
         setType("CASH"); 
+        setWorkInputMode("fixed");
+        setHoursWorked("");
         setDate(new Date().toISOString().split('T')[0]);
         if (members.length > 0 && !contributorId) {
             setContributorId(members[0].id);
@@ -119,9 +132,12 @@ export function AddContributionModal({ isOpen, onClose, projectId, projectConfig
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!canEdit && activeTab === "add") return;
+    if (isWorkByHoursNoRate && type === "WORK" && workInputMode === "hours") return;
 
     const selectedMember = members.find((m: any) => m.id === contributorId);
-    const amt = parseFloat(amount || "0");
+    const amt = type === "WORK" && workInputMode === "hours"
+      ? (parseFloat(hoursWorked || "0") || 0) * (memberHourlyRate ?? 0)
+      : parseFloat(amount || "0") || 0;
     const riskVal = parseFloat(riskAdjustedValue);
 
     if (activeTab === "simulate" && onAddSimulated) {
@@ -256,39 +272,106 @@ export function AddContributionModal({ isOpen, onClose, projectId, projectConfig
             />
           </div>
 
-          {/* Type & Amount Grid */}
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-                <label className="text-xs font-bold text-slate-400 ml-1 mb-1 block uppercase">Type</label>
-                <select 
-                    value={type} 
-                    onChange={(e) => setType(e.target.value)} 
-                    disabled={!canEdit}
-                    className="w-full rounded-xl border border-slate-200 px-4 py-3 bg-slate-50 font-black text-xs uppercase outline-none text-slate-700 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all disabled:opacity-60 disabled:cursor-not-allowed"
-                >
-                    {CONTRIBUTION_TYPES.map((t) => {
-                        const multVal = getMultiplierForType(t.value);
-                        return (
-                            <option key={t.value} value={t.value}>
-                                {t.label} (x{multVal})
-                            </option>
-                        );
-                    })}
-                </select>
-            </div>
-            
-            <div>
-                <label className="text-xs font-bold text-slate-400 ml-1 mb-1 block uppercase">Value</label>
-                <input 
+          {/* Type */}
+          <div>
+            <label className="text-xs font-bold text-slate-400 ml-1 mb-1 block uppercase">Type</label>
+            <select 
+              value={type} 
+              onChange={(e) => { setType(e.target.value); if (e.target.value !== "WORK") setWorkInputMode("fixed"); setHoursWorked(""); }} 
+              disabled={!canEdit}
+              className="w-full rounded-xl border border-slate-200 px-4 py-3 bg-slate-50 font-black text-xs uppercase outline-none text-slate-700 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all disabled:opacity-60 disabled:cursor-not-allowed"
+            >
+              {CONTRIBUTION_TYPES.map((t) => {
+                const multVal = getMultiplierForType(t.value);
+                return (
+                  <option key={t.value} value={t.value}>
+                    {t.label} (x{multVal})
+                  </option>
+                );
+              })}
+            </select>
+          </div>
+
+          {/* WORK: toggle Calculate by Hours vs Fixed Value */}
+          {type === "WORK" && (
+            <>
+              <div>
+                <label className="text-xs font-bold text-slate-400 ml-1 mb-2 block uppercase">How to value</label>
+                <div className="flex gap-2 p-1 rounded-xl bg-slate-100 border border-slate-200">
+                  <button
+                    type="button"
+                    onClick={() => { setWorkInputMode("hours"); setAmount(""); }}
+                    className={`flex-1 py-2.5 px-4 rounded-lg text-sm font-bold transition-all ${workInputMode === "hours" ? "bg-white text-slate-800 shadow-sm" : "text-slate-600 hover:text-slate-800"}`}
+                  >
+                    Calculate by Hours
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => { setWorkInputMode("fixed"); setHoursWorked(""); }}
+                    className={`flex-1 py-2.5 px-4 rounded-lg text-sm font-bold transition-all ${workInputMode === "fixed" ? "bg-white text-slate-800 shadow-sm" : "text-slate-600 hover:text-slate-800"}`}
+                  >
+                    Fixed Value
+                  </button>
+                </div>
+              </div>
+              {workInputMode === "hours" ? (
+                <div>
+                  <label className="text-xs font-bold text-slate-400 ml-1 mb-1 block uppercase">Hours worked</label>
+                  <input 
                     type="number" 
+                    min={0}
+                    step={0.25}
+                    placeholder="e.g. 40"
+                    value={hoursWorked} 
+                    onChange={(e) => setHoursWorked(e.target.value)} 
+                    disabled={!canEdit}
+                    className="w-full rounded-xl border border-slate-200 px-4 py-3 bg-slate-50 font-black outline-none text-slate-700 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all disabled:opacity-60 disabled:cursor-not-allowed" 
+                  />
+                  {memberHourlyRate != null && memberHourlyRate > 0 && (
+                    <p className="text-xs text-slate-500 mt-1 ml-1">
+                      Hourly rate: {memberHourlyRate}€ × {hoursWorked || "0"} h = {(parseFloat(hoursWorked || "0") || 0) * memberHourlyRate}€ (before multiplier)
+                    </p>
+                  )}
+                  {isWorkByHoursNoRate && (
+                    <p className="text-xs font-bold text-red-600 mt-2 ml-1">
+                      This member has no Hourly Rate (FMV) set. Add it in Team → Edit member, or use &quot;Fixed Value&quot; to enter the amount directly.
+                    </p>
+                  )}
+                </div>
+              ) : (
+                <div>
+                  <label className="text-xs font-bold text-slate-400 ml-1 mb-1 block uppercase">Value (€)</label>
+                  <input 
+                    type="number" 
+                    min={0}
+                    step={0.01}
                     placeholder="0.00" 
                     value={amount} 
                     onChange={(e) => setAmount(e.target.value)} 
                     disabled={!canEdit}
                     className="w-full rounded-xl border border-slate-200 px-4 py-3 bg-slate-50 font-black outline-none text-slate-700 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all disabled:opacity-60 disabled:cursor-not-allowed" 
-                />
+                  />
+                </div>
+              )}
+            </>
+          )}
+
+          {/* Value for non-WORK types */}
+          {type !== "WORK" && (
+            <div>
+              <label className="text-xs font-bold text-slate-400 ml-1 mb-1 block uppercase">Value</label>
+              <input 
+                type="number" 
+                min={0}
+                step={0.01}
+                placeholder="0.00" 
+                value={amount} 
+                onChange={(e) => setAmount(e.target.value)} 
+                disabled={!canEdit}
+                className="w-full rounded-xl border border-slate-200 px-4 py-3 bg-slate-50 font-black outline-none text-slate-700 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all disabled:opacity-60 disabled:cursor-not-allowed" 
+              />
             </div>
-          </div>
+          )}
 
           {/* Date */}
           <div>
@@ -301,23 +384,28 @@ export function AddContributionModal({ isOpen, onClose, projectId, projectConfig
              />
           </div>
 
-          {/* Result Card */}
+          {/* Result Card — preview of total points */}
           <div className="rounded-2xl bg-slate-900 p-6 text-white shadow-lg shadow-emerald-900/20">
              <div className="flex justify-between text-[10px] font-black uppercase opacity-60 mb-2">
-                <span>Calculated Risk</span>
+                <span>{type === "WORK" ? "Value × Work multiplier" : "Calculated Risk"}</span>
                 <span className="bg-emerald-500/20 px-2 py-0.5 rounded text-emerald-400">x{multiplier} Multiplier</span>
              </div>
              <div className="flex items-baseline gap-1">
                 <span className="text-3xl font-black text-emerald-400">{Number(riskAdjustedValue).toLocaleString()}</span>
                 <span className="text-sm font-bold text-emerald-400/60">points</span>
              </div>
+             {type === "WORK" && baseValue > 0 && (
+               <p className="text-xs text-slate-400 mt-2">
+                 {baseValue.toLocaleString()}€ × {multiplier} = {riskAdjustedValue} points
+               </p>
+             )}
           </div>
 
           {/* Submit Button */}
           {(canEdit || (activeTab === "simulate" && onAddSimulated)) && (
             <button 
               type="submit" 
-              disabled={loading} 
+              disabled={loading || isWorkByHoursNoRate} 
               className="w-full rounded-2xl py-4 text-sm font-black text-white hover:shadow-lg transition-all uppercase tracking-widest disabled:opacity-50 disabled:cursor-not-allowed bg-emerald-600 hover:bg-emerald-500 hover:shadow-emerald-500/30"
             >
               {loading ? "Saving..." : activeTab === "simulate" ? "Simulate Contribution" : editData ? "Save Changes" : "Confirm Contribution"}

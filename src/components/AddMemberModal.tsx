@@ -16,6 +16,7 @@ interface Member {
   access_level?: "editor" | "viewer";
   fixed_equity?: number | null;
   equity_cap?: number | null;
+  hourly_rate?: number | null;
 }
 
 interface AddMemberModalProps {
@@ -53,6 +54,7 @@ export function AddMemberModal({
   const [email, setEmail] = useState("");
   const [role, setRole] = useState("");
   const [accessLevel, setAccessLevel] = useState<"editor" | "viewer">("editor");
+  const [hourlyRate, setHourlyRate] = useState("");
   const [loading, setLoading] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
 
@@ -83,6 +85,7 @@ export function AddMemberModal({
         email: email.trim() === "" ? null : email.trim(),
         role: role.trim() || "Member",
         access_level: accessLevel,
+        hourly_rate: hourlyRate.trim() === "" ? null : parseFloat(hourlyRate) || null,
       };
       const oldName = editingId ? members.find((m) => m.id === editingId)?.name : null;
       let error;
@@ -135,6 +138,7 @@ export function AddMemberModal({
     setEmail("");
     setRole("");
     setAccessLevel("editor");
+    setHourlyRate("");
     setEditingId(null);
   };
 
@@ -143,6 +147,7 @@ export function AddMemberModal({
     setEmail(member.email || "");
     setRole(member.role || "");
     setAccessLevel((member.access_level as "editor" | "viewer") || "editor");
+    setHourlyRate(member.hourly_rate != null ? String(member.hourly_rate) : "");
     setEditingId(member.id);
   };
 
@@ -340,6 +345,20 @@ export function AddMemberModal({
                   className="w-full pl-10 pr-4 py-3 rounded-xl bg-slate-50 border border-slate-200 font-bold text-slate-700 outline-none focus:border-emerald-500 transition-all disabled:opacity-60 disabled:cursor-not-allowed"
                 />
               </div>
+            </div>
+            <div>
+              <label className="text-xs font-bold text-slate-500 ml-1 mb-1 block uppercase">Hourly Rate (FMV) — Optional</label>
+              <input
+                type="number"
+                min={0}
+                step={0.01}
+                placeholder="e.g. 50"
+                value={hourlyRate}
+                onChange={(e) => setHourlyRate(e.target.value)}
+                disabled={!canEdit}
+                className="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 font-bold text-slate-700 outline-none focus:border-emerald-500 transition-all disabled:opacity-60 disabled:cursor-not-allowed"
+              />
+              <p className="text-xs text-slate-400 mt-1 ml-1">Used for WORK contributions when calculating by hours.</p>
             </div>
             <div>
               <label className="text-xs font-bold text-slate-400 ml-1 mb-1 block uppercase">Permissions</label>
