@@ -180,10 +180,7 @@ export function EquityPieChart({ contributions, members, currency = "EUR", showE
   }, [contributions, members]);
 
   const totalValue = data.reduce((sum, item) => sum + item.value, 0);
-  const formattedTotalPoints = totalPoints.toLocaleString(undefined, {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  });
+  const formattedTotalPoints = formatCurrency(totalPoints, currency);
 
   // Si no hay datos, mostramos mensaje vacío
   if (data.length === 0 || totalValue === 0) {
