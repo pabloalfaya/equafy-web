@@ -201,10 +201,10 @@ export default function ProfilePage() {
           </button>
         </section>
 
-        {/* 3. PAYMENTS */}
+        {/* 3. PAYMENTS & INVOICING */}
         <section className="bg-white border border-slate-200 rounded-2xl shadow-sm p-8 mb-6">
           <h2 className="text-lg font-bold text-slate-900 flex items-center gap-2 mb-4">
-            <CreditCard className="w-5 h-5 text-slate-600" /> Payments
+            <CreditCard className="w-5 h-5 text-slate-600" /> Payments & Invoicing
           </h2>
           <p className="text-slate-600 font-medium text-sm leading-relaxed mb-4">
             Payments and invoices are managed per project. Click the gear icon on each project card in your dashboard to manage billing and subscriptions.
