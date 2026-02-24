@@ -119,10 +119,7 @@ export default function ProfilePage() {
       if (!res.ok) throw new Error(data?.error ?? "Failed to open billing portal");
       if (data?.url) {
         const url = String(data.url);
-        const win = window.open(url, "_blank", "noopener,noreferrer");
-        if (!win) {
-          window.location.href = url;
-        }
+        window.open(url, "_blank", "noopener,noreferrer");
         return;
       }
       throw new Error("No portal URL received");

@@ -31,7 +31,7 @@ function LoginForm() {
     const errorDesc = searchParams.get("error_description");
     if (errorCode === "otp_expired" || (typeof window !== "undefined" && window.location.hash.includes("otp_expired"))) {
       setMessage({ 
-        text: "Este enlace ha caducado. Solicita uno nuevo con 'Contraseña olvidada' e intenta de nuevo antes de 1 hora.", 
+        text: "This password reset link has expired. Please request a new one with 'Forgot password?' and try again within 1 hour.", 
         type: "error" 
       });
       if (typeof window !== "undefined" && window.history.replaceState) {
