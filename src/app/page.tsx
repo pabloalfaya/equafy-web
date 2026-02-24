@@ -39,6 +39,15 @@ export default function LandingPage() {
   useEffect(() => {
     if (typeof window === "undefined") return;
     const params = new URLSearchParams(window.location.search);
+
+    // 1) Si llega un enlace de recuperación (type=recovery en el hash) redirigimos al flujo de update-password
+    const hash = window.location.hash || "";
+    if (hash.includes("type=recovery")) {
+      router.replace(`/auth/update-password${hash}`);
+      return;
+    }
+
+    // 2) Errores de enlaces caducados o denegados → mandar al login con mensaje
     const errorCode = params.get("error_code");
     if (errorCode === "otp_expired" || errorCode === "access_denied") {
       const desc = params.get("error_description") || "Link expired or invalid";
