@@ -658,7 +658,7 @@ export default function ProjectDashboardPage() {
     <div className="min-h-screen bg-[#F8FAFC] font-sans text-slate-900 overflow-x-hidden">
       <main className="relative z-10 pt-16 pb-20 px-4 md:px-12 lg:px-24">
         <div className="mx-auto max-w-screen-2xl">
-            <div className="mb-10 flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
+            <div className="mb-10 flex flex-col gap-4 md:flex-row md:items-start md:justify-between md:gap-6">
               <div className="flex items-start gap-4">
                 <Link
                   href="/dashboard"
@@ -667,8 +667,8 @@ export default function ProjectDashboardPage() {
                 >
                   <ArrowLeft className="w-5 h-5 text-slate-500" />
                 </Link>
-                <div>
-                <h1 className="text-4xl font-black text-slate-900 tracking-tight">{project.name}</h1>
+                <div className="min-w-0">
+                <h1 className="text-4xl font-black text-slate-900 tracking-tight break-words">{project.name}</h1>
                 <p className="mt-2 text-slate-500 font-medium italic capitalize">
                     Calculated using the {getModelName()} model.
                 </p>
@@ -697,7 +697,7 @@ export default function ProjectDashboardPage() {
                 )}
               </div>
               </div>
-              <div className="flex gap-2 sm:gap-3 overflow-x-auto md:overflow-visible flex-nowrap md:flex-wrap pb-2 md:pb-0 -mx-1 px-1 md:mx-0 md:px-0 [&>*]:flex-shrink-0">
+              <div className="flex gap-2 sm:gap-3 overflow-x-auto md:overflow-visible flex-nowrap md:flex-wrap pb-2 md:pb-0 -mx-1 px-1 md:mx-0 md:px-0 [&>*]:flex-shrink-0 shrink-0">
                 <button
                   onClick={generatePDF}
                   className="inline-flex items-center gap-1.5 md:gap-2 rounded-xl bg-white border border-slate-200 px-3 md:px-5 py-2.5 md:py-3 font-bold text-slate-700 shadow-sm hover:bg-slate-50 transition-all whitespace-nowrap text-xs md:text-base"
