@@ -161,6 +161,7 @@ export default function ProjectDashboardPage() {
     finalizedAt: string;
     totalPoints: number;
     rows: SummaryRow[];
+    currency?: string;
   } | null>(null);
 
   const fetchData = async () => {
@@ -321,6 +322,7 @@ export default function ProjectDashboardPage() {
         finalizedAt: new Date().toISOString(),
         totalPoints,
         rows,
+        currency: project.currency ?? "EUR",
       });
     }
     setShowSummary(true);
@@ -345,6 +347,7 @@ export default function ProjectDashboardPage() {
   // --- LÓGICA DE GENERACIÓN DE PDF PROFESIONAL ---
   const generatePDF = () => {
     if (!project) return;
+    const currency = project.currency ?? "EUR";
     const doc = new jsPDF();
     const projectName = project.name || "Project Report";
     const dateStr = new Date().toLocaleDateString();
@@ -434,7 +437,7 @@ export default function ProjectDashboardPage() {
     const summaryData = normalizedRows.map((r, i) => [
       r.name,
       r.role,
-      r.points.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
+      formatCurrency(r.points, currency),
       `${r.fixed.toFixed(2)}%`,
       formatCap(members[i]?.equity_cap),
       `${r.equity.toFixed(2)}%`,
@@ -447,7 +450,7 @@ export default function ProjectDashboardPage() {
       [
         "TOTAL",
         "",
-        totalPointsSum.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
+        formatCurrency(totalPointsSum, currency),
         `${totalFixedEquity.toFixed(2)}%`,
         "—",
         `${totalEquitySum.toFixed(2)}%`,
@@ -461,7 +464,7 @@ export default function ProjectDashboardPage() {
 
     autoTable(doc, {
         startY: 55,
-        head: [["Member", "Role", "Risk Value (Points)", "Fixed Equity", "Cap / Limit", "Equity %"]],
+        head: [["Member", "Role", "Risk Value", "Fixed Equity", "Cap / Limit", "Equity %"]],
         body: summaryData,
         foot: footData,
         theme: "grid",
@@ -501,8 +504,8 @@ export default function ProjectDashboardPage() {
         (c as ExtendedContribution).contributor_name,
         (c as ExtendedContribution).type,
         (c as ExtendedContribution).concept || "-",
-        (c as ExtendedContribution).amount.toLocaleString(),
-        (c as ExtendedContribution).risk_adjusted_value.toLocaleString()
+        formatCurrency(Number((c as ExtendedContribution).amount), currency),
+        formatCurrency(Number((c as ExtendedContribution).risk_adjusted_value), currency),
     ]);
 
     autoTable(doc, {
@@ -682,6 +685,7 @@ export default function ProjectDashboardPage() {
                           finalizedAt: new Date().toISOString(),
                           totalPoints,
                           rows,
+                          currency: project.currency ?? "EUR",
                         });
                         setShowSummary(true);
                       }
@@ -988,6 +992,7 @@ export default function ProjectDashboardPage() {
           finalizedAt={summaryPayload.finalizedAt}
           totalPoints={summaryPayload.totalPoints}
           rows={summaryPayload.rows}
+          currency={summaryPayload.currency ?? "EUR"}
           onDownloadCertificate={() => {}}
         />
       )}

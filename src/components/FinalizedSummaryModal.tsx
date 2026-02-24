@@ -4,6 +4,7 @@ import { X, Download } from "lucide-react";
 import jsPDF from "jspdf";
 import { BRAND } from "@/lib/brand";
 import autoTable from "jspdf-autotable";
+import { formatCurrency } from "@/lib/currency";
 
 export interface SummaryRow {
   name: string;
@@ -22,6 +23,7 @@ interface FinalizedSummaryModalProps {
   finalizedAt: string;
   totalPoints: number;
   rows: SummaryRow[];
+  currency?: string;
   onDownloadCertificate: () => void;
 }
 
@@ -62,6 +64,7 @@ export function FinalizedSummaryModal({
   finalizedAt,
   totalPoints,
   rows,
+  currency = "EUR",
   onDownloadCertificate,
 }: FinalizedSummaryModalProps) {
   if (!isOpen) return null;
@@ -103,7 +106,7 @@ export function FinalizedSummaryModal({
     const tableData = rows.map((r) => [
       r.name,
       r.role,
-      r.points.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
+      formatCurrency(r.points, currency),
       `${r.fixed.toFixed(2)}%`,
       r.capFormatted,
       `${r.equityPct.toFixed(2)}%`,
@@ -113,7 +116,7 @@ export function FinalizedSummaryModal({
       [
         "TOTAL",
         "",
-        totalPoints.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
+        formatCurrency(totalPoints, currency),
         `${totalFixed.toFixed(2)}%`,
         "—",
         `${totalEquityPct.toFixed(2)}%`,
@@ -122,7 +125,7 @@ export function FinalizedSummaryModal({
 
     autoTable(doc, {
       startY: tableStartY,
-      head: [["Member", "Role", "Risk Value (Points)", "Fixed Equity", "Cap / Limit", "Equity %"]],
+      head: [["Member", "Role", "Risk Value", "Fixed Equity", "Cap / Limit", "Equity %"]],
       body: tableData,
       foot: footData,
       theme: "grid",
@@ -201,7 +204,7 @@ export function FinalizedSummaryModal({
                 <tr className="bg-[#1e293b] text-white">
                   <th className="py-3 px-4 text-xs font-bold uppercase tracking-wider">Member</th>
                   <th className="py-3 px-4 text-xs font-bold uppercase tracking-wider">Role</th>
-                  <th className="py-3 px-4 text-xs font-bold uppercase tracking-wider text-right">Risk Value (Points)</th>
+                  <th className="py-3 px-4 text-xs font-bold uppercase tracking-wider text-right">Risk Value</th>
                   <th className="py-3 px-4 text-xs font-bold uppercase tracking-wider text-right">Fixed Equity</th>
                   <th className="py-3 px-4 text-xs font-bold uppercase tracking-wider text-right">Cap / Limit</th>
                   <th className="py-3 px-4 text-xs font-bold uppercase tracking-wider text-right">Equity %</th>
@@ -215,7 +218,7 @@ export function FinalizedSummaryModal({
                   >
                     <td className="py-3 px-4 font-semibold">{r.name}</td>
                     <td className="py-3 px-4">{r.role}</td>
-                    <td className="py-3 px-4 text-right tabular-nums">{r.points.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+                    <td className="py-3 px-4 text-right tabular-nums">{formatCurrency(r.points, currency)}</td>
                     <td className="py-3 px-4 text-right tabular-nums">{r.fixed.toFixed(2)}%</td>
                     <td className="py-3 px-4 text-right tabular-nums">{r.capFormatted}</td>
                     <td className="py-3 px-4 text-right font-semibold tabular-nums">{r.equityPct.toFixed(2)}%</td>
@@ -226,7 +229,7 @@ export function FinalizedSummaryModal({
                 <tr className="bg-slate-200 border-t-2 border-slate-300 font-bold text-slate-800">
                   <td className="py-3 px-4">TOTAL</td>
                   <td className="py-3 px-4"></td>
-                  <td className="py-3 px-4 text-right tabular-nums">{totalPoints.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+                  <td className="py-3 px-4 text-right tabular-nums">{formatCurrency(totalPoints, currency)}</td>
                   <td className="py-3 px-4 text-right tabular-nums">{totalFixed.toFixed(2)}%</td>
                   <td className="py-3 px-4 text-right">—</td>
                   <td className="py-3 px-4 text-right tabular-nums">{totalEquityPct.toFixed(2)}%</td>
