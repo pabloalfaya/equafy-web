@@ -775,6 +775,7 @@ export default function ProjectDashboardPage() {
                         <div className="flex-1 overflow-x-auto overflow-y-auto min-h-0 pr-2 pb-1 custom-scrollbar -mx-1 md:mx-0 min-w-0">
                             <ContributionsTable
                               contributions={filterByMember ? displayContributions.filter((c) => c.contributor_name === filterByMember) : displayContributions}
+                              currency={project?.currency ?? "EUR"}
                               onDelete={handleContributionDeleted}
                               onEdit={handleEditContribution}
                               onRemoveSimulated={handleRemoveSimulatedContribution}
@@ -892,7 +893,7 @@ export default function ProjectDashboardPage() {
                         <div className="border-t border-slate-100 pt-4 space-y-3">
                           <div className="flex justify-between items-center">
                             <span className="text-xs text-slate-500 font-medium uppercase tracking-wider">Total Points</span>
-                            <span className="font-bold text-slate-700 tabular-nums">{r.points.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+                            <span className="font-bold text-slate-700 tabular-nums">{formatCurrency(r.points, project?.currency ?? "EUR")}</span>
                           </div>
                           <div className="flex justify-between items-center">
                             <span className="text-xs text-slate-500 font-medium uppercase tracking-wider">Fixed Equity</span>

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Pencil, Trash2, Tag, StickyNote, Check, X } from "lucide-react";
 import { BRAND } from "@/lib/brand";
+import { formatCurrency } from "@/lib/currency";
 
 // 1. Definimos la interfaz EXACTAMENTE como viene de la base de datos
 interface Contribution {
@@ -16,6 +17,7 @@ interface Contribution {
 
 interface ContributionsTableProps {
   contributions: any[];
+  currency?: string;
   onDelete: (id: string) => void;
   onEdit: (contribution: any) => void;
   onRemoveSimulated?: (id: string) => void;
@@ -25,7 +27,7 @@ interface ContributionsTableProps {
 
 const MAX_NAME_LENGTH = 18;
 
-export function ContributionsTable({ contributions, onDelete, onEdit, onRemoveSimulated, canEdit = true, simulationMode }: ContributionsTableProps) {
+export function ContributionsTable({ contributions, currency = "EUR", onDelete, onEdit, onRemoveSimulated, canEdit = true, simulationMode }: ContributionsTableProps) {
   const [descriptionModalOpen, setDescriptionModalOpen] = useState(false);
   const [descriptionText, setDescriptionText] = useState("");
 
@@ -111,9 +113,9 @@ export function ContributionsTable({ contributions, onDelete, onEdit, onRemoveSi
                 </button>
               </td>
 
-              {/* 5. VALOR */}
+              {/* 5. VALOR (puntos con símbolo de moneda) */}
               <td className="py-4 px-2 md:px-4 text-right font-black text-emerald-600">
-                {Number(c.risk_adjusted_value).toLocaleString()}
+                {formatCurrency(Number(c.risk_adjusted_value), currency)}
               </td>
 
               {/* 6. ACCIONES */}
@@ -167,7 +169,6 @@ export function ContributionsTable({ contributions, onDelete, onEdit, onRemoveSi
           })}
         </tbody>
       </table>
-
       {/* Modal Equafy para la descripción */}
       {descriptionModalOpen && (
         <div
