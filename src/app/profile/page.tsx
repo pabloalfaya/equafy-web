@@ -7,6 +7,7 @@ import {
   Loader2,
   LogOut,
   CreditCard,
+  Receipt,
   User,
   Shield,
   Trash2,
@@ -16,14 +17,38 @@ import {
 import { createClient } from "@/utils/supabase/client";
 import { BRAND } from "@/lib/brand";
 
+type BillingProject = {
+  id: string;
+  name: string | null;
+  status?: string | null;
+  stripe_subscription_id?: string | null;
+};
+
 export default function ProfilePage() {
   const [fullName, setFullName] = useState("");
   const [jobTitle, setJobTitle] = useState("");
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(true);
   const [updating, setUpdating] = useState(false);
+  const [billingProjects, setBillingProjects] = useState<BillingProject[]>([]);
+  const [billingLoading, setBillingLoading] = useState(false);
+  const [portalLoadingId, setPortalLoadingId] = useState<string | null>(null);
   const router = useRouter();
   const supabase = createClient();
+
+  const loadBillingProjects = async (userId: string) => {
+    setBillingLoading(true);
+    const { data, error } = await supabase
+      .from("projects")
+      .select("id, name, status, stripe_subscription_id")
+      .eq("owner_id", userId)
+      .order("created_at", { ascending: true });
+
+    if (!error && data) {
+      setBillingProjects(data as BillingProject[]);
+    }
+    setBillingLoading(false);
+  };
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -38,6 +63,7 @@ export default function ProfilePage() {
       setEmail(user.email ?? "");
       setFullName((user.user_metadata?.full_name as string) ?? "");
       setJobTitle((user.user_metadata?.job_title as string) ?? "");
+      await loadBillingProjects(user.id);
       setLoading(false);
     };
     fetchUser();
@@ -77,6 +103,30 @@ export default function ProfilePage() {
     alert(
       `Account deletion is handled by our support team. Please contact ${BRAND.supportEmail} to request account deletion.`
     );
+  };
+
+  const handleManageSubscription = async (project: BillingProject) => {
+    const stripeSubId = project.stripe_subscription_id;
+    if (!stripeSubId) return;
+    setPortalLoadingId(project.id);
+    try {
+      const res = await fetch("/api/stripe/portal", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ projectId: project.id }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data?.error ?? "Failed to open billing portal");
+      if (data?.url) {
+        window.location.href = data.url as string;
+        return;
+      }
+      throw new Error("No portal URL received");
+    } catch (err) {
+      alert(err instanceof Error ? err.message : "Could not open billing portal");
+    } finally {
+      setPortalLoadingId(null);
+    }
   };
 
   if (loading) {
@@ -209,6 +259,57 @@ export default function ProfilePage() {
           <p className="text-slate-600 font-medium text-sm leading-relaxed mb-4">
             Payments and invoices are managed per project. Click the gear icon on each project card in your dashboard to manage billing and subscriptions.
           </p>
+
+          <div className="mt-4 space-y-3">
+            {billingLoading ? (
+              <div className="flex items-center gap-2 text-slate-400 text-sm font-medium">
+                <Loader2 className="w-4 h-4 animate-spin" />
+                <span>Loading your projects…</span>
+              </div>
+            ) : billingProjects.length === 0 ? (
+              <p className="text-slate-400 text-sm font-medium">
+                You don&apos;t have any projects yet. Create a project to manage payments and invoices.
+              </p>
+            ) : (
+              <div className="space-y-2">
+                {billingProjects.map((project) => (
+                  <div
+                    key={project.id}
+                    className="flex items-center justify-between rounded-xl border border-slate-200 bg-slate-50 px-4 py-3"
+                  >
+                    <div className="min-w-0 mr-3">
+                      <p className="font-bold text-slate-900 truncate">{project.name || "Untitled project"}</p>
+                      <p className="text-[11px] font-semibold uppercase tracking-wider text-slate-400">
+                        {project.status === "active" ? "Active" : project.status === "frozen" ? "Frozen" : "Draft"}
+                      </p>
+                    </div>
+                    {project.stripe_subscription_id ? (
+                      <button
+                        type="button"
+                        onClick={() => handleManageSubscription(project)}
+                        disabled={portalLoadingId === project.id}
+                        className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs font-bold text-slate-700 hover:bg-slate-50 disabled:opacity-60 disabled:cursor-not-allowed"
+                      >
+                        {portalLoadingId === project.id ? (
+                          <>
+                            <Loader2 className="w-3 h-3 animate-spin" /> Opening…
+                          </>
+                        ) : (
+                          <>
+                            <Receipt className="w-3 h-3" /> Manage payments & invoices
+                          </>
+                        )}
+                      </button>
+                    ) : (
+                      <span className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">
+                        No active subscription
+                      </span>
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
         </section>
 
         {/* 4. DANGER ZONE */}
