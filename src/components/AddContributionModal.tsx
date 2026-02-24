@@ -32,7 +32,7 @@ export function AddContributionModal({ isOpen, onClose, projectId, projectConfig
   const [concept, setConcept] = useState("");
   const [type, setType] = useState("CASH");
   const [amount, setAmount] = useState("");
-  const [workInputMode, setWorkInputMode] = useState<"hours" | "fixed">("fixed");
+  const [workInputMode, setWorkInputMode] = useState<"hours" | "fixed">("hours");
   const [hoursWorked, setHoursWorked] = useState("");
   const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
   const [multiplier, setMultiplier] = useState(1);
@@ -211,11 +211,11 @@ export function AddContributionModal({ isOpen, onClose, projectId, projectConfig
   };
 
   return (
-    <div className="fixed inset-0 z-[110] flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4">
-      <div className="w-full max-w-md overflow-hidden rounded-[32px] bg-white shadow-2xl p-8 animate-in zoom-in duration-200 font-sans">
+    <div className="fixed inset-0 z-[110] flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4 overflow-y-auto">
+      <div className="w-full max-w-md max-h-[min(90vh,32rem)] flex flex-col rounded-[32px] bg-white shadow-2xl animate-in zoom-in duration-200 font-sans my-auto">
         
         {/* Header */}
-        <div className="flex justify-between items-center mb-6">
+        <div className="flex justify-between items-center p-5 pb-0 shrink-0">
           <h3 className="font-black text-slate-800 text-lg uppercase tracking-tight">
             {editData ? "Edit Contribution" : "Add Contribution"}
           </h3>
@@ -225,26 +225,27 @@ export function AddContributionModal({ isOpen, onClose, projectId, projectConfig
         </div>
 
         {!editData && (
-          <div className="flex gap-2 mb-6 p-1 rounded-xl bg-slate-100 border border-slate-200">
+          <div className="flex gap-2 mx-5 mt-4 mb-2 p-1 rounded-xl bg-slate-100 border border-slate-200 shrink-0">
             <button
               type="button"
               onClick={() => setActiveTab("add")}
-              className={`flex-1 py-2.5 px-4 rounded-lg text-sm font-bold transition-all ${activeTab === "add" ? "bg-white text-slate-800 shadow-sm" : "text-slate-600 hover:text-slate-800"}`}
+              className={`flex-1 py-2 px-3 rounded-lg text-sm font-bold transition-all ${activeTab === "add" ? "bg-white text-slate-800 shadow-sm" : "text-slate-600 hover:text-slate-800"}`}
             >
               Add Contribution
             </button>
             <button
               type="button"
               onClick={() => setActiveTab("simulate")}
-              className={`flex-1 py-2.5 px-4 rounded-lg text-sm font-bold transition-all ${activeTab === "simulate" ? "bg-white text-slate-800 shadow-sm" : "text-slate-600 hover:text-slate-800"}`}
+              className={`flex-1 py-2 px-3 rounded-lg text-sm font-bold transition-all ${activeTab === "simulate" ? "bg-white text-slate-800 shadow-sm" : "text-slate-600 hover:text-slate-800"}`}
             >
               Simulate Contribution
             </button>
           </div>
         )}
 
-        {/* Form */}
-        <form onSubmit={handleSubmit} className="space-y-4">
+        {/* Form — scrollable body + fixed footer */}
+        <form onSubmit={handleSubmit} className="flex flex-col flex-1 min-h-0 overflow-hidden">
+          <div className="flex-1 min-h-0 overflow-y-auto px-5 pb-4 space-y-3">
           
           {/* Member Selector */}
           <div>
@@ -253,7 +254,7 @@ export function AddContributionModal({ isOpen, onClose, projectId, projectConfig
                 value={contributorId} 
                 onChange={(e) => setContributorId(e.target.value)} 
                 disabled={!canEdit}
-                className="w-full rounded-xl border border-slate-200 px-4 py-3 bg-slate-50 font-bold outline-none text-slate-700 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all disabled:opacity-60 disabled:cursor-not-allowed"
+                className="w-full rounded-xl border border-slate-200 px-4 py-2.5 bg-slate-50 font-bold outline-none text-slate-700 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all disabled:opacity-60 disabled:cursor-not-allowed"
             >
                 {members.map((m: any) => <option key={m.id} value={m.id}>{m.name}</option>)}
             </select>
@@ -268,7 +269,7 @@ export function AddContributionModal({ isOpen, onClose, projectId, projectConfig
                 value={concept} 
                 onChange={(e) => setConcept(e.target.value)} 
                 disabled={!canEdit}
-                className="w-full rounded-xl border border-slate-200 px-4 py-3 bg-slate-50 font-bold outline-none text-slate-700 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all disabled:opacity-60 disabled:cursor-not-allowed" 
+                className="w-full rounded-xl border border-slate-200 px-4 py-2.5 bg-slate-50 font-bold outline-none text-slate-700 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all disabled:opacity-60 disabled:cursor-not-allowed" 
             />
           </div>
 
@@ -277,9 +278,9 @@ export function AddContributionModal({ isOpen, onClose, projectId, projectConfig
             <label className="text-xs font-bold text-slate-400 ml-1 mb-1 block uppercase">Type</label>
             <select 
               value={type} 
-              onChange={(e) => { setType(e.target.value); if (e.target.value !== "WORK") setWorkInputMode("fixed"); setHoursWorked(""); }} 
+              onChange={(e) => { const v = e.target.value; setType(v); if (v === "WORK") setWorkInputMode("hours"); else setWorkInputMode("fixed"); setHoursWorked(""); }} 
               disabled={!canEdit}
-              className="w-full rounded-xl border border-slate-200 px-4 py-3 bg-slate-50 font-black text-xs uppercase outline-none text-slate-700 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all disabled:opacity-60 disabled:cursor-not-allowed"
+              className="w-full rounded-xl border border-slate-200 px-4 py-2.5 bg-slate-50 font-black text-xs uppercase outline-none text-slate-700 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all disabled:opacity-60 disabled:cursor-not-allowed"
             >
               {CONTRIBUTION_TYPES.map((t) => {
                 const multVal = getMultiplierForType(t.value);
@@ -325,7 +326,7 @@ export function AddContributionModal({ isOpen, onClose, projectId, projectConfig
                     value={hoursWorked} 
                     onChange={(e) => setHoursWorked(e.target.value)} 
                     disabled={!canEdit}
-                    className="w-full rounded-xl border border-slate-200 px-4 py-3 bg-slate-50 font-black outline-none text-slate-700 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all disabled:opacity-60 disabled:cursor-not-allowed" 
+                    className="w-full rounded-xl border border-slate-200 px-4 py-2.5 bg-slate-50 font-black outline-none text-slate-700 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all disabled:opacity-60 disabled:cursor-not-allowed" 
                   />
                   {memberHourlyRate != null && memberHourlyRate > 0 && (
                     <p className="text-xs text-slate-500 mt-1 ml-1">
@@ -349,7 +350,7 @@ export function AddContributionModal({ isOpen, onClose, projectId, projectConfig
                     value={amount} 
                     onChange={(e) => setAmount(e.target.value)} 
                     disabled={!canEdit}
-                    className="w-full rounded-xl border border-slate-200 px-4 py-3 bg-slate-50 font-black outline-none text-slate-700 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all disabled:opacity-60 disabled:cursor-not-allowed" 
+                    className="w-full rounded-xl border border-slate-200 px-4 py-2.5 bg-slate-50 font-black outline-none text-slate-700 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all disabled:opacity-60 disabled:cursor-not-allowed" 
                   />
                 </div>
               )}
@@ -368,7 +369,7 @@ export function AddContributionModal({ isOpen, onClose, projectId, projectConfig
                 value={amount} 
                 onChange={(e) => setAmount(e.target.value)} 
                 disabled={!canEdit}
-                className="w-full rounded-xl border border-slate-200 px-4 py-3 bg-slate-50 font-black outline-none text-slate-700 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all disabled:opacity-60 disabled:cursor-not-allowed" 
+                className="w-full rounded-xl border border-slate-200 px-4 py-2.5 bg-slate-50 font-black outline-none text-slate-700 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all disabled:opacity-60 disabled:cursor-not-allowed" 
               />
             </div>
           )}
@@ -384,18 +385,22 @@ export function AddContributionModal({ isOpen, onClose, projectId, projectConfig
              />
           </div>
 
+          </div>
+
+          {/* Footer: result + submit — always visible */}
+          <div className="shrink-0 px-5 pb-5 pt-2 space-y-3 border-t border-slate-100">
           {/* Result Card — preview of total points */}
-          <div className="rounded-2xl bg-slate-900 p-6 text-white shadow-lg shadow-emerald-900/20">
-             <div className="flex justify-between text-[10px] font-black uppercase opacity-60 mb-2">
+          <div className="rounded-2xl bg-slate-900 p-4 text-white shadow-lg shadow-emerald-900/20">
+             <div className="flex justify-between text-[10px] font-black uppercase opacity-60 mb-1">
                 <span>{type === "WORK" ? "Value × Work multiplier" : "Calculated Risk"}</span>
                 <span className="bg-emerald-500/20 px-2 py-0.5 rounded text-emerald-400">x{multiplier} Multiplier</span>
              </div>
              <div className="flex items-baseline gap-1">
-                <span className="text-3xl font-black text-emerald-400">{Number(riskAdjustedValue).toLocaleString()}</span>
+                <span className="text-2xl font-black text-emerald-400">{Number(riskAdjustedValue).toLocaleString()}</span>
                 <span className="text-sm font-bold text-emerald-400/60">points</span>
              </div>
              {type === "WORK" && baseValue > 0 && (
-               <p className="text-xs text-slate-400 mt-2">
+               <p className="text-xs text-slate-400 mt-1">
                  {baseValue.toLocaleString()}€ × {multiplier} = {riskAdjustedValue} points
                </p>
              )}
@@ -406,12 +411,13 @@ export function AddContributionModal({ isOpen, onClose, projectId, projectConfig
             <button 
               type="submit" 
               disabled={loading || isWorkByHoursNoRate} 
-              className="w-full rounded-2xl py-4 text-sm font-black text-white hover:shadow-lg transition-all uppercase tracking-widest disabled:opacity-50 disabled:cursor-not-allowed bg-emerald-600 hover:bg-emerald-500 hover:shadow-emerald-500/30"
+              className="w-full rounded-2xl py-3 text-sm font-black text-white hover:shadow-lg transition-all uppercase tracking-widest disabled:opacity-50 disabled:cursor-not-allowed bg-emerald-600 hover:bg-emerald-500 hover:shadow-emerald-500/30"
             >
               {loading ? "Saving..." : activeTab === "simulate" ? "Simulate Contribution" : editData ? "Save Changes" : "Confirm Contribution"}
             </button>
           )}
 
+          </div>
         </form>
       </div>
     </div>
