@@ -214,7 +214,7 @@ export function AddContributionModal({ isOpen, onClose, projectId, projectConfig
 
   return (
     <div className="fixed inset-0 z-[110] flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4 overflow-y-auto">
-      <div className="w-full max-w-md max-h-[min(90vh,32rem)] flex flex-col rounded-[32px] bg-white shadow-2xl animate-in zoom-in duration-200 font-sans my-auto">
+      <div className="w-full max-w-md max-h-[min(92vh,42rem)] flex flex-col rounded-[32px] bg-white shadow-2xl animate-in zoom-in duration-200 font-sans my-auto">
         
         {/* Header */}
         <div className="flex justify-between items-center p-5 pb-0 shrink-0">
