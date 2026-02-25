@@ -29,6 +29,7 @@ type ExtendedProject = Project & {
     model_type?: string; 
     model_onboarding_dismissed?: boolean;
     currency?: string;
+    settings_onboarding_done?: boolean;
 };
 type ExtendedContribution = Contribution & { date?: string; concept?: string; multiplier?: number; [key: string]: any };
 
@@ -177,6 +178,10 @@ export default function ProjectDashboardPage() {
     const { data: projectData, error: projectError } = await supabase.from("projects").select("*").eq("id", projectId).single();
     if (projectError || !projectData) { router.push("/dashboard"); return; }
     setProject(projectData as ExtendedProject);
+
+    // Onboarding: primera vez que se abre el proyecto → abrir Equity Settings (pestaña Settings)
+    const needsOnboarding = projectData.settings_onboarding_done === false;
+    if (needsOnboarding) setFixedEquityOpen(true);
 
     // Cargar Aportaciones
     const { data: contributionsData } = await supabase.from("contributions").select("*").eq("project_id", projectId).order("created_at", { ascending: false });
@@ -940,7 +945,14 @@ export default function ProjectDashboardPage() {
 
       <EquitySettingsModal
         isOpen={fixedEquityOpen}
-        onClose={() => setFixedEquityOpen(false)}
+        onClose={async () => {
+          setFixedEquityOpen(false);
+          if (project?.settings_onboarding_done === false) {
+            const supabase = createClient();
+            await supabase.from("projects").update({ settings_onboarding_done: true }).eq("id", projectId);
+            setProject((prev) => (prev ? { ...prev, settings_onboarding_done: true } : null));
+          }
+        }}
         projectId={projectId}
         project={project}
         members={members}
