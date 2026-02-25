@@ -65,13 +65,13 @@ export function computeMemberEquitySummary(
   const fixedValues = memberList.map((m) => Number(m.fixed_equity) || 0);
 
   // Allocated to fixed (only for members WITHOUT cap) and to cap (for members WITH cap)
-  const totalFixedNoCap = memberList.reduce((sum, m, i) => {
+  const totalFixedNoCap = memberList.reduce<number>((sum, m, i) => {
     const cap = caps[i];
     const fixed = fixedValues[i];
     if (cap != null) return sum; // capped members don't consume fixed pool for allocation
     return sum + fixed;
   }, 0);
-  const sumCaps = caps.reduce((sum, c) => sum + (c ?? 0), 0);
+  const sumCaps = caps.reduce<number>((sum, c) => sum + (c ?? 0), 0);
   let remaining = 100 - totalFixedNoCap - sumCaps;
   if (remaining < 0) remaining = 0;
 
