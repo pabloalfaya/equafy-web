@@ -438,9 +438,9 @@ export function EquitySettingsModal({
             </div>
 
             <p className="text-sm text-slate-600 leading-relaxed w-full">
-              Choose a preset model (Just Split, Flat, or Custom) to set default multipliers for contributions.
+              These are preset models to get you started. You can switch models at any time and still adjust each multiplier individually in the other tabs if you want more control.
             </p>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-3 w-full">
+            <div className="mt-3 grid grid-cols-1 md:grid-cols-3 gap-3 w-full">
               {/* Custom Model */}
               <div
                 className={`relative p-3 rounded-xl border-2 transition-all flex flex-col ${
