@@ -22,6 +22,7 @@ import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import { BRAND } from "@/lib/brand";
 import { formatCurrency } from "@/lib/currency";
+import { computeMemberEquitySummary } from "@/utils/equityCalculation";
 
 // Tipos extendidos
 type ExtendedProject = Project & { 
@@ -64,66 +65,25 @@ async function fetchProjectMembers(
   return rows.map((r) => ({ ...r, equity_cap: null, hourly_rate: null })) as Member[];
 }
 
-/** Returns normalized equity rows and total points (same logic as EquityPieChart / PDF). */
+/** Returns equity rows and total points using fixed + cap + free (shadow points) logic. */
 function getEquitySummaryForFinalize(
   members: Member[],
   contributions: ExtendedContribution[],
   _project: ExtendedProject | null
 ): { rows: SummaryRow[]; totalPoints: number } {
-  const totalFixedEquity = members.reduce((sum, m) => sum + (Number(m.fixed_equity) || 0), 0);
-  const dynamicPool = Math.max(0, 100 - totalFixedEquity);
-  const totalRiskPoints = contributions.reduce((sum, c) => sum + (Number(c.risk_adjusted_value) || 0), 0);
-
-  const memberRows = members.map((member) => {
-    const memberFixedEquity = Number(member.fixed_equity) || 0;
-    const memberPoints = contributions
-      .filter((c) => c.contributor_name === member.name)
-      .reduce((sum, c) => sum + (Number(c.risk_adjusted_value) || 0), 0);
-    let dynamicShare = totalRiskPoints > 0
-      ? (memberPoints / totalRiskPoints) * dynamicPool
-      : members.length > 0 ? dynamicPool / members.length : 0;
-    const theoreticalEquity = memberFixedEquity + dynamicShare;
-    return { name: member.name, points: memberPoints, fixed: memberFixedEquity, equity: theoreticalEquity };
-  });
-
-  let rawEquitySum = memberRows.reduce((sum, r) => sum + r.equity, 0);
-  let theoreticalPct = rawEquitySum > 0 ? memberRows.map((r) => (r.equity / rawEquitySum) * 100) : memberRows.map(() => 0);
-  const caps = members.map((m) => (m.equity_cap != null && m.equity_cap !== undefined ? Number(m.equity_cap) : null));
-  let finalPct = theoreticalPct.slice();
-  let excess = 0;
-  for (let i = 0; i < finalPct.length; i++) {
-    const cap = caps[i];
-    if (cap != null && finalPct[i] > cap) {
-      excess += finalPct[i] - cap;
-      finalPct[i] = cap;
-    }
-  }
-  let uncappedTheoreticalSum = 0;
-  for (let i = 0; i < finalPct.length; i++) {
-    const cap = caps[i];
-    if (cap == null || theoreticalPct[i] <= cap) uncappedTheoreticalSum += theoreticalPct[i];
-  }
-  if (excess > 0 && uncappedTheoreticalSum > 0) {
-    for (let i = 0; i < finalPct.length; i++) {
-      const cap = caps[i];
-      if (cap == null || theoreticalPct[i] <= cap) finalPct[i] += excess * (theoreticalPct[i] / uncappedTheoreticalSum);
-    }
-  }
-  const totalAfter = finalPct.reduce((s, v) => s + v, 0);
-  if (totalAfter > 0) finalPct = finalPct.map((v) => (v / totalAfter) * 100);
-
-  const totalPoints = memberRows.reduce((sum, r) => sum + r.points, 0);
+  const summary = computeMemberEquitySummary(members, contributions);
+  const totalPoints = summary.reduce((s, r) => s + r.totalPoints, 0);
   const formatCap = (cap: number | null | undefined) => {
     if (cap != null && cap !== undefined && Number(cap) > 0) return `${Number(cap).toFixed(2)}%`;
     return "—";
   };
-  const rows: SummaryRow[] = memberRows.map((r, i) => ({
-    name: r.name,
-    role: members[i]?.role || "Member",
-    points: r.points,
-    fixed: r.fixed,
-    capFormatted: formatCap(members[i]?.equity_cap),
-    equityPct: finalPct[i],
+  const rows: SummaryRow[] = members.map((m, i) => ({
+    name: m.name,
+    role: m.role || "Member",
+    points: summary[i]?.totalPoints ?? 0,
+    fixed: Number(m.fixed_equity) || 0,
+    capFormatted: formatCap(m.equity_cap),
+    equityPct: summary[i]?.equityPct ?? 0,
   }));
   return { rows, totalPoints };
 }
@@ -375,81 +335,20 @@ export default function ProjectDashboardPage() {
     doc.setTextColor(100);
     doc.text(`Generated on: ${dateStr}`, 14, 40);
 
-    // 2. CÁLCULO DE DATOS PARA LA TABLA RESUMEN (igual que EquityPieChart: teórico → cap → redistribución)
-    const totalFixedEquity = members.reduce((sum, m) => sum + (Number(m.fixed_equity) || 0), 0);
-    const dynamicPool = Math.max(0, 100 - totalFixedEquity);
-    const totalRiskPoints = contributions.reduce((sum, c) => sum + (Number(c.risk_adjusted_value) || 0), 0);
+    // 2. Datos para la tabla resumen (fixed + cap + free / shadow points)
+    const { rows: summaryRows, totalPoints: totalPointsSum } = getEquitySummaryForFinalize(members, contributions, project);
 
-    const memberRows = members.map((member) => {
-      const memberFixedEquity = Number(member.fixed_equity) || 0;
-      const memberPoints = contributions
-        .filter((c) => c.contributor_name === member.name)
-        .reduce((sum, c) => sum + (Number(c.risk_adjusted_value) || 0), 0);
-
-      let dynamicShare: number;
-      if (totalRiskPoints > 0) {
-        dynamicShare = (memberPoints / totalRiskPoints) * dynamicPool;
-      } else {
-        dynamicShare = members.length > 0 ? dynamicPool / members.length : 0;
-      }
-
-      const theoreticalEquity = memberFixedEquity + dynamicShare;
-      return {
-        name: member.name,
-        role: member.role || "Member",
-        points: memberPoints,
-        fixed: memberFixedEquity,
-        equity: theoreticalEquity,
-      };
-    });
-
-    // Normalizar teórico a 100%
-    let rawEquitySum = memberRows.reduce((sum, r) => sum + r.equity, 0);
-    let theoreticalPct = rawEquitySum > 0 ? memberRows.map((r) => (r.equity / rawEquitySum) * 100) : memberRows.map(() => 0);
-
-    // Aplicar equity cap y redistribuir excedente (igual que EquityPieChart)
-    const caps = members.map((m) => (m.equity_cap != null && m.equity_cap !== undefined ? Number(m.equity_cap) : null));
-    let finalPct = theoreticalPct.slice();
-    let excess = 0;
-    for (let i = 0; i < finalPct.length; i++) {
-      const cap = caps[i];
-      if (cap != null && finalPct[i] > cap) {
-        excess += finalPct[i] - cap;
-        finalPct[i] = cap;
-      }
-    }
-    let uncappedTheoreticalSum = 0;
-    for (let i = 0; i < finalPct.length; i++) {
-      const cap = caps[i];
-      if (cap == null || theoreticalPct[i] <= cap) uncappedTheoreticalSum += theoreticalPct[i];
-    }
-    if (excess > 0 && uncappedTheoreticalSum > 0) {
-      for (let i = 0; i < finalPct.length; i++) {
-        const cap = caps[i];
-        if (cap == null || theoreticalPct[i] <= cap) finalPct[i] += excess * (theoreticalPct[i] / uncappedTheoreticalSum);
-      }
-    }
-    const totalAfter = finalPct.reduce((s, v) => s + v, 0);
-    if (totalAfter > 0) finalPct = finalPct.map((v) => (v / totalAfter) * 100);
-
-    const normalizedRows = memberRows.map((r, i) => ({ ...r, equity: finalPct[i] }));
-
-    const formatCap = (cap: number | null | undefined) => {
-      if (cap != null && cap !== undefined && Number(cap) > 0) return `${Number(cap).toFixed(2)}%`;
-      return "—";
-    };
-
-    const summaryData = normalizedRows.map((r, i) => [
+    const summaryData = summaryRows.map((r) => [
       r.name,
       r.role,
       formatCurrency(r.points, currency),
       `${r.fixed.toFixed(2)}%`,
-      formatCap(members[i]?.equity_cap),
-      `${r.equity.toFixed(2)}%`,
+      r.capFormatted,
+      `${r.equityPct.toFixed(2)}%`,
     ]);
 
-    const totalPointsSum = normalizedRows.reduce((sum, r) => sum + r.points, 0);
-    const totalEquitySum = normalizedRows.reduce((sum, r) => sum + r.equity, 0);
+    const totalFixedEquity = summaryRows.reduce((sum, r) => sum + r.fixed, 0);
+    const totalEquitySum = summaryRows.reduce((sum, r) => sum + r.equityPct, 0);
 
     const footData = [
       [

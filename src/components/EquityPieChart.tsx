@@ -3,7 +3,7 @@
 import React, { useMemo } from "react";
 import { TrendingUp } from "lucide-react";
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from "recharts";
-import { parseCap } from "@/utils/equityCalculation";
+import { computeMemberEquitySummary } from "@/utils/equityCalculation";
 import { formatCurrency } from "@/lib/currency";
 
 // Colores profesionales
@@ -66,90 +66,19 @@ export function EquityPieChart({ contributions, members, currency = "EUR", showE
     cashVsNonCashLabel,
   } = useMemo(() => {
     const memberList = members ?? [];
+    const summary = computeMemberEquitySummary(memberList, contributions);
 
-    // 1. TotalFixedEquity = suma de % fijos de todos los miembros
-    const totalFixedEquity = memberList.reduce(
-      (sum, m) => sum + (Number(m.fixed_equity) || 0),
-      0
-    );
+    const totalRiskPoints = summary.reduce((s, r) => s + r.totalPoints, 0);
 
-    // 2. DynamicPoolAvailable = 100 - TotalFixedEquity
-    const dynamicPoolAvailable = Math.max(0, 100 - totalFixedEquity);
+    const chartData: ChartDataItem[] = memberList.map((member, i) => ({
+      name: member.name || "Unknown",
+      value: summary[i]?.equityPct ?? 0,
+      fixed: Number(member.fixed_equity) || 0,
+      dynamic: summary[i]?.totalPoints ?? 0,
+    }));
 
-    // 3. TotalRiskPoints = suma de puntos de TODAS las aportaciones actuales
-    const totalRiskPoints = contributions.reduce(
-      (sum, c) => sum + (Number(c.risk_adjusted_value) || 0),
-      0
-    );
-
-    // 4. Para cada miembro: UserFixed, UserDynamic, UserTotal
-    let chartData: ChartDataItem[] = memberList.map((member) => {
-      const memberName = member.name || "Unknown";
-      const userFixed = Number(member.fixed_equity) || 0;
-
-      const memberPoints = contributions
-        .filter((c) => (c.contributor_name || "") === memberName)
-        .reduce((sum, c) => sum + (Number(c.risk_adjusted_value) || 0), 0);
-
-      // Si TotalRiskPoints es 0: repartir DynamicPool a partes iguales entre miembros, o 0
-      let userDynamic: number;
-      if (totalRiskPoints > 0) {
-        userDynamic = (memberPoints / totalRiskPoints) * dynamicPoolAvailable;
-      } else {
-        userDynamic =
-          memberList.length > 0 ? dynamicPoolAvailable / memberList.length : 0;
-      }
-
-      const userTotal = userFixed + userDynamic;
-
-      return {
-        name: memberName,
-        value: userTotal,
-        fixed: userFixed,
-        dynamic: memberPoints,
-      };
-    });
-
-    // 5. Normalizar suma teórica a 100%
-    const rawSum = chartData.reduce((sum, d) => sum + d.value, 0);
-    if (rawSum > 0) {
-      chartData = chartData.map((d) => ({
-        ...d,
-        value: (d.value / rawSum) * 100,
-      }));
-    }
-
-    // 6. Apply equity cap (hard cap) and redistribute excess proportionally
-    const caps = memberList.map((m) => parseCap(m as { id: string; name: string; equity_cap?: number | null; equityCap?: number | null }));
-    let finalValues = chartData.map((d) => d.value);
-    let excess = 0;
-    for (let i = 0; i < finalValues.length; i++) {
-      const cap = caps[i];
-      if (cap != null && finalValues[i] > cap) {
-        excess += finalValues[i] - cap;
-        finalValues[i] = cap;
-      }
-    }
-    let uncappedTheoreticalSum = 0;
-    for (let i = 0; i < finalValues.length; i++) {
-      const cap = caps[i];
-      if (cap == null || chartData[i].value <= cap) uncappedTheoreticalSum += chartData[i].value;
-    }
-    if (excess > 0 && uncappedTheoreticalSum > 0) {
-      for (let i = 0; i < finalValues.length; i++) {
-        const cap = caps[i];
-        if (cap == null || chartData[i].value <= cap)
-          finalValues[i] += excess * (chartData[i].value / uncappedTheoreticalSum);
-      }
-    }
-    const totalAfter = finalValues.reduce((s, v) => s + v, 0);
-    if (totalAfter > 0) finalValues = finalValues.map((v) => (v / totalAfter) * 100);
-    chartData = chartData.map((d, i) => ({ ...d, value: finalValues[i] }));
-
-    // Filtrar miembros con valor 0 para no mostrar segmentos vacíos
     const filtered = chartData.filter((d) => d.value > 0);
 
-    // Métricas para el panel: cash, sweat, total contributions, ratio, active members
     const totalCashInvested = contributions.reduce(
       (sum, c) => sum + (String((c as { type?: string }).type || "").toLowerCase() === "cash" ? Number((c as { amount?: number }).amount) || 0 : 0),
       0
