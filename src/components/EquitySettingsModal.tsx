@@ -79,7 +79,7 @@ export function EquitySettingsModal({
   onOpenDefaultModels,
   canEdit = true,
 }: EquitySettingsModalProps) {
-  const [activeTab, setActiveTab] = useState<TabType>("multipliers");
+  const [activeTab, setActiveTab] = useState<TabType>("default_models");
   const [values, setValues] = useState<Record<string, number>>({});
   const [multipliers, setMultipliers] = useState({
     mult_cash: 4,
@@ -95,6 +95,13 @@ export function EquitySettingsModal({
   const [currency, setCurrency] = useState<CurrencyCode>("EUR");
 
   const localMembers = members;
+
+  // Siempre que se abra el modal, empezar en la pestaña "Settings"
+  useEffect(() => {
+    if (isOpen) {
+      setActiveTab("default_models");
+    }
+  }, [isOpen]);
 
   useEffect(() => {
     if (isOpen && members.length > 0) {
