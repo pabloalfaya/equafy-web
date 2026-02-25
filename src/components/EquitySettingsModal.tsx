@@ -480,7 +480,7 @@ export function EquitySettingsModal({
                   </div>
                   <span className="font-black text-sm text-slate-800">Just Split</span>
                 </div>
-                <p className="text-[10px] text-slate-500 mb-3 flex-1">Cash x4, Work x2, Assets x2, IP x2.</p>
+                <p className="text-[10px] text-slate-500 mb-3 flex-1">Cash x4, Non-cash x2, Others x1.</p>
                 {canEdit && onOpenDefaultModels && (
                   <button type="button" onClick={onOpenDefaultModels} className="mt-auto w-full py-2 rounded-lg text-xs font-bold border border-slate-200 bg-white hover:bg-slate-50 transition-all">
                     {(project?.model_type || "JUST_SPLIT") === "JUST_SPLIT" ? "Current · Edit" : "Select"}
@@ -517,7 +517,7 @@ export function EquitySettingsModal({
                 className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl border border-slate-200 bg-white text-sm font-bold text-slate-700 hover:bg-slate-50 hover:border-slate-300 shadow-sm transition-all"
               >
                 <PlayCircle className="w-4 h-4 text-emerald-500" />
-                <span>Watch demo of these models</span>
+                <span>Watch Control Panel Demonstration</span>
               </button>
             </div>
           </div>
