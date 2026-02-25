@@ -1,12 +1,13 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { X, Percent, Save, Settings2, Sparkles, Calculator, BookOpen, Info, ShieldCheck, Scale, Settings } from "lucide-react";
+import { X, Percent, Save, Settings2, Sparkles, Calculator, BookOpen, Info, ShieldCheck, Scale, Settings, PlayCircle } from "lucide-react";
 import { createClient } from "@/utils/supabase/client";
 import { logAudit } from "@/utils/auditLog";
 import { calculateDynamicMultiplier } from "@/utils/riskEngine";
 import { BRAND } from "@/lib/brand";
 import { CURRENCIES, formatCurrency, type CurrencyCode } from "@/lib/currency";
+import { VideoDemoModal } from "@/components/VideoDemoModal";
 
 const MEMBER_COLORS = [
   "bg-emerald-500",
@@ -93,6 +94,7 @@ export function EquitySettingsModal({
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [equityCaps, setEquityCaps] = useState<Record<string, number | null>>({});
   const [currency, setCurrency] = useState<CurrencyCode>("EUR");
+  const [isDemoOpen, setIsDemoOpen] = useState(false);
 
   const localMembers = members;
 
@@ -319,14 +321,15 @@ export function EquitySettingsModal({
   if (!isOpen) return null;
 
   return (
-    <div
-      className="fixed inset-0 z-[110] flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4"
-      onClick={onClose}
-    >
+    <>
       <div
-        className="w-full max-w-2xl max-h-[80vh] bg-white rounded-[32px] shadow-2xl px-4 py-6 md:px-6 md:py-8 animate-in zoom-in duration-200 font-sans overflow-y-auto"
-        onClick={(e) => e.stopPropagation()}
+        className="fixed inset-0 z-[110] flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4"
+        onClick={onClose}
       >
+        <div
+          className="w-full max-w-2xl max-h-[80vh] bg-white rounded-[32px] shadow-2xl px-4 py-6 md:px-6 md:py-8 animate-in zoom-in duration-200 font-sans overflow-y-auto"
+          onClick={(e) => e.stopPropagation()}
+        >
         {/* Header */}
         <div className="flex justify-between items-center mb-6">
           <div className="flex items-center gap-2">
@@ -505,6 +508,17 @@ export function EquitySettingsModal({
                   </button>
                 )}
               </div>
+            </div>
+
+            <div className="mt-6 flex justify-center w-full">
+              <button
+                type="button"
+                onClick={() => setIsDemoOpen(true)}
+                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl border border-slate-200 bg-white text-sm font-bold text-slate-700 hover:bg-slate-50 hover:border-slate-300 shadow-sm transition-all"
+              >
+                <PlayCircle className="w-4 h-4 text-emerald-500" />
+                <span>Watch demo of these models</span>
+              </button>
             </div>
           </div>
         )}
@@ -906,5 +920,7 @@ export function EquitySettingsModal({
         )}
       </div>
     </div>
+    <VideoDemoModal open={isDemoOpen} onClose={() => setIsDemoOpen(false)} />
+  </>
   );
 }
