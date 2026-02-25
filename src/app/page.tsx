@@ -180,15 +180,15 @@ export default function LandingPage() {
               </div>
             </div>
             <Link
-              href="/features#equity-evolution"
+              href="/features"
               className="bg-emerald-50 border border-emerald-200 rounded-2xl p-6 flex items-center gap-4 hover:bg-emerald-100 hover:border-emerald-300 transition-all group"
             >
               <div className="p-3 rounded-xl bg-emerald-500 text-white">
                 <TrendingUp className="w-6 h-6" />
               </div>
               <div>
-                <p className="font-bold text-slate-900 tracking-tight group-hover:text-emerald-700">Equity Evolution</p>
-                <p className="text-sm text-slate-600 font-medium">Track equity & contributions over time with charts</p>
+                <p className="font-bold text-slate-900 tracking-tight group-hover:text-emerald-700">See all features</p>
+                <p className="text-sm text-slate-600 font-medium">Browse every tool included in Equafy</p>
               </div>
               <ArrowRight className="w-5 h-5 text-emerald-500 ml-auto shrink-0" />
             </Link>
