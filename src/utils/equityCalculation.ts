@@ -1,16 +1,18 @@
 /**
- * Shared equity calculation: Fixed Equity, Caps, and Shadow Points.
+ * Shared equity calculation: Fixed Equity, Dynamic Pool, Caps with spillover, Shadow Points.
  *
- * Rule 1 (Shadow Points): totalPoints per member always = sum of their contribution
- * points. The cap NEVER stops accumulation; it only caps the displayed %.
+ * Shadow Points: totalPoints per member = full sum of contribution points. The cap NEVER
+ * reduces accumulation; it only caps the displayed %.
  *
- * Rule 2 (100% split):
- * - Assign fixed % to members with fixed_equity.
- * - Assign cap % to members with a cap (they never get more than cap).
- * - remaining = 100 - sum(fixed for non-capped) - sum(caps).
- * - Divide remaining strictly proportionally among FREE members (no fixed, no cap) by points.
- *
- * Validation: When a capped user gains more points, every other user's % stays exactly the same.
+ * Algorithm:
+ * 1. Base: each user gets their Fixed Equity (0% if none).
+ * 2. Dynamic Pool = 100% - sum(all Fixed Equity).
+ * 3. Initial split: distribute the Dynamic Pool among ALL users (fixed or not) strictly
+ *    proportionally by their totalPoints.
+ * 4. Theoretical % = Fixed + dynamic share from step 3.
+ * 5. Caps & spillover: if theoretical > Cap, final = Cap. The excess is redistributed
+ *    proportionally by points among users who haven't hit their cap. Iterate until
+ *    no spillover remains.
  */
 
 export interface MemberForEquity {
@@ -41,9 +43,11 @@ export interface MemberEquitySummaryItem {
   equityPct: number;
 }
 
+const EPS = 1e-6;
+
 /**
  * Computes total points per member (shadow: full accumulation) and final equity %
- * using: fixed first, then cap blocks %, then remaining split among free users by points.
+ * using: fixed base + dynamic pool split by points among ALL, then iterative cap + spillover.
  */
 export function computeMemberEquitySummary(
   members: MemberForEquity[],
@@ -52,42 +56,67 @@ export function computeMemberEquitySummary(
   const memberList = members ?? [];
   const contribs = contributions ?? [];
 
-  // Per-member total points (shadow): always full sum — cap never reduces this
+  // Shadow: per-member total points (always full sum)
   const totalPointsByMember = memberList.map((member) => {
     const memberName = member.name || "Unknown";
     return contribs
       .filter((c) => (c.contributor_name || "") === memberName)
-      .reduce((sum, c) => sum + (Number(c.risk_adjusted_value) || 0), 0);
+      .reduce<number>((sum, c) => sum + (Number(c.risk_adjusted_value) || 0), 0);
   });
 
-  const totalRiskPoints = totalPointsByMember.reduce((s, v) => s + v, 0);
+  const totalRiskPoints = totalPointsByMember.reduce<number>((s, v) => s + v, 0);
   const caps = memberList.map((m) => parseCap(m));
   const fixedValues = memberList.map((m) => Number(m.fixed_equity) || 0);
 
-  // Allocated to fixed (only for members WITHOUT cap) and to cap (for members WITH cap)
-  const totalFixedNoCap = memberList.reduce<number>((sum, m, i) => {
-    const cap = caps[i];
-    const fixed = fixedValues[i];
-    if (cap != null) return sum; // capped members don't consume fixed pool for allocation
-    return sum + fixed;
-  }, 0);
-  const sumCaps = caps.reduce<number>((sum, c) => sum + (c ?? 0), 0);
-  let remaining = 100 - totalFixedNoCap - sumCaps;
-  if (remaining < 0) remaining = 0;
+  const totalFixed = fixedValues.reduce<number>((s, v) => s + v, 0);
+  const dynamicPool = Math.max(0, 100 - totalFixed);
 
-  // Free = no fixed, no cap (strictly: fixed === 0 and cap === null)
-  const isFree = (i: number) => fixedValues[i] === 0 && caps[i] == null;
-  const freeIndices = memberList.map((_, i) => i).filter(isFree);
-  const freePoints = freeIndices.reduce((s, i) => s + totalPointsByMember[i], 0);
-
-  const finalPct: number[] = memberList.map((_, i) => {
-    if (caps[i] != null) return caps[i]!;
-    if (fixedValues[i] > 0) return fixedValues[i];
-    if (freePoints > 0 && freeIndices.includes(i))
-      return (totalPointsByMember[i]! / freePoints) * remaining;
-    if (freeIndices.length > 0 && freeIndices.includes(i)) return remaining / freeIndices.length;
-    return 0;
+  // Initial dynamic share for EVERYONE proportionally by points
+  const dynamicShare = memberList.map((_, i) => {
+    if (totalRiskPoints <= 0)
+      return memberList.length > 0 ? dynamicPool / memberList.length : 0;
+    return (totalPointsByMember[i]! / totalRiskPoints) * dynamicPool;
   });
+
+  // Theoretical % = fixed + dynamic
+  const theoreticalTotal = memberList.map((_, i) => fixedValues[i]! + dynamicShare[i]!);
+
+  // Apply cap initially; allocation = min(theoretical, cap or +inf)
+  const allocation = theoreticalTotal.map((t, i) =>
+    caps[i] != null ? Math.min(t, caps[i]!) : t
+  );
+
+  let excess = 100 - allocation.reduce<number>((s, v) => s + v, 0);
+
+  // Iterative spillover: redistribute excess to uncapped users by points until stable
+  while (excess > EPS) {
+    const uncapped = memberList
+      .map((_, i) => i)
+      .filter((i) => caps[i] == null || allocation[i]! < caps[i]!);
+    if (uncapped.length === 0) break;
+
+    const totalP = uncapped.reduce<number>((s, i) => s + totalPointsByMember[i]!, 0);
+    if (totalP <= 0) {
+      uncapped.forEach((i) => (allocation[i] = (allocation[i] ?? 0) + excess / uncapped.length));
+      break;
+    }
+
+    let spill = 0;
+    for (const i of uncapped) {
+      const add = excess * (totalPointsByMember[i]! / totalP);
+      allocation[i] = (allocation[i] ?? 0) + add;
+      if (caps[i] != null && allocation[i]! > caps[i]!) {
+        spill += allocation[i]! - caps[i]!;
+        allocation[i] = caps[i]!;
+      }
+    }
+    excess = spill;
+  }
+
+  // Normalize to 100% in case of floating point drift
+  const totalAlloc = allocation.reduce<number>((s, v) => s + (v ?? 0), 0);
+  const finalPct =
+    totalAlloc > 0 ? allocation.map((a) => ((a ?? 0) / totalAlloc) * 100) : allocation.slice();
 
   return memberList.map((m, i) => ({
     memberId: m.id,
