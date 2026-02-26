@@ -5,7 +5,7 @@
 export const BRAND = {
   name: "Equafy",
   nameUppercase: "EQUAFY",
-  email: "info@getequafy.com",
+  email: "info@getequily.com",
   supportEmail: "support@getequafy.com",
   /** Fallback email for audit log when user is not authenticated */
   auditFallbackEmail: "admin@getequafy.com",
