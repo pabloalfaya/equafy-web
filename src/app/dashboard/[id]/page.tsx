@@ -573,9 +573,6 @@ export default function ProjectDashboardPage() {
                 </Link>
                 <div className="min-w-0">
                 <h1 className="text-4xl font-black text-slate-900 tracking-tight break-words">{project.name}</h1>
-                <p className="mt-2 text-slate-500 font-medium italic capitalize">
-                    Calculated using the {getModelName()} model.
-                </p>
                 {isFinalized && (
                   <button
                     type="button"
