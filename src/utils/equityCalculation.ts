@@ -9,7 +9,7 @@
  * 2. Dynamic Pool = 100% - sum(all Fixed Equity).
  * 3. Initial split: distribute the Dynamic Pool among ALL users (fixed or not) strictly
  *    proportionally by their totalPoints.
- * 4. Theoretical % = Fixed + dynamic share from step 3.
+ * 4. Theoretical % per member = Fixed + dynamic share from step 3.
  * 5. Caps & spillover: if theoretical > Cap, final = Cap. The excess is redistributed
  *    proportionally by points among users who haven't hit their cap. Iterate until
  *    no spillover remains.
