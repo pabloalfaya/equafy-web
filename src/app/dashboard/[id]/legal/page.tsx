@@ -85,9 +85,16 @@ export default function ProjectLegalPage() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const handleDownloadTemplate = (name: string) => {
-    // Placeholder for future implementation
-    console.log("Download template:", name);
+  const handleDownloadTemplate = (slug: string) => {
+    // Download a static template from /public/legal-templates
+    // Example path: /legal-templates/dynamic-collaboration.docx
+    if (typeof window === "undefined") return;
+    const link = document.createElement("a");
+    link.href = `/legal-templates/${slug}.docx`;
+    link.download = `${slug}.docx`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   };
 
   const handleExportPDF = () => {
@@ -297,6 +304,110 @@ export default function ProjectLegalPage() {
                 </button>
               </div>
             </div>
+
+            {selectedCountry === "United States" && (
+              <div className="mt-10 space-y-4">
+                <h3 className="text-lg font-black text-slate-900">
+                  US Dynamic Equity Legal Pack
+                </h3>
+                <p className="text-sm text-slate-500 mb-4">
+                  These documents are tailored for US-based companies using Equafy. Download the Word templates, adapt them with your counsel, and store the signed versions in the vault below.
+                </p>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {/* 1. Board Resolution Adopting Equafy */}
+                  <div className="bg-white rounded-2xl border border-slate-100 p-6 shadow-sm hover:shadow-md transition-shadow">
+                    <div className="p-3 rounded-xl bg-emerald-50 w-fit mb-4">
+                      <FileText className="h-7 w-7 text-emerald-600" />
+                    </div>
+                    <h3 className="font-bold text-slate-900 text-lg mb-1">
+                      Board Resolution Adopting Equafy
+                    </h3>
+                    <p className="text-sm text-slate-500 mb-2">
+                      Official Board action authorizing the use of Equafy as the company&apos;s single source of truth for equity management.
+                    </p>
+                    <p className="text-xs text-slate-400 mb-4">
+                      Gives legal mandate to transition from static shares to a dynamic model and protects administrators&apos; decisions.
+                    </p>
+                    <button
+                      type="button"
+                      onClick={() => handleDownloadTemplate("us-board-resolution-adopting-equafy")}
+                      className="w-full py-2.5 px-4 rounded-xl border border-slate-200 bg-white text-slate-700 font-bold text-sm hover:bg-slate-50 transition-colors"
+                    >
+                      Download Word Template
+                    </button>
+                  </div>
+
+                  {/* 2. Dynamic Equity Addendum */}
+                  <div className="bg-white rounded-2xl border border-slate-100 p-6 shadow-sm hover:shadow-md transition-shadow">
+                    <div className="p-3 rounded-xl bg-blue-50 w-fit mb-4">
+                      <FileText className="h-7 w-7 text-blue-600" />
+                    </div>
+                    <h3 className="font-bold text-slate-900 text-lg mb-1">
+                      Dynamic Equity Addendum
+                    </h3>
+                    <p className="text-sm text-slate-500 mb-2">
+                      Master agreement that subordinates prior static equity arrangements to Equafy&apos;s real-time mathematical calculations.
+                    </p>
+                    <p className="text-xs text-slate-400 mb-4">
+                      Binds participants to the dynamic model, sets initial company valuation, and gives legal effect to Freeze records.
+                    </p>
+                    <button
+                      type="button"
+                      onClick={() => handleDownloadTemplate("us-dynamic-equity-addendum")}
+                      className="w-full py-2.5 px-4 rounded-xl border border-slate-200 bg-white text-slate-700 font-bold text-sm hover:bg-slate-50 transition-colors"
+                    >
+                      Download Word Template
+                    </button>
+                  </div>
+
+                  {/* 3. Stock Assignment in Blank */}
+                  <div className="bg-white rounded-2xl border border-slate-100 p-6 shadow-sm hover:shadow-md transition-shadow">
+                    <div className="p-3 rounded-xl bg-slate-50 w-fit mb-4">
+                      <FileText className="h-7 w-7 text-slate-700" />
+                    </div>
+                    <h3 className="font-bold text-slate-900 text-lg mb-1">
+                      Stock Assignment in Blank
+                    </h3>
+                    <p className="text-sm text-slate-500 mb-2">
+                      Pre-signed transfer document used as a security mechanism to adjust equity without further signatures.
+                    </p>
+                    <p className="text-xs text-slate-400 mb-4">
+                      Allows automatic reassignment or repurchase of shares based on software calculations, preventing future roadblocks.
+                    </p>
+                    <button
+                      type="button"
+                      onClick={() => handleDownloadTemplate("us-stock-assignment-in-blank")}
+                      className="w-full py-2.5 px-4 rounded-xl border border-slate-200 bg-white text-slate-700 font-bold text-sm hover:bg-slate-50 transition-colors"
+                    >
+                      Download Word Template
+                    </button>
+                  </div>
+
+                  {/* 4. Section 83(b) Election */}
+                  <div className="bg-white rounded-2xl border border-slate-100 p-6 shadow-sm hover:shadow-md transition-shadow">
+                    <div className="p-3 rounded-xl bg-amber-50 w-fit mb-4">
+                      <FileText className="h-7 w-7 text-amber-600" />
+                    </div>
+                    <h3 className="font-bold text-slate-900 text-lg mb-1">
+                      Section 83(b) Election
+                    </h3>
+                    <p className="text-sm text-slate-500 mb-2">
+                      Critical tax filing for participants receiving equity subject to vesting or later adjustments.
+                    </p>
+                    <p className="text-xs text-slate-400 mb-4">
+                      Helps protect founders from being taxed on future growth as ordinary income, potentially saving thousands in taxes.
+                    </p>
+                    <button
+                      type="button"
+                      onClick={() => handleDownloadTemplate("us-section-83b-election")}
+                      className="w-full py-2.5 px-4 rounded-xl border border-slate-200 bg-white text-slate-700 font-bold text-sm hover:bg-slate-50 transition-colors"
+                    >
+                      Download Word Template
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
           </section>
 
           {/* 4. Secure Vault */}
