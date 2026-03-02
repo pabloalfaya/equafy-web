@@ -3,7 +3,7 @@
 import { useParams } from "next/navigation";
 import Link from "next/link";
 import { useEffect, useState, useCallback } from "react";
-import { ArrowLeft, FileText, Shield, Snowflake, Upload, Info } from "lucide-react";
+import { ArrowLeft, FileText, Shield, Snowflake, Upload, Info, Trash2 } from "lucide-react";
 import { createClient } from "@/utils/supabase/client";
 import { BRAND } from "@/lib/brand";
 
@@ -45,7 +45,9 @@ export default function ProjectLegalPage() {
   const [lastScrollY, setLastScrollY] = useState(0);
   const [selectedCountry, setSelectedCountry] = useState<Jurisdiction>("United States");
   const [isDragging, setIsDragging] = useState(false);
-  const [vaultFiles, setVaultFiles] = useState<{ name: string; uploadedBy: string; date: string }[]>([]);
+  const [vaultFiles, setVaultFiles] = useState<
+    { id: string; name: string; storagePath: string; uploadedBy?: string | null; date: string }[]
+  >([]);
   const [establishLegalViaAlgorithm, setEstablishLegalViaAlgorithm] = useState(false);
 
   useEffect(() => {
@@ -57,10 +59,38 @@ export default function ProjectLegalPage() {
     const supabase = createClient();
     void (async () => {
       try {
-        const { data } = await supabase.from("projects").select("name").eq("id", projectId).single();
-        if (!cancelled) setProjectName(data?.name ?? null);
+        const [{ data: projectData }, { data: docsData }] = await Promise.all([
+          supabase.from("projects").select("name").eq("id", projectId).single(),
+          supabase
+            .from("project_documents")
+            .select("id, name, storage_path, uploaded_at")
+            .eq("project_id", projectId)
+            .order("uploaded_at", { ascending: false }),
+        ]);
+
+        if (!cancelled) {
+          setProjectName(projectData?.name ?? null);
+          const mappedDocs =
+            (docsData as { id: string; name: string; storage_path: string; uploaded_at: string }[])?.map(
+              (doc) => ({
+                id: doc.id,
+                name: doc.name,
+                storagePath: doc.storage_path,
+                uploadedBy: null,
+                date: new Date(doc.uploaded_at).toLocaleDateString("en-US", {
+                  month: "short",
+                  day: "numeric",
+                  year: "numeric",
+                }),
+              })
+            ) ?? [];
+          setVaultFiles(mappedDocs);
+        }
       } catch {
-        if (!cancelled) setProjectName(null);
+        if (!cancelled) {
+          setProjectName(null);
+          setVaultFiles([]);
+        }
       } finally {
         if (!cancelled) setLoading(false);
       }
@@ -100,40 +130,118 @@ export default function ProjectLegalPage() {
     window.location.href = projectId ? `/dashboard/${projectId}` : "/dashboard";
   };
 
+  const uploadAndSaveDocument = useCallback(
+    async (file: File) => {
+      if (!projectId) return;
+      const supabase = createClient();
+      const path = `${projectId}/${Date.now()}-${file.name}`;
+
+      const { error: uploadError } = await supabase
+        .storage
+        .from("legal-vault")
+        .upload(path, file, { contentType: file.type || "application/pdf" });
+
+      if (uploadError) {
+        console.error("Error uploading legal document:", uploadError);
+        alert("There was an error uploading the document. Please try again.");
+        return;
+      }
+
+      const { data, error: insertError } = await supabase
+        .from("project_documents")
+        .insert({
+          project_id: projectId,
+          name: file.name,
+          storage_path: path,
+          mime_type: file.type || "application/pdf",
+          size_bytes: file.size,
+        })
+        .select("id, name, storage_path, uploaded_at")
+        .single();
+
+      if (insertError || !data) {
+        console.error("Error saving document metadata:", insertError);
+        alert("The file was uploaded but the record could not be saved.");
+        return;
+      }
+
+      const displayDate = new Date(data.uploaded_at).toLocaleDateString("en-US", {
+        month: "short",
+        day: "numeric",
+        year: "numeric",
+      });
+
+      setVaultFiles((prev) => [
+        {
+          id: data.id,
+          name: data.name,
+          storagePath: data.storage_path,
+          uploadedBy: "You",
+          date: displayDate,
+        },
+        ...prev,
+      ]);
+    },
+    [projectId]
+  );
+
   const handleDrop = useCallback(
     (e: React.DragEvent) => {
       e.preventDefault();
       setIsDragging(false);
       const files = Array.from(e.dataTransfer.files).filter((f) => f.type === "application/pdf");
-      if (files.length > 0) {
-        setVaultFiles((prev) => [
-          ...prev,
-          ...files.map((f) => ({
-            name: f.name,
-            uploadedBy: "You",
-            date: new Date().toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }),
-          })),
-        ]);
-      }
+      files.forEach((file) => {
+        void uploadAndSaveDocument(file);
+      });
     },
-    []
+    [uploadAndSaveDocument]
   );
 
-  const handleFileSelect = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files;
-    if (files && files.length > 0) {
-      const pdfFiles = Array.from(files).filter((f) => f.type === "application/pdf");
-      setVaultFiles((prev) => [
-        ...prev,
-        ...pdfFiles.map((f) => ({
-          name: f.name,
-          uploadedBy: "You",
-          date: new Date().toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }),
-        })),
-      ]);
-    }
-    e.target.value = "";
-  }, []);
+  const handleFileSelect = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const files = e.target.files;
+      if (files && files.length > 0) {
+        const pdfFiles = Array.from(files).filter((f) => f.type === "application/pdf");
+        pdfFiles.forEach((file) => {
+          void uploadAndSaveDocument(file);
+        });
+      }
+      e.target.value = "";
+    },
+    [uploadAndSaveDocument]
+  );
+
+  const handleDeleteDocument = useCallback(
+    async (id: string) => {
+      const doc = vaultFiles.find((f) => f.id === id);
+      if (!doc) return;
+      if (!window.confirm("Delete this document from the legal vault?")) return;
+
+      const supabase = createClient();
+
+      if (doc.storagePath) {
+        const { error: removeError } = await supabase
+          .storage
+          .from("legal-vault")
+          .remove([doc.storagePath]);
+        if (removeError) {
+          console.error("Error deleting file from storage:", removeError);
+          alert("Could not delete the file from storage.");
+          return;
+        }
+      }
+
+      const { error: dbError } = await supabase.from("project_documents").delete().eq("id", id);
+      if (dbError) {
+        console.error("Error deleting document record:", dbError);
+        alert("The document record could not be deleted.");
+        return;
+      }
+
+      setVaultFiles((prev) => prev.filter((f) => f.id !== id));
+    },
+    [vaultFiles]
+  );
 
   const handleDragOver = useCallback((e: React.DragEvent) => {
     e.preventDefault();
@@ -387,9 +495,9 @@ export default function ProjectLegalPage() {
 
             {/* Vault Files List */}
             <div className="mt-6 space-y-3">
-              {vaultFiles.map((file, i) => (
+              {vaultFiles.map((file) => (
                 <div
-                  key={`${file.name}-${i}`}
+                  key={file.id}
                   className="flex items-center justify-between py-3 px-4 rounded-xl bg-white border border-slate-100 shadow-sm"
                 >
                   <div className="flex items-center gap-3 min-w-0">
@@ -397,8 +505,16 @@ export default function ProjectLegalPage() {
                     <span className="font-medium text-slate-800 truncate">{file.name}</span>
                   </div>
                   <div className="flex items-center gap-4 text-sm text-slate-500 shrink-0">
-                    <span>{file.uploadedBy}</span>
+                    <span>{file.uploadedBy ?? "—"}</span>
                     <span>{file.date}</span>
+                    <button
+                      type="button"
+                      onClick={() => void handleDeleteDocument(file.id)}
+                      className="p-1.5 rounded-full hover:bg-red-50 text-red-500 hover:text-red-600 transition-colors"
+                      aria-label="Delete document"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
                   </div>
                 </div>
               ))}
