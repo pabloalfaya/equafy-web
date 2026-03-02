@@ -45,9 +45,7 @@ export default function ProjectLegalPage() {
   const [lastScrollY, setLastScrollY] = useState(0);
   const [selectedCountry, setSelectedCountry] = useState<Jurisdiction>("United States");
   const [isDragging, setIsDragging] = useState(false);
-  const [vaultFiles, setVaultFiles] = useState<{ name: string; uploadedBy: string; date: string }[]>([
-    { name: "partnership_agreement_signed.pdf", uploadedBy: "Pablo Alfaya", date: "Feb 15, 2025" },
-  ]);
+  const [vaultFiles, setVaultFiles] = useState<{ name: string; uploadedBy: string; date: string }[]>([]);
   const [establishLegalViaAlgorithm, setEstablishLegalViaAlgorithm] = useState(false);
 
   useEffect(() => {
