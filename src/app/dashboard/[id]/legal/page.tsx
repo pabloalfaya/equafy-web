@@ -252,58 +252,9 @@ export default function ProjectLegalPage() {
             </p>
           </section>
 
-          {/* 3. Templates Grid */}
+          {/* 3. Templates Grid (US-specific pack) */}
           <section className="mb-12">
             <h2 className="text-xl font-black text-slate-900 mb-6">Document Templates</h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {/* Card 1: Dynamic Collaboration Agreement */}
-              <div className="bg-white rounded-2xl border border-slate-100 p-6 shadow-sm hover:shadow-md transition-shadow">
-                <div className="p-3 rounded-xl bg-emerald-50 w-fit mb-4">
-                  <FileText className="h-7 w-7 text-emerald-600" />
-                </div>
-                <h3 className="font-bold text-slate-900 text-lg mb-2">Dynamic Collaboration Agreement</h3>
-                <p className="text-sm text-slate-500 mb-4">Agreement linking equity percentages to your dynamic split.</p>
-                <button
-                  type="button"
-                  onClick={() => handleDownloadTemplate("dynamic-collaboration")}
-                  className="w-full py-2.5 px-4 rounded-xl border border-slate-200 bg-white text-slate-700 font-bold text-sm hover:bg-slate-50 transition-colors"
-                >
-                  Download Template
-                </button>
-              </div>
-
-              {/* Card 2: IP Assignment */}
-              <div className="bg-white rounded-2xl border border-slate-100 p-6 shadow-sm hover:shadow-md transition-shadow">
-                <div className="p-3 rounded-xl bg-blue-50 w-fit mb-4">
-                  <Shield className="h-7 w-7 text-blue-600" />
-                </div>
-                <h3 className="font-bold text-slate-900 text-lg mb-2">IP Assignment</h3>
-                <p className="text-sm text-slate-500 mb-4">Transfer of intellectual property rights to the company.</p>
-                <button
-                  type="button"
-                  onClick={() => handleDownloadTemplate("ip-assignment")}
-                  className="w-full py-2.5 px-4 rounded-xl border border-slate-200 bg-white text-slate-700 font-bold text-sm hover:bg-slate-50 transition-colors"
-                >
-                  Download Template
-                </button>
-              </div>
-
-              {/* Card 3: Project Freeze Certificate */}
-              <div className="bg-white rounded-2xl border border-slate-100 p-6 shadow-sm hover:shadow-md transition-shadow ring-2 ring-emerald-500/20">
-                <div className="p-3 rounded-xl bg-teal-50 w-fit mb-4">
-                  <Snowflake className="h-7 w-7 text-teal-600" />
-                </div>
-                <h3 className="font-bold text-slate-900 text-lg mb-2">Project Freeze Certificate</h3>
-                <p className="text-sm text-slate-500 mb-4">Official snapshot of your equity distribution.</p>
-                <button
-                  type="button"
-                  onClick={handleExportPDF}
-                  className="w-full py-2.5 px-4 rounded-xl bg-emerald-500 text-white font-bold text-sm hover:bg-emerald-600 transition-colors shadow-lg shadow-emerald-500/20"
-                >
-                  Export PDF
-                </button>
-              </div>
-            </div>
 
             {selectedCountry === "United States" && (
               <div className="mt-10 space-y-4">
