@@ -243,6 +243,28 @@ export default function ProjectLegalPage() {
     [vaultFiles]
   );
 
+  const handleDownloadDocument = useCallback(
+    async (id: string) => {
+      const doc = vaultFiles.find((f) => f.id === id);
+      if (!doc || !doc.storagePath) return;
+
+      const supabase = createClient();
+      const { data, error } = await supabase.storage
+        .from("legal-vault")
+        .createSignedUrl(doc.storagePath, 60 * 5); // 5 minutes
+
+      if (error || !data?.signedUrl) {
+        console.error("Error generating signed URL for legal document:", error);
+        alert("We could not generate a download link for this document. Please try again.");
+        return;
+      }
+
+      // Open in a new tab so the user can view or download the PDF
+      window.open(data.signedUrl, "_blank", "noopener,noreferrer");
+    },
+    [vaultFiles]
+  );
+
   const handleDragOver = useCallback((e: React.DragEvent) => {
     e.preventDefault();
     setIsDragging(true);
@@ -500,10 +522,16 @@ export default function ProjectLegalPage() {
                   key={file.id}
                   className="flex items-center justify-between py-3 px-4 rounded-xl bg-white border border-slate-100 shadow-sm"
                 >
-                  <div className="flex items-center gap-3 min-w-0">
+                  <button
+                    type="button"
+                    onClick={() => void handleDownloadDocument(file.id)}
+                    className="flex items-center gap-3 min-w-0 text-left hover:text-emerald-700 transition-colors"
+                  >
                     <FileText className="h-5 w-5 text-slate-400 shrink-0" />
-                    <span className="font-medium text-slate-800 truncate">{file.name}</span>
-                  </div>
+                    <span className="font-medium text-slate-800 truncate underline-offset-2 hover:underline">
+                      {file.name}
+                    </span>
+                  </button>
                   <div className="flex items-center gap-4 text-sm text-slate-500 shrink-0">
                     <span>{file.uploadedBy ?? "—"}</span>
                     <span>{file.date}</span>
