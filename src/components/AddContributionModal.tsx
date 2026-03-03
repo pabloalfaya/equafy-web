@@ -7,13 +7,13 @@ import { recalculateAndPersistProjectValuation } from "@/utils/projectRecalculat
 import { logAudit } from "@/utils/auditLog";
 import { formatCurrency, getCurrencyLabel } from "@/lib/currency";
 
-// Defined types with English labels
+// Defined types with English labels (DB stores lowercase)
 const CONTRIBUTION_TYPES = [
-  { value: "CASH", label: "CASH" },
-  { value: "WORK", label: "WORK" },
-  { value: "TANGIBLE", label: "TANGIBLE" },
-  { value: "INTANGIBLE", label: "INTANGIBLE" },
-  { value: "OTHERS", label: "OTHERS" },
+  { value: "cash", label: "CASH" },
+  { value: "work", label: "WORK" },
+  { value: "tangible", label: "TANGIBLE" },
+  { value: "intangible", label: "INTANGIBLE" },
+  { value: "others", label: "OTHERS" },
 ];
 
 // Defaults cuando no hay config en BD (coinciden con schema)
@@ -31,7 +31,7 @@ export function AddContributionModal({ isOpen, onClose, projectId, projectConfig
   const [activeTab, setActiveTab] = useState<AddContributionTab>("add");
   const [contributorId, setContributorId] = useState("");
   const [concept, setConcept] = useState("");
-  const [type, setType] = useState("CASH");
+  const [type, setType] = useState("cash");
   const [amount, setAmount] = useState("");
   const [workInputMode, setWorkInputMode] = useState<"hours" | "fixed">("hours");
   const [hoursWorked, setHoursWorked] = useState("");
@@ -81,13 +81,13 @@ export function AddContributionModal({ isOpen, onClose, projectId, projectConfig
 
   const selectedMember = members.find((m: any) => m.id === contributorId);
   const memberHourlyRate = selectedMember?.hourly_rate != null ? Number(selectedMember.hourly_rate) : null;
-  const workMultiplier = getMultiplierForType("WORK");
+  const workMultiplier = getMultiplierForType("work");
   const currency = projectConfig?.currency ?? "EUR";
-  const baseValue = type === "WORK" && workInputMode === "hours"
+  const baseValue = type === "work" && workInputMode === "hours"
     ? (parseFloat(hoursWorked || "0") || 0) * (memberHourlyRate ?? 0)
     : parseFloat(amount || "0") || 0;
   const riskAdjustedValue = (baseValue * multiplier).toFixed(2);
-  const isWorkByHoursNoRate = type === "WORK" && workInputMode === "hours" && (memberHourlyRate == null || memberHourlyRate === 0);
+  const isWorkByHoursNoRate = type === "work" && workInputMode === "hours" && (memberHourlyRate == null || memberHourlyRate === 0);
 
   // Effect: Load data on open
   useEffect(() => {
@@ -97,7 +97,7 @@ export function AddContributionModal({ isOpen, onClose, projectId, projectConfig
         const member = members.find((m: any) => m.name === editData.contributor_name);
         setContributorId(member?.id || ""); 
         setConcept(editData.concept || ""); 
-        setType(editData.type || "CASH");
+        setType((editData.type || "cash").toLowerCase());
         setAmount(editData.amount?.toString() || ""); 
         setWorkInputMode("fixed");
         setHoursWorked("");
@@ -107,7 +107,7 @@ export function AddContributionModal({ isOpen, onClose, projectId, projectConfig
         setActiveTab("add");
         setConcept(""); 
         setAmount(""); 
-        setType("CASH"); 
+        setType("cash"); 
         setWorkInputMode("fixed");
         setHoursWorked("");
         setDate(new Date().toISOString().split('T')[0]);
@@ -134,10 +134,10 @@ export function AddContributionModal({ isOpen, onClose, projectId, projectConfig
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!canEdit && activeTab === "add") return;
-    if (isWorkByHoursNoRate && type === "WORK" && workInputMode === "hours") return;
+    if (isWorkByHoursNoRate && type === "work" && workInputMode === "hours") return;
 
     const selectedMember = members.find((m: any) => m.id === contributorId);
-    const amt = type === "WORK" && workInputMode === "hours"
+    const amt = type === "work" && workInputMode === "hours"
       ? (parseFloat(hoursWorked || "0") || 0) * (memberHourlyRate ?? 0)
       : parseFloat(amount || "0") || 0;
     const riskVal = parseFloat(riskAdjustedValue);
@@ -280,7 +280,13 @@ export function AddContributionModal({ isOpen, onClose, projectId, projectConfig
             <label className="text-xs font-bold text-slate-400 ml-1 mb-1 block uppercase">Type</label>
             <select 
               value={type} 
-              onChange={(e) => { const v = e.target.value; setType(v); if (v === "WORK") setWorkInputMode("hours"); else setWorkInputMode("fixed"); setHoursWorked(""); }} 
+              onChange={(e) => {
+                const v = e.target.value;
+                setType(v);
+                if (v === "work") setWorkInputMode("hours");
+                else setWorkInputMode("fixed");
+                setHoursWorked("");
+              }} 
               disabled={!canEdit}
               className="w-full rounded-xl border border-slate-200 px-4 py-2.5 bg-slate-50 font-black text-xs uppercase outline-none text-slate-700 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all disabled:opacity-60 disabled:cursor-not-allowed"
             >
@@ -296,7 +302,7 @@ export function AddContributionModal({ isOpen, onClose, projectId, projectConfig
           </div>
 
           {/* WORK: toggle Calculate by Hours vs Fixed Value */}
-          {type === "WORK" && (
+          {type === "work" && (
             <>
               <div>
                 <label className="text-xs font-bold text-slate-400 ml-1 mb-2 block uppercase">How to value</label>
@@ -360,7 +366,7 @@ export function AddContributionModal({ isOpen, onClose, projectId, projectConfig
           )}
 
           {/* Value for non-WORK types */}
-          {type !== "WORK" && (
+          {type !== "work" && (
             <div>
               <label className="text-xs font-bold text-slate-400 ml-1 mb-1 block uppercase">Value</label>
               <input 
@@ -392,16 +398,16 @@ export function AddContributionModal({ isOpen, onClose, projectId, projectConfig
           {/* Footer: result + submit — always visible */}
           <div className="shrink-0 px-5 pb-5 pt-2 space-y-3 border-t border-slate-100">
           {/* Result Card — preview of total points */}
-          <div className="rounded-2xl bg-slate-900 p-4 text-white shadow-lg shadow-emerald-900/20">
+            <div className="rounded-2xl bg-slate-900 p-4 text-white shadow-lg shadow-emerald-900/20">
              <div className="flex justify-between text-[10px] font-black uppercase opacity-60 mb-1">
-                <span>{type === "WORK" ? "Value × Work multiplier" : "Calculated Risk"}</span>
+                <span>{type === "work" ? "Value × Work multiplier" : "Calculated Risk"}</span>
                 <span className="bg-emerald-500/20 px-2 py-0.5 rounded text-emerald-400">x{multiplier} Multiplier</span>
              </div>
              <div className="flex items-baseline gap-1">
                 <span className="text-2xl font-black text-emerald-400">{Number(riskAdjustedValue).toLocaleString()}</span>
                 <span className="text-sm font-bold text-emerald-400/60">points</span>
              </div>
-             {type === "WORK" && baseValue > 0 && (
+             {type === "work" && baseValue > 0 && (
                <p className="text-xs text-slate-400 mt-1">
                  {formatCurrency(baseValue, currency)} × {multiplier} = {riskAdjustedValue} points
                </p>
