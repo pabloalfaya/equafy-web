@@ -804,7 +804,7 @@ export default function ProjectDashboardPage() {
                         <div className="h-2 bg-slate-100 rounded-full overflow-hidden mb-4">
                           <div className={`h-full ${barColors[i % barColors.length]} rounded-full transition-all`} style={{ width: `${Math.min(r.equityPct, 100)}%` }} />
                         </div>
-                        <p className="text-xl font-bold text-slate-900 tabular-nums mb-5">{r.equityPct.toFixed(1)}%</p>
+                        <p className="text-xl font-bold text-slate-900 tabular-nums mb-5">{r.equityPct.toFixed(2)}%</p>
                         <div className="border-t border-slate-100 pt-4 space-y-3">
                           <div className="flex justify-between items-center">
                             <span className="text-xs text-slate-500 font-medium uppercase tracking-wider">Total Points</span>

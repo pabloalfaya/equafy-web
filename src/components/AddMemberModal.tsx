@@ -303,11 +303,11 @@ export function AddMemberModal({
                               </div>
                             </td>
                             <td className="py-3 px-4 text-right text-slate-600">
-                              {fixedPct > 0 ? `${fixedPct.toFixed(1)}%` : "—"}
+                              {fixedPct > 0 ? `${fixedPct.toFixed(2)}%` : "—"}
                             </td>
                             <td className="py-3 px-4 text-right text-slate-600">
                               {cap != null ? (
-                                `${Number(cap).toFixed(1)}%`
+                                `${Number(cap).toFixed(2)}%`
                               ) : (
                                 <span className="inline-flex items-center gap-1 text-slate-400" title="No cap">
                                   <Infinity className="w-4 h-4" /> No Cap
@@ -319,7 +319,7 @@ export function AddMemberModal({
                             </td>
                             <td className="py-3 px-4 text-right">
                               <span className="font-black text-emerald-600">
-                                {equityPct.toFixed(1)}%
+                                {equityPct.toFixed(2)}%
                               </span>
                             </td>
                           </tr>

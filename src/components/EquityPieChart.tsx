@@ -49,8 +49,8 @@ function CustomTooltip(props: { active?: boolean; payload?: Array<{ payload: Cha
       }}
     >
       <p className="font-bold text-slate-900 mb-2">{item.name}</p>
-      <p className="text-sm text-slate-700 mb-0.5">Total: {item.value.toFixed(1)}%</p>
-      <p className="text-sm text-slate-700 mb-0.5">Fixed: {item.fixed.toFixed(1)}%</p>
+      <p className="text-sm text-slate-700 mb-0.5">Total: {item.value.toFixed(2)}%</p>
+      <p className="text-sm text-slate-700 mb-0.5">Fixed: {item.fixed.toFixed(2)}%</p>
       <p className="text-sm text-slate-700">Dynamic: {item.dynamic.toLocaleString()} pts</p>
     </div>
   );
