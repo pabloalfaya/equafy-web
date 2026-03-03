@@ -31,8 +31,8 @@ CREATE TABLE IF NOT EXISTS contributions (
   project_id UUID NOT NULL REFERENCES projects(id) ON DELETE CASCADE,
   contributor_name TEXT NOT NULL,
   
-  -- Tipos actualizados para coincidir con TS: 'cash', 'work', 'tangible', 'intangible', 'others'
-  type TEXT NOT NULL CHECK (type IN ('cash', 'work', 'tangible', 'intangible', 'others')),
+  -- Tipos actualizados para coincidir con TS: 'cash', 'work', 'tangible', 'intangible', 'others', 'legacy_contribution'
+  type TEXT NOT NULL CHECK (type IN ('cash', 'work', 'tangible', 'intangible', 'others', 'legacy_contribution')),
   
   concept TEXT, -- Agregado: Para describir la aportación
   amount NUMERIC NOT NULL,

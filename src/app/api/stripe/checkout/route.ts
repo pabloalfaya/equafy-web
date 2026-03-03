@@ -91,6 +91,8 @@ export async function POST(req: Request) {
       mult_others,
       use_log_risk: false,
       model_onboarding_dismissed: false,
+      // New project onboarding: legacy vs scratch flow not completed yet.
+      is_setup_completed: false,
       terms_accepted_at: termsAcceptedAt,
       privacy_accepted_at: privacyAcceptedAt,
     };

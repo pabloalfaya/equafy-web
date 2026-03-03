@@ -64,10 +64,18 @@ export function ContributionsTable({ contributions, currency = "EUR", onDelete, 
         <tbody className="text-sm text-slate-700">
           {contributions.map((c) => {
             const isSimulated = !!(c as { isSimulated?: boolean }).isSimulated;
+            const rawType = String((c as { type?: string }).type || "");
+            const normalizedType = rawType.toLowerCase();
+            const isLegacy = normalizedType === "legacy_contribution";
+            const rowClasses = isSimulated
+              ? "bg-amber-50/60 border-amber-100/80 hover:bg-amber-50"
+              : isLegacy
+              ? "bg-violet-50/50 border-violet-100 hover:bg-violet-50/80"
+              : "border-slate-50 hover:bg-slate-50/50";
             return (
             <tr
               key={c.id}
-              className={`border-b transition-colors ${isSimulated ? "bg-amber-50/60 border-amber-100/80 hover:bg-amber-50" : "border-slate-50 hover:bg-slate-50/50"}`}
+              className={`border-b transition-colors ${rowClasses}`}
             >
               
               {/* 1. FECHA (sin icono para ahorrar espacio) */}
@@ -86,9 +94,17 @@ export function ContributionsTable({ contributions, currency = "EUR", onDelete, 
 
               {/* 3. TIPO (Usamos c.type) */}
               <td className="py-4 px-2 md:px-4">
-                <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-bold uppercase tracking-wide ${isSimulated ? "bg-amber-200/60 text-amber-900" : "bg-slate-100 text-slate-600"}`}>
+                <span
+                  className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-bold uppercase tracking-wide ${
+                    isSimulated
+                      ? "bg-amber-200/60 text-amber-900"
+                      : isLegacy
+                      ? "bg-violet-200/70 text-violet-900"
+                      : "bg-slate-100 text-slate-600"
+                  }`}
+                >
                     <Tag className="w-3 h-3" />
-                    {c.type}
+                    {isLegacy ? "Initial Baseline" : c.type}
                     {isSimulated && <span className="ml-1 text-[10px]">(sim)</span>}
                 </span>
               </td>

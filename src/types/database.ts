@@ -1,4 +1,10 @@
-export type ContributionType = "cash" | "work" | "tangible" | "intangible" | "others";
+export type ContributionType =
+  | "cash"
+  | "work"
+  | "tangible"
+  | "intangible"
+  | "others"
+  | "legacy_contribution";
 export type ProjectModel = "JUST_SPLIT" | "FLAT" | "CUSTOM";
 
 export interface Project {
@@ -25,6 +31,8 @@ export interface Project {
   terms_accepted_at?: string | null;
   /** When the user accepted Privacy Policy before checkout. */
   privacy_accepted_at?: string | null;
+  /** When the initial project setup (legacy vs scratch) was completed. */
+  is_setup_completed?: boolean;
 }
 
 export interface Contribution {
@@ -45,4 +53,7 @@ export const DEFAULT_MULTIPLIERS: Record<ContributionType, number> = {
   intangible: 2,
   tangible: 1,
   others: 1,
+   // Legacy baseline contributions are already valued at their final amount,
+   // so we treat their multiplier as neutral.
+  legacy_contribution: 1,
 };

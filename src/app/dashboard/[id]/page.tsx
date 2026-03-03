@@ -16,6 +16,7 @@ import { EquitySettingsModal } from "@/components/EquitySettingsModal";
 import { EquityModelModal } from "@/components/EquityModelModal";
 import { AuditLogModal } from "@/components/AuditLogModal";
 import { FinalizedSummaryModal, type SummaryRow } from "@/components/FinalizedSummaryModal";
+import { LegacyOnboardingWizard } from "@/components/LegacyOnboardingWizard";
 import type { Project, Contribution, ContributionType } from "@/types/database";
 
 import jsPDF from 'jspdf';
@@ -31,6 +32,7 @@ type ExtendedProject = Project & {
     model_onboarding_dismissed?: boolean;
     currency?: string;
     settings_onboarding_done?: boolean;
+    is_setup_completed?: boolean;
 };
 type ExtendedContribution = Contribution & { date?: string; concept?: string; multiplier?: number; [key: string]: any };
 
@@ -124,6 +126,7 @@ export default function ProjectDashboardPage() {
     rows: SummaryRow[];
     currency?: string;
   } | null>(null);
+  const [showLegacyOnboarding, setShowLegacyOnboarding] = useState(false);
 
   const fetchData = async () => {
     if (!projectId) return;
@@ -139,9 +142,16 @@ export default function ProjectDashboardPage() {
     if (projectError || !projectData) { router.push("/dashboard"); return; }
     setProject(projectData as ExtendedProject);
 
-    // Onboarding: primera vez que se abre el proyecto → abrir Equity Settings (pestaña Settings)
-    const needsOnboarding = projectData.settings_onboarding_done === false;
-    if (needsOnboarding) setFixedEquityOpen(true);
+    // Onboarding:
+    // - If is_setup_completed is false → show legacy vs scratch wizard.
+    // - Otherwise, if settings_onboarding_done is false → open Equity Settings modal once.
+    const needsLegacySetup = projectData.is_setup_completed === false;
+    if (needsLegacySetup) {
+      setShowLegacyOnboarding(true);
+    } else {
+      const needsSettingsOnboarding = projectData.settings_onboarding_done === false;
+      if (needsSettingsOnboarding) setFixedEquityOpen(true);
+    }
 
     // Cargar Aportaciones
     const { data: contributionsData } = await supabase.from("contributions").select("*").eq("project_id", projectId).order("created_at", { ascending: false });
@@ -881,6 +891,18 @@ export default function ProjectDashboardPage() {
         }}
         onSuccess={fetchData}
       />
+
+      {showLegacyOnboarding && (
+        <LegacyOnboardingWizard
+          open={showLegacyOnboarding}
+          projectId={projectId}
+          project={project}
+          onCompleted={() => {
+            setShowLegacyOnboarding(false);
+            fetchData();
+          }}
+        />
+      )}
 
       {finalizeToast && (
         <div
