@@ -48,6 +48,7 @@ export default function ProjectLegalPage() {
   const [vaultFiles, setVaultFiles] = useState<
     { id: string; name: string; storagePath: string; uploadedBy?: string | null; date: string }[]
   >([]);
+  const [canManageVault, setCanManageVault] = useState(false);
 
   useEffect(() => {
     if (!projectId) {
@@ -58,17 +59,50 @@ export default function ProjectLegalPage() {
     const supabase = createClient();
     void (async () => {
       try {
-        const [{ data: projectData }, { data: docsData }] = await Promise.all([
-          supabase.from("projects").select("name").eq("id", projectId).single(),
+        const [
+          { data: userResult },
+          { data: projectData },
+          { data: docsData },
+          { data: membersData },
+        ] = await Promise.all([
+          supabase.auth.getUser(),
+          supabase
+            .from("projects")
+            .select("id, name, owner_id")
+            .eq("id", projectId)
+            .single(),
           supabase
             .from("project_documents")
             .select("id, name, storage_path, uploaded_at")
             .eq("project_id", projectId)
             .order("uploaded_at", { ascending: false }),
+          supabase
+            .from("project_members")
+            .select("id, access_level, email, user_id")
+            .eq("project_id", projectId),
         ]);
 
         if (!cancelled) {
           setProjectName(projectData?.name ?? null);
+
+          const userId = userResult?.user?.id ?? null;
+          const userEmail = userResult?.user?.email ?? null;
+          const isOwner = !!userId && projectData?.owner_id === userId;
+
+          const members =
+            (membersData as { id: string; access_level?: string | null; email?: string | null; user_id?: string | null }[]) ??
+            [];
+
+          const normalizedEmail = userEmail?.toLowerCase() ?? null;
+          const currentMember = members.find(
+            (m) =>
+              (m.user_id && userId && m.user_id === userId) ||
+              (normalizedEmail && m.email && m.email.toLowerCase() === normalizedEmail)
+          );
+
+          const canEditVault = isOwner || currentMember?.access_level === "editor";
+          setCanManageVault(canEditVault);
+
           const mappedDocs =
             (docsData as { id: string; name: string; storage_path: string; uploaded_at: string }[])?.map(
               (doc) => ({
@@ -89,6 +123,7 @@ export default function ProjectLegalPage() {
         if (!cancelled) {
           setProjectName(null);
           setVaultFiles([]);
+          setCanManageVault(false);
         }
       } finally {
         if (!cancelled) setLoading(false);
@@ -467,26 +502,38 @@ export default function ProjectLegalPage() {
             <h2 className="text-xl font-black text-slate-900 mb-6">Signed Documents Vault</h2>
 
             {/* Drag & Drop Area */}
-            <div
-              onDrop={handleDrop}
-              onDragOver={handleDragOver}
-              onDragLeave={handleDragLeave}
-              className={`relative rounded-2xl border-2 border-dashed border-slate-300 bg-slate-50/50 p-12 text-center transition-colors ${
-                isDragging ? "border-emerald-400 bg-emerald-50/50" : "hover:border-slate-400 hover:bg-slate-50"
-              }`}
-            >
-              <input
-                type="file"
-                accept="application/pdf"
-                multiple
-                onChange={handleFileSelect}
-                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-              />
-              <Upload className="mx-auto h-12 w-12 text-slate-400 mb-4" />
-              <p className="text-slate-600 font-medium">
-                Drag and drop your signed PDF here or click to browse
-              </p>
-            </div>
+            {canManageVault ? (
+              <div
+                onDrop={handleDrop}
+                onDragOver={handleDragOver}
+                onDragLeave={handleDragLeave}
+                className={`relative rounded-2xl border-2 border-dashed border-slate-300 bg-slate-50/50 p-12 text-center transition-colors ${
+                  isDragging ? "border-emerald-400 bg-emerald-50/50" : "hover:border-slate-400 hover:bg-slate-50"
+                }`}
+              >
+                <input
+                  type="file"
+                  accept="application/pdf"
+                  multiple
+                  onChange={handleFileSelect}
+                  className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                />
+                <Upload className="mx-auto h-12 w-12 text-slate-400 mb-4" />
+                <p className="text-slate-600 font-medium">
+                  Drag and drop your signed PDF here or click to browse
+                </p>
+              </div>
+            ) : (
+              <div className="rounded-2xl border-2 border-dashed border-slate-200 bg-slate-50/60 p-10 text-center">
+                <Upload className="mx-auto h-10 w-10 text-slate-300 mb-3" />
+                <p className="text-sm font-semibold text-slate-600">
+                  Only the project owner can upload or remove signed documents.
+                </p>
+                <p className="text-xs text-slate-400 mt-1">
+                  You still have full read-only access to all files stored in this vault.
+                </p>
+              </div>
+            )}
 
             {/* Vault Files List */}
             <div className="mt-6 space-y-3">
@@ -508,14 +555,16 @@ export default function ProjectLegalPage() {
                   <div className="flex items-center gap-4 text-sm text-slate-500 shrink-0">
                     <span>{file.uploadedBy ?? "—"}</span>
                     <span>{file.date}</span>
-                    <button
-                      type="button"
-                      onClick={() => void handleDeleteDocument(file.id)}
-                      className="p-1.5 rounded-full hover:bg-red-50 text-red-500 hover:text-red-600 transition-colors"
-                      aria-label="Delete document"
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </button>
+                    {canManageVault && (
+                      <button
+                        type="button"
+                        onClick={() => void handleDeleteDocument(file.id)}
+                        className="p-1.5 rounded-full hover:bg-red-50 text-red-500 hover:text-red-600 transition-colors"
+                        aria-label="Delete document"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    )}
                   </div>
                 </div>
               ))}
