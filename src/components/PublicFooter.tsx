@@ -57,7 +57,7 @@ export function PublicFooter() {
         <div className="pt-8 border-t border-slate-100 flex flex-col md:flex-row justify-between items-center gap-6 text-slate-400 font-bold text-xs uppercase tracking-wider">
           <p>© 2026 {BRAND.nameUppercase}. BUILT FOR MODERN CO-FOUNDERS.</p>
           <div className="flex gap-6">
-            <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="hover:text-slate-900 transition-colors" aria-label="Twitter">
+            <a href="https://x.com/GetEquafy" target="_blank" rel="noopener noreferrer" className="hover:text-slate-900 transition-colors" aria-label="X (Twitter)">
               <Twitter className="h-5 w-5" />
             </a>
             <a href="https://www.linkedin.com/company/equafy/" target="_blank" rel="noopener noreferrer" className="hover:text-slate-900 transition-colors" aria-label="LinkedIn">
