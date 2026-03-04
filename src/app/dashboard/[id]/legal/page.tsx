@@ -527,7 +527,7 @@ export default function ProjectLegalPage() {
               <div className="rounded-2xl border-2 border-dashed border-slate-200 bg-slate-50/60 p-10 text-center">
                 <Upload className="mx-auto h-10 w-10 text-slate-300 mb-3" />
                 <p className="text-sm font-semibold text-slate-600">
-                  Only the project owner can upload or remove signed documents.
+                  Only members with edit permissions can upload or remove signed documents.
                 </p>
                 <p className="text-xs text-slate-400 mt-1">
                   You still have full read-only access to all files stored in this vault.
