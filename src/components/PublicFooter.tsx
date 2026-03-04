@@ -60,7 +60,7 @@ export function PublicFooter() {
             <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="hover:text-slate-900 transition-colors" aria-label="Twitter">
               <Twitter className="h-5 w-5" />
             </a>
-            <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="hover:text-slate-900 transition-colors" aria-label="LinkedIn">
+            <a href="https://www.linkedin.com/company/equafy/" target="_blank" rel="noopener noreferrer" className="hover:text-slate-900 transition-colors" aria-label="LinkedIn">
               <Linkedin className="h-5 w-5" />
             </a>
             <a href={`mailto:${BRAND.email}`} className="hover:text-slate-900 transition-colors" aria-label="Email">
