@@ -130,6 +130,7 @@ export default function ProjectDashboardPage() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [menuClosing, setMenuClosing] = useState(false);
   const [showLegacyOnboarding, setShowLegacyOnboarding] = useState(false);
+  const [legacyOnboardingDismissed, setLegacyOnboardingDismissed] = useState(false);
 
   const fetchData = async () => {
     if (!projectId) return;
@@ -155,7 +156,7 @@ export default function ProjectDashboardPage() {
     // Onboarding:
     // - If is_setup_completed is false → show legacy vs scratch wizard.
     // - Otherwise, if settings_onboarding_done is false → open Equity Settings modal once.
-    const needsLegacySetup = projectData.is_setup_completed === false;
+    const needsLegacySetup = projectData.is_setup_completed === false && !legacyOnboardingDismissed;
     if (needsLegacySetup) {
       setShowLegacyOnboarding(true);
     } else {
@@ -939,6 +940,10 @@ export default function ProjectDashboardPage() {
           onCompleted={() => {
             setShowLegacyOnboarding(false);
             fetchData();
+          }}
+          onDismiss={() => {
+            setShowLegacyOnboarding(false);
+            setLegacyOnboardingDismissed(true);
           }}
         />
       )}

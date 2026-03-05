@@ -27,6 +27,7 @@ interface LegacyOnboardingWizardProps {
   projectId: string;
   project: Project | null;
   onCompleted: () => void;
+  onDismiss?: () => void;
 }
 
 export function LegacyOnboardingWizard({
@@ -34,6 +35,7 @@ export function LegacyOnboardingWizard({
   projectId,
   project,
   onCompleted,
+  onDismiss,
 }: LegacyOnboardingWizardProps) {
   const [step, setStep] = useState<Step>("fork");
   const [choice, setChoice] = useState<Choice>(null);
@@ -329,9 +331,8 @@ export function LegacyOnboardingWizard({
           <button
             type="button"
             onClick={() => {
-              // Do not allow closing without completing; user must choose an option.
               if (submitting) return;
-              setError("Please complete or cancel onboarding from your account if needed.");
+              onDismiss?.();
             }}
             className="p-2 rounded-full text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-colors"
             aria-label="Close onboarding"
@@ -658,15 +659,29 @@ export function LegacyOnboardingWizard({
               </button>
             )}
             {step === "fork" && (
-              <button
-                type="button"
-                onClick={() => void goNextFromFork()}
-                disabled={submitting}
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-black text-white bg-emerald-600 hover:bg-emerald-700 shadow-md disabled:opacity-60 disabled:cursor-not-allowed transition-colors"
-              >
-                Continue
-                <ArrowRight className="w-3 h-3" />
-              </button>
+              <>
+                <button
+                  type="button"
+                  onClick={() => void goNextFromFork()}
+                  disabled={submitting}
+                  className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-black text-white bg-emerald-600 hover:bg-emerald-700 shadow-md disabled:opacity-60 disabled:cursor-not-allowed transition-colors"
+                >
+                  Continue
+                  <ArrowRight className="w-3 h-3" />
+                </button>
+                {onDismiss && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (submitting) return;
+                      onDismiss();
+                    }}
+                    className="inline-flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-bold text-slate-500 hover:text-slate-700 hover:bg-slate-100 transition-colors"
+                  >
+                    Do this later
+                  </button>
+                )}
+              </>
             )}
             {step === "value" && (
               <button
