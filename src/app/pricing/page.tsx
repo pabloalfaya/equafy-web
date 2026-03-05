@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { CheckCircle2, ArrowRight } from "lucide-react";
+import { CheckCircle2, ArrowRight, Receipt } from "lucide-react";
 
 export default function PricingPage() {
   return (
@@ -88,6 +88,26 @@ export default function PricingPage() {
             >
               Get Started
             </Link>
+          </div>
+        </div>
+
+        {/* Value Highlight */}
+        <div className="mx-auto max-w-3xl mt-14 md:mt-16">
+          <div className="rounded-2xl border border-slate-200 bg-white/80 backdrop-blur-sm p-6 md:p-8 shadow-sm">
+            <div className="flex flex-col sm:flex-row sm:items-start gap-4">
+              <div className="shrink-0 p-3 rounded-xl bg-emerald-50 border border-emerald-100">
+                <Receipt className="w-6 h-6 text-emerald-600" />
+              </div>
+              <div className="min-w-0">
+                <p className="text-slate-700 text-sm md:text-base leading-relaxed">
+                  Save over <span className="font-black text-emerald-600">$10,000</span> in legal fees. By choosing Equafy, you aren&apos;t just buying software; you are replacing a full-scale legal boutique. Plus, your subscription is a{" "}
+                  <span className="inline-flex items-center px-2 py-0.5 rounded-md text-xs font-bold bg-emerald-100 text-emerald-800 border border-emerald-200">
+                    100% tax-deductible
+                  </span>{" "}
+                  business expense, making the transition to dynamic equity even more cost-effective.
+                </p>
+              </div>
+            </div>
           </div>
         </div>
       </main>

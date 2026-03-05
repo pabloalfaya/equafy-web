@@ -198,6 +198,23 @@ export default function WhyEquafyPage() {
             })}
           </div>
 
+          {/* Stop the Legal Bleeding */}
+          <section className="mt-20 md:mt-24">
+            <div className="rounded-2xl bg-white border border-slate-200/80 p-6 md:p-8 shadow-sm hover:shadow-lg hover:border-slate-300/80 transition-all duration-300 flex flex-col md:flex-row md:items-start gap-6">
+              <div className="shrink-0 p-4 rounded-2xl border bg-violet-50 text-violet-600 border-violet-200">
+                <Scale className="w-8 h-8" />
+              </div>
+              <div>
+                <h2 className="text-xl md:text-2xl font-bold text-slate-900 mb-3 tracking-tight">
+                  Stop the Legal Bleeding
+                </h2>
+                <p className="text-slate-600 leading-relaxed text-base md:text-lg">
+                  Traditional firms charge thousands in hourly fees to draft dynamic equity structures. {BRAND.name} delivers the exact, automated legal architecture to bind your team&apos;s ownership to real performance. What used to take months of legal back-and-forth is now secured in minutes.
+                </p>
+              </div>
+            </div>
+          </section>
+
           {/* CTA */}
           <div className="mt-24 md:mt-28 text-center">
             <h2 className="text-2xl md:text-3xl font-bold text-slate-900 mb-4">
