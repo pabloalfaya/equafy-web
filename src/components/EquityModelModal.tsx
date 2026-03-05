@@ -247,7 +247,7 @@ export function EquityModelModal({
                   <span className="text-[7px] sm:text-[8px] font-black text-purple-600 uppercase block mb-0.5">All contributions</span>
                   <span className="text-xl sm:text-2xl font-black tracking-tighter text-slate-900">x1</span>
                 </div>
-                <p className="p-2 bg-slate-50/50 rounded-md border border-dashed border-slate-200 text-[8px] font-bold italic text-slate-500 text-center leading-tight">
+                <p className="p-2 bg-slate-50 rounded-md border border-slate-200 text-[9px] sm:text-[10px] font-semibold text-slate-600 text-center leading-snug">
                   Simple linear split where every unit is treated as equal.
                 </p>
               </div>
