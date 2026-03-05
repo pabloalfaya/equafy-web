@@ -744,7 +744,7 @@ export default function ProjectDashboardPage() {
                 <div className="bg-white/70 backdrop-blur-xl border border-white/60 rounded-[32px] p-4 md:p-8 shadow-xl flex flex-col h-fit sticky top-32">
                     <div className="flex items-center gap-3 mb-8">
                         <div className="p-2 bg-emerald-50 rounded-lg"><PieChart className="h-5 w-5 text-emerald-600" /></div>
-                        <h3 className="font-bold text-slate-900 text-xl">Equity Distribution</h3>
+                        <h3 className="font-bold text-slate-900 text-xl">Cap Board</h3>
                     </div>
                     <div className="w-full aspect-square"><EquityPieChart contributions={displayContributions} members={members} currency={project?.currency ?? "EUR"} showEvolution={showEvolution} onToggleEvolution={() => setShowEvolution((v) => !v)} /></div>
                   </div>

@@ -7,6 +7,7 @@ import { createClient } from "@/utils/supabase/client";
 import type { Project } from "@/types/database";
 import { EquitySettingsModal, type EquitySettingsTab } from "@/components/EquitySettingsModal";
 import { AddMemberModal, type TeamSettingsTab } from "@/components/AddMemberModal";
+import { EquityModelModal } from "@/components/EquityModelModal";
 
 type Member = {
   id: string;
@@ -30,6 +31,7 @@ export default function ProjectSettingsPage() {
   const [activePanel, setActivePanel] = useState<"equity" | "team">("equity");
   const [equityTab, setEquityTab] = useState<EquitySettingsTab>("default_models");
   const [teamTab, setTeamTab] = useState<TeamSettingsTab>("members");
+  const [equityModelModalOpen, setEquityModelModalOpen] = useState(false);
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   const [currentUserEmail, setCurrentUserEmail] = useState<string | null>(null);
 
@@ -274,7 +276,7 @@ export default function ProjectSettingsPage() {
                     // Reload project & members so dashboard stays in sync
                     router.refresh();
                   }}
-                  onOpenDefaultModels={() => {}}
+                  onOpenDefaultModels={() => setEquityModelModalOpen(true)}
                   canEdit={canEdit}
                   mode="page"
                   externalActiveTab={equityTab}
@@ -301,6 +303,24 @@ export default function ProjectSettingsPage() {
             )}
           </section>
         </div>
+
+        <EquityModelModal
+          isOpen={equityModelModalOpen}
+          onClose={() => setEquityModelModalOpen(false)}
+          projectId={projectId}
+          currentModel={project?.model_type}
+          currentMults={{
+            cash: (project as any)?.mult_cash ?? 4,
+            work: (project as any)?.mult_work ?? 2,
+            tangible: (project as any)?.mult_tangible ?? 2,
+            intangible: (project as any)?.mult_intangible ?? 2,
+            others: (project as any)?.mult_others ?? 1,
+          }}
+          onSuccess={() => {
+            setEquityModelModalOpen(false);
+            router.refresh();
+          }}
+        />
       </main>
     </div>
   );
