@@ -944,7 +944,7 @@ export default function ProjectDashboardPage() {
       {menuOpen && (
         <div className="fixed inset-0 z-[140] flex">
           <div
-            className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm"
+            className="absolute inset-0 bg-slate-900/40"
             onClick={() => setMenuOpen(false)}
           />
           <div className="relative ml-auto h-full w-72 max-w-full bg-white border-l border-slate-200 shadow-2xl flex flex-col">
