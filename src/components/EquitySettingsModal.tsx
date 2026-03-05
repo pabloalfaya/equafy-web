@@ -440,70 +440,129 @@ export function EquitySettingsModal({
               <p className="text-xs text-slate-500 mt-1">All monetary values in this project will use this currency.</p>
             </div>
 
-            <p className="text-sm text-slate-600 leading-relaxed w-full">
-              These are preset models to get you started. You can switch models at any time and still adjust each multiplier individually in the other tabs if you want more control.
+            <p className="mt-3 text-[11px] font-bold text-slate-500 uppercase tracking-[0.18em]">
+              Multiplier models
             </p>
-            <div className="mt-3 grid grid-cols-1 md:grid-cols-3 gap-3 w-full">
-              {/* Custom Model */}
+            <p className="text-sm text-slate-600 leading-relaxed w-full">
+              These presets control how risky each type of contribution is. You can change the active model at any time
+              and still fine‑tune each multiplier individually in the other tabs.
+            </p>
+
+            <div className="mt-3 space-y-2 w-full">
+              {/* Custom Model — row */}
               <div
-                className={`relative p-3 rounded-xl border-2 transition-all flex flex-col ${
+                className={`flex items-center justify-between gap-4 rounded-xl border px-3 py-3 bg-white ${
                   (project?.model_type || "JUST_SPLIT") === "CUSTOM"
-                    ? "border-blue-500 bg-blue-50/30 ring-1 ring-blue-500/20"
-                    : "border-slate-100 bg-slate-50/50 hover:border-slate-200"
+                    ? "border-blue-500 ring-1 ring-blue-500/20"
+                    : "border-slate-200 hover:border-slate-300"
                 }`}
               >
-                <div className="flex items-center gap-2 mb-2">
-                  <div className={`p-1.5 rounded-md ${(project?.model_type || "JUST_SPLIT") === "CUSTOM" ? "bg-blue-500 text-white" : "bg-white text-slate-400 shadow-sm"}`}>
-                    <Settings className="w-3.5 h-3.5" />
+                <div className="flex items-center gap-3 min-w-0">
+                  <div
+                    className={`p-1.5 rounded-md ${
+                      (project?.model_type || "JUST_SPLIT") === "CUSTOM"
+                        ? "bg-blue-500 text-white"
+                        : "bg-slate-50 text-slate-500"
+                    }`}
+                  >
+                    <Settings className="w-4 h-4" />
                   </div>
-                  <span className="font-black text-sm text-slate-800">Custom</span>
+                  <div className="min-w-0">
+                    <p className="text-xs font-black uppercase tracking-[0.18em] text-slate-700">
+                      Custom model
+                    </p>
+                    <p className="text-[11px] text-slate-500 font-medium">
+                      Manual control of each multiplier.
+                    </p>
+                  </div>
                 </div>
-                <p className="text-[10px] text-slate-500 mb-3 flex-1">Manual control of each multiplier.</p>
                 {canEdit && onOpenDefaultModels && (
-                  <button type="button" onClick={onOpenDefaultModels} className="mt-auto w-full py-2 rounded-lg text-xs font-bold border border-slate-200 bg-white hover:bg-slate-50 transition-all">
+                  <button
+                    type="button"
+                    onClick={onOpenDefaultModels}
+                    className="shrink-0 px-3 py-2 rounded-lg text-[11px] font-bold border border-slate-200 bg-slate-50 hover:bg-slate-100 text-slate-700 transition-colors"
+                  >
                     {(project?.model_type || "JUST_SPLIT") === "CUSTOM" ? "Current · Edit" : "Select"}
                   </button>
                 )}
               </div>
-              {/* Just Split Model */}
+
+              {/* Just Split Model — row */}
               <div
-                className={`relative p-3 rounded-xl border-2 transition-all flex flex-col ${
+                className={`flex items-center justify-between gap-4 rounded-xl border px-3 py-3 bg-white ${
                   (project?.model_type || "JUST_SPLIT") === "JUST_SPLIT"
-                    ? "border-emerald-500 bg-emerald-50/40 ring-1 ring-emerald-500/20"
-                    : "border-slate-100 bg-slate-50/50 hover:border-slate-200"
+                    ? "border-emerald-500 ring-1 ring-emerald-500/20"
+                    : "border-slate-200 hover:border-slate-300"
                 }`}
               >
-                <div className="absolute -top-2 left-1/2 -translate-x-1/2 bg-emerald-500 text-white text-[8px] font-black px-2 py-0.5 rounded-full uppercase z-10">Recommended</div>
-                <div className="flex items-center gap-2 mb-2 mt-1">
-                  <div className={`p-1.5 rounded-md ${(project?.model_type || "JUST_SPLIT") === "JUST_SPLIT" ? "bg-emerald-500 text-white" : "bg-white text-slate-400 shadow-sm"}`}>
-                    <ShieldCheck className="w-3.5 h-3.5" />
+                <div className="flex items-center gap-3 min-w-0">
+                  <div
+                    className={`p-1.5 rounded-md ${
+                      (project?.model_type || "JUST_SPLIT") === "JUST_SPLIT"
+                        ? "bg-emerald-500 text-white"
+                        : "bg-slate-50 text-slate-500"
+                    }`}
+                  >
+                    <ShieldCheck className="w-4 h-4" />
                   </div>
-                  <span className="font-black text-sm text-slate-800">Just Split</span>
+                  <div className="min-w-0">
+                    <div className="flex items-center gap-2">
+                      <p className="text-xs font-black uppercase tracking-[0.18em] text-slate-700">
+                        Just Split model
+                      </p>
+                      <span className="inline-flex items-center rounded-full bg-emerald-500 text-white text-[9px] font-black px-2 py-0.5 uppercase tracking-widest">
+                        Recommended
+                      </span>
+                    </div>
+                    <p className="text-[11px] text-slate-500 font-medium">
+                      Cash x4, Non-cash x2, Others x1.
+                    </p>
+                  </div>
                 </div>
-                <p className="text-[10px] text-slate-500 mb-3 flex-1">Cash x4, Non-cash x2, Others x1.</p>
                 {canEdit && onOpenDefaultModels && (
-                  <button type="button" onClick={onOpenDefaultModels} className="mt-auto w-full py-2 rounded-lg text-xs font-bold border border-slate-200 bg-white hover:bg-slate-50 transition-all">
+                  <button
+                    type="button"
+                    onClick={onOpenDefaultModels}
+                    className="shrink-0 px-3 py-2 rounded-lg text-[11px] font-bold border border-slate-200 bg-slate-50 hover:bg-slate-100 text-slate-700 transition-colors"
+                  >
                     {(project?.model_type || "JUST_SPLIT") === "JUST_SPLIT" ? "Current · Edit" : "Select"}
                   </button>
                 )}
               </div>
-              {/* Flat Model */}
+
+              {/* Flat Model — row */}
               <div
-                className={`relative p-3 rounded-xl border-2 transition-all flex flex-col ${
+                className={`flex items-center justify-between gap-4 rounded-xl border px-3 py-3 bg-white ${
                   (project?.model_type || "JUST_SPLIT") === "FLAT"
-                    ? "border-purple-500 bg-purple-50/20 ring-1 ring-purple-500/20"
-                    : "border-slate-100 bg-slate-50/50 hover:border-slate-200"
+                    ? "border-purple-500 ring-1 ring-purple-500/20"
+                    : "border-slate-200 hover:border-slate-300"
                 }`}
               >
-                <div className="flex items-center gap-2 mb-2">
-                  <div className={`p-1.5 rounded-md ${(project?.model_type || "JUST_SPLIT") === "FLAT" ? "bg-purple-500 text-white" : "bg-white text-slate-400 shadow-sm"}`}>
-                    <Scale className="w-3.5 h-3.5" />
+                <div className="flex items-center gap-3 min-w-0">
+                  <div
+                    className={`p-1.5 rounded-md ${
+                      (project?.model_type || "JUST_SPLIT") === "FLAT"
+                        ? "bg-purple-500 text-white"
+                        : "bg-slate-50 text-slate-500"
+                    }`}
+                  >
+                    <Scale className="w-4 h-4" />
                   </div>
-                  <span className="font-black text-sm text-slate-800">Flat</span>
+                  <div className="min-w-0">
+                    <p className="text-xs font-black uppercase tracking-[0.18em] text-slate-700">
+                      Flat model
+                    </p>
+                    <p className="text-[11px] text-slate-500 font-medium">
+                      All contributions x1. Simple linear split.
+                    </p>
+                  </div>
                 </div>
-                <p className="text-[10px] text-slate-500 mb-3 flex-1">All contributions x1. Simple linear split.</p>
                 {canEdit && onOpenDefaultModels && (
-                  <button type="button" onClick={onOpenDefaultModels} className="mt-auto w-full py-2 rounded-lg text-xs font-bold border border-slate-200 bg-white hover:bg-slate-50 transition-all">
+                  <button
+                    type="button"
+                    onClick={onOpenDefaultModels}
+                    className="shrink-0 px-3 py-2 rounded-lg text-[11px] font-bold border border-slate-200 bg-slate-50 hover:bg-slate-100 text-slate-700 transition-colors"
+                  >
                     {(project?.model_type || "JUST_SPLIT") === "FLAT" ? "Current · Edit" : "Select"}
                   </button>
                 )}
