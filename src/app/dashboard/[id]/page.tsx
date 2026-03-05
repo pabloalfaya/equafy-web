@@ -573,42 +573,55 @@ export default function ProjectDashboardPage() {
     <div className="min-h-screen bg-[#F8FAFC] font-sans text-slate-900 overflow-x-hidden">
       <main className="relative z-10 pt-16 pb-20 px-4 md:px-12 lg:px-24">
         <div className="mx-auto max-w-screen-2xl">
-            <div className="mb-10 flex flex-col gap-4 md:flex-row md:items-start md:justify-between md:gap-6">
-              <div className="flex items-start gap-4 flex-1">
-                <Link
-                  href="/dashboard"
-                  className="mt-1 p-2 rounded-lg hover:bg-slate-100 transition-colors"
-                  aria-label="Back to projects"
-                >
-                  <ArrowLeft className="w-5 h-5 text-slate-500" />
-                </Link>
-                <div className="min-w-0 flex-1">
-                  <h1 className="text-4xl font-black text-slate-900 tracking-tight break-words">{project.name}</h1>
-                  {isFinalized && (
-                    <button
-                      type="button"
-                      onClick={() => {
-                        if (project) {
-                          const { rows, totalPoints } = getEquitySummaryForFinalize(members, contributions, project);
-                          const modelName = (project.model_type || project.equity_model || "custom").replace(/_/g, " ").toLowerCase();
-                          setSummaryPayload({
-                            projectName: project.name,
-                            modelName,
-                            finalizedAt: new Date().toISOString(),
-                            totalPoints,
-                            rows,
-                            currency: project.currency ?? "EUR",
-                          });
-                          setShowSummary(true);
-                        }
-                      }}
-                      className="mt-2 text-sm font-bold text-emerald-600 hover:text-emerald-700"
-                    >
-                      View executive summary
-                    </button>
-                  )}
+            <div className="mb-10 flex flex-col gap-3">
+              {/* First row: back, project name, menu */}
+              <div className="flex items-start gap-4 justify-between">
+                <div className="flex items-start gap-4 flex-1 min-w-0">
+                  <Link
+                    href="/dashboard"
+                    className="mt-1 p-2 rounded-lg hover:bg-slate-100 transition-colors"
+                    aria-label="Back to projects"
+                  >
+                    <ArrowLeft className="w-5 h-5 text-slate-500" />
+                  </Link>
+                  <div className="min-w-0 flex-1">
+                    <h1 className="text-4xl font-black text-slate-900 tracking-tight break-words">{project.name}</h1>
+                    {isFinalized && (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          if (project) {
+                            const { rows, totalPoints } = getEquitySummaryForFinalize(members, contributions, project);
+                            const modelName = (project.model_type || project.equity_model || "custom").replace(/_/g, " ").toLowerCase();
+                            setSummaryPayload({
+                              projectName: project.name,
+                              modelName,
+                              finalizedAt: new Date().toISOString(),
+                              totalPoints,
+                              rows,
+                              currency: project.currency ?? "EUR",
+                            });
+                            setShowSummary(true);
+                          }
+                        }}
+                        className="mt-2 text-sm font-bold text-emerald-600 hover:text-emerald-700"
+                      >
+                        View executive summary
+                      </button>
+                    )}
+                  </div>
                 </div>
+                <button
+                  type="button"
+                  onClick={() => setMenuOpen(true)}
+                  className="mt-1 p-2 rounded-lg border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 hover:text-slate-900 shadow-sm transition-colors shrink-0"
+                  aria-label="Open project menu"
+                >
+                  <Menu className="h-5 w-5" />
+                </button>
               </div>
+
+              {/* Second row: action buttons */}
               <div className="flex gap-2 sm:gap-3 overflow-x-auto md:overflow-visible flex-nowrap md:flex-wrap pb-2 md:pb-0 -mx-1 px-1 md:mx-0 md:px-0 [&>*]:flex-shrink-0 shrink-0 items-start justify-end">
                 <button
                   onClick={generatePDF}
@@ -638,14 +651,6 @@ export default function ProjectDashboardPage() {
                     </button>
                   </>
                 )}
-                <button
-                  type="button"
-                  onClick={() => setMenuOpen(true)}
-                  className="inline-flex items-center justify-center rounded-xl bg-white border border-slate-200 px-3 md:px-4 py-2.5 md:py-3 text-slate-600 hover:bg-slate-50 hover:text-slate-900 shadow-sm transition-all shrink-0"
-                  aria-label="Open project menu"
-                >
-                  <Menu className="h-5 w-5" />
-                </button>
               </div>
             </div>
 
