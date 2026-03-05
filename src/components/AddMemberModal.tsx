@@ -237,35 +237,54 @@ export function AddMemberModal({
 
         {/* Tabs (solo en modo modal; en página se controlan desde el menú lateral) */}
         {mode === "modal" && (
-          <div className="flex gap-2 mb-6 p-1 rounded-xl bg-slate-100 border border-slate-200 shrink-0">
-            <button
-              type="button"
-              onClick={() => setActiveTab("add")}
-              className={`flex-1 py-2.5 px-4 rounded-lg text-sm font-bold transition-all ${
-                activeTab === "add" ? "bg-white text-slate-800 shadow-sm" : "text-slate-600 hover:text-slate-800"
-              }`}
-            >
-              Add Member
-            </button>
-            <button
-              type="button"
-              onClick={() => setActiveTab("members")}
-              className={`flex-1 py-2.5 px-4 rounded-lg text-sm font-bold transition-all ${
-                activeTab === "members" ? "bg-white text-slate-800 shadow-sm" : "text-slate-600 hover:text-slate-800"
-              }`}
-            >
-              Members
-            </button>
-            <button
-              type="button"
-              onClick={() => setActiveTab("edit")}
-              className={`flex-1 py-2.5 px-4 rounded-lg text-sm font-bold transition-all ${
-                activeTab === "edit" ? "bg-white text-slate-800 shadow-sm" : "text-slate-600 hover:text-slate-800"
-              }`}
-            >
-              Edit Team
-            </button>
-          </div>
+          <>
+            {/* Mobile: dropdown to avoid overlapping labels */}
+            <div className="mb-4 w-full md:hidden">
+              <label className="text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-1 block">
+                Section
+              </label>
+              <select
+                value={activeTab}
+                onChange={(e) => setActiveTab(e.target.value as TeamSettingsTab)}
+                className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-bold text-slate-800 outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500"
+              >
+                <option value="add">Add member</option>
+                <option value="members">Members</option>
+                <option value="edit">Edit team</option>
+              </select>
+            </div>
+
+            {/* Desktop / tablet: full tab strip */}
+            <div className="hidden md:flex gap-2 mb-6 p-1 rounded-xl bg-slate-100 border border-slate-200 shrink-0">
+              <button
+                type="button"
+                onClick={() => setActiveTab("add")}
+                className={`flex-1 py-2.5 px-4 rounded-lg text-sm font-bold transition-all ${
+                  activeTab === "add" ? "bg-white text-slate-800 shadow-sm" : "text-slate-600 hover:text-slate-800"
+                }`}
+              >
+                Add Member
+              </button>
+              <button
+                type="button"
+                onClick={() => setActiveTab("members")}
+                className={`flex-1 py-2.5 px-4 rounded-lg text-sm font-bold transition-all ${
+                  activeTab === "members" ? "bg-white text-slate-800 shadow-sm" : "text-slate-600 hover:text-slate-800"
+                }`}
+              >
+                Members
+              </button>
+              <button
+                type="button"
+                onClick={() => setActiveTab("edit")}
+                className={`flex-1 py-2.5 px-4 rounded-lg text-sm font-bold transition-all ${
+                  activeTab === "edit" ? "bg-white text-slate-800 shadow-sm" : "text-slate-600 hover:text-slate-800"
+                }`}
+              >
+                Edit Team
+              </button>
+            </div>
+          </>
         )}
 
         {/* Tab: Members — summary table */}

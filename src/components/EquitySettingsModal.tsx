@@ -356,63 +356,84 @@ export function EquitySettingsModal({
 
         {/* Tabs (solo en modo modal; en página se controlan desde el menú lateral) */}
         {mode === "modal" && (
-          <div className="flex flex-nowrap gap-1.5 mb-6 p-1 rounded-xl bg-slate-100 border border-slate-200 w-full">
-            <button
-              type="button"
-              onClick={() => setActiveTab("default_models")}
-              className={`flex-1 min-w-0 py-2 px-2 rounded-lg text-xs font-bold transition-all whitespace-nowrap ${
-                activeTab === "default_models"
-                  ? "bg-white text-slate-800 shadow-sm"
-                  : "text-slate-600 hover:text-slate-800"
-              }`}
-            >
-              Settings
-            </button>
-            <button
-              type="button"
-              onClick={() => setActiveTab("multipliers")}
-              className={`flex-1 min-w-0 py-2 px-2 rounded-lg text-xs font-bold transition-all whitespace-nowrap ${
-                activeTab === "multipliers"
-                  ? "bg-white text-slate-800 shadow-sm"
-                  : "text-slate-600 hover:text-slate-800"
-              }`}
-            >
-              Multipliers
-            </button>
-            <button
-              type="button"
-              onClick={() => setActiveTab("fixed")}
-              className={`flex-1 min-w-0 py-2 px-2 rounded-lg text-xs font-bold transition-all whitespace-nowrap ${
-                activeTab === "fixed"
-                  ? "bg-white text-slate-800 shadow-sm"
-                  : "text-slate-600 hover:text-slate-800"
-              }`}
-            >
-              Fixed Equity
-            </button>
-            <button
-              type="button"
-              onClick={() => setActiveTab("limited")}
-              className={`flex-1 min-w-0 py-2 px-2 rounded-lg text-xs font-bold transition-all whitespace-nowrap ${
-                activeTab === "limited"
-                  ? "bg-white text-slate-800 shadow-sm"
-                  : "text-slate-600 hover:text-slate-800"
-              }`}
-            >
-              Limited Equity
-            </button>
-            <button
-              type="button"
-              onClick={() => setActiveTab("smart")}
-              className={`flex-1 min-w-0 py-2 px-2 rounded-lg text-xs font-bold transition-all whitespace-nowrap ${
-                activeTab === "smart"
-                  ? "bg-white text-slate-800 shadow-sm"
-                  : "text-slate-600 hover:text-slate-800"
-              }`}
-            >
-              Smart Multipliers
-            </button>
-          </div>
+          <>
+            {/* Mobile: compact dropdown to avoid overlapping labels */}
+            <div className="mb-4 w-full md:hidden">
+              <label className="text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-1 block">
+                Section
+              </label>
+              <select
+                value={activeTab}
+                onChange={(e) => setActiveTab(e.target.value as EquitySettingsTab)}
+                className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-bold text-slate-800 outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500"
+              >
+                <option value="default_models">Settings</option>
+                <option value="multipliers">Multipliers</option>
+                <option value="fixed">Fixed equity</option>
+                <option value="limited">Limited equity</option>
+                <option value="smart">Smart multipliers</option>
+              </select>
+            </div>
+
+            {/* Desktop / tablet: full tab strip */}
+            <div className="hidden md:flex flex-nowrap gap-1.5 mb-6 p-1 rounded-xl bg-slate-100 border border-slate-200 w-full">
+              <button
+                type="button"
+                onClick={() => setActiveTab("default_models")}
+                className={`flex-1 min-w-0 py-2 px-2 rounded-lg text-xs font-bold transition-all whitespace-nowrap ${
+                  activeTab === "default_models"
+                    ? "bg-white text-slate-800 shadow-sm"
+                    : "text-slate-600 hover:text-slate-800"
+                }`}
+              >
+                Settings
+              </button>
+              <button
+                type="button"
+                onClick={() => setActiveTab("multipliers")}
+                className={`flex-1 min-w-0 py-2 px-2 rounded-lg text-xs font-bold transition-all whitespace-nowrap ${
+                  activeTab === "multipliers"
+                    ? "bg-white text-slate-800 shadow-sm"
+                    : "text-slate-600 hover:text-slate-800"
+                }`}
+              >
+                Multipliers
+              </button>
+              <button
+                type="button"
+                onClick={() => setActiveTab("fixed")}
+                className={`flex-1 min-w-0 py-2 px-2 rounded-lg text-xs font-bold transition-all whitespace-nowrap ${
+                  activeTab === "fixed"
+                    ? "bg-white text-slate-800 shadow-sm"
+                    : "text-slate-600 hover:text-slate-800"
+                }`}
+              >
+                Fixed Equity
+              </button>
+              <button
+                type="button"
+                onClick={() => setActiveTab("limited")}
+                className={`flex-1 min-w-0 py-2 px-2 rounded-lg text-xs font-bold transition-all whitespace-nowrap ${
+                  activeTab === "limited"
+                    ? "bg-white text-slate-800 shadow-sm"
+                    : "text-slate-600 hover:text-slate-800"
+                }`}
+              >
+                Limited Equity
+              </button>
+              <button
+                type="button"
+                onClick={() => setActiveTab("smart")}
+                className={`flex-1 min-w-0 py-2 px-2 rounded-lg text-xs font-bold transition-all whitespace-nowrap ${
+                  activeTab === "smart"
+                    ? "bg-white text-slate-800 shadow-sm"
+                    : "text-slate-600 hover:text-slate-800"
+                }`}
+              >
+                Smart Multipliers
+              </button>
+            </div>
+          </>
         )}
 
         {/* Tab Content — en página usamos altura fija interna; en modal dejamos que el scroll sea del propio modal */}
