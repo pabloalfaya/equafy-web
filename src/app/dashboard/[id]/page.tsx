@@ -478,6 +478,18 @@ export default function ProjectDashboardPage() {
     };
   }, []);
 
+  // Evitar doble scroll cuando el panel lateral está abierto
+  useEffect(() => {
+    if (menuOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [menuOpen]);
+
   useEffect(() => { fetchData(); }, [projectId]);
 
   const currentMember = members.find(
