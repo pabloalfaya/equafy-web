@@ -906,6 +906,7 @@ export default function ProjectDashboardPage() {
         }}
         onOpenDefaultModels={() => setEquityModelModalOpen(true)}
         canEdit={canEdit}
+        onOpenOnboarding={() => setShowLegacyOnboarding(true)}
       />
 
       <AuditLogModal

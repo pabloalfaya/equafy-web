@@ -61,6 +61,7 @@ interface EquitySettingsModalProps {
   canEdit?: boolean;
   mode?: "modal" | "page";
   externalActiveTab?: EquitySettingsTab;
+   onOpenOnboarding?: () => void;
 }
 
 function formatWithComma(num: number): string {
@@ -85,6 +86,7 @@ export function EquitySettingsModal({
   canEdit = true,
   mode = "modal",
   externalActiveTab,
+  onOpenOnboarding,
 }: EquitySettingsModalProps) {
   const [activeTab, setActiveTab] = useState<TabType>("default_models");
   const [values, setValues] = useState<Record<string, number>>({});
@@ -429,6 +431,25 @@ export function EquitySettingsModal({
                 : "space-y-4 w-full"
             }
           >
+            {/* Optional onboarding button */}
+            {project?.is_setup_completed === false && onOpenOnboarding && (
+              <div className="mb-2 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 flex items-center justify-between gap-3">
+                <div className="text-sm text-emerald-900">
+                  <p className="font-bold">Legacy onboarding is not completed.</p>
+                  <p className="text-xs text-emerald-800">
+                    Run the onboarding wizard once to register your initial baseline.
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={onOpenOnboarding}
+                  className="shrink-0 px-3 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold"
+                >
+                  Run onboarding
+                </button>
+              </div>
+            )}
+
             {/* Currency */}
             <div>
               <label className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2 block">Currency</label>

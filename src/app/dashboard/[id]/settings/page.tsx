@@ -280,6 +280,7 @@ export default function ProjectSettingsPage() {
                   canEdit={canEdit}
                   mode="page"
                   externalActiveTab={equityTab}
+                  onOpenOnboarding={() => router.push(`/dashboard/${projectId}`)}
                 />
               </div>
             )}
