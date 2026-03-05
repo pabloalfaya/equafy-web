@@ -981,8 +981,88 @@ export default function ProjectDashboardPage() {
                 <X className="w-5 h-5" />
               </button>
             </div>
-            <div className="flex-1 px-4 py-6 text-sm text-slate-500">
-              {/* Placeholder content – to be filled later */}
+            <div className="flex-1 px-4 py-6 text-sm text-slate-500 flex flex-col justify-between">
+              <div className="space-y-6">
+                <div>
+                  <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400 mb-1">
+                    Signed in as
+                  </p>
+                  <p className="text-sm font-semibold text-slate-800 break-words">
+                    {currentUserEmail || "Unknown user"}
+                  </p>
+                </div>
+
+                {/* Integrations */}
+                <div className="space-y-2">
+                  <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400">
+                    Integrations
+                  </p>
+                  <button
+                    type="button"
+                    className="w-full text-left px-3 py-2 rounded-lg border border-slate-200 bg-slate-50 text-[13px] font-semibold text-slate-700 hover:bg-slate-100 hover:border-slate-300 transition-colors"
+                  >
+                    API & Integrations
+                  </button>
+                </div>
+
+                {/* Support & Help */}
+                <div className="space-y-2">
+                  <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400">
+                    Support & Help
+                  </p>
+                  <button
+                    type="button"
+                    className="w-full text-left px-3 py-2 rounded-lg border border-slate-200 bg-slate-50 text-[13px] font-semibold text-slate-700 hover:bg-slate-100 hover:border-slate-300 transition-colors"
+                  >
+                    📚 Help Center & Tutorials
+                  </button>
+                  <button
+                    type="button"
+                    className="w-full text-left px-3 py-2 rounded-lg border border-slate-200 bg-slate-50 text-[13px] font-semibold text-slate-700 hover:bg-slate-100 hover:border-slate-300 transition-colors"
+                  >
+                    💬 Contact Support
+                  </button>
+                  <button
+                    type="button"
+                    className="w-full text-left px-3 py-2 rounded-lg border border-slate-200 bg-slate-50 text-[13px] font-semibold text-slate-700 hover:bg-slate-100 hover:border-slate-300 transition-colors"
+                  >
+                    🎨 Preferences (Language & Theme)
+                  </button>
+                  <button
+                    type="button"
+                    className="w-full text-left px-3 py-2 rounded-lg border border-slate-200 bg-slate-50 text-[13px] font-semibold text-slate-700 hover:bg-slate-100 hover:border-slate-300 transition-colors"
+                  >
+                    🔔 Notifications (New Partner Contributions)
+                  </button>
+                </div>
+              </div>
+
+              <div className="pb-4 pt-2 border-t border-slate-100 space-y-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    router.push("/dashboard");
+                    setMenuOpen(false);
+                    setMenuClosing(false);
+                  }}
+                  className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl border border-slate-200 bg-slate-50 text-xs font-bold text-slate-700 hover:bg-slate-100 hover:border-slate-300 transition-colors"
+                >
+                  Change project
+                </button>
+                <button
+                  type="button"
+                  onClick={async () => {
+                    const supabase = createClient();
+                    await supabase.auth.signOut();
+                    router.push("/login");
+                    setMenuOpen(false);
+                    setMenuClosing(false);
+                  }}
+                  className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl border border-red-200 bg-red-50 text-xs font-bold text-red-600 hover:bg-red-100 hover:border-red-300 transition-colors"
+                >
+                  Sign out
+                </button>
+              </div>
             </div>
           </div>
         </div>
