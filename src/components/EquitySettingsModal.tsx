@@ -57,6 +57,7 @@ interface EquitySettingsModalProps {
   onSuccess?: () => void;
   onOpenDefaultModels?: () => void;
   canEdit?: boolean;
+  mode?: "modal" | "page";
 }
 
 function formatWithComma(num: number): string {
@@ -79,6 +80,7 @@ export function EquitySettingsModal({
   onSuccess,
   onOpenDefaultModels,
   canEdit = true,
+  mode = "modal",
 }: EquitySettingsModalProps) {
   const [activeTab, setActiveTab] = useState<TabType>("default_models");
   const [values, setValues] = useState<Record<string, number>>({});
@@ -318,18 +320,10 @@ export function EquitySettingsModal({
     }
   };
 
-  if (!isOpen) return null;
+  if (!isOpen && mode === "modal") return null;
 
-  return (
-    <>
-      <div
-        className="fixed inset-0 z-[110] flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4"
-        onClick={onClose}
-      >
-        <div
-          className="w-full max-w-2xl max-h-[80vh] bg-white rounded-[32px] shadow-2xl px-4 py-6 md:px-6 md:py-8 animate-in zoom-in duration-200 font-sans overflow-y-auto"
-          onClick={(e) => e.stopPropagation()}
-        >
+  const panel = (
+        <div className={`w-full ${mode === "page" ? "max-w-5xl" : "max-w-2xl"} bg-white rounded-[32px] shadow-2xl px-4 py-6 md:px-6 md:py-8 font-sans overflow-y-auto`}>
         {/* Header */}
         <div className="flex justify-between items-center mb-6">
           <div className="flex items-center gap-2">
@@ -978,8 +972,33 @@ export function EquitySettingsModal({
           </p>
         )}
       </div>
-    </div>
-    <VideoDemoModal open={isDemoOpen} onClose={() => setIsDemoOpen(false)} />
-  </>
+  );
+
+  if (mode === "page") {
+    return (
+      <>
+        <div className="w-full flex justify-center">
+          {panel}
+        </div>
+        <VideoDemoModal open={isDemoOpen} onClose={() => setIsDemoOpen(false)} />
+      </>
+    );
+  }
+
+  return (
+    <>
+      <div
+        className="fixed inset-0 z-[110] flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4"
+        onClick={onClose}
+      >
+        <div
+          className="w-full max-w-2xl max-h-[80vh] bg-white rounded-[32px] shadow-2xl px-4 py-6 md:px-6 md:py-8 animate-in zoom-in duration-200 font-sans overflow-y-auto"
+          onClick={(e) => e.stopPropagation()}
+        >
+          {panel}
+        </div>
+      </div>
+      <VideoDemoModal open={isDemoOpen} onClose={() => setIsDemoOpen(false)} />
+    </>
   );
 }

@@ -1000,6 +1000,35 @@ export default function ProjectDashboardPage() {
                   </p>
                 </div>
 
+                {/* Settings */}
+                <div className="space-y-2">
+                  <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400">
+                    Settings
+                  </p>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      router.push(`/dashboard/${projectId}/settings`);
+                      setMenuOpen(false);
+                      setMenuClosing(false);
+                    }}
+                    className="w-full text-left px-1 py-1 text-[13px] font-semibold text-slate-700 hover:text-emerald-600 transition-colors"
+                  >
+                    Equity settings
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      router.push(`/dashboard/${projectId}/settings`);
+                      setMenuOpen(false);
+                      setMenuClosing(false);
+                    }}
+                    className="w-full text-left px-1 py-1 text-[13px] font-semibold text-slate-700 hover:text-emerald-600 transition-colors"
+                  >
+                    Team settings
+                  </button>
+                </div>
+
                 {/* Integrations */}
                 <div className="space-y-2">
                   <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400">
