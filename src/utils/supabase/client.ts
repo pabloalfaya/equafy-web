@@ -8,5 +8,11 @@ export function createClient() {
     throw new Error("Missing Supabase environment variables. Check .env.local");
   }
 
-  return createBrowserClient(supabaseUrl, supabaseAnonKey);
+  // Persist session in the browser and auto‑refresh tokens so users stay logged in
+  return createBrowserClient(supabaseUrl, supabaseAnonKey, {
+    auth: {
+      persistSession: true,
+      autoRefreshToken: true,
+    },
+  });
 }
