@@ -742,7 +742,7 @@ export default function ProjectDashboardPage() {
                 </div>
 
                 <div className="lg:col-span-1 flex flex-col gap-4">
-                <div className="bg-white/70 backdrop-blur-xl border border-white/60 rounded-[32px] p-4 md:p-8 shadow-xl flex flex-col h-fit sticky top-32">
+                <div className="bg-white/70 backdrop-blur-xl border border-white/60 rounded-[32px] p-4 md:p-8 shadow-xl flex flex-col h-fit md:sticky md:top-32">
                     <div className="flex items-center gap-3 mb-8">
                         <div className="p-2 bg-emerald-50 rounded-lg"><PieChart className="h-5 w-5 text-emerald-600" /></div>
                         <h3 className="font-bold text-slate-900 text-xl">Cap Board</h3>
