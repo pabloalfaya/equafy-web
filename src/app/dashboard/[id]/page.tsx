@@ -1056,12 +1056,22 @@ export default function ProjectDashboardPage() {
                   </p>
                   <button
                     type="button"
+                    onClick={() => {
+                      router.push("/help");
+                      setMenuOpen(false);
+                      setMenuClosing(false);
+                    }}
                     className="w-full text-left px-1 py-1 text-[13px] font-semibold text-slate-700 hover:text-emerald-600 transition-colors"
                   >
                     📚 Help Center & Tutorials
                   </button>
                   <button
                     type="button"
+                    onClick={() => {
+                      router.push("/support");
+                      setMenuOpen(false);
+                      setMenuClosing(false);
+                    }}
                     className="w-full text-left px-1 py-1 text-[13px] font-semibold text-slate-700 hover:text-emerald-600 transition-colors"
                   >
                     💬 Contact Support
