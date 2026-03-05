@@ -3,7 +3,7 @@
 import { useEffect, useState, useRef } from "react";
 import { useParams, useRouter } from "next/navigation"; 
 import Link from "next/link";
-import { Plus, TrendingUp, LayoutDashboard, PieChart, Users, Download, ArrowLeft, Settings, History, FileText, Snowflake, CreditCard, LockOpen, X } from "lucide-react";
+import { Plus, TrendingUp, LayoutDashboard, PieChart, Users, Download, ArrowLeft, Settings, History, FileText, Snowflake, CreditCard, LockOpen, X, Menu } from "lucide-react";
 import { createClient } from "@/utils/supabase/client";
 import { recalculateAndPersistProjectValuation } from "@/utils/projectRecalculator";
 import { logAudit } from "@/utils/auditLog";
@@ -126,6 +126,7 @@ export default function ProjectDashboardPage() {
     rows: SummaryRow[];
     currency?: string;
   } | null>(null);
+  const [menuOpen, setMenuOpen] = useState(false);
   const [showLegacyOnboarding, setShowLegacyOnboarding] = useState(false);
 
   const fetchData = async () => {
@@ -573,7 +574,7 @@ export default function ProjectDashboardPage() {
       <main className="relative z-10 pt-16 pb-20 px-4 md:px-12 lg:px-24">
         <div className="mx-auto max-w-screen-2xl">
             <div className="mb-10 flex flex-col gap-4 md:flex-row md:items-start md:justify-between md:gap-6">
-              <div className="flex items-start gap-4">
+              <div className="flex items-start gap-4 flex-1">
                 <Link
                   href="/dashboard"
                   className="mt-1 p-2 rounded-lg hover:bg-slate-100 transition-colors"
@@ -581,32 +582,42 @@ export default function ProjectDashboardPage() {
                 >
                   <ArrowLeft className="w-5 h-5 text-slate-500" />
                 </Link>
-                <div className="min-w-0">
-                <h1 className="text-4xl font-black text-slate-900 tracking-tight break-words">{project.name}</h1>
-                {isFinalized && (
+                <div className="min-w-0 flex-1 flex items-start justify-between gap-3">
+                  <div className="min-w-0">
+                    <h1 className="text-4xl font-black text-slate-900 tracking-tight break-words">{project.name}</h1>
+                    {isFinalized && (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          if (project) {
+                            const { rows, totalPoints } = getEquitySummaryForFinalize(members, contributions, project);
+                            const modelName = (project.model_type || project.equity_model || "custom").replace(/_/g, " ").toLowerCase();
+                            setSummaryPayload({
+                              projectName: project.name,
+                              modelName,
+                              finalizedAt: new Date().toISOString(),
+                              totalPoints,
+                              rows,
+                              currency: project.currency ?? "EUR",
+                            });
+                            setShowSummary(true);
+                          }
+                        }}
+                        className="mt-2 text-sm font-bold text-emerald-600 hover:text-emerald-700"
+                      >
+                        View executive summary
+                      </button>
+                    )}
+                  </div>
                   <button
                     type="button"
-                    onClick={() => {
-                      if (project) {
-                        const { rows, totalPoints } = getEquitySummaryForFinalize(members, contributions, project);
-                        const modelName = (project.model_type || project.equity_model || "custom").replace(/_/g, " ").toLowerCase();
-                        setSummaryPayload({
-                          projectName: project.name,
-                          modelName,
-                          finalizedAt: new Date().toISOString(),
-                          totalPoints,
-                          rows,
-                          currency: project.currency ?? "EUR",
-                        });
-                        setShowSummary(true);
-                      }
-                    }}
-                    className="mt-2 text-sm font-bold text-emerald-600 hover:text-emerald-700"
+                    onClick={() => setMenuOpen(true)}
+                    className="mt-1 p-2 rounded-lg border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 hover:text-slate-900 shadow-sm transition-colors"
+                    aria-label="Open project menu"
                   >
-                    View executive summary
+                    <Menu className="w-5 h-5" />
                   </button>
-                )}
-              </div>
+                </div>
               </div>
               <div className="flex gap-2 sm:gap-3 overflow-x-auto md:overflow-visible flex-nowrap md:flex-wrap pb-2 md:pb-0 -mx-1 px-1 md:mx-0 md:px-0 [&>*]:flex-shrink-0 shrink-0">
                 <button
@@ -658,7 +669,7 @@ export default function ProjectDashboardPage() {
               </div>
             )}
 
-            <div className="grid lg:grid-cols-3 gap-8">
+            <div className="grid lg:grid-cols-3 gap-8 mt-4">
                 <div ref={contributionLogRef} className="lg:col-span-2 min-h-0 bg-white/70 backdrop-blur-xl border border-white/60 rounded-[32px] p-4 md:p-8 shadow-xl flex flex-col min-w-0 overflow-hidden lg:max-h-[765px] lg:min-h-[320px]">
                     {showEvolution ? (
                       <>
@@ -925,6 +936,31 @@ export default function ProjectDashboardPage() {
           currency={summaryPayload.currency ?? "EUR"}
           onDownloadCertificate={() => {}}
         />
+      )}
+
+      {menuOpen && (
+        <div className="fixed inset-0 z-[140] flex">
+          <div
+            className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm"
+            onClick={() => setMenuOpen(false)}
+          />
+          <div className="relative ml-auto h-full w-72 max-w-full bg-white border-l border-slate-200 shadow-2xl flex flex-col">
+            <div className="flex items-center justify-between px-4 py-4 border-b border-slate-100">
+              <p className="text-xs font-bold uppercase tracking-[0.2em] text-slate-400">Project Menu</p>
+              <button
+                type="button"
+                onClick={() => setMenuOpen(false)}
+                className="p-2 rounded-full hover:bg-slate-100 text-slate-400 hover:text-slate-700 transition-colors"
+                aria-label="Close project menu"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            <div className="flex-1 px-4 py-6 text-sm text-slate-500">
+              {/* Placeholder content – to be filled later */}
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );
