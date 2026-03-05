@@ -674,7 +674,10 @@ export default function ProjectDashboardPage() {
             )}
 
             <div className="grid lg:grid-cols-3 gap-8 mt-4">
-                <div ref={contributionLogRef} className="lg:col-span-2 min-h-0 bg-white/70 backdrop-blur-xl border border-white/60 rounded-[32px] p-4 md:p-8 shadow-xl flex flex-col min-w-0 overflow-hidden lg:max-h-[765px] lg:min-h-[320px]">
+                <div
+                  ref={contributionLogRef}
+                  className="lg:col-span-2 min-h-0 bg-white/70 backdrop-blur-xl border border-white/60 rounded-[32px] p-4 md:p-8 shadow-xl flex flex-col min-w-0 overflow-hidden max-h-[70vh] lg:max-h-[765px] lg:min-h-[320px]"
+                >
                     {showEvolution ? (
                       <>
                         <div className="flex items-center gap-3 mb-6 flex-wrap shrink-0">
