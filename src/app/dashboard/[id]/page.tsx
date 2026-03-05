@@ -117,6 +117,7 @@ export default function ProjectDashboardPage() {
   const [showEvolution, setShowEvolution] = useState(false);
   const [simulationMode, setSimulationMode] = useState(false);
   const [simulatedContributions, setSimulatedContributions] = useState<ExtendedContribution[]>([]);
+  const [userProjects, setUserProjects] = useState<Project[]>([]);
   const contributionLogRef = useRef<HTMLDivElement>(null);
   const [summaryPayload, setSummaryPayload] = useState<{
     projectName: string;
@@ -139,6 +140,13 @@ export default function ProjectDashboardPage() {
     setCurrentUserId(user?.id ?? null);
     setCurrentUserEmail(user?.email ?? null);
     
+    // Cargar lista de proyectos del usuario para el menú lateral
+    const { data: projectsList } = await supabase
+      .from("projects")
+      .select("*")
+      .order("created_at", { ascending: false });
+    setUserProjects((projectsList as Project[]) ?? []);
+
     // Cargar Proyecto
     const { data: projectData, error: projectError } = await supabase.from("projects").select("*").eq("id", projectId).single();
     if (projectError || !projectData) { router.push("/dashboard"); return; }
@@ -1022,6 +1030,13 @@ export default function ProjectDashboardPage() {
                   >
                     💬 Contact Support
                   </button>
+                </div>
+
+                {/* Preferences */}
+                <div className="space-y-2">
+                  <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400">
+                    Preferences
+                  </p>
                   <button
                     type="button"
                     className="w-full text-left px-1 py-1 text-[13px] font-semibold text-slate-700 hover:text-emerald-600 transition-colors"
@@ -1049,6 +1064,40 @@ export default function ProjectDashboardPage() {
                 >
                   Change project
                 </button>
+
+                {userProjects.length > 0 && (
+                  <div className="mt-2 space-y-1">
+                    <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400">
+                      Your projects
+                    </p>
+                    <div className="max-h-32 overflow-y-auto pr-1 space-y-1">
+                      {userProjects.map((p) => {
+                        const isCurrent = p.id === projectId;
+                        return (
+                          <button
+                            key={p.id}
+                            type="button"
+                            disabled={isCurrent}
+                            onClick={() => {
+                              if (isCurrent) return;
+                              router.push(`/dashboard/${p.id}`);
+                              setMenuOpen(false);
+                              setMenuClosing(false);
+                            }}
+                            className={`w-full text-left px-1 py-1 text-[13px] font-semibold rounded-md transition-colors ${
+                              isCurrent
+                                ? "text-emerald-700 bg-emerald-50 cursor-default"
+                                : "text-slate-700 hover:text-emerald-600 hover:bg-emerald-50/60"
+                            }`}
+                          >
+                            <span className="truncate block">{p.name || "Untitled project"}</span>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+
                 <button
                   type="button"
                   onClick={async () => {
