@@ -125,7 +125,7 @@ export function EquityModelModal({
         <div className="space-y-4">
           <div className="text-center pt-0 sm:pt-1 pr-12">
             <h2 className="text-lg sm:text-xl font-black mb-0.5 uppercase tracking-tight text-slate-900">
-              {isOnboarding ? "Initial setup" : "Change equity model"}
+              {isOnboarding ? "Choose your equity model" : "Choose your equity model"}
             </h2>
             <p className="text-slate-600 font-bold text-xs sm:text-sm">
               Select the multiplier set for your team.
@@ -133,31 +133,77 @@ export function EquityModelModal({
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-            <div onClick={() => handleModelSelect("custom")} className={`relative p-3 sm:p-4 rounded-xl border-2 transition-all cursor-pointer flex flex-col ${model === "custom" ? "border-blue-500 bg-blue-50/30 ring-1 ring-blue-500/20" : "border-slate-100 bg-slate-50/50 hover:border-slate-200"}`}>
-              <div className="flex items-center gap-2 mb-2">
-                <div className={`p-1.5 rounded-md ${model === "custom" ? "bg-blue-500 text-white" : "bg-white text-slate-400 shadow-sm"}`}><Settings className="w-3.5 h-3.5" /></div>
-                <span className="font-black text-sm text-slate-800">Custom</span>
+            <div
+              onClick={() => handleModelSelect("custom")}
+              className={`relative p-3 sm:p-4 rounded-xl border-2 transition-all cursor-pointer flex flex-col ${
+                model === "custom"
+                  ? "border-blue-500 bg-blue-50/40 ring-1 ring-blue-500/20"
+                  : "border-slate-100 bg-slate-50/60 hover:border-slate-200"
+              }`}
+            >
+              <div className="flex items-center gap-2 mb-3">
+                <div
+                  className={`p-1.5 rounded-md ${
+                    model === "custom" ? "bg-blue-500 text-white" : "bg-white text-slate-400 shadow-sm"
+                  }`}
+                >
+                  <Settings className="w-3.5 h-3.5" />
+                </div>
+                <span className="font-black text-xs sm:text-sm text-slate-800 uppercase tracking-widest">
+                  Custom model
+                </span>
               </div>
-              <div className="space-y-1 mb-2 flex-1">
+              <div className="space-y-1.5 mb-2 flex-1">
                 {["Cash", "Work", "Intangible", "Tangible", "Others"].map((label) => {
                   const key = label.toLowerCase() as keyof typeof mults;
                   const val = mults[key] ?? 1;
                   return (
-                    <div key={label} className="flex items-center justify-between p-1.5 sm:p-2 bg-white rounded-md border border-slate-100 shadow-sm">
-                      <span className="text-[8px] sm:text-[9px] font-black uppercase text-slate-500">{label}</span>
-                      <input
-                        type="number"
-                        key={`${label}-${model}-${val}`}
-                        value={val}
+                    <div
+                      key={label}
+                      className="flex items-center justify-between gap-2 p-1.5 sm:p-2 bg-white rounded-lg border border-slate-100 shadow-sm"
+                    >
+                      <span className="text-[9px] sm:text-[10px] font-black uppercase text-slate-500 tracking-wider">
+                        {label}
+                      </span>
+                      <div
+                        className="flex items-center gap-1.5"
                         onClick={(e) => e.stopPropagation()}
-                        onChange={(e) => setMults((prev) => ({ ...prev, [key]: parseFloat(e.target.value) || 0 }))}
-                        className="w-9 bg-transparent text-right font-black text-sm text-blue-700 outline-none rounded"
-                      />
+                      >
+                        <button
+                          type="button"
+                          onClick={() =>
+                            setMults((prev) => ({
+                              ...prev,
+                              [key]: Math.max(0, (prev[key] ?? 0) - 1),
+                            }))
+                          }
+                          className="h-6 w-6 flex items-center justify-center rounded-md border border-slate-200 bg-slate-50 text-xs font-black text-slate-600 hover:bg-slate-100"
+                        >
+                          −
+                        </button>
+                        <span className="min-w-[1.75rem] text-center font-black text-sm text-blue-700 tabular-nums">
+                          {val}
+                        </span>
+                        <button
+                          type="button"
+                          onClick={() =>
+                            setMults((prev) => ({
+                              ...prev,
+                              [key]: (prev[key] ?? 0) + 1,
+                            }))
+                          }
+                          className="h-6 w-6 flex items-center justify-center rounded-md border border-slate-200 bg-slate-50 text-xs font-black text-slate-600 hover:bg-slate-100"
+                        >
+                          +
+                        </button>
+                      </div>
                     </div>
                   );
                 })}
               </div>
-              <p className="text-[8px] sm:text-[9px] font-black text-slate-800 uppercase tracking-wider text-center">Manual control</p>
+              <p className="text-[8px] sm:text-[9px] font-black text-slate-800 uppercase tracking-wider text-center">
+                Manual control
+              </p>
             </div>
 
             <div onClick={() => handleModelSelect("just_split")} className={`relative p-3 sm:p-4 rounded-xl border-2 transition-all cursor-pointer flex flex-col ${model === "just_split" ? "border-emerald-500 bg-emerald-50/40 ring-1 ring-emerald-500/20" : "border-slate-100 bg-slate-50/50 hover:border-slate-200"}`}>
