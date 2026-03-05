@@ -1,12 +1,13 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { X, Trash2, UserPlus, Mail, Shield, User, Pencil, Ban, Users, Infinity } from "lucide-react";
 import { createClient } from "@/utils/supabase/client";
 import { logAudit } from "@/utils/auditLog";
 import { computeMemberEquitySummary } from "@/utils/equityCalculation";
 
-type TabType = "members" | "add" | "edit";
+export type TeamSettingsTab = "members" | "add" | "edit";
+type TabType = TeamSettingsTab;
 
 interface Member {
   id: string;
@@ -28,6 +29,7 @@ interface AddMemberModalProps {
   onUpdate: () => void;
   canEdit?: boolean;
   mode?: "modal" | "page";
+  externalActiveTab?: TeamSettingsTab;
 }
 
 const MEMBER_COLORS = [
@@ -50,6 +52,7 @@ export function AddMemberModal({
   onUpdate,
   canEdit = true,
   mode = "modal",
+  externalActiveTab,
 }: AddMemberModalProps) {
   const [activeTab, setActiveTab] = useState<TabType>("add");
   const [name, setName] = useState("");
@@ -74,6 +77,13 @@ export function AddMemberModal({
     });
     return map;
   }, [memberSummary]);
+
+  // Permitir que una página externa controle la pestaña activa
+  useEffect(() => {
+    if (mode === "page" && externalActiveTab) {
+      setActiveTab(externalActiveTab);
+    }
+  }, [mode, externalActiveTab]);
 
   if (!isOpen && mode === "modal") return null;
 

@@ -1,19 +1,18 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { Settings as SettingsIcon, Users, ArrowLeft } from "lucide-react";
 import { createClient } from "@/utils/supabase/client";
 import type { Project } from "@/types/database";
-import { EquitySettingsModal } from "@/components/EquitySettingsModal";
-import { AddMemberModal } from "@/components/AddMemberModal";
+import { EquitySettingsModal, type EquitySettingsTab } from "@/components/EquitySettingsModal";
+import { AddMemberModal, type TeamSettingsTab } from "@/components/AddMemberModal";
 
 type Member = {
   id: string;
   name: string;
   email?: string | null;
-  role?: string | null;
+  role?: string;
   access_level?: "editor" | "viewer";
   fixed_equity?: number | null;
   equity_cap?: number | null;
@@ -29,6 +28,8 @@ export default function ProjectSettingsPage() {
   const [members, setMembers] = useState<Member[]>([]);
   const [loading, setLoading] = useState(true);
   const [activePanel, setActivePanel] = useState<"equity" | "team">("equity");
+  const [equityTab, setEquityTab] = useState<EquitySettingsTab>("default_models");
+  const [teamTab, setTeamTab] = useState<TeamSettingsTab>("members");
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   const [currentUserEmail, setCurrentUserEmail] = useState<string | null>(null);
 
@@ -109,31 +110,154 @@ export default function ProjectSettingsPage() {
             <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400 mb-3">
               Settings
             </p>
-            <nav className="space-y-1">
-              <button
-                type="button"
-                onClick={() => setActivePanel("equity")}
-                className={`w-full flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-semibold text-left transition-colors ${
-                  activePanel === "equity"
-                    ? "bg-slate-900 text-white"
-                    : "text-slate-700 hover:bg-slate-50"
-                }`}
-              >
-                <SettingsIcon className="w-4 h-4" />
-                <span>Equity settings</span>
-              </button>
-              <button
-                type="button"
-                onClick={() => setActivePanel("team")}
-                className={`w-full flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-semibold text-left transition-colors ${
-                  activePanel === "team"
-                    ? "bg-slate-900 text-white"
-                    : "text-slate-700 hover:bg-slate-50"
-                }`}
-              >
-                <Users className="w-4 h-4" />
-                <span>Team settings</span>
-              </button>
+            <nav className="space-y-4 text-sm">
+              {/* Equity settings and sub-sections */}
+              <div>
+                <button
+                  type="button"
+                  onClick={() => setActivePanel("equity")}
+                  className={`w-full flex items-center gap-2 px-3 py-2 rounded-xl font-semibold text-left transition-colors ${
+                    activePanel === "equity"
+                      ? "bg-slate-900 text-white"
+                      : "text-slate-700 hover:bg-slate-50"
+                  }`}
+                >
+                  <SettingsIcon className="w-4 h-4" />
+                  <span>Equity settings</span>
+                </button>
+                <div className="mt-2 ml-3 space-y-1">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setActivePanel("equity");
+                      setEquityTab("default_models");
+                    }}
+                    className={`block w-full px-2 py-1 rounded-lg text-left text-[12px] font-medium ${
+                      activePanel === "equity" && equityTab === "default_models"
+                        ? "text-emerald-600 bg-emerald-50"
+                        : "text-slate-600 hover:text-emerald-600 hover:bg-slate-50"
+                    }`}
+                  >
+                    Settings / Onboarding
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setActivePanel("equity");
+                      setEquityTab("multipliers");
+                    }}
+                    className={`block w-full px-2 py-1 rounded-lg text-left text-[12px] font-medium ${
+                      activePanel === "equity" && equityTab === "multipliers"
+                        ? "text-emerald-600 bg-emerald-50"
+                        : "text-slate-600 hover:text-emerald-600 hover:bg-slate-50"
+                    }`}
+                  >
+                    Multipliers
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setActivePanel("equity");
+                      setEquityTab("fixed");
+                    }}
+                    className={`block w-full px-2 py-1 rounded-lg text-left text-[12px] font-medium ${
+                      activePanel === "equity" && equityTab === "fixed"
+                        ? "text-emerald-600 bg-emerald-50"
+                        : "text-slate-600 hover:text-emerald-600 hover:bg-slate-50"
+                    }`}
+                  >
+                    Fixed equity
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setActivePanel("equity");
+                      setEquityTab("limited");
+                    }}
+                    className={`block w-full px-2 py-1 rounded-lg text-left text-[12px] font-medium ${
+                      activePanel === "equity" && equityTab === "limited"
+                        ? "text-emerald-600 bg-emerald-50"
+                        : "text-slate-600 hover:text-emerald-600 hover:bg-slate-50"
+                    }`}
+                  >
+                    Limited equity (caps)
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setActivePanel("equity");
+                      setEquityTab("smart");
+                    }}
+                    className={`block w-full px-2 py-1 rounded-lg text-left text-[12px] font-medium ${
+                      activePanel === "equity" && equityTab === "smart"
+                        ? "text-emerald-600 bg-emerald-50"
+                        : "text-slate-600 hover:text-emerald-600 hover:bg-slate-50"
+                    }`}
+                  >
+                    Smart multipliers
+                  </button>
+                </div>
+              </div>
+
+              {/* Team settings and sub-sections */}
+              <div>
+                <button
+                  type="button"
+                  onClick={() => setActivePanel("team")}
+                  className={`w-full flex items-center gap-2 px-3 py-2 rounded-xl font-semibold text-left transition-colors ${
+                    activePanel === "team"
+                      ? "bg-slate-900 text-white"
+                      : "text-slate-700 hover:bg-slate-50"
+                  }`}
+                >
+                  <Users className="w-4 h-4" />
+                  <span>Team settings</span>
+                </button>
+                <div className="mt-2 ml-3 space-y-1">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setActivePanel("team");
+                      setTeamTab("members");
+                    }}
+                    className={`block w-full px-2 py-1 rounded-lg text-left text-[12px] font-medium ${
+                      activePanel === "team" && teamTab === "members"
+                        ? "text-emerald-600 bg-emerald-50"
+                        : "text-slate-600 hover:text-emerald-600 hover:bg-slate-50"
+                    }`}
+                  >
+                    Members overview
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setActivePanel("team");
+                      setTeamTab("add");
+                    }}
+                    className={`block w-full px-2 py-1 rounded-lg text-left text-[12px] font-medium ${
+                      activePanel === "team" && teamTab === "add"
+                        ? "text-emerald-600 bg-emerald-50"
+                        : "text-slate-600 hover:text-emerald-600 hover:bg-slate-50"
+                    }`}
+                  >
+                    Add member
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setActivePanel("team");
+                      setTeamTab("edit");
+                    }}
+                    className={`block w-full px-2 py-1 rounded-lg text-left text-[12px] font-medium ${
+                      activePanel === "team" && teamTab === "edit"
+                        ? "text-emerald-600 bg-emerald-50"
+                        : "text-slate-600 hover:text-emerald-600 hover:bg-slate-50"
+                    }`}
+                  >
+                    Edit roles & access
+                  </button>
+                </div>
+              </div>
             </nav>
           </aside>
 
@@ -153,6 +277,7 @@ export default function ProjectSettingsPage() {
                   onOpenDefaultModels={() => {}}
                   canEdit={canEdit}
                   mode="page"
+                  externalActiveTab={equityTab}
                 />
               </div>
             )}
@@ -170,6 +295,7 @@ export default function ProjectSettingsPage() {
                   }}
                   canEdit={canEdit}
                   mode="page"
+                  externalActiveTab={teamTab}
                 />
               </div>
             )}

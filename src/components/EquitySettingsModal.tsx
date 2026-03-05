@@ -48,6 +48,8 @@ interface Member {
   equity_cap?: number | null;
 }
 
+export type EquitySettingsTab = "fixed" | "multipliers" | "smart" | "limited" | "default_models";
+
 interface EquitySettingsModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -58,6 +60,7 @@ interface EquitySettingsModalProps {
   onOpenDefaultModels?: () => void;
   canEdit?: boolean;
   mode?: "modal" | "page";
+  externalActiveTab?: EquitySettingsTab;
 }
 
 function formatWithComma(num: number): string {
@@ -69,7 +72,7 @@ function parseWithComma(str: string): number {
   return parseFloat(normalized) || 0;
 }
 
-type TabType = "fixed" | "multipliers" | "smart" | "limited" | "default_models";
+type TabType = EquitySettingsTab;
 
 export function EquitySettingsModal({
   isOpen,
@@ -81,6 +84,7 @@ export function EquitySettingsModal({
   onOpenDefaultModels,
   canEdit = true,
   mode = "modal",
+  externalActiveTab,
 }: EquitySettingsModalProps) {
   const [activeTab, setActiveTab] = useState<TabType>("default_models");
   const [values, setValues] = useState<Record<string, number>>({});
@@ -106,6 +110,13 @@ export function EquitySettingsModal({
       setActiveTab("default_models");
     }
   }, [isOpen]);
+
+  // Permitir que una página externa controle la pestaña activa
+  useEffect(() => {
+    if (mode === "page" && externalActiveTab) {
+      setActiveTab(externalActiveTab);
+    }
+  }, [mode, externalActiveTab]);
 
   useEffect(() => {
     if (isOpen && members.length > 0) {
