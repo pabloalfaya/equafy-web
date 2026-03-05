@@ -394,6 +394,93 @@ export default function ProjectLegalPage() {
             </div>
           </section>
 
+          {/* 2.b US-specific implementation steps (vertical stepper) */}
+          {selectedCountry === "United States" && (
+            <section className="mb-10">
+              <h2 className="text-lg md:text-xl font-black text-slate-900">
+                How to implement the Dynamic Equity model
+              </h2>
+              <ol className="mt-5 space-y-6 border-l border-slate-200 pl-4 md:pl-5">
+                {/* Step 1 */}
+                <li className="relative pl-4">
+                  <div className="absolute -left-[14px] top-0 flex h-7 w-7 items-center justify-center rounded-full bg-emerald-50 text-emerald-700 text-xs font-bold border border-emerald-200">
+                    1
+                  </div>
+                  <h3 className="text-sm md:text-base font-bold text-slate-900">
+                    Authorize (Internal Approval)
+                  </h3>
+                  <p className="mt-1 text-xs md:text-sm text-slate-500">
+                    The company directors must sign the Board Resolution to officially adopt Equafy as
+                    the single source of truth for tracking ownership.
+                  </p>
+                </li>
+
+                {/* Step 2 */}
+                <li className="relative pl-4">
+                  <div className="absolute -left-[14px] top-0 flex h-7 w-7 items-center justify-center rounded-full bg-emerald-50 text-emerald-700 text-xs font-bold border border-emerald-200">
+                    2
+                  </div>
+                  <h3 className="text-sm md:text-base font-bold text-slate-900">
+                    Connect (Founder Agreement)
+                  </h3>
+                  <p className="mt-1 text-xs md:text-sm text-slate-500">
+                    All participants must sign the Dynamic Equity Addendum. This is the master contract
+                    that subordinates previous static agreements and links your legal ownership to the
+                    algorithm&apos;s calculations.
+                  </p>
+                </li>
+
+                {/* Step 3 */}
+                <li className="relative pl-4">
+                  <div className="absolute -left-[14px] top-0 flex h-7 w-7 items-center justify-center rounded-full bg-emerald-50 text-emerald-700 text-xs font-bold border border-emerald-200">
+                    3
+                  </div>
+                  <h3 className="text-sm md:text-base font-bold text-slate-900">
+                    Secure (Execution Safety Net)
+                  </h3>
+                  <p className="mt-1 text-xs md:text-sm text-slate-500">
+                    Each participant signs a Stock Assignment in Blank. This acts as a security
+                    mechanism, allowing the company to automatically execute future equity readjustments
+                    without needing new signatures every time.
+                  </p>
+                </li>
+
+                {/* Step 4 */}
+                <li className="relative pl-4">
+                  <div className="absolute -left-[14px] top-0 flex h-7 w-7 items-center justify-center rounded-full bg-emerald-50 text-emerald-700 text-xs font-bold border border-emerald-200">
+                    4
+                  </div>
+                  <h3 className="text-sm md:text-base font-bold text-slate-900">
+                    Protect (IRS Compliance)
+                  </h3>
+                  <p className="mt-1 text-xs md:text-sm text-slate-500">
+                    <span className="font-semibold text-amber-700">Crucial step:</span> Each US
+                    participant must physically mail their signed Section 83(b) Election to the IRS
+                    within 30 days of signing the Addendum to shield future equity growth from ordinary
+                    income taxes.
+                  </p>
+                </li>
+
+                {/* Step 5 */}
+                <li className="relative pl-4">
+                  <div className="absolute -left-[14px] top-0 flex h-7 w-7 items-center justify-center rounded-full bg-emerald-50 text-emerald-700 text-xs font-bold border border-emerald-200">
+                    5
+                  </div>
+                  <h3 className="text-sm md:text-base font-bold text-slate-900">
+                    Upload &amp; Activate
+                  </h3>
+                  <p className="mt-1 text-xs md:text-sm text-slate-500">
+                    Once signed, upload the PDFs for Steps 1, 2, and 3 into the Signed Documents Vault
+                    below to finalize your setup.{" "}
+                    <span className="font-medium">
+                      Note: Keep your 83(b) mailing receipt for your own records.
+                    </span>
+                  </p>
+                </li>
+              </ol>
+            </section>
+          )}
+
           {/* 3. Templates Grid (US-specific pack) */}
           <section className="mb-12">
             <h2 className="text-xl font-black text-slate-900 mb-6">Document Templates</h2>
