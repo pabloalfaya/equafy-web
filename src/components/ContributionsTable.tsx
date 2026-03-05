@@ -36,7 +36,7 @@ export function ContributionsTable({ contributions, currency = "EUR", onDelete, 
     return new Date(dateString).toLocaleDateString("en-GB", {
       day: "numeric",
       month: "short",
-      year: "numeric"
+      year: "2-digit"
     });
   };
 
