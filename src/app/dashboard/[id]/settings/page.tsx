@@ -105,8 +105,8 @@ export default function ProjectSettingsPage() {
           </div>
         </div>
 
-        <div className="grid grid-cols-[260px,1fr] gap-6 md:gap-10">
-          <aside className="bg-white rounded-2xl border border-slate-100 shadow-sm p-4 h-fit">
+        <div className="mt-4 flex flex-col md:flex-row gap-6 md:gap-10 items-start">
+          <aside className="bg-white rounded-2xl border border-slate-100 shadow-sm p-4 h-fit w-full md:w-64 md:flex-shrink-0">
             <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400 mb-3">
               Settings
             </p>
@@ -261,7 +261,7 @@ export default function ProjectSettingsPage() {
             </nav>
           </aside>
 
-          <section className="space-y-4">
+          <section className="flex-1 w-full space-y-4">
             {activePanel === "equity" && (
               <div className="bg-transparent">
                 <EquitySettingsModal
