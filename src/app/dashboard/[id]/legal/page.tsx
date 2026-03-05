@@ -4,6 +4,7 @@ import { useParams } from "next/navigation";
 import Link from "next/link";
 import { useEffect, useState, useCallback } from "react";
 import { ArrowLeft, FileText, Shield, Snowflake, Upload, Info, Trash2 } from "lucide-react";
+import { TaxShieldFAQ } from "@/components/TaxShieldFAQ";
 import { createClient } from "@/utils/supabase/client";
 import { BRAND } from "@/lib/brand";
 
@@ -589,6 +590,9 @@ export default function ProjectLegalPage() {
               </div>
             )}
           </section>
+
+          {/* Tax Shield FAQ (US-only: 83(b) education) */}
+          {selectedCountry === "United States" && <TaxShieldFAQ />}
 
           {/* 4. Secure Vault */}
           <section>
