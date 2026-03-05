@@ -513,7 +513,7 @@ export function AddMemberModal({
 
   if (mode === "page") {
     return (
-      <div className="w-full flex justify-center py-4">
+      <div className="w-full py-4">
         {panel}
       </div>
     );

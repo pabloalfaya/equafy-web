@@ -988,9 +988,7 @@ export function EquitySettingsModal({
   if (mode === "page") {
     return (
       <>
-        <div className="w-full flex justify-center">
-          {panel}
-        </div>
+        {panel}
         <VideoDemoModal open={isDemoOpen} onClose={() => setIsDemoOpen(false)} />
       </>
     );
