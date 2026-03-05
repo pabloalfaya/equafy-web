@@ -413,10 +413,22 @@ export function EquitySettingsModal({
           </div>
         )}
 
-        {/* Tab Content — fixed height, scroll only inner lists; buttons stay visible */}
-        <div className="h-[480px] flex flex-col overflow-hidden pr-1 w-full min-w-0">
+        {/* Tab Content — en página usamos altura fija interna; en modal dejamos que el scroll sea del propio modal */}
+        <div
+          className={
+            mode === "page"
+              ? "h-[480px] flex flex-col overflow-hidden pr-1 w-full min-w-0"
+              : "flex flex-col w-full min-w-0"
+          }
+        >
         {activeTab === "default_models" && (
-          <div className="flex-1 min-h-0 overflow-y-auto space-y-4 w-full">
+          <div
+            className={
+              mode === "page"
+                ? "flex-1 min-h-0 overflow-y-auto space-y-4 w-full"
+                : "space-y-4 w-full"
+            }
+          >
             {/* Currency */}
             <div>
               <label className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2 block">Currency</label>
@@ -590,8 +602,20 @@ export function EquitySettingsModal({
         )}
 
         {activeTab === "multipliers" && (
-          <div className="flex flex-col flex-1 min-h-0 overflow-hidden">
-            <div className="space-y-3 mb-5 flex-1 min-h-0 overflow-y-auto">
+          <div
+            className={
+              mode === "page"
+                ? "flex flex-col flex-1 min-h-0 overflow-hidden"
+                : "flex flex-col"
+            }
+          >
+            <div
+              className={
+                mode === "page"
+                  ? "space-y-3 mb-5 flex-1 min-h-0 overflow-y-auto"
+                  : "space-y-3 mb-5"
+              }
+            >
               {(
                 [
                   { key: "mult_cash", label: "Cash" },
@@ -647,7 +671,13 @@ export function EquitySettingsModal({
         )}
 
         {activeTab === "fixed" && (
-          <div className="w-full max-w-full flex flex-col flex-1 min-h-0 overflow-hidden">
+          <div
+            className={
+              mode === "page"
+                ? "w-full max-w-full flex flex-col flex-1 min-h-0 overflow-hidden"
+                : "w-full max-w-full flex flex-col"
+            }
+          >
             {/* Segmented Progress Bar */}
             <div className="mb-4 w-full shrink-0">
               <div className="flex justify-between text-xs font-bold text-slate-500 mb-2 uppercase">
@@ -684,8 +714,14 @@ export function EquitySettingsModal({
               )}
             </div>
 
-            {/* Member list — expands to fill space */}
-            <div className="space-y-3 flex-1 min-h-0 overflow-y-auto pr-2 custom-scrollbar w-full">
+            {/* Member list — expands a la altura disponible solo en página */}
+            <div
+              className={
+                mode === "page"
+                  ? "space-y-3 flex-1 min-h-0 overflow-y-auto pr-2 custom-scrollbar w-full"
+                  : "space-y-3 pr-2 custom-scrollbar w-full"
+              }
+            >
               {localMembers.length === 0 ? (
                 <p className="text-center text-slate-400 text-sm italic py-4">
                   No members yet.
@@ -752,11 +788,23 @@ export function EquitySettingsModal({
         )}
 
         {activeTab === "limited" && (
-          <div className="w-full max-w-full flex flex-col flex-1 min-h-0 overflow-hidden">
+          <div
+            className={
+              mode === "page"
+                ? "w-full max-w-full flex flex-col flex-1 min-h-0 overflow-hidden"
+                : "w-full max-w-full flex flex-col"
+            }
+          >
             <p className="text-xs text-slate-500 mb-4 leading-relaxed w-full shrink-0">
               Set a hard cap (%) per member. When enabled, that member will not exceed this share regardless of contributions.
             </p>
-            <div className="space-y-3 flex-1 min-h-0 overflow-y-auto pr-2 custom-scrollbar w-full">
+            <div
+              className={
+                mode === "page"
+                  ? "space-y-3 flex-1 min-h-0 overflow-y-auto pr-2 custom-scrollbar w-full"
+                  : "space-y-3 pr-2 custom-scrollbar w-full"
+              }
+            >
               {localMembers.length === 0 ? (
                 <p className="text-center text-slate-400 text-sm italic py-4">
                   No members yet.
@@ -853,7 +901,13 @@ export function EquitySettingsModal({
         )}
 
         {activeTab === "smart" && (
-          <div className="flex-1 min-h-0 overflow-y-auto space-y-6 w-full">
+          <div
+            className={
+              mode === "page"
+                ? "flex-1 min-h-0 overflow-y-auto space-y-6 w-full"
+                : "space-y-6 w-full"
+            }
+          >
             {/* Smart Risk Calculator */}
             <div className="space-y-3">
               <div className="flex items-center gap-2">
