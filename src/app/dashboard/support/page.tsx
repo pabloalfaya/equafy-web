@@ -1,16 +1,40 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ArrowLeft, Mail } from "lucide-react";
+import { createClient } from "@/utils/supabase/client";
 
 export default function SupportContactPage() {
   const router = useRouter();
+  const [loading, setLoading] = useState(true);
 
   const supportEmail = "contact@getequafy.com";
   const mailtoHref = `mailto:${supportEmail}?subject=${encodeURIComponent(
     "Support request from Equafy dashboard"
   )}`;
+
+  useEffect(() => {
+    const check = async () => {
+      const supabase = createClient();
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        router.replace("/login");
+        return;
+      }
+      setLoading(false);
+    };
+    void check();
+  }, [router]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-[#F8FAFC]">
+        <p className="text-slate-400 font-bold">Loading...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-[#F8FAFC] font-sans text-slate-900">
@@ -82,7 +106,7 @@ export default function SupportContactPage() {
           <div className="pt-4 border-t border-slate-100 text-xs text-slate-400">
             <p>
               Looking for documentation first? Visit our{" "}
-              <Link href="/help" className="font-semibold text-emerald-700 hover:text-emerald-800 hover:underline">
+              <Link href="/dashboard/help" className="font-semibold text-emerald-700 hover:text-emerald-800 hover:underline">
                 Help Center & Tutorials
               </Link>
               .
@@ -93,4 +117,3 @@ export default function SupportContactPage() {
     </div>
   );
 }
-

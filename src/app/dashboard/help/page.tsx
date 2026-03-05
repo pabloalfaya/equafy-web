@@ -1,10 +1,34 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { ArrowLeft, BookOpen } from "lucide-react";
+import { createClient } from "@/utils/supabase/client";
 
 export default function HelpCenterPage() {
   const router = useRouter();
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const check = async () => {
+      const supabase = createClient();
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        router.replace("/login");
+        return;
+      }
+      setLoading(false);
+    };
+    void check();
+  }, [router]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-[#F8FAFC]">
+        <p className="text-slate-400 font-bold">Loading...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-[#F8FAFC] font-sans text-slate-900">
@@ -39,7 +63,7 @@ export default function HelpCenterPage() {
             Guides and tutorials are still in the works. In the meantime, you can{" "}
             <button
               type="button"
-              onClick={() => router.push("/support")}
+              onClick={() => router.push("/dashboard/support")}
               className="font-semibold text-emerald-600 hover:text-emerald-700 hover:underline"
             >
               contact support

@@ -1057,7 +1057,7 @@ export default function ProjectDashboardPage() {
                   <button
                     type="button"
                     onClick={() => {
-                      router.push("/help");
+                      router.push("/dashboard/help");
                       setMenuOpen(false);
                       setMenuClosing(false);
                     }}
@@ -1068,7 +1068,7 @@ export default function ProjectDashboardPage() {
                   <button
                     type="button"
                     onClick={() => {
-                      router.push("/support");
+                      router.push("/dashboard/support");
                       setMenuOpen(false);
                       setMenuClosing(false);
                     }}
