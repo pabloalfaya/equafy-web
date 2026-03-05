@@ -999,7 +999,7 @@ export default function ProjectDashboardPage() {
                   </p>
                   <button
                     type="button"
-                    className="w-full text-left px-3 py-2 rounded-lg border border-slate-200 bg-slate-50 text-[13px] font-semibold text-slate-700 hover:bg-slate-100 hover:border-slate-300 transition-colors"
+                    className="w-full text-left px-1 py-1 text-[13px] font-semibold text-slate-700 hover:text-emerald-600 transition-colors"
                   >
                     API & Integrations
                   </button>
@@ -1012,25 +1012,25 @@ export default function ProjectDashboardPage() {
                   </p>
                   <button
                     type="button"
-                    className="w-full text-left px-3 py-2 rounded-lg border border-slate-200 bg-slate-50 text-[13px] font-semibold text-slate-700 hover:bg-slate-100 hover:border-slate-300 transition-colors"
+                    className="w-full text-left px-1 py-1 text-[13px] font-semibold text-slate-700 hover:text-emerald-600 transition-colors"
                   >
                     📚 Help Center & Tutorials
                   </button>
                   <button
                     type="button"
-                    className="w-full text-left px-3 py-2 rounded-lg border border-slate-200 bg-slate-50 text-[13px] font-semibold text-slate-700 hover:bg-slate-100 hover:border-slate-300 transition-colors"
+                    className="w-full text-left px-1 py-1 text-[13px] font-semibold text-slate-700 hover:text-emerald-600 transition-colors"
                   >
                     💬 Contact Support
                   </button>
                   <button
                     type="button"
-                    className="w-full text-left px-3 py-2 rounded-lg border border-slate-200 bg-slate-50 text-[13px] font-semibold text-slate-700 hover:bg-slate-100 hover:border-slate-300 transition-colors"
+                    className="w-full text-left px-1 py-1 text-[13px] font-semibold text-slate-700 hover:text-emerald-600 transition-colors"
                   >
                     🎨 Preferences (Language & Theme)
                   </button>
                   <button
                     type="button"
-                    className="w-full text-left px-3 py-2 rounded-lg border border-slate-200 bg-slate-50 text-[13px] font-semibold text-slate-700 hover:bg-slate-100 hover:border-slate-300 transition-colors"
+                    className="w-full text-left px-1 py-1 text-[13px] font-semibold text-slate-700 hover:text-emerald-600 transition-colors"
                   >
                     🔔 Notifications (New Partner Contributions)
                   </button>
