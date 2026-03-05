@@ -117,7 +117,7 @@ export function EquityModelModal({
 
   return (
     <div className="fixed inset-0 z-[120] flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-3 sm:p-4">
-      <div className="relative w-[95%] max-w-full md:max-w-4xl lg:max-w-5xl mx-auto bg-white rounded-2xl sm:rounded-[32px] shadow-2xl p-4 sm:p-5 md:p-6 text-slate-900 overflow-y-auto max-h-[95vh]">
+      <div className="relative w-[96%] max-w-4xl mx-auto bg-white rounded-2xl sm:rounded-[32px] shadow-2xl p-4 sm:p-5 md:p-6 text-slate-900 overflow-y-auto max-h-[95vh]">
         <button onClick={isOnboarding ? handleDismiss : onClose} className="absolute top-6 right-6 text-slate-400 hover:text-slate-900 transition-colors z-20">
           <X className="w-5 h-5" />
         </button>
@@ -174,22 +174,32 @@ export function EquityModelModal({
                           onClick={() =>
                             setMults((prev) => ({
                               ...prev,
-                              [key]: Math.max(0, (prev[key] ?? 0) - 1),
+                              [key]: Math.max(0, (prev[key] ?? 0) - 0.5),
                             }))
                           }
                           className="h-6 w-6 flex items-center justify-center rounded-md border border-slate-200 bg-slate-50 text-xs font-black text-slate-600 hover:bg-slate-100"
                         >
                           −
                         </button>
-                        <span className="min-w-[1.75rem] text-center font-black text-sm text-blue-700 tabular-nums">
-                          {val}
-                        </span>
+                        <input
+                          type="number"
+                          step={0.5}
+                          min={0}
+                          value={val}
+                          onChange={(e) =>
+                            setMults((prev) => ({
+                              ...prev,
+                              [key]: parseFloat(e.target.value) || 0,
+                            }))
+                          }
+                          className="w-12 text-center font-black text-sm text-blue-700 tabular-nums bg-transparent border-0 outline-none"
+                        />
                         <button
                           type="button"
                           onClick={() =>
                             setMults((prev) => ({
                               ...prev,
-                              [key]: (prev[key] ?? 0) + 1,
+                              [key]: (prev[key] ?? 0) + 0.5,
                             }))
                           }
                           className="h-6 w-6 flex items-center justify-center rounded-md border border-slate-200 bg-slate-50 text-xs font-black text-slate-600 hover:bg-slate-100"
@@ -213,7 +223,7 @@ export function EquityModelModal({
                 <span className="font-black text-sm text-slate-800">Just Split Model</span>
               </div>
               <div className="grid grid-cols-2 gap-1.5 mb-2 flex-1">
-                {[{ l: "CASH", v: "x4" }, { l: "WORK", v: "x2" }, { l: "ASSETS", v: "x2" }, { l: "IP", v: "x2" }].map((item) => (
+                {[{ l: "CASH", v: "x4" }, { l: "WORK", v: "x2" }, { l: "TANGIBLE", v: "x2" }, { l: "INTANGIBLE", v: "x2" }, { l: "OTHERS", v: "x1" }].map((item) => (
                   <div key={item.l} className="p-2 sm:p-2.5 bg-white rounded-md border border-slate-100 text-center shadow-sm">
                     <span className="text-[7px] sm:text-[8px] font-black text-emerald-600 uppercase block mb-0.5">{item.l}</span>
                     <span className="text-base sm:text-lg font-black tracking-tighter text-slate-900">{item.v}</span>
