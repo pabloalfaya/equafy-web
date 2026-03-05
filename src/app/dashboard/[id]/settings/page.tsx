@@ -105,37 +105,37 @@ export default function ProjectSettingsPage() {
           </div>
         </div>
 
-        <div className="mt-4 flex flex-col md:flex-row gap-6 md:gap-10 items-start">
-          <aside className="bg-white rounded-2xl border border-slate-100 shadow-sm p-4 h-fit w-full md:w-64 md:flex-shrink-0">
-            <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400 mb-3">
+        <div className="mt-4 flex flex-col md:flex-row gap-10 items-start">
+          <aside className="w-full md:w-64 md:flex-shrink-0">
+            <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-500 mb-2">
               Settings
             </p>
-            <nav className="space-y-4 text-sm">
+            <nav className="space-y-4 text-sm border border-slate-200 bg-white md:bg-transparent md:border-0 md:border-r md:pr-4">
               {/* Equity settings and sub-sections */}
               <div>
                 <button
                   type="button"
                   onClick={() => setActivePanel("equity")}
-                  className={`w-full flex items-center gap-2 px-3 py-2 rounded-xl font-semibold text-left transition-colors ${
+                  className={`w-full flex items-center gap-2 px-2 py-1.5 rounded-md font-semibold text-left text-sm transition-colors ${
                     activePanel === "equity"
-                      ? "bg-slate-900 text-white"
-                      : "text-slate-700 hover:bg-slate-50"
+                      ? "text-slate-900"
+                      : "text-slate-600 hover:text-slate-900"
                   }`}
                 >
                   <SettingsIcon className="w-4 h-4" />
                   <span>Equity settings</span>
                 </button>
-                <div className="mt-2 ml-3 space-y-1">
+                <div className="mt-1 ml-6 space-y-0.5">
                   <button
                     type="button"
                     onClick={() => {
                       setActivePanel("equity");
                       setEquityTab("default_models");
                     }}
-                    className={`block w-full px-2 py-1 rounded-lg text-left text-[12px] font-medium ${
+                    className={`block w-full px-1.5 py-1 rounded-md text-left text-[12px] font-medium ${
                       activePanel === "equity" && equityTab === "default_models"
-                        ? "text-emerald-600 bg-emerald-50"
-                        : "text-slate-600 hover:text-emerald-600 hover:bg-slate-50"
+                        ? "text-emerald-600 bg-emerald-50/70"
+                        : "text-slate-500 hover:text-emerald-600 hover:bg-slate-50"
                     }`}
                   >
                     Settings / Onboarding
@@ -146,10 +146,10 @@ export default function ProjectSettingsPage() {
                       setActivePanel("equity");
                       setEquityTab("multipliers");
                     }}
-                    className={`block w-full px-2 py-1 rounded-lg text-left text-[12px] font-medium ${
+                    className={`block w-full px-1.5 py-1 rounded-md text-left text-[12px] font-medium ${
                       activePanel === "equity" && equityTab === "multipliers"
-                        ? "text-emerald-600 bg-emerald-50"
-                        : "text-slate-600 hover:text-emerald-600 hover:bg-slate-50"
+                        ? "text-emerald-600 bg-emerald-50/70"
+                        : "text-slate-500 hover:text-emerald-600 hover:bg-slate-50"
                     }`}
                   >
                     Multipliers
@@ -160,10 +160,10 @@ export default function ProjectSettingsPage() {
                       setActivePanel("equity");
                       setEquityTab("fixed");
                     }}
-                    className={`block w-full px-2 py-1 rounded-lg text-left text-[12px] font-medium ${
+                    className={`block w-full px-1.5 py-1 rounded-md text-left text-[12px] font-medium ${
                       activePanel === "equity" && equityTab === "fixed"
-                        ? "text-emerald-600 bg-emerald-50"
-                        : "text-slate-600 hover:text-emerald-600 hover:bg-slate-50"
+                        ? "text-emerald-600 bg-emerald-50/70"
+                        : "text-slate-500 hover:text-emerald-600 hover:bg-slate-50"
                     }`}
                   >
                     Fixed equity
@@ -174,10 +174,10 @@ export default function ProjectSettingsPage() {
                       setActivePanel("equity");
                       setEquityTab("limited");
                     }}
-                    className={`block w-full px-2 py-1 rounded-lg text-left text-[12px] font-medium ${
+                    className={`block w-full px-1.5 py-1 rounded-md text-left text-[12px] font-medium ${
                       activePanel === "equity" && equityTab === "limited"
-                        ? "text-emerald-600 bg-emerald-50"
-                        : "text-slate-600 hover:text-emerald-600 hover:bg-slate-50"
+                        ? "text-emerald-600 bg-emerald-50/70"
+                        : "text-slate-500 hover:text-emerald-600 hover:bg-slate-50"
                     }`}
                   >
                     Limited equity (caps)
@@ -188,10 +188,10 @@ export default function ProjectSettingsPage() {
                       setActivePanel("equity");
                       setEquityTab("smart");
                     }}
-                    className={`block w-full px-2 py-1 rounded-lg text-left text-[12px] font-medium ${
+                    className={`block w-full px-1.5 py-1 rounded-md text-left text-[12px] font-medium ${
                       activePanel === "equity" && equityTab === "smart"
-                        ? "text-emerald-600 bg-emerald-50"
-                        : "text-slate-600 hover:text-emerald-600 hover:bg-slate-50"
+                        ? "text-emerald-600 bg-emerald-50/70"
+                        : "text-slate-500 hover:text-emerald-600 hover:bg-slate-50"
                     }`}
                   >
                     Smart multipliers
@@ -204,26 +204,26 @@ export default function ProjectSettingsPage() {
                 <button
                   type="button"
                   onClick={() => setActivePanel("team")}
-                  className={`w-full flex items-center gap-2 px-3 py-2 rounded-xl font-semibold text-left transition-colors ${
+                  className={`w-full flex items-center gap-2 px-2 py-1.5 rounded-md font-semibold text-left text-sm transition-colors ${
                     activePanel === "team"
-                      ? "bg-slate-900 text-white"
-                      : "text-slate-700 hover:bg-slate-50"
+                      ? "text-slate-900"
+                      : "text-slate-600 hover:text-slate-900"
                   }`}
                 >
                   <Users className="w-4 h-4" />
                   <span>Team settings</span>
                 </button>
-                <div className="mt-2 ml-3 space-y-1">
+                <div className="mt-1 ml-6 space-y-0.5">
                   <button
                     type="button"
                     onClick={() => {
                       setActivePanel("team");
                       setTeamTab("members");
                     }}
-                    className={`block w-full px-2 py-1 rounded-lg text-left text-[12px] font-medium ${
+                    className={`block w-full px-1.5 py-1 rounded-md text-left text-[12px] font-medium ${
                       activePanel === "team" && teamTab === "members"
-                        ? "text-emerald-600 bg-emerald-50"
-                        : "text-slate-600 hover:text-emerald-600 hover:bg-slate-50"
+                        ? "text-emerald-600 bg-emerald-50/70"
+                        : "text-slate-500 hover:text-emerald-600 hover:bg-slate-50"
                     }`}
                   >
                     Members overview
@@ -234,10 +234,10 @@ export default function ProjectSettingsPage() {
                       setActivePanel("team");
                       setTeamTab("add");
                     }}
-                    className={`block w-full px-2 py-1 rounded-lg text-left text-[12px] font-medium ${
+                    className={`block w-full px-1.5 py-1 rounded-md text-left text-[12px] font-medium ${
                       activePanel === "team" && teamTab === "add"
-                        ? "text-emerald-600 bg-emerald-50"
-                        : "text-slate-600 hover:text-emerald-600 hover:bg-slate-50"
+                        ? "text-emerald-600 bg-emerald-50/70"
+                        : "text-slate-500 hover:text-emerald-600 hover:bg-slate-50"
                     }`}
                   >
                     Add member
@@ -248,10 +248,10 @@ export default function ProjectSettingsPage() {
                       setActivePanel("team");
                       setTeamTab("edit");
                     }}
-                    className={`block w-full px-2 py-1 rounded-lg text-left text-[12px] font-medium ${
+                    className={`block w-full px-1.5 py-1 rounded-md text-left text-[12px] font-medium ${
                       activePanel === "team" && teamTab === "edit"
-                        ? "text-emerald-600 bg-emerald-50"
-                        : "text-slate-600 hover:text-emerald-600 hover:bg-slate-50"
+                        ? "text-emerald-600 bg-emerald-50/70"
+                        : "text-slate-500 hover:text-emerald-600 hover:bg-slate-50"
                     }`}
                   >
                     Edit roles & access
