@@ -22,10 +22,12 @@ interface MemberInput {
   amount: number;
 }
 
+type OnboardingProject = Project & { currency?: string | null };
+
 interface LegacyOnboardingWizardProps {
   open: boolean;
   projectId: string;
-  project: Project | null;
+  project: OnboardingProject | null;
   onCompleted: () => void;
   onDismiss?: () => void;
 }
@@ -136,7 +138,7 @@ export function LegacyOnboardingWizard({
           await logAudit({
             supabase,
             projectId,
-            actionType: "ONBOARDING_SCRATCH",
+            actionType: "UPDATE_PROJECT",
             description:
               "Onboarding completed: project starts from scratch (no legacy equity distribution).",
           });
@@ -290,7 +292,7 @@ export function LegacyOnboardingWizard({
         await logAudit({
           supabase,
           projectId,
-          actionType: "ONBOARDING_LEGACY",
+          actionType: "UPDATE_PROJECT",
           description: `Onboarding completed with legacy baseline: ${formatCurrency(
             totalValueNumber,
             currency
@@ -446,6 +448,12 @@ export function LegacyOnboardingWizard({
                 must include everything: cash investments, sweat equity (past work hours),
                 intellectual property, and material assets.
               </p>
+              <div className="rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-xs md:text-sm text-amber-900">
+                <span className="font-bold">Important:</span> this onboarding creates an{" "}
+                <span className="font-semibold">initial baseline</span> that you can always review and
+                adjust later from the <span className="font-semibold">Contribution Log</span>. Changes
+                here are not irreversible.
+              </div>
               <div>
                 <label className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2 block">
                   Total estimated value today
@@ -485,6 +493,12 @@ export function LegacyOnboardingWizard({
                 value. You can work in either percentages or absolute value for each member — the
                 system keeps both in sync.
               </p>
+              <div className="rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-xs md:text-sm text-amber-900">
+                <span className="font-bold">Important:</span> this split becomes the{" "}
+                <span className="font-semibold">initial legacy baseline</span>, but you can still edit
+                or correct these entries afterwards from the{" "}
+                <span className="font-semibold">Contribution Log</span>.
+              </div>
 
               <div className="rounded-2xl bg-slate-900 text-white px-4 py-3 flex items-center justify-between text-sm">
                 <div className="flex items-center gap-2">
