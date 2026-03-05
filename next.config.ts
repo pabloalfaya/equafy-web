@@ -3,7 +3,9 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   async redirects() {
     return [
-      { source: "/what-is-equily", destination: "/what-is-equafy", permanent: true },
+      { source: "/what-is-equily", destination: "/what-is-dynamic-equity", permanent: true },
+      { source: "/what-is-equafy", destination: "/what-is-dynamic-equity", permanent: true },
+      { source: "/how-it-works", destination: "/how-to-split-equity", permanent: true },
       { source: "/why-equily", destination: "/why-equafy", permanent: true },
     ];
   },

@@ -1,10 +1,9 @@
 "use client";
 
-import Link from "next/link";
 import { Zap, Calculator, Scale, FileCheck, ArrowRight } from "lucide-react";
 import { BRAND } from "@/lib/brand";
 
-export default function HowItWorksPage() {
+export default function HowToSplitEquityPage() {
   return (
     <div className="min-h-screen bg-[#F8FAFC] font-sans text-slate-900 selection:bg-emerald-100 selection:text-emerald-900 overflow-x-hidden">
       
@@ -19,7 +18,7 @@ export default function HowItWorksPage() {
       <main className="relative z-10 pt-32 md:pt-40 pb-20 w-full">
         <div className="mx-auto max-w-screen-2xl px-6 md:px-12 lg:px-24 text-center">
           <h1 className="text-5xl md:text-7xl font-bold tracking-tight mb-8 leading-tight text-slate-900">
-            How <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 to-blue-600">{BRAND.name}</span> works?
+            How to Split Equity Using a <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 to-blue-600">Dynamic Cap Table</span>
           </h1>
           <p className="text-xl text-slate-500 font-medium leading-relaxed mb-10 max-w-2xl mx-auto mt-2">
             Our platform transforms emotional subjectivity into an exact mathematical formula. 

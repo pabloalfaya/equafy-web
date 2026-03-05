@@ -102,7 +102,7 @@ const SECTIONS = [
       {
         title: "Complete Ecosystem",
         content:
-          "Video demos, step-by-step guides (How it works), and an API ready for the future.",
+          "Video demos, step-by-step guides (How to Split Equity), and an API ready for the future.",
       },
     ],
   },

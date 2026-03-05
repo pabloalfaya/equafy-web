@@ -26,8 +26,8 @@ export function PublicFooter() {
           <div>
             <h4 className="font-bold text-slate-900 mb-6 text-sm">Product</h4>
             <ul className="space-y-4 text-sm font-medium text-slate-500">
-              <li><Link href="/what-is-equafy" className="hover:text-emerald-600 transition-colors">What is {BRAND.name}?</Link></li>
-              <li><Link href="/how-it-works" className="hover:text-emerald-600 transition-colors">How does {BRAND.name} work?</Link></li>
+              <li><Link href="/what-is-dynamic-equity" className="hover:text-emerald-600 transition-colors">What is Dynamic Equity?</Link></li>
+              <li><Link href="/how-to-split-equity" className="hover:text-emerald-600 transition-colors">How to Split Equity</Link></li>
               <li><Link href="/why-equafy" className="hover:text-emerald-600 transition-colors">Why {BRAND.name}?</Link></li>
               <li><Link href="/features" className="hover:text-emerald-600 transition-colors">Features</Link></li>
               <li><Link href="/models" className="hover:text-emerald-600 transition-colors">Equity Models</Link></li>

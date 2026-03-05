@@ -86,7 +86,7 @@ export function Navbar() {
                 <div className="absolute left-0 top-full pt-3 w-72 z-30">
                   <div className="rounded-xl bg-white shadow-lg border border-gray-100 py-2">
                   <Link
-                    href="/what-is-equafy"
+                    href="/what-is-dynamic-equity"
                     onClick={() => setIsProductMenuOpen(false)}
                     className="flex items-start gap-3 px-3 py-2 rounded-lg hover:bg-gray-50 transition-colors"
                   >
@@ -95,15 +95,15 @@ export function Navbar() {
                     </div>
                     <div>
                       <div className="text-sm font-semibold text-slate-900">
-                        What is {BRAND.name}?
+                        What is Dynamic Equity?
                       </div>
                       <p className="text-xs text-slate-500">
-                        Understand the basics of dynamic equity.
+                        The fair way to split startup equity.
                       </p>
                     </div>
                   </Link>
                   <Link
-                    href="/how-it-works"
+                    href="/how-to-split-equity"
                     onClick={() => setIsProductMenuOpen(false)}
                     className="flex items-start gap-3 px-3 py-2 rounded-lg hover:bg-gray-50 transition-colors"
                   >
@@ -112,10 +112,10 @@ export function Navbar() {
                     </div>
                     <div>
                       <div className="text-sm font-semibold text-slate-900">
-                        How does {BRAND.name} work?
+                        How to Split Equity
                       </div>
                       <p className="text-xs text-slate-500">
-                        Dive into the methodology.
+                        Dynamic cap table step-by-step.
                       </p>
                     </div>
                   </Link>
@@ -271,11 +271,11 @@ export function Navbar() {
               Sign Up
             </Link>
             <p className="pt-3 pb-1 text-[10px] font-bold text-slate-400 uppercase tracking-widest">Product</p>
-            <Link href="/what-is-equafy" onClick={() => setIsMobileMenuOpen(false)} className="block py-1.5 pl-3 text-sm font-medium text-slate-600 hover:text-slate-900">
-              What is {BRAND.name}?
+            <Link href="/what-is-dynamic-equity" onClick={() => setIsMobileMenuOpen(false)} className="block py-1.5 pl-3 text-sm font-medium text-slate-600 hover:text-slate-900">
+              What is Dynamic Equity?
             </Link>
-            <Link href="/how-it-works" onClick={() => setIsMobileMenuOpen(false)} className="block py-1.5 pl-3 text-sm font-medium text-slate-600 hover:text-slate-900">
-              How does {BRAND.name} work?
+            <Link href="/how-to-split-equity" onClick={() => setIsMobileMenuOpen(false)} className="block py-1.5 pl-3 text-sm font-medium text-slate-600 hover:text-slate-900">
+              How to Split Equity
             </Link>
             <Link href="/why-equafy" onClick={() => setIsMobileMenuOpen(false)} className="block py-1.5 pl-3 text-sm font-medium text-slate-600 hover:text-slate-900">
               Why {BRAND.name}?
@@ -328,18 +328,18 @@ export function Navbar() {
           {isProductMenuOpen && (
             <div className="mt-1 space-y-1 pb-2">
               <Link
-                href="/what-is-equafy"
+                href="/what-is-dynamic-equity"
                 onClick={() => setIsProductMenuOpen(false)}
                 className="block text-sm text-slate-600 py-1 pl-2 border-l border-slate-200 hover:text-slate-900"
               >
-                What is {BRAND.name}?
+                What is Dynamic Equity?
               </Link>
               <Link
-                href="/how-it-works"
+                href="/how-to-split-equity"
                 onClick={() => setIsProductMenuOpen(false)}
                 className="block text-sm text-slate-600 py-1 pl-2 border-l border-slate-200 hover:text-slate-900"
               >
-                How does {BRAND.name} work?
+                How to Split Equity
               </Link>
               <Link
                 href="/why-equafy"

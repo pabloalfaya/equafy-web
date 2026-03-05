@@ -6,9 +6,9 @@ const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || BRAND.baseUrl;
 /** Public routes derived from app/ folder (excluding dashboard, profile, auth). */
 const PUBLIC_ROUTES = [
   { path: "/", changeFrequency: "weekly" as const, priority: 1.0 },
-  { path: "/what-is-equafy", changeFrequency: "monthly" as const, priority: 0.8 },
+  { path: "/what-is-dynamic-equity", changeFrequency: "monthly" as const, priority: 0.8 },
   { path: "/why-equafy", changeFrequency: "monthly" as const, priority: 0.8 },
-  { path: "/how-it-works", changeFrequency: "monthly" as const, priority: 0.8 },
+  { path: "/how-to-split-equity", changeFrequency: "monthly" as const, priority: 0.8 },
   { path: "/guide", changeFrequency: "monthly" as const, priority: 0.8 },
   { path: "/features", changeFrequency: "monthly" as const, priority: 0.8 },
   { path: "/models", changeFrequency: "monthly" as const, priority: 0.8 },

@@ -6,7 +6,7 @@ import { PlayCircle } from "lucide-react";
 import { VideoDemoModal } from "@/components/VideoDemoModal";
 import { BRAND } from "@/lib/brand";
 
-export default function WhatIsEquafyPage() {
+export default function WhatIsDynamicEquityPage() {
   const [isVideoOpen, setIsVideoOpen] = useState(false);
 
   return (
@@ -26,7 +26,7 @@ export default function WhatIsEquafyPage() {
             {/* Lado Izquierdo: Texto */}
             <div className="relative z-10">
               <h1 className="text-5xl md:text-6xl font-bold tracking-tight text-slate-900 mb-6 leading-[1.1]">
-                What is <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 to-teal-500">{BRAND.name}?</span>
+                What is <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 to-teal-500">Dynamic Equity?</span>
               </h1>
               
               <p className="text-xl text-slate-600 leading-relaxed font-medium mb-6 mt-2">
@@ -57,7 +57,7 @@ export default function WhatIsEquafyPage() {
               <div className="absolute inset-0 bg-gradient-to-tr from-emerald-500/5 to-transparent rounded-full blur-3xl -z-10"></div>
               <img 
                 src="/what-is-equafy-hero.png" 
-                alt={`${BRAND.name} Dynamic Equity Illustration`} 
+                alt="Dynamic Equity Illustration" 
                 className="w-full h-auto object-contain drop-shadow-xl hover:scale-[1.02] transition-transform duration-500" 
               />
             </div>
