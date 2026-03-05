@@ -954,7 +954,7 @@ export default function ProjectDashboardPage() {
       )}
 
       {menuOpen && (
-        <div className="fixed inset-0 z-[140] flex">
+        <div className="fixed inset-0 z-[140] flex overflow-hidden">
           <div
             className="absolute inset-0 bg-slate-900/40"
             onClick={() => {
@@ -967,11 +967,11 @@ export default function ProjectDashboardPage() {
             }}
           />
           <div
-            className={`relative ml-auto h-full w-72 max-w-full bg-white border-l border-slate-200 shadow-2xl flex flex-col ${
+            className={`relative ml-auto h-full w-72 max-w-full bg-white border-l border-slate-200 shadow-2xl flex flex-col overflow-y-auto ${
               menuClosing ? "animate-out slide-out-to-right duration-200" : "animate-in slide-in-from-right duration-200"
             }`}
           >
-            <div className="flex items-center justify-between px-4 py-4 border-b border-slate-100">
+            <div className="flex items-center justify-between px-4 py-4 border-b border-slate-100 flex-shrink-0">
               <p className="text-xs font-bold uppercase tracking-[0.2em] text-slate-400">Project Menu</p>
               <button
                 type="button"

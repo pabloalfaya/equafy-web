@@ -105,7 +105,7 @@ export default function ProjectSettingsPage() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-[260px,1fr] gap-6 md:gap-10">
+        <div className="grid grid-cols-[260px,1fr] gap-6 md:gap-10">
           <aside className="bg-white rounded-2xl border border-slate-100 shadow-sm p-4 h-fit">
             <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400 mb-3">
               Settings
