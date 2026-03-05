@@ -127,6 +127,7 @@ export default function ProjectDashboardPage() {
     currency?: string;
   } | null>(null);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [menuClosing, setMenuClosing] = useState(false);
   const [showLegacyOnboarding, setShowLegacyOnboarding] = useState(false);
 
   const fetchData = async () => {
@@ -613,7 +614,7 @@ export default function ProjectDashboardPage() {
                 </div>
                 <button
                   type="button"
-                  onClick={() => setMenuOpen(true)}
+                  onClick={() => { setMenuOpen(true); setMenuClosing(false); }}
                   className="mt-1 p-2 rounded-lg border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 hover:text-slate-900 shadow-sm transition-colors shrink-0"
                   aria-label="Open project menu"
                 >
@@ -945,14 +946,32 @@ export default function ProjectDashboardPage() {
         <div className="fixed inset-0 z-[140] flex">
           <div
             className="absolute inset-0 bg-slate-900/40"
-            onClick={() => setMenuOpen(false)}
+            onClick={() => {
+              if (menuClosing) return;
+              setMenuClosing(true);
+              setTimeout(() => {
+                setMenuOpen(false);
+                setMenuClosing(false);
+              }, 200);
+            }}
           />
-          <div className="relative ml-auto h-full w-72 max-w-full bg-white border-l border-slate-200 shadow-2xl flex flex-col">
+          <div
+            className={`relative ml-auto h-full w-72 max-w-full bg-white border-l border-slate-200 shadow-2xl flex flex-col ${
+              menuClosing ? "animate-out slide-out-to-right duration-200" : "animate-in slide-in-from-right duration-200"
+            }`}
+          >
             <div className="flex items-center justify-between px-4 py-4 border-b border-slate-100">
               <p className="text-xs font-bold uppercase tracking-[0.2em] text-slate-400">Project Menu</p>
               <button
                 type="button"
-                onClick={() => setMenuOpen(false)}
+                onClick={() => {
+                  if (menuClosing) return;
+                  setMenuClosing(true);
+                  setTimeout(() => {
+                    setMenuOpen(false);
+                    setMenuClosing(false);
+                  }, 200);
+                }}
                 className="p-2 rounded-full hover:bg-slate-100 text-slate-400 hover:text-slate-700 transition-colors"
                 aria-label="Close project menu"
               >
