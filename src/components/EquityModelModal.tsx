@@ -162,7 +162,7 @@ export function EquityModelModal({
                       key={label}
                       className="flex items-center justify-between gap-2 p-1.5 sm:p-2 bg-white rounded-lg border border-slate-100 shadow-sm"
                     >
-                      <span className="text-[9px] sm:text-[10px] font-black uppercase text-slate-500 tracking-wider">
+                      <span className="text-[9px] sm:text-[10px] font-black uppercase text-blue-700 tracking-wider">
                         {label}
                       </span>
                       <div
@@ -223,12 +223,16 @@ export function EquityModelModal({
                 <span className="font-black text-sm text-slate-800">Just Split Model</span>
               </div>
               <div className="grid grid-cols-2 gap-1.5 mb-2 flex-1">
-                {[{ l: "CASH", v: "x4" }, { l: "WORK", v: "x2" }, { l: "TANGIBLE", v: "x2" }, { l: "INTANGIBLE", v: "x2" }, { l: "OTHERS", v: "x1" }].map((item) => (
+                {[{ l: "CASH", v: "x4" }, { l: "WORK", v: "x2" }, { l: "TANGIBLE", v: "x2" }, { l: "INTANGIBLE", v: "x2" }].map((item) => (
                   <div key={item.l} className="p-2 sm:p-2.5 bg-white rounded-md border border-slate-100 text-center shadow-sm">
                     <span className="text-[7px] sm:text-[8px] font-black text-emerald-600 uppercase block mb-0.5">{item.l}</span>
                     <span className="text-base sm:text-lg font-black tracking-tighter text-slate-900">{item.v}</span>
                   </div>
                 ))}
+                <div className="col-span-2 p-2 sm:p-2.5 bg-white rounded-md border border-slate-100 text-center shadow-sm">
+                  <span className="text-[7px] sm:text-[8px] font-black text-emerald-600 uppercase block mb-0.5">OTHERS</span>
+                  <span className="text-base sm:text-lg font-black tracking-tighter text-slate-900">x1</span>
+                </div>
               </div>
               <p className="text-[8px] sm:text-[9px] text-center text-emerald-700 font-black uppercase tracking-widest">Best choice</p>
             </div>
@@ -257,9 +261,9 @@ export function EquityModelModal({
             </div>
           )}
 
-          <p className="text-center text-xs sm:text-sm text-gray-500 flex items-center justify-center gap-1.5 flex-wrap">
-            <Info className="w-3.5 h-3.5 shrink-0 text-gray-400" />
-            <span>Note: Multipliers can be adjusted anytime in Equity Settings.</span>
+          <p className="text-center text-xs sm:text-sm text-slate-600 flex items-center justify-center gap-1.5 flex-wrap">
+            <Info className="w-3.5 h-3.5 shrink-0 text-slate-500" />
+            <span className="font-medium">Note: Multipliers can be adjusted anytime in Equity Settings.</span>
           </p>
 
           <div className="flex items-center justify-end gap-3 pt-3 border-t border-slate-100">

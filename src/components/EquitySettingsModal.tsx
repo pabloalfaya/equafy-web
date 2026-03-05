@@ -440,7 +440,7 @@ export function EquitySettingsModal({
               <p className="text-xs text-slate-500 mt-1">All monetary values in this project will use this currency.</p>
             </div>
 
-            <p className="mt-3 text-[11px] font-bold text-slate-500 uppercase tracking-[0.18em]">
+            <p className="mt-3 text-[11px] font-black text-slate-700 uppercase tracking-[0.18em]">
               Multiplier models
             </p>
             <p className="text-sm text-slate-600 leading-relaxed w-full">
