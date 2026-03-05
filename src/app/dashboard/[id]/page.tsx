@@ -622,7 +622,7 @@ export default function ProjectDashboardPage() {
               </div>
 
               {/* Second row: action buttons */}
-              <div className="flex gap-2 sm:gap-3 overflow-x-auto md:overflow-visible flex-nowrap md:flex-wrap pb-2 md:pb-0 -mx-1 px-1 md:mx-0 md:px-0 [&>*]:flex-shrink-0 shrink-0 items-start justify-end">
+              <div className="mt-3 flex gap-2 sm:gap-3 overflow-x-auto md:overflow-visible flex-nowrap md:flex-wrap pb-2 md:pb-0 -mx-1 px-1 md:mx-0 md:px-0 [&>*]:flex-shrink-0 shrink-0 items-start justify-end">
                 <button
                   onClick={generatePDF}
                   className="inline-flex items-center gap-1.5 md:gap-2 rounded-xl bg-white border border-slate-200 px-3 md:px-5 py-2.5 md:py-3 font-bold text-slate-700 shadow-sm hover:bg-slate-50 transition-all whitespace-nowrap text-xs md:text-base"
