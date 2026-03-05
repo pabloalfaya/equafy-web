@@ -154,7 +154,7 @@ export function ContributionsTable({ contributions, currency = "EUR", onDelete, 
                     <span className="text-amber-600 text-xs font-bold">Simulated</span>
                   )
                 ) : canEdit ? (
-                  <div className="flex items-center justify-end gap-1">
+                  <div className="flex flex-col items-end justify-end gap-1 sm:flex-row sm:items-center">
                     <button
                       type="button"
                       onClick={() => onEdit(c)}
