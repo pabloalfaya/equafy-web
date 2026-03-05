@@ -352,64 +352,66 @@ export function EquitySettingsModal({
           </button>
         </div>
 
-        {/* Tabs: 1. Settings 2. Multipliers 3. Fixed Equity 4. Limited Equity 5. Smart Multipliers */}
-        <div className="flex flex-nowrap gap-1.5 mb-6 p-1 rounded-xl bg-slate-100 border border-slate-200 w-full">
-          <button
-            type="button"
-            onClick={() => setActiveTab("default_models")}
-            className={`flex-1 min-w-0 py-2 px-2 rounded-lg text-xs font-bold transition-all whitespace-nowrap ${
-              activeTab === "default_models"
-                ? "bg-white text-slate-800 shadow-sm"
-                : "text-slate-600 hover:text-slate-800"
-            }`}
-          >
-            Settings
-          </button>
-          <button
-            type="button"
-            onClick={() => setActiveTab("multipliers")}
-            className={`flex-1 min-w-0 py-2 px-2 rounded-lg text-xs font-bold transition-all whitespace-nowrap ${
-              activeTab === "multipliers"
-                ? "bg-white text-slate-800 shadow-sm"
-                : "text-slate-600 hover:text-slate-800"
-            }`}
-          >
-            Multipliers
-          </button>
-          <button
-            type="button"
-            onClick={() => setActiveTab("fixed")}
-            className={`flex-1 min-w-0 py-2 px-2 rounded-lg text-xs font-bold transition-all whitespace-nowrap ${
-              activeTab === "fixed"
-                ? "bg-white text-slate-800 shadow-sm"
-                : "text-slate-600 hover:text-slate-800"
-            }`}
-          >
-            Fixed Equity
-          </button>
-          <button
-            type="button"
-            onClick={() => setActiveTab("limited")}
-            className={`flex-1 min-w-0 py-2 px-2 rounded-lg text-xs font-bold transition-all whitespace-nowrap ${
-              activeTab === "limited"
-                ? "bg-white text-slate-800 shadow-sm"
-                : "text-slate-600 hover:text-slate-800"
-            }`}
-          >
-            Limited Equity
-          </button>
-          <button
-            type="button"
-            onClick={() => setActiveTab("smart")}
-            className={`flex-1 min-w-0 py-2 px-2 rounded-lg text-xs font-bold transition-all whitespace-nowrap ${
-              activeTab === "smart"
-                ? "bg-white text-slate-800 shadow-sm"
-                : "text-slate-600 hover:text-slate-800"
-            }`}
-          >
-            Smart Multipliers
-          </button>
-        </div>
+        {/* Tabs (solo en modo modal; en página se controlan desde el menú lateral) */}
+        {mode === "modal" && (
+          <div className="flex flex-nowrap gap-1.5 mb-6 p-1 rounded-xl bg-slate-100 border border-slate-200 w-full">
+            <button
+              type="button"
+              onClick={() => setActiveTab("default_models")}
+              className={`flex-1 min-w-0 py-2 px-2 rounded-lg text-xs font-bold transition-all whitespace-nowrap ${
+                activeTab === "default_models"
+                  ? "bg-white text-slate-800 shadow-sm"
+                  : "text-slate-600 hover:text-slate-800"
+              }`}
+            >
+              Settings
+            </button>
+            <button
+              type="button"
+              onClick={() => setActiveTab("multipliers")}
+              className={`flex-1 min-w-0 py-2 px-2 rounded-lg text-xs font-bold transition-all whitespace-nowrap ${
+                activeTab === "multipliers"
+                  ? "bg-white text-slate-800 shadow-sm"
+                  : "text-slate-600 hover:text-slate-800"
+              }`}
+            >
+              Multipliers
+            </button>
+            <button
+              type="button"
+              onClick={() => setActiveTab("fixed")}
+              className={`flex-1 min-w-0 py-2 px-2 rounded-lg text-xs font-bold transition-all whitespace-nowrap ${
+                activeTab === "fixed"
+                  ? "bg-white text-slate-800 shadow-sm"
+                  : "text-slate-600 hover:text-slate-800"
+              }`}
+            >
+              Fixed Equity
+            </button>
+            <button
+              type="button"
+              onClick={() => setActiveTab("limited")}
+              className={`flex-1 min-w-0 py-2 px-2 rounded-lg text-xs font-bold transition-all whitespace-nowrap ${
+                activeTab === "limited"
+                  ? "bg-white text-slate-800 shadow-sm"
+                  : "text-slate-600 hover:text-slate-800"
+              }`}
+            >
+              Limited Equity
+            </button>
+            <button
+              type="button"
+              onClick={() => setActiveTab("smart")}
+              className={`flex-1 min-w-0 py-2 px-2 rounded-lg text-xs font-bold transition-all whitespace-nowrap ${
+                activeTab === "smart"
+                  ? "bg-white text-slate-800 shadow-sm"
+                  : "text-slate-600 hover:text-slate-800"
+              }`}
+            >
+              Smart Multipliers
+            </button>
+          </div>
+        )}
 
         {/* Tab Content — fixed height, scroll only inner lists; buttons stay visible */}
         <div className="h-[480px] flex flex-col overflow-hidden pr-1 w-full min-w-0">

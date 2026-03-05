@@ -235,36 +235,38 @@ export function AddMemberModal({
           </button>
         </div>
 
-        {/* Tabs: 1. Add Member 2. Members 3. Edit Team */}
-        <div className="flex gap-2 mb-6 p-1 rounded-xl bg-slate-100 border border-slate-200 shrink-0">
-          <button
-            type="button"
-            onClick={() => setActiveTab("add")}
-            className={`flex-1 py-2.5 px-4 rounded-lg text-sm font-bold transition-all ${
-              activeTab === "add" ? "bg-white text-slate-800 shadow-sm" : "text-slate-600 hover:text-slate-800"
-            }`}
-          >
-            Add Member
-          </button>
-          <button
-            type="button"
-            onClick={() => setActiveTab("members")}
-            className={`flex-1 py-2.5 px-4 rounded-lg text-sm font-bold transition-all ${
-              activeTab === "members" ? "bg-white text-slate-800 shadow-sm" : "text-slate-600 hover:text-slate-800"
-            }`}
-          >
-            Members
-          </button>
-          <button
-            type="button"
-            onClick={() => setActiveTab("edit")}
-            className={`flex-1 py-2.5 px-4 rounded-lg text-sm font-bold transition-all ${
-              activeTab === "edit" ? "bg-white text-slate-800 shadow-sm" : "text-slate-600 hover:text-slate-800"
-            }`}
-          >
-            Edit Team
-          </button>
-        </div>
+        {/* Tabs (solo en modo modal; en página se controlan desde el menú lateral) */}
+        {mode === "modal" && (
+          <div className="flex gap-2 mb-6 p-1 rounded-xl bg-slate-100 border border-slate-200 shrink-0">
+            <button
+              type="button"
+              onClick={() => setActiveTab("add")}
+              className={`flex-1 py-2.5 px-4 rounded-lg text-sm font-bold transition-all ${
+                activeTab === "add" ? "bg-white text-slate-800 shadow-sm" : "text-slate-600 hover:text-slate-800"
+              }`}
+            >
+              Add Member
+            </button>
+            <button
+              type="button"
+              onClick={() => setActiveTab("members")}
+              className={`flex-1 py-2.5 px-4 rounded-lg text-sm font-bold transition-all ${
+                activeTab === "members" ? "bg-white text-slate-800 shadow-sm" : "text-slate-600 hover:text-slate-800"
+              }`}
+            >
+              Members
+            </button>
+            <button
+              type="button"
+              onClick={() => setActiveTab("edit")}
+              className={`flex-1 py-2.5 px-4 rounded-lg text-sm font-bold transition-all ${
+                activeTab === "edit" ? "bg-white text-slate-800 shadow-sm" : "text-slate-600 hover:text-slate-800"
+              }`}
+            >
+              Edit Team
+            </button>
+          </div>
+        )}
 
         {/* Tab: Members — summary table */}
         {activeTab === "members" && (
