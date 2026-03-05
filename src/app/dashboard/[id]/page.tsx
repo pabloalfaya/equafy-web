@@ -1032,18 +1032,7 @@ export default function ProjectDashboardPage() {
                     }}
                     className="w-full text-left px-1 py-1 text-[13px] font-semibold text-slate-700 hover:text-emerald-600 transition-colors"
                   >
-                    Equity settings
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      router.push(`/dashboard/${projectId}/settings`);
-                      setMenuOpen(false);
-                      setMenuClosing(false);
-                    }}
-                    className="w-full text-left px-1 py-1 text-[13px] font-semibold text-slate-700 hover:text-emerald-600 transition-colors"
-                  >
-                    Team settings
+                    All settings
                   </button>
                 </div>
 
