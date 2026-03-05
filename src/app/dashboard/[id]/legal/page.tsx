@@ -73,7 +73,7 @@ export default function ProjectLegalPage() {
             .single(),
           supabase
             .from("project_documents")
-            .select("id, name, storage_path, uploaded_at")
+            .select("id, name, storage_path, uploaded_at, uploaded_by")
             .eq("project_id", projectId)
             .order("uploaded_at", { ascending: false }),
           supabase
@@ -104,12 +104,12 @@ export default function ProjectLegalPage() {
           setCanManageVault(canEditVault);
 
           const mappedDocs =
-            (docsData as { id: string; name: string; storage_path: string; uploaded_at: string }[])?.map(
+            (docsData as { id: string; name: string; storage_path: string; uploaded_at: string; uploaded_by?: string | null }[])?.map(
               (doc) => ({
                 id: doc.id,
                 name: doc.name,
                 storagePath: doc.storage_path,
-                uploadedBy: null,
+                uploadedBy: doc.uploaded_by ?? "—",
                 date: new Date(doc.uploaded_at).toLocaleDateString("en-US", {
                   month: "short",
                   day: "numeric",
@@ -181,6 +181,11 @@ export default function ProjectLegalPage() {
         return;
       }
 
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      const uploaderLabel = user?.email || user?.id || "Unknown";
+
       const { data, error: insertError } = await supabase
         .from("project_documents")
         .insert({
@@ -189,8 +194,9 @@ export default function ProjectLegalPage() {
           storage_path: path,
           mime_type: file.type || "application/pdf",
           size_bytes: file.size,
+          uploaded_by: uploaderLabel,
         })
-        .select("id, name, storage_path, uploaded_at")
+        .select("id, name, storage_path, uploaded_at, uploaded_by")
         .single();
 
       if (insertError || !data) {
@@ -210,7 +216,7 @@ export default function ProjectLegalPage() {
           id: data.id,
           name: data.name,
           storagePath: data.storage_path,
-          uploadedBy: "You",
+          uploadedBy: data.uploaded_by ?? uploaderLabel ?? "You",
           date: displayDate,
         },
         ...prev,
